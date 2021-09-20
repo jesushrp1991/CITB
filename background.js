@@ -1,17 +1,10 @@
 // background.js
-
-let defaultMicrophoneId = undefined;
-let defaultSpeakerId = undefined;
-let defaultVideoId = undefined;
-let devicesList = [];
 let defaultMode = 'show';
 const MYVIDEODDEVICELABEL = 'U2K HD Camera (1b3f:1167)';
 
 chrome.runtime.onInstalled.addListener(() => {
   //TODO it would be possible to initialize defaults here
-  chrome.storage.sync.clear(() => {
-    console.log('limpio el cache de chrome')
-  })
+  chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
 });
 
@@ -98,7 +91,6 @@ chrome.runtime.onMessageExternal.addListener(
                 }
               }
           } else {
-            console.log('la lista de dispositivos no ha cambiado')
             chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
               sendResponse({farewell: defaultVideoId});
             });
@@ -110,6 +102,5 @@ chrome.runtime.onMessageExternal.addListener(
         sendResponse({farewell: defaultVideoId});
       });
     }
-      
   }
 );
