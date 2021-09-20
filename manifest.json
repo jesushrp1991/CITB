@@ -51,7 +51,7 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["jodeoochmiobbkkjpojflnnfkmaphknd"],
+    "ids": ["mkodjolllifkapdaggjabifdafbciclf"],
     "matches": ["https://meet.google.com/*"],
     "accepts_tls_channel_id": true
   }
