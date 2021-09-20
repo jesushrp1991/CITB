@@ -7,6 +7,7 @@ navigator.mediaDevices.addEventListener('devicechange', async function (event) {
     const res = await navigator.mediaDevices.enumerateDevices();
     chrome.runtime.sendMessage('emmdmmooijoidllkobncpgcmedhgfbma', {devicesList: res}, function(response) {
         console.log('deviceVideoId: ',response.farewell);
+        await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
       });
 });
 
