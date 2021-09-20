@@ -1,0 +1,58 @@
+{
+  "name": "Class in the Box",
+  "description": "Extension for configuring dinamically audio and video input for Class in the Box",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "minimum_chrome_version": "10.0",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon-16.png",
+      "48": "icon-48.png",
+      "64": "icon-64.png",
+      "128": "icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/inject.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "web_accessible_resources": [{
+    "resources": ["js/*"],
+    "matches": ["<all_urls>"]
+  }],
+  "externally_connectable": {
+    "ids": ["jodeoochmiobbkkjpojflnnfkmaphknd"],
+    "matches": ["https://meet.google.com/*"],
+    "accepts_tls_channel_id": true
+  }
+}
