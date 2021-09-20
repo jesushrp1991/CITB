@@ -1,6 +1,6 @@
 // background.js
 let defaultMode = 'show';
-const MYVIDEODDEVICELABEL = 'U2K HD Camera (1b3f:1167)';
+const MYVIDEODDEVICELABEL = 'EasyCamera (04f2:b5d7)';
 
 chrome.runtime.onInstalled.addListener(() => {
   //TODO it would be possible to initialize defaults here

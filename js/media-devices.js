@@ -16,84 +16,57 @@ function monkeyPatchMediaDevices() {
       label: "Virtual Class In The Box",
     });
     console.log(res);
-    const activeDeviceID = res.filter(ele => ele.deviceId == "7e7c901a803486d0056656495b68b6920e8ea3a576ac5a4f0c42ab1ac3d85297")
-    console.log("ACTIVEDEVICEID", activeDeviceID);
- if (activeDeviceID.length > 0) {
-    defaultID="7e7c901a803486d0056656495b68b6920e8ea3a576ac5a4f0c42ab1ac3d85297"
- } else {
-     var activeCamera = res.filter(ele => ele.kind == "videoinput" && ele.deviceId != "virtual")
-         console.log("activeCAMERAID", activeCamera);
-
-     if (activeCamera.length > 0 ) {
-        defaultID = activeCamera[0].deviceId
-     }
-     console.log(activeCamera)
- }
-      chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', {devicesList: res}, function(response) {
-        console.log("RESPONSE RESPONSE", response)
-        if (response.farewell) {
-            console.log(response.farewell);
-              defaultID = response.farewell;
-            const activeDeviceID = res.filter(ele => ele.deviceId == "7e7c901a803486d0056656495b68b6920e8ea3a576ac5a4f0c42ab1ac3d85297")
- 
- if (activeDeviceID.length > 0) {
-    defaultID="7e7c901a803486d0056656495b68b6920e8ea3a576ac5a4f0c42ab1ac3d85297"
- }   
-              console.log(defaultID);
-            
-            
-            console.log("WILL CHANGE USERMEDIA", defaultID)
-    
-        }
-        
-      
+    chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { devicesList: res }, function (response) {
+      console.log("RESPONSE RESPONSE", response)
+      if (response.farewell) {
+        defaultID = response.farewell;
+        console.log("WILL CHANGE USERMEDIA", defaultID)
+      }
     });
-     if (defaultID != undefined){
-
-        setMediaStreamTracks()
-     }
+    if (defaultID != undefined) {
+      setMediaStreamTracks()
+    }
     return res;
   };
-  
-  async function setMediaStreamTracks(){
-     
-      const constraints = {
-          video: {
-            deviceId:{exact: defaultID},
-          },
-          audio: false,
-        };
-        console.log(constraints);
-        const media = await getUserMediaFn.call(
-          navigator.mediaDevices,
-          constraints
-        );
-      
-        
-      let actualTracks = currentMediaStream.getTracks()
-      actualTracks.forEach(t => t.enabled = false)
-      media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
-      actualTracks.filter(t => t.enabled == false).forEach(dt => currentMediaStream.removeTrack(dt))
-        
-      console.log("RESULTING media", currentMediaStream)
-      console.log("RESULTING tracks", currentMediaStream.getTracks())
-      currentMediaStream.getTracks().forEach(t => {
-          t.applyConstraints();
-          
-          console.log(t.getSettings())
-      });
-      
-      console.log(document.getElementsByTagName('video'))
-      var video = document.getElementsByTagName('video')[0]
-      if (video != undefined ) {
-        video.srcObject = currentMediaStream
-          console.log(video);
-          console.log(video.srcObject)
-      }
-      console.log(document.getElementsByTagName('video')[0])
-     
 
-      
+  async function setMediaStreamTracks() {
+    const constraints = {
+      video: {
+        deviceId: { exact: defaultID },
+      },
+      audio: false,
+    };
+    console.log(constraints);
+    const media = await getUserMediaFn.call(
+      navigator.mediaDevices,
+      constraints
+    );
+
+    let actualTracks = currentMediaStream.getTracks()
+    actualTracks.forEach(t => t.enabled = false)
+    media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
+    actualTracks.filter(t => t.enabled == false).forEach(dt => currentMediaStream.removeTrack(dt))
+
+    console.log("RESULTING media", currentMediaStream)
+    console.log("RESULTING tracks", currentMediaStream.getTracks())
+    currentMediaStream.getTracks().forEach(t => {
+      t.applyConstraints();
+      console.log(t.getSettings())
+    });
+
+    console.log(document.getElementsByTagName('video'))
+    var video = document.getElementsByTagName('video')[0]
+    if (video != undefined) {
+      video.srcObject = currentMediaStream
+      console.log(video);
+      console.log(video.srcObject)
+    }
+    console.log(document.getElementsByTagName('video')[0])
+
+    console.log(document.getElementsByClassName('p2hjYe TPpRNe'));
+    var divContainer = document.getElementsByClassName('p2hjYe TPpRNe')[0];
+    console.log(divContainer);
+
   }
 
   MediaDevices.prototype.getUserMedia = async function () {
@@ -105,24 +78,19 @@ function monkeyPatchMediaDevices() {
         args[0].video.deviceId === "virtual" ||
         args[0].video.deviceId.exact === "virtual"
       ) {
-        // This constraints could mimick closely the request.
-        // Also, there could be a preferred webcam on the options.
-        // Right now it defaults to the predefined input.
-          // Get current MediaStream
-         
         console.log(defaultID);
-        
-         // Get current MediaStream
-          
-          
-         setMediaStreamTracks()
+        // Get current MediaStream
+        setMediaStreamTracks()
         return currentMediaStream;
+      } else {
+        const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+        currentMediaStream = res;
+        return res;
       }
     }
     const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
     return res;
   };
-
   console.log('ClassInTheBoxExtensionInstalled')
 }
 
