@@ -52,7 +52,7 @@
   }],
   "externally_connectable": {
     "ids": ["mkodjolllifkapdaggjabifdafbciclf"],
-    "matches": ["https://meet.google.com/*"],
+    "matches": ["https://meet.google.com/*", "https://web.skype.com/*"],
     "accepts_tls_channel_id": true
   }
 }
