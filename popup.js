@@ -17,19 +17,21 @@ chrome.storage.sync.get("devicesList", ({ devicesList }) => {
   console.log(microphonesList);
   console.log(videosList);
 
-  for (const mic of microphonesList) {
-    var option = document.createElement("option");
+  microphonesList.forEach(mic => {
+    let option = document.createElement("option"); 
     option.value = mic.deviceId;
     option.text = mic.label
     selectMicrophone.appendChild(option);
-  }
+  })
 
-  for (const video of videosList) {
-    var option = document.createElement("option");
-    option.value = video.deviceId;
-    option.text = video.label
-    selectVideo.appendChild(option);
-  }
+  videosList.forEach(video => {
+    if (video.deviceId != 'virtual'){
+      let option = document.createElement("option"); 
+      option.value = video.deviceId;
+      option.text = video.label
+      selectVideo.appendChild(option);
+    }
+  })
 })
 
 chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId}) => {
@@ -54,6 +56,7 @@ chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId}) => {
 
 // Listener for selection change
 selectMode.addEventListener("change", async (event) => {
+  console.log('cambio el modo de CITB');
   chrome.storage.sync.set({ defaultMode: selectMode.value });
   chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
     console.log(defaultMode)
@@ -69,20 +72,23 @@ selectMode.addEventListener("change", async (event) => {
 
 // Listener for selection change
 selectMicrophone.addEventListener("change", async (event) => {
+  console.log('cambio el microfono');
   chrome.storage.sync.set({ defaultMicrophoneId: selectMicrophone.value });
   chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => {
     console.log(defaultMicrophoneId)
   });
-
 });
 
 // Listener for selection change
 selectVideo.addEventListener("change", async (event) => {
+  console.log('cambio el video');
   chrome.storage.sync.set({ defaultVideoId: selectVideo.value });
-  chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
-    console.log(defaultVideoId)
+  chrome.storage.sync.get("defaultVideoId", async ({ defaultVideoId }) => {
+    console.log(defaultVideoId);
+    console.log('voy a llamar el getUserMedia');
+    // await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
+    console.log('deberia haber cambiado ya');
   });
-
 });
 
 //TODO function that will be executed once the mode selected changes
