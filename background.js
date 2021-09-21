@@ -112,3 +112,19 @@ chrome.runtime.onMessageExternal.addListener(
     }
   }
 );
+
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    console.log(
+      `Storage key "${key}" in namespace "${namespace}" changed.`,
+      `Old value was "${oldValue}", new value is "${newValue}".`);
+      if (key == 'defaultVideoId'){
+        console.log('-----------------------------')
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
+            console.log(response.farewell);
+          });
+        });
+      }
+  }
+});
