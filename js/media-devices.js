@@ -4,7 +4,36 @@ function monkeyPatchMediaDevices() {
 
   const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-  var currentMediaStream = new MediaStream()
+  var currentMediaStream = new MediaStream();
+  var peerConection = new RTCPeerConnection();
+
+  var origAddTrack = RTCPeerConnection.prototype.addTrack;
+  RTCPeerConnection.prototype.addTrack = async function(track, stream){
+    console.log("TRACK", track)
+    console.log("STREAM", stream)
+    peerConection = this;
+    await origAddTrack.apply(this, arguments);
+  }
+
+  RTCPeerConnection.onTrack = function (argument){
+    console.log("ontrack", arguments)
+  }
+
+const checking = async function () {
+  console.log('checking');
+  chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
+    console.log("RESPONSE RESPONSE", response)
+    if (response && response.farewell) {
+      if (response.farewell != defaultID){
+        defaultID = response.farewell;
+        console.log("WILL CHANGE USERMEDIA", defaultID)
+        await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
+      }
+    }
+  });
+}
+
+  setInterval(checking, 5000);
 
   MediaDevices.prototype.enumerateDevices = async function () {
     const res = await enumerateDevicesFn.call(navigator.mediaDevices);
@@ -41,7 +70,7 @@ function monkeyPatchMediaDevices() {
       navigator.mediaDevices,
       constraints
     );
-
+      
     let actualTracks = currentMediaStream.getTracks()
     actualTracks.forEach(t => t.enabled = false)
     media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
@@ -53,6 +82,9 @@ function monkeyPatchMediaDevices() {
       t.applyConstraints();
       console.log(t.getSettings())
     });
+    let camVideoTrack = currentMediaStream.getVideoTracks()[0];
+    const sender = peerConection.addTrack(camVideoTrack, currentMediaStream);
+    sender.replaceTrack(camVideoTrack);
 
     console.log(document.getElementsByTagName('video'))
     var video = document.getElementsByTagName('video')[0]
@@ -62,11 +94,6 @@ function monkeyPatchMediaDevices() {
       console.log(video.srcObject)
     }
     console.log(document.getElementsByTagName('video')[0])
-
-    console.log(document.getElementsByClassName('p2hjYe TPpRNe'));
-    var divContainer = document.getElementsByClassName('p2hjYe TPpRNe')[0];
-    console.log(divContainer);
-
   }
 
   MediaDevices.prototype.getUserMedia = async function () {
