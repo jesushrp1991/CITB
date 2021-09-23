@@ -8,30 +8,47 @@ function monkeyPatchMediaDevices() {
   var peerConection = new RTCPeerConnection();
 
   var origAddTrack = RTCPeerConnection.prototype.addTrack;
-  RTCPeerConnection.prototype.addTrack = async function(track, stream){
-    console.log("TRACK", track)
-    console.log("STREAM", stream)
-    peerConection = this;
+  var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
+  RTCPeerConnection.prototype.addTrack = async function (track, stream) {
+    console.log("ADDING TRACK", track)
+    console.log("ADDING STREAM", stream)
+    if (window.peerConection == undefined)
+      window.peerConection = this;
+    window.currentMediaStream = stream;
+    window.currentTrack = track;
     await origAddTrack.apply(this, arguments);
   }
 
-  RTCPeerConnection.onTrack = function (argument){
+  RTCRtpSender.prototype.replaceTrack = async function (track) {
+    console.log("REPLACE TRACK");
+    window.rtcsender = this;
+    origReplaceTrack.apply(this, arguments);
+  }
+
+  RTCPeerConnection.onTrack = function (argument) {
     console.log("ontrack", arguments)
   }
 
-const checking = async function () {
-  console.log('checking');
-  chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
-    console.log("RESPONSE RESPONSE", response)
-    if (response && response.farewell) {
-      if (response.farewell != defaultID){
-        defaultID = response.farewell;
-        console.log("WILL CHANGE USERMEDIA", defaultID)
-        await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
+  const checking = async function () {
+    chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
+      if (response && response.farewell) {
+        if (response.farewell != defaultID) {
+          defaultID = response.farewell;
+          await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
+          // peerConection.close();
+          console.log('---Voy a agregar un track al peer connection');
+          const camVideoTrack = currentMediaStream.getVideoTracks()[0];
+          await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
+          window.senders = window.peerConection.getSenders();
+          console.log('senders', window.senders)
+          window.senders.filter(x => x.track.kind === 'video').forEach(mysender => {
+            console.log('mysender', mysender)
+            mysender.replaceTrack(window.currentTrack);
+          })
+        }
       }
-    }
-  });
-}
+    });
+  }
 
   setInterval(checking, 5000);
 
@@ -46,7 +63,6 @@ const checking = async function () {
     });
     console.log(res);
     chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { devicesList: res }, function (response) {
-      console.log("RESPONSE RESPONSE", response)
       if (response.farewell) {
         defaultID = response.farewell;
         console.log("WILL CHANGE USERMEDIA", defaultID)
@@ -70,7 +86,7 @@ const checking = async function () {
       navigator.mediaDevices,
       constraints
     );
-      
+
     let actualTracks = currentMediaStream.getTracks()
     actualTracks.forEach(t => t.enabled = false)
     media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
@@ -82,18 +98,22 @@ const checking = async function () {
       t.applyConstraints();
       console.log(t.getSettings())
     });
-    let camVideoTrack = currentMediaStream.getVideoTracks()[0];
-    const sender = peerConection.addTrack(camVideoTrack, currentMediaStream);
-    sender.replaceTrack(camVideoTrack);
 
-    console.log(document.getElementsByTagName('video'))
+    if (currentMediaStream.getTracks()[0].label === "DroidCam Source 2") {
+      console.log("LO ENCONTRO")
+      window.droidcamtrack = currentMediaStream.getTracks()[0];
+    }
+    if (currentMediaStream.getTracks()[0].label === "EasyCamera (04f2:b5d7)") {
+      console.log("LO ENCONTRO")
+      window.easycamtrack = currentMediaStream.getTracks()[0];
+    }
+    // let camVideoTrack = currentMediaStream.getVideoTracks()[0];
+    // const sender = peerConection.addTrack(camVideoTrack, currentMediaStream);
+    // sender.replaceTrack(camVideoTrack);
     var video = document.getElementsByTagName('video')[0]
     if (video != undefined) {
       video.srcObject = currentMediaStream
-      console.log(video);
-      console.log(video.srcObject)
     }
-    console.log(document.getElementsByTagName('video')[0])
   }
 
   MediaDevices.prototype.getUserMedia = async function () {
@@ -107,7 +127,7 @@ const checking = async function () {
       ) {
         console.log(defaultID);
         // Get current MediaStream
-        setMediaStreamTracks()
+        await setMediaStreamTracks()
         return currentMediaStream;
       } else {
         const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
@@ -118,7 +138,6 @@ const checking = async function () {
     const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
     return res;
   };
-  console.log('ClassInTheBoxExtensionInstalled')
 }
 
 export { monkeyPatchMediaDevices }
