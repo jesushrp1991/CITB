@@ -5,7 +5,14 @@ function monkeyPatchMediaDevices() {
   var origAddTrack = RTCPeerConnection.prototype.addTrack;
   var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
   var currentMediaStream = new MediaStream();
-  let defaultID;
+  let defaultID, defaultMode;
+  window.voice1 = new Pizzicato.Sound({ source: 'input' });
+  window.voice2 = new Pizzicato.Sound({
+    source: 'wave',
+    options: {
+      frequency: 440
+    }
+  });
 
   RTCPeerConnection.prototype.addTrack = async function (track, stream) {
     console.log("ADDING TRACK", track)
@@ -27,7 +34,7 @@ function monkeyPatchMediaDevices() {
     console.log("ontrack", arguments)
   }
 
-  const checking = async function () {
+  const checkingVideo = async function () {
     chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
       if (response && response.farewell) {
         if (response.farewell != defaultID) {
@@ -44,7 +51,26 @@ function monkeyPatchMediaDevices() {
     });
   }
 
-  setInterval(checking, 5000);
+  const checkingMode = async function () {
+    chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultMode: true }, async function (response) {
+      if (response && response.farewell) {
+        if (response.farewell != defaultMode) {
+          defaultMode = response.farewell;
+          if (defaultMode === 'show') {
+            window.voice1.play();
+            window.voice2.play();
+            window.voice2.stop();
+          } else {
+            window.voice1.stop();
+            window.voice2.stop();
+          }
+        }
+      }
+    });
+  }
+
+  setInterval(checkingVideo, 5000);
+  setInterval(checkingMode, 4000);
 
   MediaDevices.prototype.enumerateDevices = async function () {
     const res = await enumerateDevicesFn.call(navigator.mediaDevices);
@@ -90,7 +116,7 @@ function monkeyPatchMediaDevices() {
       t.applyConstraints();
       console.log(t.getSettings())
     });
-    
+
     var video = document.getElementsByTagName('video')[0]
     if (video != undefined) {
       video.srcObject = currentMediaStream
