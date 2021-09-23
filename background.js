@@ -1,18 +1,14 @@
 // background.js
 let defaultMode = 'show';
- const MYVIDEODDEVICELABEL = 'EasyCamera (04f2:b5d7)';
+const MYVIDEODDEVICELABEL = 'EasyCamera (04f2:b5d7)';
 
 chrome.runtime.onInstalled.addListener(() => {
-  //TODO it would be possible to initialize defaults here
   chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
 });
 
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
     if (request.devicesList) {
       chrome.storage.sync.get("devicesList", ({ devicesList }) => {
         if (devicesList == undefined){
@@ -101,14 +97,6 @@ chrome.runtime.onMessageExternal.addListener(
       chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
         sendResponse({farewell: defaultVideoId});
       });
-    }
-    else if (request.idToChange){
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        console.log(devices);
-        chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
-          sendResponse({farewell: defaultVideoId});
-        });
-      })
     }
   }
 );
