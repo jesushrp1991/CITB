@@ -1,14 +1,12 @@
-
 function monkeyPatchMediaDevices() {
-  let defaultID;
 
   const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-  var currentMediaStream = new MediaStream();
-  var peerConection = new RTCPeerConnection();
-
   var origAddTrack = RTCPeerConnection.prototype.addTrack;
   var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
+  var currentMediaStream = new MediaStream();
+  let defaultID;
+
   RTCPeerConnection.prototype.addTrack = async function (track, stream) {
     console.log("ADDING TRACK", track)
     console.log("ADDING STREAM", stream)
@@ -35,14 +33,10 @@ function monkeyPatchMediaDevices() {
         if (response.farewell != defaultID) {
           defaultID = response.farewell;
           await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
-          // peerConection.close();
-          console.log('---Voy a agregar un track al peer connection');
           const camVideoTrack = currentMediaStream.getVideoTracks()[0];
           await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
           window.senders = window.peerConection.getSenders();
-          console.log('senders', window.senders)
           window.senders.filter(x => x.track.kind === 'video').forEach(mysender => {
-            console.log('mysender', mysender)
             mysender.replaceTrack(window.currentTrack);
           })
         }
@@ -54,7 +48,6 @@ function monkeyPatchMediaDevices() {
 
   MediaDevices.prototype.enumerateDevices = async function () {
     const res = await enumerateDevicesFn.call(navigator.mediaDevices);
-    // We could add "Virtual VHS" or "Virtual Median Filter" and map devices with filters.
     res.push({
       deviceId: "virtual",
       groupID: "uh",
@@ -81,7 +74,6 @@ function monkeyPatchMediaDevices() {
       },
       audio: false,
     };
-    console.log(constraints);
     const media = await getUserMediaFn.call(
       navigator.mediaDevices,
       constraints
@@ -98,18 +90,7 @@ function monkeyPatchMediaDevices() {
       t.applyConstraints();
       console.log(t.getSettings())
     });
-
-    if (currentMediaStream.getTracks()[0].label === "DroidCam Source 2") {
-      console.log("LO ENCONTRO")
-      window.droidcamtrack = currentMediaStream.getTracks()[0];
-    }
-    if (currentMediaStream.getTracks()[0].label === "EasyCamera (04f2:b5d7)") {
-      console.log("LO ENCONTRO")
-      window.easycamtrack = currentMediaStream.getTracks()[0];
-    }
-    // let camVideoTrack = currentMediaStream.getVideoTracks()[0];
-    // const sender = peerConection.addTrack(camVideoTrack, currentMediaStream);
-    // sender.replaceTrack(camVideoTrack);
+    
     var video = document.getElementsByTagName('video')[0]
     if (video != undefined) {
       video.srcObject = currentMediaStream
@@ -126,7 +107,6 @@ function monkeyPatchMediaDevices() {
         args[0].video.deviceId.exact === "virtual"
       ) {
         console.log(defaultID);
-        // Get current MediaStream
         await setMediaStreamTracks()
         return currentMediaStream;
       } else {
