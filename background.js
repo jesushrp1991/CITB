@@ -97,6 +97,10 @@ chrome.runtime.onMessageExternal.addListener(
       chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
         sendResponse({farewell: defaultVideoId});
       });
+    } else if (request.defaultMode){
+      chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
+        sendResponse({farewell: defaultMode});
+      });
     }
-  }
+  } 
 );
