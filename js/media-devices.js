@@ -1,5 +1,11 @@
 function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
+
+    const button = document.createElement('button');
+    const div = document.createElement('div');
+    div.appendChild(button);
+    window.document.body.appendChild(div);
+
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
