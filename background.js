@@ -1,5 +1,5 @@
 // background.js
-let defaultMode = 'show';
+let defaultMode = 'none';
 const MYVIDEODDEVICELABEL = 'EasyCamera';
 const MYAUDIODEVICELABEL = 'Predeterminado - Micrófono';
 
