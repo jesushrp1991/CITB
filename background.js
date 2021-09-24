@@ -1,6 +1,7 @@
 // background.js
 let defaultMode = 'show';
-const MYVIDEODDEVICELABEL = 'EasyCamera (04f2:b5d7)';
+const MYVIDEODDEVICELABEL = 'EasyCamera';
+const MYAUDIODEVICELABEL = 'Predeterminado - Micrófono';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
@@ -16,14 +17,13 @@ chrome.runtime.onMessageExternal.addListener(
           chrome.storage.sync.set({devicesList});
           const microphonesList = devicesList.filter(x => x.kind == 'audioinput');
           const videosList = devicesList.filter(x => x.kind == 'videoinput');
-          chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => {
-            if (!defaultMicrophoneId) {
-              chrome.storage.sync.set({defaultMicrophoneId: microphonesList[0].deviceId});
-            }
-          });
-          const existCIDB = videosList.filter(x => x.label === MYVIDEODDEVICELABEL);
-          chrome.storage.sync.set({defaultVideoId: existCIDB.length > 0 
-            ? existCIDB[0].deviceId : videosList.length > 0 
+          const existCITBMIC = microphonesList.filter(x => x.label.includes(MYAUDIODEVICELABEL))
+          chrome.storage.sync.set({defaultMicrophoneId: existCITBMIC.length > 0
+            ? existCITBMIC[0].deviceId : microphonesList.length > 0
+            ? microphonesList[0].deviceId : undefined })
+          const existCIDBCAM = videosList.filter(x => x.label.includes(MYVIDEODDEVICELABEL));
+          chrome.storage.sync.set({defaultVideoId: existCIDBCAM.length > 0 
+            ? existCIDBCam[0].deviceId : videosList.length > 0 
             ? videosList[0].deviceId : undefined }, () => {
               chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
                 sendResponse({farewell: defaultVideoId});
@@ -73,8 +73,11 @@ chrome.runtime.onMessageExternal.addListener(
             const difference = request.devicesList.filter(x => devicesList.findIndex(
               y => (x.deviceId === y.deviceId && x.kind === y.kind && x.label === y.label)) === -1)
               if (difference[0].kind === 'audioinput'){
-                chrome.storage.sync.set({defaultMicrophoneId: difference[0].deviceId}, () => {
-                });
+                if (difference[0].label === MYAUDIODEVICELABEL) {
+                  chrome.storage.sync.set({defaultMicrophoneId: difference[0].deviceId}, () => {
+                    chrome.storage.sync.set({devicesList: request.devicesList});
+                  });  
+                }
               } else if (difference[0].kind == "videoinput"){
                 if (difference[0].label === MYVIDEODDEVICELABEL) {
                   chrome.storage.sync.set({defaultVideoId: difference[0].deviceId}, () => {
