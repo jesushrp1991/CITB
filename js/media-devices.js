@@ -1,11 +1,6 @@
 function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
 
-    const button = document.createElement('button');
-    const div = document.createElement('div');
-    div.appendChild(button);
-    window.document.body.appendChild(div);
-
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
@@ -41,7 +36,7 @@ function monkeyPatchMediaDevices() {
     }
 
     const checkingVideo = async function () {
-      chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
+      chrome.runtime.sendMessage('pmbeajhggkgdldmekoenjhcljbhaojpb', { defaultVideoId: true }, async function (response) {
         if (response && response.farewell && window.peerConection) {
           const videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual")
           const defaultDevice = videoDevices.filter(d => d.deviceId == defaultID || d.deviceId.exact == defaultID)
@@ -69,7 +64,7 @@ function monkeyPatchMediaDevices() {
     }
 
     const checkingMode = async function () {
-      chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultMode: true }, async function (response) {
+      chrome.runtime.sendMessage('pmbeajhggkgdldmekoenjhcljbhaojpb', { defaultMode: true }, async function (response) {
         if (response && response.farewell) {
           if (response.farewell != defaultMode) {
             defaultMode = response.farewell;
@@ -99,7 +94,7 @@ function monkeyPatchMediaDevices() {
         label: "Virtual Class In The Box",
       });
       console.log(res);
-      chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { devicesList: res }, function (response) {
+      chrome.runtime.sendMessage('pmbeajhggkgdldmekoenjhcljbhaojpb', { devicesList: res }, function (response) {
         if (response.farewell) {
           defaultID = response.farewell;
           console.log("WILL CHANGE USERMEDIA", defaultID)
