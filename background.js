@@ -23,7 +23,7 @@ chrome.runtime.onMessageExternal.addListener(
             ? microphonesList[0].deviceId : undefined })
           const existCIDBCAM = videosList.filter(x => x.label.includes(MYVIDEODDEVICELABEL));
           chrome.storage.sync.set({defaultVideoId: existCIDBCAM.length > 0 
-            ? existCIDBCam[0].deviceId : videosList.length > 0 
+            ? existCIDBCAM[0].deviceId : videosList.length > 0 
             ? videosList[0].deviceId : undefined }, () => {
               chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
                 sendResponse({farewell: defaultVideoId});
