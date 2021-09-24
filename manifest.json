@@ -19,16 +19,16 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "CITB_ICON.svg",
-      "48": "CITB_ICON.svg",
-      "64": "CITB_ICON.svg",
-      "128": "CITB_ICON.svg"
+      "16": "CITB COLOR.png",
+      "48": "CITB COLOR.png",
+      "64": "CITB COLOR.png",
+      "128": "CITB COLOR.png"
     }
   },
   "icons": {
-    "16": "CITB_ICON.svg",
-    "48": "CITB_ICON.svg",
-    "128": "CITB_ICON.svg"
+    "16": "CITB COLOR.png",
+    "48": "CITB COLOR.png",
+    "128": "CITB COLOR.png"
   },
   "content_scripts": [
     {
@@ -51,7 +51,7 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["pmbeajhggkgdldmekoenjhcljbhaojpb"],
+    "ids": ["mkodjolllifkapdaggjabifdafbciclf"],
     "matches": ["https://meet.google.com/*", "https://web.skype.com/*"],
     "accepts_tls_channel_id": true
   }
