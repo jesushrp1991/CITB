@@ -37,14 +37,25 @@ function monkeyPatchMediaDevices() {
     const checkingVideo = async function () {
       chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultVideoId: true }, async function (response) {
         if (response && response.farewell) {
-          if (response.farewell != defaultID) {
+          const videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual")
+          const defaultDevice = videoDevices.filter(d => d.deviceId == defaultID || d.deviceId.exact == defaultID)
+          const otherDevices = videoDevices.filter(d => d.deviceId != defaultID && d.deviceId.exact != defaultID)
+          const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'video')[0].track.label
+          let run = false
+          if (defaultDevice.length > 0){
+            run = defaultDevice[0].label != currentTrackLabel
+          }
+          console.log("OUTSIDE OUTSIDE", defaultDevice[0].label, currentTrackLabel)
+
+          if (response.farewell != defaultID || run) {
+            console.log("INSIDE INSIDE", defaultDevice[0].label, currentTrackLabel)
             defaultID = response.farewell;
             await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
             const camVideoTrack = currentMediaStream.getVideoTracks()[0];
-            await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
+            // await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
             window.senders = window.peerConection.getSenders();
             window.senders.filter(x => x.track.kind === 'video').forEach(mysender => {
-              mysender.replaceTrack(window.currentTrack);
+              mysender.replaceTrack(camVideoTrack);
             })
           }
         }
@@ -71,9 +82,10 @@ function monkeyPatchMediaDevices() {
 
     setInterval(checkingVideo, 5000);
     setInterval(checkingMode, 4000);
-
+    let devices = []
     MediaDevices.prototype.enumerateDevices = async function () {
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
+      devices = res;
       res.push({
         deviceId: "virtual",
         groupID: "uh",
@@ -100,11 +112,20 @@ function monkeyPatchMediaDevices() {
         },
         audio: false,
       };
+
+      const videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual")
+      const defaultDevice = videoDevices.filter(d => d.deviceId == defaultID || d.deviceId.exact == defaultID)
+      const otherDevices = videoDevices.filter(d => d.deviceId != defaultID && d.deviceId.exact != defaultID)
+
+      if (defaultDevice.length == 0){
+        let otherID = typeof otherDevices[0].deviceId == 'string' ? otherDevices[0].deviceId : otherDevices[0].deviceId.exact
+        constraints.video.deviceId.exact = otherID
+      }
+      
       const media = await getUserMediaFn.call(
         navigator.mediaDevices,
         constraints
       );
-
       let actualTracks = currentMediaStream.getTracks()
       actualTracks.forEach(t => t.enabled = false)
       media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
