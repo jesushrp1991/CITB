@@ -100,9 +100,27 @@ chrome.runtime.onMessageExternal.addListener(
       chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
         sendResponse({farewell: defaultVideoId});
       });
+    } else if (request.setDefaultVideoId){
+      chrome.storage.sync.set({ defaultVideoId: request.setDefaultVideoId }, function() {
+        sendResponse({farewell: request.setDefaultVideoId})
+      });
     } else if (request.defaultMode){
       chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
         sendResponse({farewell: defaultMode});
+      });
+    } else if (request.setDefaultMode){
+      console.log('***recibo del script ', request.setDefaultMode);
+      chrome.storage.sync.set({ 'defaultMode' : request.setDefaultMode }, function() {
+        sendResponse({farewell: request.setDefaultMode});
+      });
+    } else if (request.defaultMicrophoneId){
+      chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => {
+        sendResponse({farewell: defaultMicrophoneId});
+      });
+    } else if (request.setDefaultMicrophoneId){
+      console.log('***microphoneIDBack', request.setDefaultMicrophoneId);
+      chrome.storage.sync.set({ 'defaultMicrophoneId' : request.setDefaultMicrophoneId }, function() {
+        sendResponse({farewell: request.setDefaultMicrophoneId});
       });
     }
   } 
