@@ -68,15 +68,3 @@ selectMicrophone.addEventListener("change", async (event) => {
 selectVideo.addEventListener("change", async (event) => {
   chrome.storage.sync.set({ defaultVideoId: selectVideo.value });
 });
-
-function applyModeSelectionChange() {
-  chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
-    //TODO
-  });
-}
-
-function applyMicrophoneSelectionChange() {
-  chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => {
-    //TODO
-  });
-}
