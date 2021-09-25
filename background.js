@@ -19,10 +19,10 @@ const getAvailableMicrophone = (devicesList) => {
 
 const getAvailableAudio = (devicesList) => {
   const audioList = devicesList.filter(x => x.kind == 'audiooutput');
-  const existCITBSPK = microphonesList.filter(x => x.label.includes(MYMICROPHONEDEVICELABEL))
+  const existCITBSPK = audioList.filter(x => x.label.includes(MYAUDIODEVICELABEL))
   return existCITBSPK.length > 0
-  ? existCITBMIC[0].deviceId : microphonesList.length > 0
-  ? microphonesList[0].deviceId : undefined
+  ? existCITBMIC[0].deviceId : audioList.length > 0
+  ? audioList[0].deviceId : undefined
 }
 
 const getAvailableVideo = (devicesList) => {
