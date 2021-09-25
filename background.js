@@ -1,7 +1,7 @@
 // background.js
 let defaultMode = 'none';
 const MYVIDEODDEVICELABEL = 'EasyCamera';
-const MYMICROPHONEDEVICELABEL = 'Comunicaciones';
+const MYMICROPHONEDEVICELABEL = 'Micrófono (Realtek High Definition Audio)';
 const MYAUDIODEVICELABEL = 'Comunicaciones';
 
 chrome.runtime.onInstalled.addListener(() => {

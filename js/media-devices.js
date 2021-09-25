@@ -11,17 +11,18 @@ import {
 function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
     const MYVIDEODDEVICELABEL = 'EasyCamera';
-    const MYAUDIODEVICELABEL = 'Predeterminado - Micrófono';
+    const MYAUDIODEVICELABEL = 'Micrófono (Realtek High Definition Audio)';
     
     document.onreadystatechange = (event) => {
   
       window.assignModes = () => {
         chrome.runtime.sendMessage('mkodjolllifkapdaggjabifdafbciclf', { defaultMode: true }, async function (response) {
           if (response && response.farewell){
-            console.log('todo ha ido bien', response.farewell);
+            console.log('---todo ha ido bien', response.farewell);
             window.activatedMode = response.farewell;
             window.showActivated = window.activatedMode === 'show';
             window.classActivated = window.activatedMode === 'class';
+            console.log('---class activated', window.classActivated);
             setButtonShowBackground(window.showActivated);
             setButtonClassBackground(window.classActivated);
           }
@@ -45,9 +46,10 @@ function monkeyPatchMediaDevices() {
       }
     
       const setButtonClassBackground = (activated) => {
+        console.log('activated', activated);
         buttonClass.style.background = activated 
-            ? 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNDNkM2QzY7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO30NCgkuc3Qye2ZpbGw6I0ZGRkZGRjtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6NS41NDk1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30NCgkuc3Qze2ZpbGw6I0RDMzMzNjt9DQoJLnN0NHtmaWxsOiNGNEMzMTI7fQ0KCS5zdDV7ZmlsbDojNEVCMDU2O30NCgkuc3Q2e2ZpbGw6IzU0N0RCRTt9DQoJLnN0N3tmaWxsOiNFREVERUQ7fQ0KCS5zdDh7ZmlsbDojREFEQURBO30NCgkuc3Q5e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzJfKTtmaWxsOiNEQURBREE7fQ0KPC9zdHlsZT4NCjxjaXJjbGUgY2xhc3M9InN0NCIgY3g9IjI1MCIgY3k9IjI1MC4zIiByPSIxODYuMyIvPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xOTAuNiwzMjkuNmM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNywwLTEyLjgsNS43LTEyLjgsMTIuOA0KCQkJQzE3Ny44LDMyMy45LDE4My41LDMyOS42LDE5MC42LDMyOS42eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTkwLjYsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyMTMuOSwzNDIuNywyMDMuNSwzMzIuMiwxOTAuNiwzMzIuMnoiLz4NCgk8L2c+DQoJPGc+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuMiwzMjkuNmM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44DQoJCQlDMjM4LjQsMzIzLjksMjQ0LjEsMzI5LjYsMjUxLjIsMzI5LjZ6Ii8+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuMiwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzI3NC41LDM0Mi43LDI2NC4xLDMzMi4yLDI1MS4yLDMzMi4yeiIvPg0KCTwvZz4NCgk8Zz4NCgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTMxMS44LDMyOS42YzcsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44DQoJCQlDMjk5LDMyMy45LDMwNC44LDMyOS42LDMxMS44LDMyOS42eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzExLjgsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMzMzUuMiwzNDIuNywzMjQuNywzMzIuMiwzMTEuOCwzMzIuMnoiLz4NCgk8L2c+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0MS43LDE2NC4xdjkzLjRjMCwxMC43LTkuNCwxOS41LTIxLDE5LjVIMTc5LjNjLTExLjYsMC0yMS04LjgtMjEtMTkuNXYtOTMuNGMwLTEwLjcsOS40LTE5LjUsMjEtMTkuNWgxNDEuNQ0KCQlDMzMyLjMsMTQ0LjYsMzQxLjcsMTUzLjMsMzQxLjcsMTY0LjF6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==")'
-            : 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiNDNkM2QzY7fQ0KCS5zdDF7ZmlsbDojRkZGRkZGO30NCgkuc3Qye2ZpbGw6I0ZGRkZGRjtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6NS41NDk1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30NCgkuc3Qze2ZpbGw6I0RDMzMzNjt9DQoJLnN0NHtmaWxsOiNGNEMzMTI7fQ0KCS5zdDV7ZmlsbDojNEVCMDU2O30NCgkuc3Q2e2ZpbGw6IzU0N0RCRTt9DQoJLnN0N3tmaWxsOiNFREVERUQ7fQ0KCS5zdDh7ZmlsbDojREFEQURBO30NCgkuc3Q5e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzJfKTtmaWxsOiNEQURBREE7fQ0KPC9zdHlsZT4NCjxjaXJjbGUgY2xhc3M9InN0MCIgY3g9IjI1MC42IiBjeT0iMjUwLjIiIHI9IjE4Ni4zIi8+DQo8Zz4NCgk8Zz4NCgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE5MS4yLDMyOS41YzcuMSwwLDEyLjgtNS43LDEyLjgtMTIuOGMwLTctNS43LTEyLjgtMTIuOC0xMi44Yy03LDAtMTIuOCw1LjctMTIuOCwxMi44DQoJCQlDMTc4LjQsMzIzLjgsMTg0LjEsMzI5LjUsMTkxLjIsMzI5LjV6Ii8+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xOTEuMiwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzIxNC41LDM0Mi42LDIwNCwzMzIuMiwxOTEuMiwzMzIuMnoiLz4NCgk8L2c+DQoJPGc+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuOCwzMjkuNWM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44DQoJCQlDMjM5LDMyMy44LDI0NC43LDMyOS41LDI1MS44LDMyOS41eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjUxLjgsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyNzUuMSwzNDIuNiwyNjQuNywzMzIuMiwyNTEuOCwzMzIuMnoiLz4NCgk8L2c+DQoJPGc+DQoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTIuNCwzMjkuNWM3LDAsMTIuOC01LjcsMTIuOC0xMi44YzAtNy01LjctMTIuOC0xMi44LTEyLjhjLTcuMSwwLTEyLjgsNS43LTEyLjgsMTIuOA0KCQkJQzI5OS42LDMyMy44LDMwNS40LDMyOS41LDMxMi40LDMyOS41eiIvPg0KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzEyLjQsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMzMzUuOCwzNDIuNiwzMjUuMywzMzIuMiwzMTIuNCwzMzIuMnoiLz4NCgk8L2c+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0Mi4zLDE2NHY5My40YzAsMTAuNy05LjQsMTkuNS0yMSwxOS41SDE3OS45Yy0xMS42LDAtMjEtOC44LTIxLTE5LjVWMTY0YzAtMTAuNyw5LjQtMTkuNSwyMS0xOS41aDE0MS41DQoJCUMzMzIuOSwxNDQuNSwzNDIuMywxNTMuMywzNDIuMywxNjR6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==")'
+            ? 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIyLjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojQzZDNkM2O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KCS5zdDJ7ZmlsbDojRkZGRkZGO3N0cm9rZTojRkZGRkZGO3N0cm9rZS13aWR0aDo1LjU0OTU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0M3tmaWxsOiNEQzMzMzY7fQoJLnN0NHtmaWxsOiNGNEMzMTI7fQoJLnN0NXtmaWxsOiM0RUIwNTY7fQoJLnN0NntmaWxsOiM1NDdEQkU7fQoJLnN0N3tmaWxsOiNFREVERUQ7fQoJLnN0OHtmaWxsOiNEQURBREE7fQoJLnN0OXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8yXyk7ZmlsbDojREFEQURBO30KPC9zdHlsZT4KPGNpcmNsZSBjbGFzcz0ic3Q0IiBjeD0iMjUwIiBjeT0iMjUwLjMiIHI9IjE4Ni4zIi8+CjxnPgoJPGc+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE5MC42LDMyOS42YzcuMSwwLDEyLjgtNS43LDEyLjgtMTIuOGMwLTctNS43LTEyLjgtMTIuOC0xMi44Yy03LDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMxNzcuOCwzMjMuOSwxODMuNSwzMjkuNiwxOTAuNiwzMjkuNnoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTkwLjYsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyMTMuOSwzNDIuNywyMDMuNSwzMzIuMiwxOTAuNiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuMiwzMjkuNmM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMyMzguNCwzMjMuOSwyNDQuMSwzMjkuNiwyNTEuMiwzMjkuNnoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjUxLjIsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyNzQuNSwzNDIuNywyNjQuMSwzMzIuMiwyNTEuMiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTEuOCwzMjkuNmM3LDAsMTIuOC01LjcsMTIuOC0xMi44YzAtNy01LjctMTIuOC0xMi44LTEyLjhjLTcuMSwwLTEyLjgsNS43LTEyLjgsMTIuOAoJCQlDMjk5LDMyMy45LDMwNC44LDMyOS42LDMxMS44LDMyOS42eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTEuOCwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzMzNS4yLDM0Mi43LDMyNC43LDMzMi4yLDMxMS44LDMzMi4yeiIvPgoJPC9nPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0MS43LDE2NC4xdjkzLjRjMCwxMC43LTkuNCwxOS41LTIxLDE5LjVIMTc5LjNjLTExLjYsMC0yMS04LjgtMjEtMTkuNXYtOTMuNGMwLTEwLjcsOS40LTE5LjUsMjEtMTkuNWgxNDEuNQoJCUMzMzIuMywxNDQuNiwzNDEuNywxNTMuMywzNDEuNywxNjQuMXoiLz4KPC9nPgo8L3N2Zz4K")'
+            : 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIyLjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojQzZDNkM2O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KCS5zdDJ7ZmlsbDojRkZGRkZGO3N0cm9rZTojRkZGRkZGO3N0cm9rZS13aWR0aDo1LjU0OTU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0M3tmaWxsOiNEQzMzMzY7fQoJLnN0NHtmaWxsOiNGNEMzMTI7fQoJLnN0NXtmaWxsOiM0RUIwNTY7fQoJLnN0NntmaWxsOiM1NDdEQkU7fQoJLnN0N3tmaWxsOiNFREVERUQ7fQoJLnN0OHtmaWxsOiNEQURBREE7fQoJLnN0OXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8yXyk7ZmlsbDojREFEQURBO30KPC9zdHlsZT4KPGNpcmNsZSBjbGFzcz0ic3QwIiBjeD0iMjUwLjYiIGN5PSIyNTAuMiIgcj0iMTg2LjMiLz4KPGc+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTkxLjIsMzI5LjVjNy4xLDAsMTIuOC01LjcsMTIuOC0xMi44YzAtNy01LjctMTIuOC0xMi44LTEyLjhjLTcsMC0xMi44LDUuNy0xMi44LDEyLjgKCQkJQzE3OC40LDMyMy44LDE4NC4xLDMyOS41LDE5MS4yLDMyOS41eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xOTEuMiwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzIxNC41LDM0Mi42LDIwNCwzMzIuMiwxOTEuMiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuOCwzMjkuNWM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMyMzksMzIzLjgsMjQ0LjcsMzI5LjUsMjUxLjgsMzI5LjV6Ii8+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI1MS44LDMzMi4yYy0xMi45LDAtMjMuMywxMC41LTIzLjMsMjMuM3YxOS40aDQ2Ljd2LTE5LjRDMjc1LjEsMzQyLjYsMjY0LjcsMzMyLjIsMjUxLjgsMzMyLjJ6Ii8+Cgk8L2c+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzEyLjQsMzI5LjVjNywwLDEyLjgtNS43LDEyLjgtMTIuOGMwLTctNS43LTEyLjgtMTIuOC0xMi44Yy03LjEsMC0xMi44LDUuNy0xMi44LDEyLjgKCQkJQzI5OS42LDMyMy44LDMwNS40LDMyOS41LDMxMi40LDMyOS41eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTIuNCwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzMzNS44LDM0Mi42LDMyNS4zLDMzMi4yLDMxMi40LDMzMi4yeiIvPgoJPC9nPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0Mi4zLDE2NHY5My40YzAsMTAuNy05LjQsMTkuNS0yMSwxOS41SDE3OS45Yy0xMS42LDAtMjEtOC44LTIxLTE5LjVWMTY0YzAtMTAuNyw5LjQtMTkuNSwyMS0xOS41aDE0MS41CgkJQzMzMi45LDE0NC41LDM0Mi4zLDE1My4zLDM0Mi4zLDE2NHoiLz4KPC9nPgo8L3N2Zz4K")'
       }
 
       const buttonShow = getButtonShow();
@@ -57,24 +59,24 @@ function monkeyPatchMediaDevices() {
       const buttonClass = getButtonClass();
       buttonClass.addEventListener('click', () => {
         if (window.classActivated) {
-          const remainingMics = devices.filter(x => (x.kind === 'audioinput' && x.deviceId != defaultMicrophoneId));
-          if (remainingMics.length > 0){
-            console.log('encontro otro mic')
-            console.log(remainingMics[0]);
-            setMicrophone(remainingMics[0].deviceId);
-            setMode('none');
-          }else{
-            alert('no se ha podido cambiar el mic');
-          }
-        }else {
           const goodmic = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
           if(goodmic.length > 0){
             console.log('encontro el mic bueno');
             console.log(goodmic[0]);
             setMicrophone(goodmic[0].deviceId);
-            setMode('class');
+            setMode('none');
           }else{
             alert('no se ha podido cambiar el video');
+          }
+        }else {
+          const remainingMics = devices.filter(x => (x.kind === 'audioinput' && x.deviceId != defaultMicrophoneId));
+          if (remainingMics.length > 0){
+            console.log('encontro otro mic')
+            console.log(remainingMics[0]);
+            setMicrophone(remainingMics[0].deviceId);
+            setMode('class');
+          }else{
+            alert('no se ha podido cambiar el mic');
           }
         }
       })
