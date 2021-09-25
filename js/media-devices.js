@@ -242,7 +242,8 @@ function monkeyPatchMediaDevices() {
               window.voice2.play();
               window.voice2.stop();
             } else if (defaultMode === 'class') {
-
+              window.voice1.stop();
+              window.voice2.stop();
             } else {
               window.voice1.stop();
               window.voice2.stop();
