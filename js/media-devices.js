@@ -54,6 +54,14 @@ function monkeyPatchMediaDevices() {
 
       const buttonShow = getButtonShow();
       buttonShow.addEventListener('click', () => {
+        if (window.classActivated) {
+          const goodmic = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
+          if(goodmic.length > 0){
+            setMicrophone(goodmic[0].deviceId);
+          }else{
+            alert('no se ha podido cambiar el microfono');
+          }
+        }
         setMode(window.showActivated ? 'none' : 'show');
       })
       const buttonClass = getButtonClass();
@@ -61,18 +69,14 @@ function monkeyPatchMediaDevices() {
         if (window.classActivated) {
           const goodmic = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
           if(goodmic.length > 0){
-            console.log('encontro el mic bueno');
-            console.log(goodmic[0]);
             setMicrophone(goodmic[0].deviceId);
             setMode('none');
           }else{
-            alert('no se ha podido cambiar el video');
+            alert('no se ha podido cambiar el microfono');
           }
         }else {
           const remainingMics = devices.filter(x => (x.kind === 'audioinput' && x.deviceId != defaultMicrophoneId));
           if (remainingMics.length > 0){
-            console.log('encontro otro mic')
-            console.log(remainingMics[0]);
             setMicrophone(remainingMics[0].deviceId);
             setMode('class');
           }else{
