@@ -46,6 +46,19 @@ const setMicrophoneWhenUnplugged = (devicesList) => {
   });
 }
 
+const setAudioWhenUnplugged = (devicesList) => {
+  chrome.storage.sync.get("defaultAudioId", ({ defaultAudioId }) => {
+    const defaultAudioIndex = devicesList.findIndex(x => 
+      (x.deviceId === defaultAudioId && x.kind === 'audiooutput'));
+    if (defaultAudioIndex < 0){
+      const audiosList = devicesList.filter(x => x.kind == 'audiooutput');
+      chrome.storage.sync.set({
+        defaultAudioId: audiosList.length > 0 ? audiosList[0].deviceId : undefined
+      })
+    }
+  });
+}
+
 const setVideoWhenUnplugged = (devicesList) => {
   chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
     const defaultVideoIndex = devicesList.findIndex(x => 
@@ -72,6 +85,14 @@ const setDeviceWhenPlugged = (device, devicesList) => {
           chrome.storage.sync.set({devicesList: devicesList});
         });  
     }
+    break;
+    case 'audiooutput': {
+      if (device.label === MYAUDIODEVICELABEL)
+        chrome.storage.sync.set({defaultAudioId: device.deviceId}, () => {
+          chrome.storage.sync.set({devicesList: devicesList});
+        });  
+    }
+    break;
     case 'videoinput': {
       if (device.label === MYVIDEODDEVICELABEL)
         chrome.storage.sync.set({defaultVideoId: device.deviceId}, () => {
@@ -91,7 +112,8 @@ chrome.runtime.onMessageExternal.addListener(
         if (devicesList == undefined){
           devicesList = request.devicesList;
           chrome.storage.sync.set({devicesList}); 
-          chrome.storage.sync.set({defaultMicrophoneId: getAvailableMicrophone(devicesList) })
+          chrome.storage.sync.set({defaultMicrophoneId: getAvailableMicrophone(devicesList) });
+          chrome.storage.sync.set({defaultAudioId: getAvailableAudio(devicesList) });
           chrome.storage.sync.set({defaultVideoId: getAvailableVideo(devicesList) }, () => {
               chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => 
                 sendResponse({farewell: defaultVideoId}) );
@@ -100,6 +122,7 @@ chrome.runtime.onMessageExternal.addListener(
           if (devicesList.length > request.devicesList.length){
             console.log('se ha desconectado un dispositivo');
             setMicrophoneWhenUnplugged(request.devicesList);
+            setAudioWhenUnplugged(request.devicesList);
             setVideoWhenUnplugged(request.devicesList);
           } else if (devicesList.length < request.devicesList.length){
             console.log('se ha conectado un dispositivo');
@@ -131,6 +154,13 @@ chrome.runtime.onMessageExternal.addListener(
       console.log('***microphoneIDBack', request.setDefaultMicrophoneId);
       chrome.storage.sync.set({ 'defaultMicrophoneId' : request.setDefaultMicrophoneId }, () =>
         sendResponse({farewell: request.setDefaultMicrophoneId}) );
+    } else if (request.defaultAudioId){
+      chrome.storage.sync.get("defaultAudioId", ({ defaultAudioId }) => 
+        sendResponse({farewell: defaultAudioId}) );
+    } else if (request.setDefaultAudioId){
+      console.log('***audioIDBack', request.setDefaultAudioId);
+      chrome.storage.sync.set({ 'defaultAudioId' : request.setDefaultAudioId }, () =>
+        sendResponse({farewell: request.setDefaultAudioId}) );
     }
   } 
 );
