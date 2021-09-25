@@ -1,5 +1,5 @@
 {
-  "name": "Class in the Box",
+  "name": "ClassInTheBox",
   "description": "Extension for configuring dinamically audio and video input for Class in the Box",
   "version": "1.0.0",
   "manifest_version": 3,
