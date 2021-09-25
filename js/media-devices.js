@@ -59,10 +59,10 @@ function monkeyPatchMediaDevices() {
       }
 
       const buttonShow = document.createElement('button');
-      buttonShow.style.width = '60px';
-      buttonShow.style.height = '60px';
-      buttonShow.style.borderRadius = '50px'
-      buttonShow.style.margin = '10px'
+      buttonShow.style.width = '40px';
+      buttonShow.style.height = '40px';
+      buttonShow.style.borderRadius = '40px'
+      buttonShow.style.margin = '5px'
       buttonShow.addEventListener('click', () => {
         if (window.showActivated) {
           setMode('none');
@@ -71,10 +71,10 @@ function monkeyPatchMediaDevices() {
         }
       })
       const buttonClass = document.createElement('button');
-      buttonClass.style.width = '60px';
-      buttonClass.style.height = '60px';
-      buttonClass.style.borderRadius = '50px'
-      buttonClass.style.margin = '10px'
+      buttonClass.style.width = '40px';
+      buttonClass.style.height = '40px';
+      buttonClass.style.borderRadius = '40px'
+      buttonClass.style.margin = '5px'
       buttonClass.addEventListener('click', () => {
         if (window.classActivated) {
           const remainingMics = devices.filter(x => (x.kind === 'audioinput' && x.deviceId != defaultMicrophoneId));
@@ -99,10 +99,10 @@ function monkeyPatchMediaDevices() {
         }
       })
       const buttonCam = document.createElement('button');
-      buttonCam.style.width = '60px';
-      buttonCam.style.height = '60px';
-      buttonCam.style.borderRadius = '50px'
-      buttonCam.style.margin = '10px'
+      buttonCam.style.width = '40px';
+      buttonCam.style.height = '40px';
+      buttonCam.style.borderRadius = '40px'
+      buttonCam.style.margin = '5px'
       buttonCam.addEventListener('click', () => {
         if (window.citbActivated){
           const remainingVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultID));
@@ -121,12 +121,16 @@ function monkeyPatchMediaDevices() {
         }
       })
       const div = document.createElement('div');
-      div.appendChild(buttonShow);
-      div.appendChild(buttonClass);
+      const br = document.createElement('br');
+      const br1 = document.createElement('br');
       div.appendChild(buttonCam);
+      div.appendChild(br);
+      div.appendChild(buttonShow);
+      div.appendChild(br1);
+      div.appendChild(buttonClass);
       div.style.position = 'fixed';
       div.style.zIndex = 999;
-      div.style.bottom = '60px';
+      div.style.top = '50px';
       div.style.right = '10px';
       document.body.appendChild(div);
   
