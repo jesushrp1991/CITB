@@ -21,7 +21,7 @@ const getAvailableAudio = (devicesList) => {
   const audioList = devicesList.filter(x => x.kind == 'audiooutput');
   const existCITBSPK = audioList.filter(x => x.label.includes(MYAUDIODEVICELABEL))
   return existCITBSPK.length > 0
-  ? existCITBMIC[0].deviceId : audioList.length > 0
+  ? existCITBSPK[0].deviceId : audioList.length > 0
   ? audioList[0].deviceId : undefined
 }
 
