@@ -19,12 +19,10 @@ function monkeyPatchMediaDevices() {
       window.assignModes = () => {
         chrome.runtime.sendMessage(extensionId, { defaultMode: true }, async function (response) {
           if (response && response.farewell){
-            console.log('---todo ha ido bien', response.farewell);
             window.activatedMode = response.farewell;
             window.showActivated = window.activatedMode === 'show';
             window.myAudio.muted = !window.showActivated;
             window.classActivated = window.activatedMode === 'class';
-            console.log('---class activated', window.classActivated);
             setButtonShowBackground(window.showActivated);
             setButtonClassBackground(window.classActivated);
           }
@@ -70,7 +68,6 @@ function monkeyPatchMediaDevices() {
       }
     
       const setButtonClassBackground = (activated) => {
-        console.log('activated', activated);
         buttonClass.style.background = activated 
             ? 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIyLjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojQzZDNkM2O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KCS5zdDJ7ZmlsbDojRkZGRkZGO3N0cm9rZTojRkZGRkZGO3N0cm9rZS13aWR0aDo1LjU0OTU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0M3tmaWxsOiNEQzMzMzY7fQoJLnN0NHtmaWxsOiNGNEMzMTI7fQoJLnN0NXtmaWxsOiM0RUIwNTY7fQoJLnN0NntmaWxsOiM1NDdEQkU7fQoJLnN0N3tmaWxsOiNFREVERUQ7fQoJLnN0OHtmaWxsOiNEQURBREE7fQoJLnN0OXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8yXyk7ZmlsbDojREFEQURBO30KPC9zdHlsZT4KPGNpcmNsZSBjbGFzcz0ic3Q0IiBjeD0iMjUwIiBjeT0iMjUwLjMiIHI9IjE4Ni4zIi8+CjxnPgoJPGc+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTE5MC42LDMyOS42YzcuMSwwLDEyLjgtNS43LDEyLjgtMTIuOGMwLTctNS43LTEyLjgtMTIuOC0xMi44Yy03LDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMxNzcuOCwzMjMuOSwxODMuNSwzMjkuNiwxOTAuNiwzMjkuNnoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTkwLjYsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyMTMuOSwzNDIuNywyMDMuNSwzMzIuMiwxOTAuNiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuMiwzMjkuNmM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMyMzguNCwzMjMuOSwyNDQuMSwzMjkuNiwyNTEuMiwzMjkuNnoiLz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjUxLjIsMzMyLjJjLTEyLjksMC0yMy4zLDEwLjUtMjMuMywyMy4zdjE5LjRoNDYuN3YtMTkuNEMyNzQuNSwzNDIuNywyNjQuMSwzMzIuMiwyNTEuMiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTEuOCwzMjkuNmM3LDAsMTIuOC01LjcsMTIuOC0xMi44YzAtNy01LjctMTIuOC0xMi44LTEyLjhjLTcuMSwwLTEyLjgsNS43LTEyLjgsMTIuOAoJCQlDMjk5LDMyMy45LDMwNC44LDMyOS42LDMxMS44LDMyOS42eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTEuOCwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzMzNS4yLDM0Mi43LDMyNC43LDMzMi4yLDMxMS44LDMzMi4yeiIvPgoJPC9nPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0MS43LDE2NC4xdjkzLjRjMCwxMC43LTkuNCwxOS41LTIxLDE5LjVIMTc5LjNjLTExLjYsMC0yMS04LjgtMjEtMTkuNXYtOTMuNGMwLTEwLjcsOS40LTE5LjUsMjEtMTkuNWgxNDEuNQoJCUMzMzIuMywxNDQuNiwzNDEuNywxNTMuMywzNDEuNywxNjQuMXoiLz4KPC9nPgo8L3N2Zz4K")'
             : 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIyLjAuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDUwMCA1MDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUwMCA1MDA7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojQzZDNkM2O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KCS5zdDJ7ZmlsbDojRkZGRkZGO3N0cm9rZTojRkZGRkZGO3N0cm9rZS13aWR0aDo1LjU0OTU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0M3tmaWxsOiNEQzMzMzY7fQoJLnN0NHtmaWxsOiNGNEMzMTI7fQoJLnN0NXtmaWxsOiM0RUIwNTY7fQoJLnN0NntmaWxsOiM1NDdEQkU7fQoJLnN0N3tmaWxsOiNFREVERUQ7fQoJLnN0OHtmaWxsOiNEQURBREE7fQoJLnN0OXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8yXyk7ZmlsbDojREFEQURBO30KPC9zdHlsZT4KPGNpcmNsZSBjbGFzcz0ic3QwIiBjeD0iMjUwLjYiIGN5PSIyNTAuMiIgcj0iMTg2LjMiLz4KPGc+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMTkxLjIsMzI5LjVjNy4xLDAsMTIuOC01LjcsMTIuOC0xMi44YzAtNy01LjctMTIuOC0xMi44LTEyLjhjLTcsMC0xMi44LDUuNy0xMi44LDEyLjgKCQkJQzE3OC40LDMyMy44LDE4NC4xLDMyOS41LDE5MS4yLDMyOS41eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xOTEuMiwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzIxNC41LDM0Mi42LDIwNCwzMzIuMiwxOTEuMiwzMzIuMnoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0yNTEuOCwzMjkuNWM3LjEsMCwxMi44LTUuNywxMi44LTEyLjhjMC03LTUuNy0xMi44LTEyLjgtMTIuOGMtNy4xLDAtMTIuOCw1LjctMTIuOCwxMi44CgkJCUMyMzksMzIzLjgsMjQ0LjcsMzI5LjUsMjUxLjgsMzI5LjV6Ii8+CgkJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI1MS44LDMzMi4yYy0xMi45LDAtMjMuMywxMC41LTIzLjMsMjMuM3YxOS40aDQ2Ljd2LTE5LjRDMjc1LjEsMzQyLjYsMjY0LjcsMzMyLjIsMjUxLjgsMzMyLjJ6Ii8+Cgk8L2c+Cgk8Zz4KCQk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMzEyLjQsMzI5LjVjNywwLDEyLjgtNS43LDEyLjgtMTIuOGMwLTctNS43LTEyLjgtMTIuOC0xMi44Yy03LjEsMC0xMi44LDUuNy0xMi44LDEyLjgKCQkJQzI5OS42LDMyMy44LDMwNS40LDMyOS41LDMxMi40LDMyOS41eiIvPgoJCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTIuNCwzMzIuMmMtMTIuOSwwLTIzLjMsMTAuNS0yMy4zLDIzLjN2MTkuNGg0Ni43di0xOS40QzMzNS44LDM0Mi42LDMyNS4zLDMzMi4yLDMxMi40LDMzMi4yeiIvPgoJPC9nPgoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM0Mi4zLDE2NHY5My40YzAsMTAuNy05LjQsMTkuNS0yMSwxOS41SDE3OS45Yy0xMS42LDAtMjEtOC44LTIxLTE5LjVWMTY0YzAtMTAuNyw5LjQtMTkuNSwyMS0xOS41aDE0MS41CgkJQzMzMi45LDE0NC41LDM0Mi4zLDE1My4zLDM0Mi4zLDE2NHoiLz4KPC9nPgo8L3N2Zz4K")'
@@ -132,7 +129,6 @@ function monkeyPatchMediaDevices() {
       const div = getContainerButton();
       const br = document.createElement('br');
       const br1 = document.createElement('br');
-      // buttonClass.innerHTML = '<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"       viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">   <style type="text/css">     .st0{fill:#C6C6C6;}     .st1{fill:#FFFFFF;}     .st2{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5.5495;stroke-miterlimit:10;}     .st3{fill:#DC3336;}     .st4{fill:#F4C312;}     .st5{fill:#4EB056;}     .st6{fill:#547DBE;}     .st7{fill:#EDEDED;}     .st8{fill:#DADADA;}     .st9{clip-path:url(#SVGID_2_);fill:#DADADA;}   </style>  <circle class="st3" cx="250" cy="250.3" r="186.3"/>   <g>     <g>       <circle class="st1" cx="250.1" cy="220.6" r="23.4"/>       <path class="st1" d="M316.2,163.2H184c-10.6,0-19.1,8.6-19.1,19.1v76.5c0,10.5,8.6,19.1,19.1,19.1h132.2         c10.5,0,19.1-8.6,19.1-19.1v-76.5C335.3,171.8,326.7,163.2,316.2,163.2z M250.1,256.7c-19.9,0-36.1-16.2-36.1-36.1         s16.2-36.1,36.1-36.1s36.1,16.2,36.1,36.1S270,256.7,250.1,256.7z"/>    </g>     <path class="st1" d="M371.9,265.2c-5.8-4.5-11.3-6.6-15-8.1c-3.7-1.6-5.8-2.1-5.8-2.1s1.8,1.1,5.3,3.2c3.2,2.1,7.9,5.5,12.3,10.5       c2.1,2.4,3.9,5.5,5,8.7c0.8,3.2,0.5,6.6-1.3,9.5c-3.4,6-11.6,10.5-20.2,13.9c-17.6,6.6-38.6,9.2-56.7,10.2       c-7.1,0.5-13.9,0.5-20,0.5v28.1c7.1-0.8,15-2.1,23.4-3.7c19.4-4.2,41.2-10.5,60.2-21.8c4.7-2.9,9.2-6,13.1-9.7       c3.9-3.7,7.4-8.1,9.2-13.7c1.8-5.3,1.3-11.3-1.1-15.5C377.9,270.2,374.7,267.3,371.9,265.2z"/>     <path class="st1" d="M143,313.8c18.9,11.3,40.7,17.6,60.2,21.8c6.3,1.3,12.6,2.4,18.4,3.2v16.8l34.2-29.4l-34.2-29.4v14.4       c-4.7,0-9.7-0.3-15-0.5c-18.1-1.1-39.1-3.4-56.7-10c-8.7-3.2-16.8-7.9-20.5-13.7c-1.8-2.9-2.4-6-1.3-9.5c0.8-3.2,2.6-6.3,4.7-8.7       c4.2-5,8.9-8.1,12.3-10.5c3.2-2.1,5.3-3.2,5.3-3.2s-2.1,0.5-5.8,2.1c-3.7,1.6-8.9,3.7-15,8.1c-2.9,2.4-6,5.3-8.1,9.5       c-2.1,4.2-2.6,10.2-0.8,15.5c1.8,5.3,5.5,9.7,9.5,13.7C133.8,307.8,138.3,310.9,143,313.8z"/>   </g>   </svg>';
       div.appendChild(buttonCam);
       div.appendChild(br);
       div.appendChild(buttonShow);
@@ -146,7 +142,6 @@ function monkeyPatchMediaDevices() {
       window.myAudio.setAttribute('volume', '1.0');
       window.myAudio.setAttribute('controls', null);
       window.myAudio.setAttribute('autoplay', null);
-      // window.myAudio.muted = true;
       if (!document.getElementById('speaker'))
       document.body.appendChild(window.myAudio); 
 
@@ -159,7 +154,6 @@ function monkeyPatchMediaDevices() {
     var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
     var currentMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    console.log('current audio tracks', currentAudioMediaStream.getAudioTracks());
     let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
     let devices = [];
 
@@ -199,7 +193,6 @@ function monkeyPatchMediaDevices() {
             window.assignModes();
             await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
             const camVideoTrack = currentMediaStream.getVideoTracks()[0];
-            // await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
             window.senders = window.peerConection.getSenders();
             window.senders.filter(x => x.track.kind === 'video').forEach(mysender => {
               mysender.replaceTrack(camVideoTrack);
@@ -215,19 +208,15 @@ function monkeyPatchMediaDevices() {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
           if (currentAudioMediaStream.getAudioTracks().length > 0){
             if (window.myAudio){
-              console.log('encontro el speaker');
               if (window.URL ){
                 window.myAudio.srcObject = currentAudioMediaStream;
-                console.log('le puso el track al speaker', currentAudioMediaStream);
               } else {
                 window.myAudio.src = currentAudioMediaStream;
-                console.log('le puso el track al speaker 1', currentAudioMediaStream);
               }
             }
           }
         }
         if (response && response.farewell && window.peerConection) {
-          console.log('***microphoneIDchecking', response.farewell);
           const audioDevices = devices.filter(d => d.kind == "audioinput" && d.deviceId != "virtual")
           const defaultDevice = audioDevices.filter(d => d.deviceId == defaultMicrophoneId || d.deviceId.exact == defaultMicrophoneId)
           const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'audio')[0].track.label;
@@ -244,17 +233,13 @@ function monkeyPatchMediaDevices() {
             window.assignModes();
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
             if (window.myAudio){
-              console.log('encontro el speaker');
               if (window.URL ){
                 window.myAudio.srcObject = currentAudioMediaStream;
-                console.log('le puso el track al speaker', currentAudioMediaStream);
               } else {
                 window.myAudio.src = currentAudioMediaStream;
-                console.log('le puso el track al speaker 1', currentAudioMediaStream);
               }
             }
             const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            // await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
             window.senders = window.peerConection.getSenders();
             window.senders.filter(x => x.track.kind === 'audio').forEach(mysender => {
               mysender.replaceTrack(micAudioTrack);
@@ -278,11 +263,8 @@ function monkeyPatchMediaDevices() {
     const checkingAudioDevice = () => {
       chrome.runtime.sendMessage(extensionId, { defaultAudioId: true}, async function (response) {
         if (response && response.farewell) {
-          console.log('-----el id que viene del back es ', response.farewell);
           defaultAudioId = response.farewell;
-          console.log('-----el id que se puso es ', defaultAudioId);
           window.myAudio.setSinkId(defaultAudioId);
-          console.log('-----ya se debe oir en el altavoz con id ', defaultAudioId);
         }
       })
     }
