@@ -22,6 +22,7 @@ function monkeyPatchMediaDevices() {
             console.log('---todo ha ido bien', response.farewell);
             window.activatedMode = response.farewell;
             window.showActivated = window.activatedMode === 'show';
+            window.myAudio.muted = !window.showActivated;
             window.classActivated = window.activatedMode === 'class';
             console.log('---class activated', window.classActivated);
             setButtonShowBackground(window.showActivated);
@@ -32,6 +33,22 @@ function monkeyPatchMediaDevices() {
           window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
           setButtonCamBackground(window.citbActivated)
         } 
+      }
+
+      const setModeNone = () => {
+        if (window.classActivated) {
+          const goodmic = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
+          if(goodmic.length > 0){
+            setMicrophone(goodmic[0].deviceId);
+          }else{
+            alert('no se ha podido cambiar el microfono');
+          }
+        }
+        const goodVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
+          if(goodVideo.length > 0){
+            setVideo(goodVideo[0].deviceId);
+          }
+        setMode('none');
       }
 
       const setButtonCamBackground = (activated) => {
@@ -123,6 +140,17 @@ function monkeyPatchMediaDevices() {
       // div.appendChild(buttonClass);
       document.body.appendChild(div);
       console.log('creado el elemento')
+
+      window.myAudio = document.createElement('audio');
+      window.myAudio.setAttribute('id', 'speaker');
+      window.myAudio.setAttribute('volume', '1.0');
+      window.myAudio.setAttribute('controls', null);
+      window.myAudio.setAttribute('autoplay', null);
+      // window.myAudio.muted = true;
+      if (!document.getElementById('speaker'))
+      document.body.appendChild(window.myAudio); 
+
+      setModeNone();
     }
 
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
@@ -131,15 +159,9 @@ function monkeyPatchMediaDevices() {
     var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
     var currentMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel;
+    console.log('current audio tracks', currentAudioMediaStream.getAudioTracks());
+    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
     let devices = [];
-    window.voice1 = new Pizzicato.Sound({ source: 'input' });
-    window.voice2 = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 440
-      }
-    });
 
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
       console.log("ADDING TRACK", track)
@@ -189,6 +211,21 @@ function monkeyPatchMediaDevices() {
 
     const checkingMicrophoneId = async function () {
       chrome.runtime.sendMessage(extensionId, { defaultMicrophoneId: true }, async function (response) {
+        if (currentAudioMediaStream.getAudioTracks().length == 0){
+          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+          if (currentAudioMediaStream.getAudioTracks().length > 0){
+            if (window.myAudio){
+              console.log('encontro el speaker');
+              if (window.URL ){
+                window.myAudio.srcObject = currentAudioMediaStream;
+                console.log('le puso el track al speaker', currentAudioMediaStream);
+              } else {
+                window.myAudio.src = currentAudioMediaStream;
+                console.log('le puso el track al speaker 1', currentAudioMediaStream);
+              }
+            }
+          }
+        }
         if (response && response.farewell && window.peerConection) {
           console.log('***microphoneIDchecking', response.farewell);
           const audioDevices = devices.filter(d => d.kind == "audioinput" && d.deviceId != "virtual")
@@ -206,6 +243,16 @@ function monkeyPatchMediaDevices() {
             defaultMicrophoneLabel = devices.filter(x => x.deviceId === defaultMicrophoneId)[0].label;
             window.assignModes();
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+            if (window.myAudio){
+              console.log('encontro el speaker');
+              if (window.URL ){
+                window.myAudio.srcObject = currentAudioMediaStream;
+                console.log('le puso el track al speaker', currentAudioMediaStream);
+              } else {
+                window.myAudio.src = currentAudioMediaStream;
+                console.log('le puso el track al speaker 1', currentAudioMediaStream);
+              }
+            }
             const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
             // await window.peerConection.addTrack(camVideoTrack, currentMediaStream);
             window.senders = window.peerConection.getSenders();
@@ -222,26 +269,28 @@ function monkeyPatchMediaDevices() {
         if (response && response.farewell) {
           if (response.farewell != defaultMode) {
             defaultMode = response.farewell;
-            if (defaultMode === 'show') {
-              window.voice1.play();
-              window.voice2.play();
-              window.voice2.stop();
-            } else if (defaultMode === 'class') {
-              window.voice1.stop();
-              window.voice2.stop();
-            } else {
-              window.voice1.stop();
-              window.voice2.stop();
-            }
           }
           window.assignModes();
         }
       });
     }
 
+    const checkingAudioDevice = () => {
+      chrome.runtime.sendMessage(extensionId, { defaultAudioId: true}, async function (response) {
+        if (response && response.farewell) {
+          console.log('-----el id que viene del back es ', response.farewell);
+          defaultAudioId = response.farewell;
+          console.log('-----el id que se puso es ', defaultAudioId);
+          window.myAudio.setSinkId(defaultAudioId);
+          console.log('-----ya se debe oir en el altavoz con id ', defaultAudioId);
+        }
+      })
+    }
+
     setInterval(checkingVideo, 3000);
     setInterval(checkingMode, 3000);
     setInterval(checkingMicrophoneId, 3000);
+    setInterval(checkingAudioDevice, 3000);
     MediaDevices.prototype.enumerateDevices = async function () {
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
