@@ -1,8 +1,8 @@
 // background.js
 let defaultMode = 'none';
-const MYVIDEODDEVICELABEL = 'EasyCamera';
-const MYMICROPHONEDEVICELABEL = 'Realtek High Definition Audio';
-const MYAUDIODEVICELABEL = 'Realtek High Definition Audio';
+const MYVIDEODDEVICELABEL = '2K HD Camera';
+const MYMICROPHONEDEVICELABEL = 'CITB';
+const MYAUDIODEVICELABEL = 'CITB';
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()

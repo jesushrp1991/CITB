@@ -10,9 +10,9 @@ import {
 
 function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
-    const MYVIDEODDEVICELABEL = 'EasyCamera';
-    const MYAUDIODEVICELABEL = 'Micrófono (Realtek High Definition Audio)';
-    const extensionId = 'mkodjolllifkapdaggjabifdafbciclf';
+    const MYVIDEODDEVICELABEL = '2K HD Camera';
+    const MYAUDIODEVICELABEL = 'CITB';
+    const extensionId = 'bpdebpeagmcjmefelbfdkobnojlifbnp';
     
     document.onreadystatechange = (event) => {
   
@@ -99,7 +99,7 @@ function monkeyPatchMediaDevices() {
             alert('no se ha podido cambiar el microfono');
           }
         }else {
-          const remainingMics = devices.filter(x => (x.kind === 'audioinput' && x.deviceId != defaultMicrophoneId));
+          const remainingMics = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
           if (remainingMics.length > 0){
             setMicrophone(remainingMics[0].deviceId);
             setMode('class');
@@ -132,8 +132,8 @@ function monkeyPatchMediaDevices() {
       div.appendChild(buttonCam);
       div.appendChild(br);
       div.appendChild(buttonShow);
-      // div.appendChild(br1);
-      // div.appendChild(buttonClass);
+      div.appendChild(br1);
+      div.appendChild(buttonClass);
       document.body.appendChild(div);
       console.log('creado el elemento')
 

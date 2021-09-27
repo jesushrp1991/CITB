@@ -1,7 +1,7 @@
 import { monkeyPatchMediaDevices } from './media-devices.js';
 
 if (window.location.host === 'meet.google.com') {
-  const extensionId = 'mkodjolllifkapdaggjabifdafbciclf';
+  const extensionId = 'bpdebpeagmcjmefelbfdkobnojlifbnp';
 
   monkeyPatchMediaDevices();
 
