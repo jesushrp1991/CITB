@@ -11,7 +11,8 @@ import {
   setButtonShowBackground,
   addElementsToDiv,
   createAudioElement,
-  getVirtualCam
+  getVirtualCam,
+  setElementVisibility
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
@@ -45,7 +46,7 @@ function monkeyPatchMediaDevices() {
           if(citbMicrophone.length > 0){
             setMicrophone(citbMicrophone[0].deviceId);
           }else{
-            alert('no se ha podido cambiar el microfono');
+            alert('Could not change Microphone');
           }
         }
         const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
@@ -62,7 +63,7 @@ function monkeyPatchMediaDevices() {
           if(citbMicrophone.length > 0){
             setMicrophone(citbMicrophone[0].deviceId);
           }else{
-            alert('no se ha podido cambiar el microfono');
+            alert('Could not change Microphone');
           }
         }
         setMode(window.showActivated ? 'none' : 'show');
@@ -76,7 +77,7 @@ function monkeyPatchMediaDevices() {
             setMicrophone(citbMicrophone[0].deviceId);
             setMode('none');
           }else{
-            alert('no se ha podido cambiar el microfono');
+            alert('Could not change Microphone');
           }
         }else {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
@@ -84,7 +85,7 @@ function monkeyPatchMediaDevices() {
             setMicrophone(otherMicrophones[0].deviceId);
             setMode('class');
           }else{
-            alert('no se ha podido cambiar el mic');
+            alert('Could not change Microphone');
           }
         }
       });
@@ -96,14 +97,14 @@ function monkeyPatchMediaDevices() {
           if (otherVideos.length > 0){
             setVideo(otherVideos[0].deviceId);
           }else{
-            alert('no se ha podido cambiar el video');
+            alert('Could not change Video');
           }
         }else{
           const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
           if(citbVideo.length > 0){
             setVideo(citbVideo[0].deviceId);
           }else{
-            alert('no se ha podido cambiar el video');
+            alert('Could not change Video');
           }
         }
       });
