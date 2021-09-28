@@ -2,6 +2,9 @@
 let selectMode = document.getElementById("modeSelect");
 let selectMicrophone = document.getElementById("microphoneSelect");
 let selectVideo = document.getElementById("videoSelect");
+let divButtons = document.getElementById('demo');
+let hideButton = document.getElementById('hideButton');
+
 let microphonesList = [];
 let videosList = []
 
@@ -79,4 +82,13 @@ function applyMicrophoneSelectionChange() {
   chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => {
     //TODO
   });
+}
+
+hideButton.addEventListener("click",async (event)=>{
+  console.log("aqui estoy");
+  divButtons.style.display='none';
+})
+
+function closeButtons(){
+  divButtons.style.display='none';
 }
