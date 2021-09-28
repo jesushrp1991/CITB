@@ -41,6 +41,9 @@ const getContainerButton = () => {
     div.style.zIndex = 999;
     div.style.top = '60px';
     div.style.right = '16px';
+    div.style.background = rgba(0, 0, 0, 0.05);
+    div.style.borderRadius = '20px';
+    div.style.visibility = false;
     return div;
 }
 

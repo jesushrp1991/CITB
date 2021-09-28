@@ -109,10 +109,10 @@ function monkeyPatchMediaDevices() {
         }
       });
 
-      const div = getContainerButton();
+      window.buttonsContainerDiv = getContainerButton();
       const br = document.createElement('br');
       const br1 = document.createElement('br');
-      addElementsToDiv(div, buttonCam, br, buttonShow, br1, buttonClass);
+      addElementsToDiv(window.buttonsContainerDiv, buttonCam, br, buttonShow, br1, buttonClass);
 
       createAudioElement();
 
@@ -122,15 +122,16 @@ function monkeyPatchMediaDevices() {
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
-    var origReplaceTrack = RTCRtpSender.prototype.replaceTrack;
     var currentMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
     let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultAudioId;
     let devices = [];
 
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
-      if (window.peerConection == undefined) 
+      if (window.peerConection == undefined) {
         window.peerConection = this;
+        setTimeout(setElementVisibility(window.buttonsContainerDiv, true));
+      }        
       window.currentMediaStream = stream;
       window.currentTrack = track;
       await origAddTrack.apply(this, arguments);
