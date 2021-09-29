@@ -37,13 +37,14 @@ const getButtonCam = () => {
 
 const getContainerButton = () => {
     const div = document.createElement('div');
+    div.setAttribute('id', 'buttonsContainer');
     div.style.position = 'fixed';
     div.style.zIndex = 999;
     div.style.top = '60px';
     div.style.right = '16px';
     div.style.background = 'rgba(0, 0, 0, 0.05)';
     div.style.borderRadius = '20px';
-    div.style.visibility = false;
+    div.style.display = 'none';
     return div;
 }
 
@@ -103,6 +104,7 @@ const setMicrophone = (microphone) => {
     div.appendChild(buttonShow);
     div.appendChild(br1);
     div.appendChild(buttonClass);
+    if (!document.getElementById('buttonsContainer'))
     document.body.appendChild(div);
   }
 
@@ -129,6 +131,10 @@ const setMicrophone = (microphone) => {
     element.style.visibility = visibility;
   }
 
+  const setElementDisplay = (element, display) => {
+    element.style.display = display
+  }
+
 export { 
     getButtonShow,
     getButtonClass,
@@ -143,5 +149,6 @@ export {
     addElementsToDiv,
     createAudioElement,
     getVirtualCam,
-    setElementVisibility
+    setElementVisibility,
+    setElementDisplay
 }
