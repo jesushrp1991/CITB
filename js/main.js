@@ -1,7 +1,6 @@
 import { monkeyPatchMediaDevices } from './media-devices.js';
 
 if (window.location.host === 'meet.google.com') {
-  const EXTENSIONID = 'bpdebpeagmcjmefelbfdkobnojlifbnp';
   const MYVIDEODDEVICELABEL = '2K HD Camera';
   const MYMICROPHONEDEVICELABEL = 'CITB';
   const MYAUDIODEVICELABEL = 'CITB';
