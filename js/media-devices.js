@@ -14,11 +14,10 @@ import {
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  setElementDisplay
+  setElementDisplay,
   setElementVisibility,
   closeButtonContainer,
   handleMouseOverEvent,
-  dragElement,
   handleMouseLeaveEvent
 } from './domUtils.js';
 
@@ -49,7 +48,7 @@ function monkeyPatchMediaDevices() {
           setButtonCamBackground(buttonCam, window.citbActivated)
           setButtonCloseBackground(buttonClose);
 
-        } 
+        }
       }
 
       const setModeNone = () => {
@@ -173,8 +172,6 @@ function monkeyPatchMediaDevices() {
       createAudioElement();
 
       setModeNone();
-      dragElement(window.buttonsContainerDiv);
-
     }
 
     const showDiv = () => {

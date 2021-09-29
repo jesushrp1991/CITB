@@ -55,7 +55,7 @@ const getContainerButton = () => {
     div.style.right = '16px';
     div.style.background = 'transparent';
     div.style.borderRadius = '20px';
-    div.style.display = 'none';
+    div.style.display = 'block';
     return div;
 }
 
@@ -117,12 +117,12 @@ const setMicrophone = (microphone) => {
 
   const handleMouseOverEvent = () =>{
     console.log("Mouse Over Event");
-    document.getElementById('divContainer').style.background = 'rgba(0, 0, 0, 0.05)';
+    document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.05)';
   };
   
   const handleMouseLeaveEvent = () =>{
     console.log("Mouse Leave Event");
-    document.getElementById('divContainer').style.background = 'transparent';
+    document.getElementById('buttonsContainer').style.background = 'transparent';
   };
 
   const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass) => {
@@ -133,7 +133,7 @@ const setMicrophone = (microphone) => {
     div.appendChild(buttonShow);
     div.appendChild(br1);
     div.appendChild(buttonClass);
-    if (!document.getElementById('buttonsContainer'))
+    // if (!document.getElementById('buttonsContainer'))
     document.body.appendChild(div);
   }
 
@@ -148,7 +148,7 @@ const setMicrophone = (microphone) => {
   }
 
   const closeButtonContainer = (divContainer) => {
-    document.getElementById('divContainer').remove(); //working on second click? Why?
+    document.getElementById('buttonsContainer').remove(); //working on second click? Why?
     // divContainer.parentNode.removeChild(divContainer);
   };
 
@@ -188,7 +188,6 @@ export {
     setElementVisibility,
     closeButtonContainer,
     handleMouseOverEvent,
-    dragElement,
-    handleMouseLeaveEvent
+    handleMouseLeaveEvent,
     setElementDisplay
 }
