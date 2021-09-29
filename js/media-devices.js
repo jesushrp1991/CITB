@@ -14,6 +14,7 @@ import {
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
+  setElementDisplay
   setElementVisibility,
   closeButtonContainer,
   handleMouseOverEvent,
@@ -176,18 +177,23 @@ function monkeyPatchMediaDevices() {
 
     }
 
+    const showDiv = () => {
+      // window.buttonsContainerDiv.style.display = 'block';
+    }
+
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
     var currentMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultAudioId;
+    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
     let devices = [];
 
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
       if (window.peerConection == undefined) {
         window.peerConection = this;
-        setTimeout(setElementVisibility(window.buttonsContainerDiv, true));
+        showDiv();
+        // setTimeout(setElementDisplay(window.buttonsContainerDiv, 'none'), 2000);
       }        
       window.currentMediaStream = stream;
       window.currentTrack = track;
