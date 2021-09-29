@@ -1,4 +1,5 @@
 const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
     buttonShow.style.width = '40px';
@@ -49,14 +50,27 @@ const getButtonClose = () => {
 const getContainerButton = () => {
     const div = document.createElement('div');
     div.setAttribute('id', 'buttonsContainer');
-    div.style.position = 'fixed';
+    div.style.position = 'absolute';
     div.style.zIndex = 999;
+    div.style.width = '40px';
+    div.style.height = '220px';
     div.style.top = '60px';
     div.style.right = '16px';
     div.style.background = 'transparent';
     div.style.borderRadius = '20px';
-    div.style.display = 'block';
+    // div.style.display = 'block';
     return div;
+}
+const getButtonDrag = () => {
+  const buttonClose = document.createElement('button');
+  buttonClose.style.width = '40px';
+  buttonClose.style.height = '40px';
+  buttonClose.style.borderRadius = '40px';
+  buttonClose.style.backgroundColor = 'transparent';
+  buttonClose.style.padding = '0px';
+  buttonClose.style.border = 'none';
+  buttonClose.style.margin = '0px';
+  return buttonClose; 
 }
 
 const setMicrophone = (microphone) => {
@@ -115,17 +129,29 @@ const setMicrophone = (microphone) => {
     button.style.backgroundPosition = 'center';
   }
 
+  const setButtonDragBackground = (button) => {   
+    button.style.backgroundImage = 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+IDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNjQgNjQiPjxnIGlkPSJMYXllcl83MiIgZGF0YS1uYW1lPSJMYXllciA3MiI+PHBhdGggZD0iTTMyLDYwLjVhLjQ3LjQ3LDAsMCwxLS4zNS0uMTVMMjEuMTMsNDkuODRhLjUuNSwwLDAsMS0uMTQtLjM1LjUyLjUyLDAsMCwxLC4xNC0uMzZsMi0yYS41MS41MSwwLDAsMSwuNzEsMGw2LjMsNi4zVjMzLjg5SDEwLjU0bDYuMyw2LjNhLjUxLjUxLDAsMCwxLDAsLjcxbC0yLDJhLjUxLjUxLDAsMCwxLS43MSwwTDMuNjUsMzIuMzVhLjQ4LjQ4LDAsMCwxLDAtLjdMMTQuMTYsMjEuMTNhLjUxLjUxLDAsMCwxLC43MSwwbDIsMmEuNTEuNTEsMCwwLDEsMCwuNzFsLTYuMyw2LjNIMzAuMTFWMTAuNTRsLTYuMyw2LjNhLjUxLjUxLDAsMCwxLS43MSwwbC0yLTJhLjUxLjUxLDAsMCwxLDAtLjcxTDMxLjY1LDMuNjVhLjQ4LjQ4LDAsMCwxLC43LDBMNDIuODcsMTQuMTZhLjUxLjUxLDAsMCwxLDAsLjcxbC0yLDJhLjUxLjUxLDAsMCwxLS43MSwwbC02LjMtNi4zVjMwLjExSDUzLjQ2bC02LjMtNi4zYS41MS41MSwwLDAsMSwwLS43MWwyLTJhLjUxLjUxLDAsMCwxLC43MSwwTDYwLjM1LDMxLjY1YS40OC40OCwwLDAsMSwwLC43TDQ5Ljg0LDQyLjg3YS41MS41MSwwLDAsMS0uNzEsMGwtMi0yYS41MS41MSwwLDAsMSwwLS43MWw2LjMtNi4zSDMzLjg5VjUzLjQ2bDYuMy02LjNhLjUxLjUxLDAsMCwxLC43MSwwbDIsMmEuNTEuNTEsMCwwLDEsMCwuNzFMMzIuMzUsNjAuMzVBLjQ3LjQ3LDAsMCwxLDMyLDYwLjVabS05LjgxLTExTDMyLDU5LjI5bDkuODEtOS44LTEuMjctMS4yN0wzMy43NSw1NWEuNTEuNTEsMCwwLDEtLjg2LS4zNlYzMy4zOWEuNTEuNTEsMCwwLDEsLjUtLjVINTQuNjZhLjUxLjUxLDAsMCwxLC4zNi44NmwtNi44LDYuNzksMS4yNywxLjI3TDU5LjI5LDMybC05LjgtOS44MS0xLjI3LDEuMjdMNTUsMzAuMjVhLjUxLjUxLDAsMCwxLS4zNi44NkgzMy4zOWEuNTEuNTEsMCwwLDEtLjUtLjVWOS4zNEEuNTEuNTEsMCwwLDEsMzMuNzUsOWw2Ljc5LDYuOCwxLjI3LTEuMjdMMzIsNC43MWwtOS44MSw5LjgsMS4yNywxLjI3TDMwLjI1LDlhLjUxLjUxLDAsMCwxLC44Ni4zNlYzMC42MWEuNTEuNTEsMCwwLDEtLjUuNUg5LjM0QS41MS41MSwwLDAsMSw5LDMwLjI1bDYuOC02Ljc5LTEuMjctMS4yN0w0LjcxLDMybDkuOCw5LjgxLDEuMjctMS4yN0w5LDMzLjc1YS41MS41MSwwLDAsMSwuMzYtLjg2SDMwLjYxYS41MS41MSwwLDAsMSwuNS41VjU0LjY2YS41MS41MSwwLDAsMS0uODYuMzZsLTYuNzktNi44WiIvPjwvZz48L3N2Zz4=")';
+    button.style.backgroundSize = '60px 60px !important';
+    button.style.backgroundRepeat = 'no-repeat';
+    button.style.backgroundPosition = 'center';
+  }
+
   const handleMouseOverEvent = () =>{
-    console.log("Mouse Over Event");
     document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.05)';
   };
   
   const handleMouseLeaveEvent = () =>{
-    console.log("Mouse Leave Event");
     document.getElementById('buttonsContainer').style.background = 'transparent';
   };
+  
+  const handleDrag = (pos1,pos2) =>{
+    console.log("ENTRO!!!");
+    let doc = document.getElementById('buttonsContainer');
+    doc.style.top = (doc.offsetTop - pos2) + "px";
+    doc.style.left = (doc.offsetLeft - pos1) + "px";
+  };
 
-  const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass) => {
+  const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag) => {
     div.appendChild(buttonClose);
     div.appendChild(br0);
     div.appendChild(buttonCam);
@@ -133,6 +159,8 @@ const setMicrophone = (microphone) => {
     div.appendChild(buttonShow);
     div.appendChild(br1);
     div.appendChild(buttonClass);
+    div.appendChild(br2);
+    div.appendChild(buttonDrag);
     // if (!document.getElementById('buttonsContainer'))
     document.body.appendChild(div);
   }
@@ -189,5 +217,8 @@ export {
     closeButtonContainer,
     handleMouseOverEvent,
     handleMouseLeaveEvent,
-    setElementDisplay
+    setElementDisplay,
+    getButtonDrag,
+    setButtonDragBackground,
+    handleDrag
 }

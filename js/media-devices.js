@@ -17,11 +17,15 @@ import {
   setElementDisplay,
   setElementVisibility,
   closeButtonContainer,
-  handleMouseOverEvent,
-  handleMouseLeaveEvent
+  // handleMouseOverEvent,
+  // handleMouseLeaveEvent,
+  handleDrag,
+  getButtonDrag,
+  setButtonDragBackground
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (window.location.host === 'meet.google.com') {
     const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
     const MYAUDIODEVICELABEL = 'CITB';
@@ -41,13 +45,14 @@ function monkeyPatchMediaDevices() {
             setButtonShowBackground(buttonShow, window.showActivated);
             setButtonClassBackground(buttonClass, window.classActivated);
             setButtonCloseBackground(buttonClose);
+            setButtonDragBackground(buttonDrag);
           }
         });
         if (defaultVideoId && defaultVideoLabel) {
           window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
           setButtonCamBackground(buttonCam, window.citbActivated)
           setButtonCloseBackground(buttonClose);
-
+          setButtonDragBackground(buttonDrag);
         }
       }
 
@@ -125,6 +130,11 @@ function monkeyPatchMediaDevices() {
           closeButtonContainer(window.buttonsContainerDiv);
           // closeButtonContainer(buttonClose);
       });
+      const buttonDrag= getButtonDrag();
+      
+
+      window.buttonsContainerDiv = getContainerButton();
+
       buttonClose.addEventListener("mouseenter",() => {
         handleMouseOverEvent();
       },{passive: false});
@@ -138,7 +148,7 @@ function monkeyPatchMediaDevices() {
       },{passive: false});
 
       buttonClass.addEventListener("mouseenter",() => {
-        handleMouseLeaveEvent();
+        handleMouseOverEvent();
       },{passive: false});
 
       buttonClose.addEventListener("mouseleave",() => {
@@ -157,18 +167,72 @@ function monkeyPatchMediaDevices() {
         handleMouseLeaveEvent();
       },{passive: false});
 
-      window.buttonsContainerDiv = getContainerButton();
+      window.buttonsContainerDiv.addEventListener('mouseenter',()=>{
+        handleMouseOverEvent();
+      },{passive: false });
+
+      window.buttonsContainerDiv.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
+      window.buttonsContainerDiv.addEventListener("mouseover",() => {
+        handleMouseOverEvent();
+      },{passive: false});
+      
+      //BEGIN DRAG****///
+      buttonDrag.addEventListener('mousedown', (e) => {
+         dragMouseDown(e);
+        // handleDrag(window.buttonsContainerDiv);
+        // closeButtonContainer(buttonClose);
+      });
+      
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+    
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        window.buttonsContainerDiv.style.rigth = '';
+        window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
+        window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
+      }
+
+      const handleMouseOverEvent = () =>{
+        window.buttonsContainerDiv.style.background = 'rgba(0, 0, 0, 0.05)';
+      };
+      
+      const handleMouseLeaveEvent = () =>{
+        window.buttonsContainerDiv.style.background = 'transparent';
+      };
+    
+      function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+
+      //END DRAG ***/
+      
       const br = document.createElement('br');
       const br0 = document.createElement('br');
       const br1 = document.createElement('br');
-      addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass);
+      const br2 = document.createElement('br');
+      addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
       
-      // window.buttonsContainerDiv.addEventListener('onmousedown',()=>{
-      //     console.log("mouseenter");
-      //     // handleMouseOverEvent();
-
-      // },{capture: true, passive: false });
-
       createAudioElement();
 
       setModeNone();
@@ -177,7 +241,7 @@ function monkeyPatchMediaDevices() {
     const showDiv = () => {
       // window.buttonsContainerDiv.style.display = 'block';
     }
-
+    
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
