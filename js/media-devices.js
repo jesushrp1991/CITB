@@ -1,5 +1,6 @@
 import { 
   getButtonCam,
+  getButtonClose,
   getButtonClass,
   getButtonShow,
   setMode,
@@ -7,22 +8,27 @@ import {
   setVideo,
   getContainerButton,
   setButtonCamBackground,
+  setButtonCloseBackground,
   setButtonClassBackground,
   setButtonShowBackground,
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  setElementVisibility
+  setElementVisibility,
+  closeButtonContainer,
+  handleMouseOverEvent,
+  dragElement,
+  handleMouseLeaveEvent
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
-    const MYVIDEODDEVICELABEL = '2K HD Camera';
+    const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
     const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'bpdebpeagmcjmefelbfdkobnojlifbnp';
+    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
     document.onreadystatechange = (event) => {
-  
+        
       window.assignModes = () => {
         chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
           if (response && response.farewell){
@@ -34,11 +40,14 @@ function monkeyPatchMediaDevices() {
             window.classActivated = window.activatedMode === 'class';
             setButtonShowBackground(buttonShow, window.showActivated);
             setButtonClassBackground(buttonClass, window.classActivated);
+            setButtonCloseBackground(buttonClose);
           }
         });
         if (defaultVideoId && defaultVideoLabel) {
           window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
           setButtonCamBackground(buttonCam, window.citbActivated)
+          setButtonCloseBackground(buttonClose);
+
         } 
       }
 
@@ -111,14 +120,60 @@ function monkeyPatchMediaDevices() {
         }
       });
 
+      const buttonClose= getButtonClose();
+      buttonClose.addEventListener('click', () => {
+          closeButtonContainer(window.buttonsContainerDiv);
+          // closeButtonContainer(buttonClose);
+      });
+      buttonClose.addEventListener("mouseenter",() => {
+        handleMouseOverEvent();
+      },{passive: false});
+
+      buttonCam.addEventListener("mouseenter",() => {
+        handleMouseOverEvent();
+      },{passive: false});
+      
+      buttonShow.addEventListener("mouseenter",() => {
+        handleMouseOverEvent();
+      },{passive: false});
+
+      buttonClass.addEventListener("mouseenter",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
+      buttonClose.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
+      buttonCam.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+      
+      buttonShow.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
+      buttonClass.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
       window.buttonsContainerDiv = getContainerButton();
       const br = document.createElement('br');
+      const br0 = document.createElement('br');
       const br1 = document.createElement('br');
-      addElementsToDiv(window.buttonsContainerDiv, buttonCam, br, buttonShow, br1, buttonClass);
+      addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass);
+      
+      // window.buttonsContainerDiv.addEventListener('onmousedown',()=>{
+      //     console.log("mouseenter");
+      //     // handleMouseOverEvent();
+
+      // },{capture: true, passive: false });
 
       createAudioElement();
 
       setModeNone();
+      dragElement(window.buttonsContainerDiv);
+
     }
 
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
