@@ -28,7 +28,9 @@ function monkeyPatchMediaDevices() {
           if (response && response.farewell){
             window.activatedMode = response.farewell;
             window.showActivated = window.activatedMode === 'show';
-            window.myAudio.muted = !window.showActivated;
+            if (window.myAudio != undefined){
+              window.myAudio.muted = !window.showActivated;
+            }
             window.classActivated = window.activatedMode === 'class';
             setButtonShowBackground(buttonShow, window.showActivated);
             setButtonClassBackground(buttonClass, window.classActivated);
@@ -165,7 +167,7 @@ function monkeyPatchMediaDevices() {
       });
     }
 
-    const initAudioSRC = () => {
+    const initAudioSRC = async () => {
       if (currentAudioMediaStream.getAudioTracks().length == 0){
         currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
         if (currentAudioMediaStream.getAudioTracks().length > 0){
@@ -231,6 +233,7 @@ function monkeyPatchMediaDevices() {
       chrome.runtime.sendMessage(EXTENSIONID, { defaultAudioId: true}, async function (response) {
         if (response && response.farewell) {
           defaultAudioId = response.farewell;
+          if (window.myAudio)
           window.myAudio.setSinkId(defaultAudioId);
         }
       })
