@@ -29,7 +29,7 @@ function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
     const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
     const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'pmbeajhggkgdldmekoenjhcljbhaojpb';
+    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
     document.onreadystatechange = (event) => {     
       console.log(document.readyState);   

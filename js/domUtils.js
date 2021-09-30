@@ -1,4 +1,4 @@
-const EXTENSIONID = 'pmbeajhggkgdldmekoenjhcljbhaojpb';
+const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
 
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
@@ -185,7 +185,7 @@ const setMicrophone = (microphone) => {
 
   const closeButtonContainer = (divContainer) => {
     document.getElementById('buttonsContainer').style.visibility = 'hidden';
-    chrome.runtime.sendMessage(EXTENSIONID, { containerClosed: true }, async function (response) {
+    chrome.runtime.sendMessage(EXTENSIONID, { 'webContainer': true }, async function (response) {
       if (response && response.farewell){ 
         console.log(response.farewell);
       }

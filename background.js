@@ -1,5 +1,6 @@
 // background.js
 let defaultMode = 'none';
+let webContainer = false;
 const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYMICROPHONEDEVICELABEL = 'CITB';
 const MYAUDIODEVICELABEL = 'CITB';
@@ -7,7 +8,7 @@ const MYAUDIODEVICELABEL = 'CITB';
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
-  chrome.storage.sync.set({ 'containerClosed':false });
+  chrome.storage.sync.set({ webContainer });
 });
 
 const getAvailableMicrophone = (devicesList) => {
@@ -162,11 +163,11 @@ chrome.runtime.onMessageExternal.addListener(
       console.log('***audioIDBack', request.setDefaultAudioId);
       chrome.storage.sync.set({ 'defaultAudioId' : request.setDefaultAudioId }, () =>
         sendResponse({farewell: request.setDefaultAudioId}) );
-    } else if (request.containerClosed) {
-      console.log('received in the background', request.containerClosed)
-      chrome.storage.sync.set({ 'containerClosed' : true }, () => {
-        console.log('se seteo en el storage el contenedor cerrado')
-        sendResponse({farewell: "se ha cerrado el contenedor web"}) 
+    } else if (request.webContainer) {
+      console.log('received in the background', request.webContainer)
+      chrome.storage.sync.set({ 'webContainer' : true }, () => {
+        console.log('se seteo en el storage el contenedor cerrado');
+        sendResponse({farewell: "se ha cerrado el contenedor web"}) ;
       });
     }
   }
