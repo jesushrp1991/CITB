@@ -6,7 +6,7 @@ if (window.location.host === 'meet.google.com') {
   const MYAUDIODEVICELABEL = 'CITB';
 
   monkeyPatchMediaDevices();
-  const devices = await navigator.mediaDevices.enumerateDevices();
+  let devices = await navigator.mediaDevices.enumerateDevices();
 
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
     console.log('device plugged or unplugged, update de info,', event)
