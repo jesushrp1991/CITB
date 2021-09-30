@@ -176,8 +176,8 @@ const setMicrophone = (microphone) => {
   }
 
   const closeButtonContainer = (divContainer) => {
-    document.getElementById('buttonsContainer').remove(); //working on second click? Why?
-    // divContainer.parentNode.removeChild(divContainer);
+    // document.getElementById('buttonsContainer').remove(); 
+    document.getElementById('buttonsContainer').style.visibility = 'hidden';
   };
 
   const getVirtualCam = () => {

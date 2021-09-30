@@ -3,7 +3,7 @@ let selectMode = document.getElementById("modeSelect");
 let selectMicrophone = document.getElementById("microphoneSelect");
 let selectVideo = document.getElementById("videoSelect");
 let divButtons = document.getElementById('demo');
-let hideButton = document.getElementById('hideButton');
+let webContainer = document.getElementById('showWebContainer');
 
 let microphonesList = [];
 let videosList = []
@@ -69,6 +69,7 @@ selectMicrophone.addEventListener("change", async (event) => {
 });
 
 selectVideo.addEventListener("change", async (event) => {
+  console.log("asd");
   chrome.storage.sync.set({ defaultVideoId: selectVideo.value });
 });
 
@@ -84,11 +85,30 @@ function applyMicrophoneSelectionChange() {
   });
 }
 
-hideButton.addEventListener("click",async (event)=>{
-  console.log("aqui estoy");
-  divButtons.style.display='none';
-})
+// chrome.extension.onRequest.addListener(function(r,s,sr){ 
+//   if(r==='HELLO') return sr.call(this,'BACK AT YOU');
+// });
 
-function closeButtons(){
-  divButtons.style.display='none';
-}
+// webContainer.addEventListener("click", (event)=>{
+//   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+//     chrome.tabs.sendMessage(tabs[0].id, {greeting: "hello"}, function(response) {
+//       console.log(response.farewell);
+//     });
+//   });
+// });
+
+// When the button is clicked, inject setPageBackgroundColor into current page
+showWebContainer.addEventListener("click", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: showContainer,
+  });
+});
+
+// The body of this function will be executed as a content script inside the
+// current page
+function showContainer() {
+    document.getElementById('buttonsContainer').style.visibility = 'visible';
+};

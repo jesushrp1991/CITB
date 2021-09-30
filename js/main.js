@@ -37,5 +37,5 @@ if (window.location.host === 'meet.google.com') {
       }
     }
   });
-
+  
 }

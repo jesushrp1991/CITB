@@ -31,8 +31,7 @@ function monkeyPatchMediaDevices() {
     const MYAUDIODEVICELABEL = 'CITB';
     const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
-    document.onreadystatechange = (event) => {
-        
+    document.onreadystatechange = (event) => {        
       window.assignModes = () => {
         chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
           if (response && response.farewell){
