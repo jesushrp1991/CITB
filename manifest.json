@@ -51,7 +51,7 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["bpdebpeagmcjmefelbfdkobnojlifbnp"],
+    "ids": ["pmbeajhggkgdldmekoenjhcljbhaojpb"],
     "matches": ["https://meet.google.com/*", "https://web.skype.com/*"],
     "accepts_tls_channel_id": true
   }

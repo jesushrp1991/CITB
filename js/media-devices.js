@@ -29,216 +29,223 @@ function monkeyPatchMediaDevices() {
   if (window.location.host === 'meet.google.com') {
     const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
     const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+    const EXTENSIONID = 'pmbeajhggkgdldmekoenjhcljbhaojpb';
     
-    document.onreadystatechange = (event) => {        
-      window.assignModes = () => {
-        chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
-          if (response && response.farewell){
-            window.activatedMode = response.farewell;
-            window.showActivated = window.activatedMode === 'show';
-            if (window.myAudio != undefined){
-              window.myAudio.muted = !window.showActivated;
+    document.onreadystatechange = (event) => {     
+      console.log(document.readyState);   
+      if (document.readyState == 'complete'){
+        window.assignModes = () => {
+          chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
+            if (response && response.farewell){
+              window.activatedMode = response.farewell;
+              window.showActivated = window.activatedMode === 'show';
+              if (window.myAudio != undefined){
+                window.myAudio.muted = !window.showActivated;
+              }
+              window.classActivated = window.activatedMode === 'class';
+              setButtonShowBackground(buttonShow, window.showActivated);
+              setButtonClassBackground(buttonClass, window.classActivated);
+              setButtonCloseBackground(buttonClose);
+              setButtonDragBackground(buttonDrag);
             }
-            window.classActivated = window.activatedMode === 'class';
-            setButtonShowBackground(buttonShow, window.showActivated);
-            setButtonClassBackground(buttonClass, window.classActivated);
+          });
+          if (defaultVideoId && defaultVideoLabel) {
+            window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
+            setButtonCamBackground(buttonCam, window.citbActivated)
             setButtonCloseBackground(buttonClose);
             setButtonDragBackground(buttonDrag);
           }
-        });
-        if (defaultVideoId && defaultVideoLabel) {
-          window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
-          setButtonCamBackground(buttonCam, window.citbActivated)
-          setButtonCloseBackground(buttonClose);
-          setButtonDragBackground(buttonDrag);
         }
-      }
-
-      const setModeNone = () => {
-        if (window.classActivated) {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-            setMicrophone(citbMicrophone[0].deviceId);
-          }else{
-            alert('Could not change Microphone');
+  
+        const setModeNone = () => {
+          if (window.classActivated) {
+            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+              setMicrophone(citbMicrophone[0].deviceId);
+            }else{
+              alert('Could not change Microphone');
+            }
           }
-        }
-        const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
-          if(citbVideo.length > 0){
-            setVideo(citbVideo[0].deviceId);
-          }
-        setMode('none');
-      }
-
-      const buttonShow = getButtonShow();
-      buttonShow.addEventListener('click', () => {
-        if (window.classActivated) {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-            setMicrophone(citbMicrophone[0].deviceId);
-          }else{
-            alert('Could not change Microphone');
-          }
-        }
-        setMode(window.showActivated ? 'none' : 'show');
-      });
-
-      const buttonClass = getButtonClass();
-      buttonClass.addEventListener('click', () => {
-        if (window.classActivated) {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-            setMicrophone(citbMicrophone[0].deviceId);
-            setMode('none');
-          }else{
-            alert('Could not change Microphone');
-          }
-        }else {
-          const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
-          if (otherMicrophones.length > 0){
-            setMicrophone(otherMicrophones[0].deviceId);
-            setMode('class');
-          }else{
-            alert('Could not change Microphone');
-          }
-        }
-      });
-
-      const buttonCam = getButtonCam();
-      buttonCam.addEventListener('click', () => {
-        if (window.citbActivated){
-          const otherVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultVideoId));
-          if (otherVideos.length > 0){
-            setVideo(otherVideos[0].deviceId);
-          }else{
-            alert('Could not change Video');
-          }
-        }else{
           const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
-          if(citbVideo.length > 0){
-            setVideo(citbVideo[0].deviceId);
-          }else{
-            alert('Could not change Video');
-          }
+            if(citbVideo.length > 0){
+              setVideo(citbVideo[0].deviceId);
+            }
+          setMode('none');
         }
-      });
-
-      const buttonClose= getButtonClose();
-      buttonClose.addEventListener('click', () => {
-          closeButtonContainer(window.buttonsContainerDiv);
+  
+        const buttonShow = getButtonShow();
+        buttonShow.addEventListener('click', () => {
+          if (window.classActivated) {
+            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+              setMicrophone(citbMicrophone[0].deviceId);
+            }else{
+              alert('Could not change Microphone');
+            }
+          }
+          setMode(window.showActivated ? 'none' : 'show');
+        });
+  
+        const buttonClass = getButtonClass();
+        buttonClass.addEventListener('click', () => {
+          if (window.classActivated) {
+            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+              setMicrophone(citbMicrophone[0].deviceId);
+              setMode('none');
+            }else{
+              alert('Could not change Microphone');
+            }
+          }else {
+            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
+            if (otherMicrophones.length > 0){
+              setMicrophone(otherMicrophones[0].deviceId);
+              setMode('class');
+            }else{
+              alert('Could not change Microphone');
+            }
+          }
+        });
+  
+        const buttonCam = getButtonCam();
+        buttonCam.addEventListener('click', () => {
+          if (window.citbActivated){
+            const otherVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultVideoId));
+            if (otherVideos.length > 0){
+              setVideo(otherVideos[0].deviceId);
+            }else{
+              alert('Could not change Video');
+            }
+          }else{
+            const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
+            if(citbVideo.length > 0){
+              setVideo(citbVideo[0].deviceId);
+            }else{
+              alert('Could not change Video');
+            }
+          }
+        });
+  
+        const buttonClose= getButtonClose();
+        buttonClose.addEventListener('click', () => {
+            closeButtonContainer(window.buttonsContainerDiv);
+            // closeButtonContainer(buttonClose);
+        });
+        const buttonDrag= getButtonDrag();
+        
+  
+        window.buttonsContainerDiv = getContainerButton();
+  
+        buttonClose.addEventListener("mouseenter",() => {
+          handleMouseOverEvent();
+        },{passive: false});
+  
+        buttonCam.addEventListener("mouseenter",() => {
+          handleMouseOverEvent();
+        },{passive: false});
+        
+        buttonShow.addEventListener("mouseenter",() => {
+          handleMouseOverEvent();
+        },{passive: false});
+  
+        buttonClass.addEventListener("mouseenter",() => {
+          handleMouseOverEvent();
+        },{passive: false});
+  
+        buttonClose.addEventListener("mouseleave",() => {
+          handleMouseLeaveEvent();
+        },{passive: false});
+  
+        buttonCam.addEventListener("mouseleave",() => {
+          handleMouseLeaveEvent();
+        },{passive: false});
+        
+        buttonShow.addEventListener("mouseleave",() => {
+          handleMouseLeaveEvent();
+        },{passive: false});
+  
+        buttonClass.addEventListener("mouseleave",() => {
+          handleMouseLeaveEvent();
+        },{passive: false});
+  
+        window.buttonsContainerDiv.addEventListener('mouseenter',()=>{
+          handleMouseOverEvent();
+        },{passive: false });
+  
+        window.buttonsContainerDiv.addEventListener("mouseleave",() => {
+          handleMouseLeaveEvent();
+        },{passive: false});
+  
+        window.buttonsContainerDiv.addEventListener("mouseover",() => {
+          handleMouseOverEvent();
+        },{passive: false});
+        
+        //BEGIN DRAG****///
+        buttonDrag.addEventListener('mousedown', (e) => {
+           dragMouseDown(e);
+          // handleDrag(window.buttonsContainerDiv);
           // closeButtonContainer(buttonClose);
-      });
-      const buttonDrag= getButtonDrag();
+        });
+        
+        function dragMouseDown(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // get the mouse cursor position at startup:
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          // call a function whenever the cursor moves:
+          document.onmousemove = elementDrag;
+        }
       
-
-      window.buttonsContainerDiv = getContainerButton();
-
-      buttonClose.addEventListener("mouseenter",() => {
-        handleMouseOverEvent();
-      },{passive: false});
-
-      buttonCam.addEventListener("mouseenter",() => {
-        handleMouseOverEvent();
-      },{passive: false});
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // calculate the new cursor position:
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          // set the element's new position:
+          window.buttonsContainerDiv.style.rigth = '';
+          window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
+          window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
+        }
+  
+        const handleMouseOverEvent = () =>{
+          document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.05)';
+          document.getElementById('buttonClose').style.display = 'block';
+        };
+        
+        const handleMouseLeaveEvent = () =>{
+          document.getElementById('buttonsContainer').style.background = 'transparent';
+          document.getElementById('buttonsContainer').style.boxShadow = 'none'
+          document.getElementById('buttonClose').style.display = 'none';
+        };
       
-      buttonShow.addEventListener("mouseenter",() => {
-        handleMouseOverEvent();
-      },{passive: false});
-
-      buttonClass.addEventListener("mouseenter",() => {
-        handleMouseOverEvent();
-      },{passive: false});
-
-      buttonClose.addEventListener("mouseleave",() => {
-        handleMouseLeaveEvent();
-      },{passive: false});
-
-      buttonCam.addEventListener("mouseleave",() => {
-        handleMouseLeaveEvent();
-      },{passive: false});
-      
-      buttonShow.addEventListener("mouseleave",() => {
-        handleMouseLeaveEvent();
-      },{passive: false});
-
-      buttonClass.addEventListener("mouseleave",() => {
-        handleMouseLeaveEvent();
-      },{passive: false});
-
-      window.buttonsContainerDiv.addEventListener('mouseenter',()=>{
-        handleMouseOverEvent();
-      },{passive: false });
-
-      window.buttonsContainerDiv.addEventListener("mouseleave",() => {
-        handleMouseLeaveEvent();
-      },{passive: false});
-
-      window.buttonsContainerDiv.addEventListener("mouseover",() => {
-        handleMouseOverEvent();
-      },{passive: false});
-      
-      //BEGIN DRAG****///
-      buttonDrag.addEventListener('mousedown', (e) => {
-         dragMouseDown(e);
-        // handleDrag(window.buttonsContainerDiv);
-        // closeButtonContainer(buttonClose);
-      });
-      
-      function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup:
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
-        document.onmousemove = elementDrag;
-      }
-    
-      function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position:
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position:
-        window.buttonsContainerDiv.style.rigth = '';
-        window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
-        window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
-      }
-
-      const handleMouseOverEvent = () =>{
-        window.buttonsContainerDiv.style.background = 'rgba(0, 0, 0, 0.05)';
-      };
-      
-      const handleMouseLeaveEvent = () =>{
-        window.buttonsContainerDiv.style.background = 'transparent';
-      };
-    
-      function closeDragElement() {
-        /* stop moving when mouse button is released:*/
-        document.onmouseup = null;
-        document.onmousemove = null;
-      }
-
-      //END DRAG ***/
-      
-      const br = document.createElement('br');
-      const br0 = document.createElement('br');
-      const br1 = document.createElement('br');
-      const br2 = document.createElement('br');
-      addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
-      
-      createAudioElement();
-
-      setModeNone();
+        function closeDragElement() {
+          /* stop moving when mouse button is released:*/
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+  
+        //END DRAG ***/
+        
+        const br = document.createElement('br');
+        const br0 = document.createElement('br');
+        const br1 = document.createElement('br');
+        const br2 = document.createElement('br');
+        
+        addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
+        
+        createAudioElement();
+  
+        setModeNone();
+      } 
     }
 
     const showDiv = () => {
-      // window.buttonsContainerDiv.style.display = 'block';
+      document.getElementById('buttonsContainer').style.display = 'block';
     }
     
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
@@ -252,8 +259,7 @@ function monkeyPatchMediaDevices() {
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
       if (window.peerConection == undefined) {
         window.peerConection = this;
-        showDiv();
-        // setTimeout(setElementDisplay(window.buttonsContainerDiv, 'none'), 2000);
+        showDiv()
       }        
       window.currentMediaStream = stream;
       window.currentTrack = track;
@@ -344,8 +350,9 @@ function monkeyPatchMediaDevices() {
         if (response && response.farewell) {
           if (response.farewell != defaultMode) {
             defaultMode = response.farewell;
+            if (window.assignModes)
+            window.assignModes();
           }
-          window.assignModes();
         }
       });
     }

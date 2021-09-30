@@ -1,4 +1,4 @@
-const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+const EXTENSIONID = 'pmbeajhggkgdldmekoenjhcljbhaojpb';
 
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
@@ -37,13 +37,18 @@ const getButtonCam = () => {
 }
 const getButtonClose = () => {
     const buttonClose = document.createElement('button');
-    buttonClose.style.width = '40px';
-    buttonClose.style.height = '40px';
-    buttonClose.style.borderRadius = '40px';
+    buttonClose.setAttribute('id', 'buttonClose');
+    buttonClose.style.width = '30px';
+    buttonClose.style.height = '30px';
+    buttonClose.style.borderRadius = '30px';
     buttonClose.style.backgroundColor = 'transparent';
     buttonClose.style.padding = '0px';
     buttonClose.style.border = 'none';
     buttonClose.style.margin = '0px';
+    buttonClose.style.position = 'relative';
+    buttonClose.style.left = '30%';
+    buttonClose.style.top = '0px';
+    buttonClose.style.display = 'none';
     return buttonClose; 
 }
 
@@ -53,7 +58,7 @@ const getContainerButton = () => {
     div.style.position = 'absolute';
     div.style.zIndex = 999;
     div.style.width = '40px';
-    div.style.height = '220px';
+    div.style.height = '210px';
     div.style.top = '60px';
     div.style.right = '16px';
     div.style.background = 'transparent';
@@ -62,15 +67,16 @@ const getContainerButton = () => {
     return div;
 }
 const getButtonDrag = () => {
-  const buttonClose = document.createElement('button');
-  buttonClose.style.width = '40px';
-  buttonClose.style.height = '40px';
-  buttonClose.style.borderRadius = '40px';
-  buttonClose.style.backgroundColor = 'transparent';
-  buttonClose.style.padding = '0px';
-  buttonClose.style.border = 'none';
-  buttonClose.style.margin = '0px';
-  return buttonClose; 
+  const buttonDrag = document.createElement('button');
+  buttonDrag.setAttribute('id', 'buttonDrag');
+  buttonDrag.style.width = '40px';
+  buttonDrag.style.height = '40px';
+  buttonDrag.style.borderRadius = '40px';
+  buttonDrag.style.backgroundColor = 'transparent';
+  buttonDrag.style.padding = '0px';
+  buttonDrag.style.border = 'none';
+  buttonDrag.style.margin = '0px';
+  return buttonDrag; 
 }
 
 const setMicrophone = (microphone) => {
@@ -137,11 +143,15 @@ const setMicrophone = (microphone) => {
   }
 
   const handleMouseOverEvent = () =>{
-    document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.05)';
+    console.log('esta entrando al metodo');
+    document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.08)';
+    document.getElementById('buttonClose').style.display = 'block';
+    document.getElementById('buttonsContainer').style.boxShadow = '5px 5px 5px #999999'
   };
   
   const handleMouseLeaveEvent = () =>{
     document.getElementById('buttonsContainer').style.background = 'transparent';
+    document.getElementById('buttonsContainer').style.boxShadow = 'none'
   };
   
   const handleDrag = (pos1,pos2) =>{
@@ -153,7 +163,6 @@ const setMicrophone = (microphone) => {
 
   const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag) => {
     div.appendChild(buttonClose);
-    div.appendChild(br0);
     div.appendChild(buttonCam);
     div.appendChild(br);
     div.appendChild(buttonShow);
@@ -161,8 +170,8 @@ const setMicrophone = (microphone) => {
     div.appendChild(buttonClass);
     div.appendChild(br2);
     div.appendChild(buttonDrag);
-    // if (!document.getElementById('buttonsContainer'))
     document.body.appendChild(div);
+    div.style.display = 'none';
   }
 
   const createAudioElement = () => {
@@ -171,12 +180,10 @@ const setMicrophone = (microphone) => {
     window.myAudio.setAttribute('volume', '1.0');
     window.myAudio.setAttribute('controls', null);
     window.myAudio.setAttribute('autoplay', null);
-    if (!document.getElementById('speaker'))
     document.body.appendChild(window.myAudio); 
   }
 
   const closeButtonContainer = (divContainer) => {
-    // document.getElementById('buttonsContainer').remove(); 
     document.getElementById('buttonsContainer').style.visibility = 'hidden';
   };
 
