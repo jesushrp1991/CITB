@@ -162,9 +162,9 @@ chrome.runtime.onMessageExternal.addListener(
       console.log('***audioIDBack', request.setDefaultAudioId);
       chrome.storage.sync.set({ 'defaultAudioId' : request.setDefaultAudioId }, () =>
         sendResponse({farewell: request.setDefaultAudioId}) );
-    } else if (request.setWebContainerClosed == true) {
-      console.log('received in the background', request.setWebContainerClosed)
-      chrome.storage.sync.set({ 'webContainerClosed' : true }, () => {
+    } else if (request.containerClosed) {
+      console.log('received in the background', request.containerClosed)
+      chrome.storage.sync.set({ 'containerClosed' : true }, () => {
         console.log('se seteo en el storage el contenedor cerrado')
         sendResponse({farewell: "se ha cerrado el contenedor web"}) 
       });

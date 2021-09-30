@@ -13,23 +13,20 @@ let microphonesList = [];
 let videosList = []
 
 chrome.storage.sync.get("devicesList", ({ devicesList }) => {
-  console.log(devicesList)
   if (devicesList) {
     microphonesList = devicesList.filter(x => x.kind == 'audioinput');
     videosList = devicesList.filter(x => x.kind == 'videoinput');
   }
 })
 
-chrome.storage.sync.get("webContainerClosed", ({ response }) => {
-  if (response) {
-    console.log('recibo del storage ', response)
-    webContainerClosed = response;
+chrome.storage.sync.get("containerClosed", ({ containerClosed }) => {
+  if (containerClosed != undefined) {
+    webContainerClosed = containerClosed;
     setButtonWebContainerBackground(webContainerClosed);
   }
 })
 
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideo }) => {
-  console.log(defaultVideo)
   if (!defaultVideo == undefined) {
     defaultVideoId = defaultVideo;
     defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
@@ -37,7 +34,6 @@ chrome.storage.sync.get("defaultVideoId", ({ defaultVideo }) => {
 })
 
 chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
-  console.log(defaultMode)
   showActivated = defaultMode === 'show';
   classActivated = defaultMode === 'class';
   setButtonShowBackground(showActivated);
@@ -152,33 +148,28 @@ buttonClass.addEventListener("click", async () => {
 
 // When the button is clicked, inject setPageBackgroundColor into current page
 showWebContainer.addEventListener("click", async () => {
-  console.log('voy a mostrar u ocultar el contenedor')
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.storage.sync.get("webContainerClosed", ({ response }) => {
-    console.log(response)
-    if (response) {
-      console.log('recibo del storage ', response)
-      webContainerClosed = response;
-      if (webContainerClosed) {
-        console.log('esta cerrado')
-        webContainerClosed = !webContainerClosed;
-        setButtonWebContainerBackground(webContainerClosed);
-        console.log('voy a abrirlo')
+  chrome.storage.sync.get("containerClosed", ({ containerClosed }) => {
+    webContainerClosed = containerClosed;
+    if (webContainerClosed) {
+      webContainerClosed = !webContainerClosed;
+      setButtonWebContainerBackground(webContainerClosed);
+      chrome.storage.sync.set({ 'containerClosed': false }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           function: showContainer,
         })
-      }
-      else {
-        console.log('esta abierto')
-        webContainerClosed = !webContainerClosed;
-        setButtonWebContainerBackground(webContainerClosed);
-        console.log('voy a cerrrarlo')
+      });
+    }
+    else {
+      webContainerClosed = !webContainerClosed;
+      setButtonWebContainerBackground(webContainerClosed);
+      chrome.storage.sync.set({ 'containerClosed': true }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           function: closeContainer,
         })
-      }
+      });
     }
   })
 });
