@@ -7,7 +7,7 @@ const MYAUDIODEVICELABEL = 'CITB';
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
-  chrome.storage.sync.set({ 'isHiddenWebContainer':false });
+  chrome.storage.sync.set({ 'containerClosed':false });
 });
 
 const getAvailableMicrophone = (devicesList) => {
