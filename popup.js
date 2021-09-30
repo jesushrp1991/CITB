@@ -2,6 +2,7 @@
 let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
+let showWebContainer = document.getElementById('buttonWebContainer'); 
 let showActivated = false, classActivated = false, citbActivated;
 const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
 const MYAUDIODEVICELABEL = 'CITB';
@@ -136,15 +137,41 @@ buttonClass.addEventListener("click", async () => {
 // When the button is clicked, inject setPageBackgroundColor into current page
 showWebContainer.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    function: showContainer,
-  });
+  let isHidden;
+  chrome.storage.sync.get('isHiddenWebContainer', (result) => {
+    console.log(result.isHiddenWebContainer);
+    isHidden = result.isHiddenWebContainer;
+  })
+  if(isHidden)
+  {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: showContainer,
+    })
+  }
+  else{
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: closeContainer,
+    })
+  }
+  ;
 });
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.greeting == "hello")
+      sendResponse({farewell: "goodbye"});
+  });
 
 // The body of this function will be executed as a content script inside the
 // current page
-function showContainer() {
+const showContainer = () => {
+    console.log("Set showContainer");
     document.getElementById('buttonsContainer').style.visibility = 'visible';
+};
+
+const closeContainer = () => {
+    console.log("Set closeContainer");
+    document.getElementById('buttonsContainer').style.visibility = 'hidden';
 };

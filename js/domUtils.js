@@ -1,4 +1,4 @@
-const EXTENSIONID = 'pmbeajhggkgdldmekoenjhcljbhaojpb';
+const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
 
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
@@ -185,6 +185,9 @@ const setMicrophone = (microphone) => {
 
   const closeButtonContainer = (divContainer) => {
     document.getElementById('buttonsContainer').style.visibility = 'hidden';
+    chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+      console.log(response.farewell);
+    });
   };
 
   const getVirtualCam = () => {

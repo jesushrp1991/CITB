@@ -7,6 +7,7 @@ const MYAUDIODEVICELABEL = 'CITB';
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
+  chrome.storage.sync.set({ 'isHiddenWebContainer':false });
 });
 
 const getAvailableMicrophone = (devicesList) => {
@@ -107,6 +108,7 @@ const setDeviceWhenPlugged = (device, devicesList) => {
 
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
+    console.log("request.greeting",request.greeting);
     if (request.devicesList) {
       chrome.storage.sync.get("devicesList", ({ devicesList }) => {
         if (devicesList == undefined){
@@ -161,6 +163,13 @@ chrome.runtime.onMessageExternal.addListener(
       console.log('***audioIDBack', request.setDefaultAudioId);
       chrome.storage.sync.set({ 'defaultAudioId' : request.setDefaultAudioId }, () =>
         sendResponse({farewell: request.setDefaultAudioId}) );
+    } 
+    else if (request.greeting == "hello")
+      sendResponse({farewell: "goodbye"});
     }
-  } 
+    // else if (request.isHiddenWebContainer === "hello"){
+    //   console.log("AQUI COLLADO");
+    //   chrome.storage.sync.set({ 'isHiddenWebContainer' : true }, () =>
+    //     sendResponse({farewell: "Bye"}) );
+    // }
 );
