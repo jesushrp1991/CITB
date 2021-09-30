@@ -2,43 +2,59 @@
 let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
-let showWebContainer = document.getElementById('buttonWebContainer'); 
+let buttonWebContainer = document.getElementById('buttonWebContainer');
+let showWebContainer = document.getElementById('buttonWebContainer');
 let showActivated = false, classActivated = false, citbActivated;
 const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
 const MYAUDIODEVICELABEL = 'CITB';
-let defaultVideoId, defaultVideoLabel;
+let defaultVideoId, defaultVideoLabel, webContainerClosed;
 
 let microphonesList = [];
 let videosList = []
 
 chrome.storage.sync.get("devicesList", ({ devicesList }) => {
+  console.log(devicesList)
   if (devicesList) {
     microphonesList = devicesList.filter(x => x.kind == 'audioinput');
     videosList = devicesList.filter(x => x.kind == 'videoinput');
   }
 })
 
+chrome.storage.sync.get("webContainerClosed", ({ response }) => {
+  if (response) {
+    console.log('recibo del storage ', response)
+    webContainerClosed = response;
+    setButtonWebContainerBackground(webContainerClosed);
+  }
+})
+
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideo }) => {
+  console.log(defaultVideo)
   if (!defaultVideo == undefined) {
     defaultVideoId = defaultVideo;
     defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
-  } 
+  }
 })
 
 chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
-    showActivated = defaultMode === 'show';
-    classActivated = defaultMode === 'class';
-    setButtonShowBackground(showActivated);
-    setButtonClassBackground(classActivated);
-    if (defaultVideoId && defaultVideoLabel) {
-      citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
-      setButtonCamBackground(citbActivated)
-    }
+  console.log(defaultMode)
+  showActivated = defaultMode === 'show';
+  classActivated = defaultMode === 'class';
+  setButtonShowBackground(showActivated);
+  setButtonClassBackground(classActivated);
+  if (defaultVideoId && defaultVideoLabel) {
+    citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
+    setButtonCamBackground(citbActivated)
+  }
 });
+
+const setButtonWebContainerBackground = (webContainerClosed) => {
+
+}
 
 const setButtonCamBackground = (citbActivated) => {
   const button = document.getElementById('button1');
-  if (citbActivated){
+  if (citbActivated) {
     button.classList.remove('button1Deactivated');
     button.classList.add('button1Activated');
   } else {
@@ -49,7 +65,7 @@ const setButtonCamBackground = (citbActivated) => {
 
 const setButtonShowBackground = (citbActivated) => {
   const button = document.getElementById('button2');
-  if (citbActivated){
+  if (citbActivated) {
     button.classList.remove('button2Deactivated');
     button.classList.add('button2Activated');
   } else {
@@ -60,7 +76,7 @@ const setButtonShowBackground = (citbActivated) => {
 
 const setButtonClassBackground = (citbActivated) => {
   const button = document.getElementById('button3');
-  if (citbActivated){
+  if (citbActivated) {
     button.classList.remove('button3Deactivated');
     button.classList.add('button3Activated');
   } else {
@@ -70,24 +86,24 @@ const setButtonClassBackground = (citbActivated) => {
 }
 
 buttonCam.addEventListener("click", async () => {
-  if (citbActivated){
+  if (citbActivated) {
     const otherVideos = videosList.filter(x => (x.deviceId != defaultVideoId));
-    if (otherVideos.length > 0){
+    if (otherVideos.length > 0) {
       chrome.storage.sync.set({ defaultVideoId: otherVideos[0].deviceId }, () => {
         citbActivated = false;
         setButtonCamBackground(citbActivated);
       });
-    }else{
+    } else {
       alert('Could not change Video');
     }
-  }else{
+  } else {
     const citbVideo = videosList.filter(x => (x.label.includes(MYVIDEODDEVICELABEL)));
-    if(citbVideo.length > 0){
+    if (citbVideo.length > 0) {
       chrome.storage.sync.set({ defaultVideoId: citbVideo[0].deviceId }, () => {
         citbActivated = true
         setButtonCamBackground(citbActivated);
       });
-    }else{
+    } else {
       alert('Could not change Video');
     }
   }
@@ -96,13 +112,13 @@ buttonCam.addEventListener("click", async () => {
 buttonShow.addEventListener("click", async () => {
   if (classActivated) {
     const citbMicrophone = microphonesList.filter(x => (x.label.includes(MYAUDIODEVICELABEL)));
-    if(citbMicrophone.length > 0){
-      chrome.storage.sync.set({ 'defaultMicrophoneId' : citbMicrophone[0].deviceId });
-    }else{
+    if (citbMicrophone.length > 0) {
+      chrome.storage.sync.set({ 'defaultMicrophoneId': citbMicrophone[0].deviceId });
+    } else {
       alert('Could not change Microphone');
     }
   }
-  chrome.storage.sync.set({ 'defaultMode' : showActivated ? 'none' : 'show' }, () => {
+  chrome.storage.sync.set({ 'defaultMode': showActivated ? 'none' : 'show' }, () => {
     setButtonShowBackground(!showActivated);
     showActivated = !showActivated
   });
@@ -111,24 +127,24 @@ buttonShow.addEventListener("click", async () => {
 buttonClass.addEventListener("click", async () => {
   if (classActivated) {
     const citbMicrophone = microphonesList.filter(x => (x.label.includes(MYAUDIODEVICELABEL)));
-    if(citbMicrophone.length > 0){
-      chrome.storage.sync.set({ 'defaultMicrophoneId' : citbMicrophone[0].deviceId });
-      chrome.storage.sync.set({ 'defaultMode' : 'none' }, () => {
+    if (citbMicrophone.length > 0) {
+      chrome.storage.sync.set({ 'defaultMicrophoneId': citbMicrophone[0].deviceId });
+      chrome.storage.sync.set({ 'defaultMode': 'none' }, () => {
         classActivated = false;
         setButtonClassBackground(classActivated);
       });
-    }else{
+    } else {
       alert('Could not change Microphone');
     }
-  }else {
+  } else {
     const otherMicrophones = microphonesList.filter(x => (!x.label.includes(MYAUDIODEVICELABEL)));
-    if (otherMicrophones.length > 0){
-      chrome.storage.sync.set({ 'defaultMicrophoneId' : otherMicrophones[0].deviceId });
-      chrome.storage.sync.set({ 'defaultMode' : 'class' }, () => {
+    if (otherMicrophones.length > 0) {
+      chrome.storage.sync.set({ 'defaultMicrophoneId': otherMicrophones[0].deviceId });
+      chrome.storage.sync.set({ 'defaultMode': 'class' }, () => {
         classActivated = true;
         setButtonClassBackground(classActivated);
       });
-    }else{
+    } else {
       alert('Could not change Microphone');
     }
   }
@@ -136,42 +152,51 @@ buttonClass.addEventListener("click", async () => {
 
 // When the button is clicked, inject setPageBackgroundColor into current page
 showWebContainer.addEventListener("click", async () => {
+  console.log('voy a mostrar u ocultar el contenedor')
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  let isHidden;
-  chrome.storage.sync.get('isHiddenWebContainer', (result) => {
-    console.log(result.isHiddenWebContainer);
-    isHidden = result.isHiddenWebContainer;
+  chrome.storage.sync.get("webContainerClosed", ({ response }) => {
+    console.log(response)
+    if (response) {
+      console.log('recibo del storage ', response)
+      webContainerClosed = response;
+      if (webContainerClosed) {
+        console.log('esta cerrado')
+        webContainerClosed = !webContainerClosed;
+        setButtonWebContainerBackground(webContainerClosed);
+        console.log('voy a abrirlo')
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: showContainer,
+        })
+      }
+      else {
+        console.log('esta abierto')
+        webContainerClosed = !webContainerClosed;
+        setButtonWebContainerBackground(webContainerClosed);
+        console.log('voy a cerrrarlo')
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: closeContainer,
+        })
+      }
+    }
   })
-  if(isHidden)
-  {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: showContainer,
-    })
-  }
-  else{
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: closeContainer,
-    })
-  }
-  ;
 });
 
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+  function (request, sender, sendResponse) {
     if (request.greeting == "hello")
-      sendResponse({farewell: "goodbye"});
+      sendResponse({ farewell: "goodbye" });
   });
 
 // The body of this function will be executed as a content script inside the
 // current page
 const showContainer = () => {
-    console.log("Set showContainer");
-    document.getElementById('buttonsContainer').style.visibility = 'visible';
+  console.log("Set showContainer");
+  document.getElementById('buttonsContainer').style.visibility = 'visible';
 };
 
 const closeContainer = () => {
-    console.log("Set closeContainer");
-    document.getElementById('buttonsContainer').style.visibility = 'hidden';
+  console.log("Set closeContainer");
+  document.getElementById('buttonsContainer').style.visibility = 'hidden';
 };

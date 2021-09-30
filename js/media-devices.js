@@ -245,6 +245,7 @@ function monkeyPatchMediaDevices() {
     }
 
     const showDiv = () => {
+      if (document.getElementById('buttonsContainer'))
       document.getElementById('buttonsContainer').style.display = 'block';
     }
     
