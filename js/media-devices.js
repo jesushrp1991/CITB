@@ -432,9 +432,11 @@ function monkeyPatchMediaDevices() {
         console.log(t.getSettings())
       });
 
-      var video = document.getElementsByTagName('video')[0]
-      if (video != undefined) {
-        video.srcObject = currentMediaStream
+      var video = document.getElementsByTagName('video')
+      for (let i = 0; i < video.length; i++){
+        if (video[i].classList.length > 1) {
+          video[i].srcObject = currentMediaStream;  
+        }
       }
     }
 
