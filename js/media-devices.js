@@ -433,9 +433,9 @@ function monkeyPatchMediaDevices() {
       });
 
       var video = document.getElementsByTagName('video')
-      for (let i = 0; i < checkingVideo.length; i++){
-        if (video[i].classList > 1) {
-          video.srcObject = currentMediaStream;  
+      for (let i = 0; i < video.length; i++){
+        if (video[i].classList.length > 1) {
+          video[i].srcObject = currentMediaStream;  
         }
       }
     }
