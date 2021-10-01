@@ -6,7 +6,7 @@ let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonOpen4WebContainer = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated;
-const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
+const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYAUDIODEVICELABEL = 'CITB';
 let defaultVideoId, defaultVideoLabel, webContainerClosed;
 

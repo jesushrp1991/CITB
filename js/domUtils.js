@@ -38,16 +38,16 @@ const getButtonCam = () => {
 const getButtonClose = () => {
     const buttonClose = document.createElement('button');
     buttonClose.setAttribute('id', 'buttonClose');
-    buttonClose.style.width = '30px';
-    buttonClose.style.height = '30px';
-    buttonClose.style.borderRadius = '30px';
+    buttonClose.style.width = '20px';
+    buttonClose.style.height = '20px';
+    buttonClose.style.borderRadius = '20px';
     buttonClose.style.backgroundColor = 'transparent';
     buttonClose.style.padding = '0px';
     buttonClose.style.border = 'none';
     buttonClose.style.margin = '0px';
-    buttonClose.style.position = 'relative';
-    buttonClose.style.left = '30%';
-    buttonClose.style.top = '0px';
+    buttonClose.style.position = 'absolute';
+    buttonClose.style.left = 'calc(50% - 10px)';
+    buttonClose.style.bottom = '10px';
     buttonClose.style.display = 'none';
     return buttonClose; 
 }
@@ -69,13 +69,14 @@ const getContainerButton = () => {
 const getButtonDrag = () => {
   const buttonDrag = document.createElement('button');
   buttonDrag.setAttribute('id', 'buttonDrag');
-  buttonDrag.style.width = '40px';
-  buttonDrag.style.height = '40px';
-  buttonDrag.style.borderRadius = '40px';
+  buttonDrag.style.width = '20px';
+  buttonDrag.style.height = '20px';
+  buttonDrag.style.borderRadius = '20px';
   buttonDrag.style.backgroundColor = 'transparent';
   buttonDrag.style.padding = '0px';
   buttonDrag.style.border = 'none';
-  buttonDrag.style.margin = '0px';
+  buttonDrag.style['margin-top'] = '10px';
+  buttonDrag.style['margin-left'] = '9px';
   return buttonDrag; 
 }
 

@@ -27,7 +27,7 @@ import {
 function monkeyPatchMediaDevices() {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (window.location.host === 'meet.google.com') {
-    const MYVIDEODDEVICELABEL = 'FJ Camera (04f2:b563)';
+    const MYVIDEODDEVICELABEL = '2K HD Camera';
     const MYAUDIODEVICELABEL = 'CITB';
     const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
@@ -181,6 +181,11 @@ function monkeyPatchMediaDevices() {
         },{passive: false});
         
         //BEGIN DRAG****///
+        window.buttonsContainerDiv.addEventListener('mousedown', (e) => {
+           dragMouseDown(e);
+          // handleDrag(window.buttonsContainerDiv);
+          // closeButtonContainer(buttonClose);
+        });
         buttonDrag.addEventListener('mousedown', (e) => {
            dragMouseDown(e);
           // handleDrag(window.buttonsContainerDiv);
@@ -282,7 +287,9 @@ function monkeyPatchMediaDevices() {
           if (response.farewell != defaultVideoId || run) {
             defaultVideoId = response.farewell;
             defaultVideoLabel = devices.filter(x => x.deviceId === defaultVideoId)[0].label;
-            window.assignModes();
+            if (window.assignModes){
+              window.assignModes();
+            }
 
             await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
             const camVideoTrack = currentMediaStream.getVideoTracks()[0];
@@ -332,7 +339,9 @@ function monkeyPatchMediaDevices() {
             console.log("INSIDE INSIDE", defaultDevice[0].label, currentTrackLabel)
             defaultMicrophoneId = response.farewell;
             defaultMicrophoneLabel = devices.filter(x => x.deviceId === defaultMicrophoneId)[0].label;
-            window.assignModes();
+            if (window.assignModes) {
+              window.assignModes();
+            }
 
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
             setAudioSrc()
