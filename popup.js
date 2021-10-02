@@ -27,20 +27,21 @@ chrome.storage.sync.get("devicesList", ({ devicesList }) => {
 //   }
 // })
 
-chrome.storage.sync.get("defaultVideoId", ({ defaultVideo }) => {
-  console.log(defaultVideo);
-  if (!defaultVideo == undefined) {
-    defaultVideoId = defaultVideo;
+chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
+  console.log('asdsadasdaa');
+  console.log(defaultVideoId);
+  if (defaultVideoId !== undefined) {
+    defaultVideo = defaultVideoId;
     defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
   }
-})
+});
 
 chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
   showActivated = defaultMode === 'show';
   classActivated = defaultMode === 'class';
   setButtonShowBackground(showActivated);
   setButtonClassBackground(classActivated);
-  if (defaultVideoId && defaultVideoLabel) {
+  if (defaultVideo && defaultVideoLabel) {
     citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
     setButtonCamBackground(citbActivated)
   }
@@ -88,10 +89,15 @@ const setButtonClassBackground = (citbActivated) => {
 }
 
 buttonCam.addEventListener("click", async () => {
+  console.log('le dio clic al boton de la camara');
   if (citbActivated) {
-    const otherVideos = videosList.filter(x => (x.deviceId != defaultVideoId));
+    console.log('esta activado')
+    const otherVideos = videosList.filter(x => (x.deviceId != defaultVideo));
+    console.log('other videos length', otherVideos.length);
     if (otherVideos.length > 0) {
+      console.log('entro al if')
       chrome.storage.sync.set({ defaultVideoId: otherVideos[0].deviceId }, () => {
+        console.log('seteo el valor en el storage');
         citbActivated = false;
         setButtonCamBackground(citbActivated);
       });
@@ -99,9 +105,13 @@ buttonCam.addEventListener("click", async () => {
       alert('Could not change Video');
     }
   } else {
+    console.log('no esta activado')
     const citbVideo = videosList.filter(x => (x.label.includes(MYVIDEODDEVICELABEL)));
+    console.log('other videos length', citbVideo.length);
     if (citbVideo.length > 0) {
+      console.log('entro al if')
       chrome.storage.sync.set({ defaultVideoId: citbVideo[0].deviceId }, () => {
+        console.log('seteo el valor en el storage');
         citbActivated = true
         setButtonCamBackground(citbActivated);
       });
