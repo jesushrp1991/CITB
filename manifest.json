@@ -5,7 +5,8 @@
   "manifest_version": 3,
   "minimum_chrome_version": "10.0",
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions": [
     "storage",
@@ -36,7 +37,7 @@
         "https://meet.google.com/*"
       ],
       "js": [
-        "js/inject.js"
+        "js/main.js"
       ],
       "run_at": "document_start",
       "all_frames": true
