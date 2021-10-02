@@ -19,16 +19,16 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "CITB COLOR.png",
-      "48": "CITB COLOR.png",
-      "64": "CITB COLOR.png",
-      "128": "CITB COLOR.png"
+      "16": "CITB COLOR SIN CIRCULO.png",
+      "48": "CITB COLOR SIN CIRCULO.png",
+      "64": "CITB COLOR SIN CIRCULO.png",
+      "128": "CITB COLOR SIN CIRCULO.png"
     }
   },
   "icons": {
-    "16": "CITB COLOR.png",
-    "48": "CITB COLOR.png",
-    "128": "CITB COLOR.png"
+    "16": "CITB COLOR SIN CIRCULO.png",
+    "48": "CITB COLOR SIN CIRCULO.png",
+    "128": "CITB COLOR SIN CIRCULO.png"
   },
   "content_scripts": [
     {
