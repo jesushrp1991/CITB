@@ -61,7 +61,7 @@ const getContainerButton = () => {
     div.style.height = '210px';
     div.style.top = '60px';
     div.style.right = '16px';
-    div.style.background = 'transparent';
+    div.style.background = 'rgb(240, 243, 250)';
     div.style.borderRadius = '20px';
     // div.style.display = 'block';
     return div;
@@ -145,13 +145,13 @@ const setMicrophone = (microphone) => {
 
   const handleMouseOverEvent = () =>{
     console.log('esta entrando al metodo');
-    document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.08)';
+    document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.08)';
     document.getElementById('buttonClose').style.display = 'block';
     document.getElementById('buttonsContainer').style.boxShadow = '5px 5px 5px #999999'
   };
   
   const handleMouseLeaveEvent = () =>{
-    document.getElementById('buttonsContainer').style.background = 'transparent';
+    document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
     document.getElementById('buttonsContainer').style.boxShadow = 'none'
   };
   

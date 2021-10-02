@@ -218,12 +218,12 @@ function monkeyPatchMediaDevices() {
         }
   
         const handleMouseOverEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'rgba(0, 0, 0, 0.05)';
+          document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
           document.getElementById('buttonClose').style.display = 'block';
         };
         
         const handleMouseLeaveEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'transparent';
+          document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
           document.getElementById('buttonsContainer').style.boxShadow = 'none'
           document.getElementById('buttonClose').style.display = 'none';
         };
