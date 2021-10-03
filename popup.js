@@ -8,7 +8,7 @@ let buttonOpen4WebContainer = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated;
 const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYAUDIODEVICELABEL = 'CITB';
-let defaultVideoId, defaultVideoLabel, webContainerClosed;
+let defaultVideo, defaultVideoLabel, webContainerClosed;
 
 let microphonesList = [];
 let videosList = []
