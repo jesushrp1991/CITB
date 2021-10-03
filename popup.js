@@ -2,9 +2,7 @@
 let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
-// let buttonWebContainer = document.getElementById('button4');
 let button4WEB = document.getElementById('button4');
-let buttonOpen4WebContainer = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated;
 const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYAUDIODEVICELABEL = 'CITB';
@@ -18,14 +16,13 @@ chrome.storage.sync.get("devicesList", ({ devicesList }) => {
     microphonesList = devicesList.filter(x => x.kind == 'audioinput');
     videosList = devicesList.filter(x => x.kind == 'videoinput');
   }
-})
+});
 
-// chrome.storage.sync.get("webContainer", ({ containerClosed }) => {
-//   if (containerClosed != undefined) {
-//     webContainerClosed = containerClosed;
-//     setButtonWebContainerBackground(webContainerClosed);
-//   }
-// })
+chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
+  console.log(buttonsOpen);
+  webContainerClosed = buttonsOpen;
+  setButtonWebContainerBackground(buttonsOpen);
+});
 
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
   console.log('asdsadasdaa');
@@ -162,59 +159,41 @@ buttonClass.addEventListener("click", async () => {
   }
 });
 
-buttonOpen4WebContainer.addEventListener("click", async () => {
-  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.scripting.executeScript({
-              target: { tabId: tab.id },
-              function: showContainer,
-            });
-  
-});
-
-// When the button is clicked, inject setPageBackgroundColor into current page
 button4WEB.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            function: closeContainer,
+  chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
+    console.log(buttonsOpen);
+    webContainerClosed = buttonsOpen;
+    if (webContainerClosed) {
+      console.log('esta cerrado');
+      webContainerClosed = !webContainerClosed;
+      setButtonWebContainerBackground(webContainerClosed);
+      console.log('voy a abrirlo');
+      chrome.storage.sync.set({ 'buttonsOpen': false }, () => {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: showContainer,
+        })
+      });
+    } else {
+      console.log('esta abierto')
+      webContainerClosed = !webContainerClosed;
+      setButtonWebContainerBackground(webContainerClosed);
+      console.log('voy a cerrarlo');
+      chrome.storage.sync.set({ 'buttonsOpen': true }, () => {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: closeContainer,
+        })
+      });
+    }
   });
-  // chrome.storage.sync.get("webContainer", ({ response: result }) => {
-  //   console.log("Response",result);
-  //   if (result) {
-  //     console.log('recibo del storage ', result)
-  //     webContainerClosed = result;
-  //     if (webContainerClosed) {
-  //       console.log('esta cerrado');
-  //       webContainerClosed = !webContainerClosed;
-  //       setButtonWebContainerBackground(webContainerClosed);
-  //       console.log('voy a abrirlo');
-  //       chrome.scripting.executeScript({
-  //         target: { tabId: tab.id },
-  //         function: showContainer,
-  //       });
-  //     }
-  //   }
-  //   else {
-  //     webContainerClosed = !webContainerClosed;
-  //     setButtonWebContainerBackground(webContainerClosed);
-  //     chrome.storage.sync.set({ 'containerClosed': true }, () => {
-  //       chrome.scripting.executeScript({
-  //         target: { tabId: tab.id },
-  //         function: closeContainer,
-  //       })
-  //     });
-  //   }
-  // });
 });
 
-// The body of this function will be executed as a content script inside the
-// current page
 const showContainer = () => {
-  console.log("Set showContainer");
   document.getElementById('buttonsContainer').style.visibility = 'visible';
 };
 
 const closeContainer = () => {
-  console.log("Set closeContainer");
   document.getElementById('buttonsContainer').style.visibility = 'hidden';
 };

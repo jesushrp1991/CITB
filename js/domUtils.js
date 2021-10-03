@@ -186,7 +186,7 @@ const setMicrophone = (microphone) => {
 
   const closeButtonContainer = (divContainer) => {
     document.getElementById('buttonsContainer').style.visibility = 'hidden';
-    chrome.runtime.sendMessage(EXTENSIONID, { 'webContainer': true }, async function (response) {
+    chrome.runtime.sendMessage(EXTENSIONID, { 'buttonsOpen': true }, async function (response) {
       if (response && response.farewell){ 
         console.log(response.farewell);
       }
