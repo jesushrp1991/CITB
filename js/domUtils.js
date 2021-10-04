@@ -1,4 +1,4 @@
-const EXTENSIONID = 'bpdebpeagmcjmefelbfdkobnojlifbnp';
+const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
 
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
@@ -81,7 +81,7 @@ const getButtonDrag = () => {
 }
 
 const setMicrophone = (microphone) => {
-    console.log('***microphoneIDsent', microphone);
+    //console.log('***microphoneIDsent', microphone);
     chrome.runtime.sendMessage(EXTENSIONID, { setDefaultMicrophoneId: microphone }, async function (response) {
       if (response && response.farewell){ 
       }
@@ -89,7 +89,7 @@ const setMicrophone = (microphone) => {
   }
 
   const setMode = (mode) => {
-    console.log('***voy a mandar hacia el back ', mode)
+    //console.log('***voy a mandar hacia el back ', mode)
     chrome.runtime.sendMessage(EXTENSIONID, { setDefaultMode: mode }, async function (response1) {
       if (response1 && response1.farewell){
       }
@@ -144,7 +144,7 @@ const setMicrophone = (microphone) => {
   }
 
   const handleMouseOverEvent = () =>{
-    console.log('esta entrando al metodo');
+    //console.log('esta entrando al metodo');
     document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.08)';
     document.getElementById('buttonClose').style.display = 'block';
     document.getElementById('buttonsContainer').style.boxShadow = '5px 5px 5px #999999'
@@ -156,7 +156,7 @@ const setMicrophone = (microphone) => {
   };
   
   const handleDrag = (pos1,pos2) =>{
-    console.log("ENTRO!!!");
+    //console.log("ENTRO!!!");
     let doc = document.getElementById('buttonsContainer');
     doc.style.top = (doc.offsetTop - pos2) + "px";
     doc.style.left = (doc.offsetLeft - pos1) + "px";
@@ -188,7 +188,7 @@ const setMicrophone = (microphone) => {
     document.getElementById('buttonsContainer').style.visibility = 'hidden';
     chrome.runtime.sendMessage(EXTENSIONID, { 'buttonsOpen': true }, async function (response) {
       if (response && response.farewell){ 
-        console.log(response.farewell);
+        //console.log(response.farewell);
       }
     });
   };

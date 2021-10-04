@@ -4,7 +4,7 @@ let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let showActivated = false, classActivated = false, citbActivated;
-const MYVIDEODDEVICELABEL = '2K HD Camera';
+const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYAUDIODEVICELABEL = 'CITB';
 let defaultVideo, defaultVideoLabel, webContainerClosed;
 
@@ -19,14 +19,14 @@ chrome.storage.sync.get("devicesList", ({ devicesList }) => {
 });
 
 chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
-  console.log(buttonsOpen);
+  //console.log(buttonsOpen);
   webContainerClosed = buttonsOpen;
   setButtonWebContainerBackground(buttonsOpen);
 });
 
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
-  console.log('asdsadasdaa');
-  console.log(defaultVideoId);
+  //console.log('asdsadasdaa');
+  //console.log(defaultVideoId);
   if (defaultVideoId !== undefined) {
     defaultVideo = defaultVideoId;
     defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
@@ -86,15 +86,15 @@ const setButtonClassBackground = (citbActivated) => {
 }
 
 buttonCam.addEventListener("click", async () => {
-  console.log('le dio clic al boton de la camara');
+  //console.log('le dio clic al boton de la camara');
   if (citbActivated) {
-    console.log('esta activado')
+    //console.log('esta activado',videosList);
     const otherVideos = videosList.filter(x => (x.deviceId != defaultVideo));
-    console.log('other videos length', otherVideos.length);
+    //console.log('other videos length', otherVideos.length);
     if (otherVideos.length > 0) {
-      console.log('entro al if')
+      //console.log('entro al if')
       chrome.storage.sync.set({ defaultVideoId: otherVideos[0].deviceId }, () => {
-        console.log('seteo el valor en el storage');
+        //console.log('seteo el valor en el storage');
         citbActivated = false;
         setButtonCamBackground(citbActivated);
       });
@@ -102,13 +102,13 @@ buttonCam.addEventListener("click", async () => {
       alert('Could not change Video');
     }
   } else {
-    console.log('no esta activado')
+    //console.log('no esta activado')
     const citbVideo = videosList.filter(x => (x.label.includes(MYVIDEODDEVICELABEL)));
-    console.log('other videos length', citbVideo.length);
+    //console.log('other videos length', citbVideo.length);
     if (citbVideo.length > 0) {
-      console.log('entro al if')
+      //console.log('entro al if')
       chrome.storage.sync.set({ defaultVideoId: citbVideo[0].deviceId }, () => {
-        console.log('seteo el valor en el storage');
+        //console.log('seteo el valor en el storage');
         citbActivated = true
         setButtonCamBackground(citbActivated);
       });
@@ -162,13 +162,13 @@ buttonClass.addEventListener("click", async () => {
 button4WEB.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
-    console.log(buttonsOpen);
+    //console.log(buttonsOpen);
     webContainerClosed = buttonsOpen;
     if (webContainerClosed) {
-      console.log('esta cerrado');
+      //console.log('esta cerrado');
       webContainerClosed = !webContainerClosed;
       setButtonWebContainerBackground(webContainerClosed);
-      console.log('voy a abrirlo');
+      //console.log('voy a abrirlo');
       chrome.storage.sync.set({ 'buttonsOpen': false }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
@@ -176,10 +176,10 @@ button4WEB.addEventListener("click", async () => {
         })
       });
     } else {
-      console.log('esta abierto')
+      //console.log('esta abierto')
       webContainerClosed = !webContainerClosed;
       setButtonWebContainerBackground(webContainerClosed);
-      console.log('voy a cerrarlo');
+      //console.log('voy a cerrarlo');
       chrome.storage.sync.set({ 'buttonsOpen': true }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
@@ -205,9 +205,9 @@ const setButtonWebContainerBackground = (isClosed) => {
   }
 }
 
-button4WEB.addEventListener("click", () => {
-  chrome.storage.sync.get('webContainer', ({ result }) => {
-    console.log("Resultado inicial",result);
-    handleWeb(result);
-  });
-});
+// button4WEB.addEventListener("click", () => {
+//   chrome.storage.sync.get('webContainer', ({ result }) => {
+//     //console.log("Resultado inicial",result);
+//     handleWeb(result);
+//   });
+// });

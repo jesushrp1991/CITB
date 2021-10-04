@@ -1,6 +1,6 @@
 'use strict';
-if (window.location.host === 'meet.google.com'){
-
+console.log("Host",window.location.host);
+if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
     const script = document.createElement('script');
     script.setAttribute("type", "module");
     script.setAttribute("src", chrome.runtime.getURL('js/main.js'));
