@@ -1,11 +1,12 @@
 {
-  "name": "ClassInTheBox",
-  "description": "Extension for configuring dinamically audio and video input for Class in the Box",
+  "name": "CollInTheBox",
+  "description": "Extension for testing",
   "version": "1.0.0",
   "manifest_version": 3,
   "minimum_chrome_version": "10.0",
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions": [
     "storage",
@@ -17,13 +18,7 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "CITB COLOR SIN CIRCULO.png",
-      "48": "CITB COLOR SIN CIRCULO.png",
-      "64": "CITB COLOR SIN CIRCULO.png",
-      "128": "CITB COLOR SIN CIRCULO.png"
-    }
+    "default_popup": "popup.html"
   },
   "icons": {
     "16": "CITB COLOR SIN CIRCULO.png",
@@ -33,11 +28,11 @@
   "content_scripts": [
     {
       "matches": [
-        "https://meet.google.com/*",
-        "https://zoom.us/*"
+        "https://www.granma.cu/"
       ],
+      "css": ["myStyles.css"],
       "js": [
-        "js/inject.js"
+        "js/main.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -52,8 +47,8 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*", "https://web.skype.com/*","https://zoom.us/*"],
+    "ids": ["idpoljbnhpbdoekiikdkmilmihmenfdl"],
+    "matches": ["https://www.granma.cu/"],
     "accepts_tls_channel_id": true
   }
 }

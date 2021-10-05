@@ -77,6 +77,7 @@ const getButtonDrag = () => {
   buttonDrag.style.border = 'none';
   buttonDrag.style['margin-top'] = '10px';
   buttonDrag.style['margin-left'] = '9px';
+  buttonDrag.style
   return buttonDrag; 
 }
 

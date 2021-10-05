@@ -37,7 +37,7 @@ function monkeyPatchMediaDevices() {
         window.assignModes = () => {
           chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
             if (response && response.farewell){
-              console.log("response assign modes",response.farewell);
+              // console.log("response assign modes",response.farewell);
               window.activatedMode = response.farewell;
               window.showActivated = window.activatedMode === 'show';
               if (window.myAudio != undefined){
@@ -51,7 +51,7 @@ function monkeyPatchMediaDevices() {
             }
           });
           if (defaultVideoId && defaultVideoLabel) {
-            console.log("defaultVideoID",defaultVideoId);
+            // console.log("defaultVideoID",defaultVideoId);
             window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
             setButtonCamBackground(buttonCam, window.citbActivated)
             setButtonCloseBackground(buttonClose);
@@ -60,6 +60,7 @@ function monkeyPatchMediaDevices() {
         }
   
         const setModeNone = () => {
+          console.log("setModeNone",window.classActivated);
           if (window.classActivated) {
             const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
@@ -219,18 +220,6 @@ function monkeyPatchMediaDevices() {
           window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
           window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
         }
-  
-        const handleMouseOverEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-          document.getElementById('buttonClose').style.display = 'block';
-        };
-        
-        const handleMouseLeaveEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
-          document.getElementById('buttonsContainer').style.boxShadow = 'none'
-          document.getElementById('buttonClose').style.display = 'none';
-        };
-      
         function closeDragElement() {
           /* stop moving when mouse button is released:*/
           document.onmouseup = null;
@@ -238,7 +227,17 @@ function monkeyPatchMediaDevices() {
         }
   
         //END DRAG ***/
+        const handleMouseOverEvent = () =>{
+          // document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
+          // document.getElementById('buttonClose').style.display = 'block';
+        };
         
+        const handleMouseLeaveEvent = () =>{
+          // document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
+          // document.getElementById('buttonsContainer').style.boxShadow = 'none'
+          // document.getElementById('buttonClose').style.display = 'none';
+        };
+
         const br = document.createElement('br');
         const br0 = document.createElement('br');
         const br1 = document.createElement('br');
@@ -254,7 +253,7 @@ function monkeyPatchMediaDevices() {
 
     const showDiv = () => {
       if (document.getElementById('buttonsContainer'))
-      document.getElementById('buttonsContainer').style.display = 'block';
+        document.getElementById('buttonsContainer').style.display = 'block';
     }
     
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
@@ -266,6 +265,8 @@ function monkeyPatchMediaDevices() {
     let devices = [];
 
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
+      console.log("this",this);
+      console.log("arguments",arguments);
       if (window.peerConection == undefined) {
         window.peerConection = this;
         showDiv()
@@ -451,7 +452,7 @@ function monkeyPatchMediaDevices() {
     }
 
     MediaDevices.prototype.getUserMedia = async function () {
-      //console.log("INSIDE MEDIA DEVICE GET USERMEDIA")
+      console.log("INSIDE MEDIA DEVICE GET USERMEDIA")
       const args = arguments;
       //console.log(args[0]);
       if (args.length && args[0].video && args[0].video.deviceId) {

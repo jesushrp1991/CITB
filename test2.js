@@ -1,0 +1,1 @@
+document.getElementById('buttonsContainer').style.backgroundColor = "black";
