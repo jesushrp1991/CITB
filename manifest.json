@@ -28,7 +28,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.granma.cu/"
+        "https://meet.google.com/*"
       ],
       "css": ["myStyles.css"],
       "js": [
@@ -48,7 +48,7 @@
   }],
   "externally_connectable": {
     "ids": ["idpoljbnhpbdoekiikdkmilmihmenfdl"],
-    "matches": ["https://www.granma.cu/"],
+    "matches": ["https://meet.google.com/*"],
     "accepts_tls_channel_id": true
   }
 }

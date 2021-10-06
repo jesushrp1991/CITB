@@ -122,7 +122,7 @@ const webFormContainer = () =>{
         button.style.backgroundPosition = 'center';
       }
     
-      const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag) => {
+      const addElementsToDiv = (div, buttonClose,buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag) => {
         div.appendChild(buttonClose);
         div.appendChild(buttonCam);
         div.appendChild(br);
@@ -134,117 +134,7 @@ const webFormContainer = () =>{
         document.body.appendChild(div);
         // div.style.display = 'none';
       }
-
-      const EXTENSIONID = 'idpoljbnhpbdoekiikdkmilmihmenfdl';
-
-      const setEvents = (buttonsContainerDiv,buttonClose,buttonCam,buttonShow, buttonClass,buttonDrag) => {
-          buttonClose.addEventListener("mouseenter",() => {
-            handleMouseOverEvent();
-          },{passive: false});
-    
-          buttonCam.addEventListener("mouseenter",() => {
-            handleMouseOverEvent();
-          },{passive: false});
-          
-          buttonShow.addEventListener("mouseenter",() => {
-            handleMouseOverEvent();
-          },{passive: false});
-    
-          buttonClass.addEventListener("mouseenter",() => {
-            handleMouseOverEvent();
-          },{passive: false});
-          
-          buttonClose.addEventListener("mouseleave",() => {
-            handleMouseLeaveEvent();
-          },{passive: false});
-    
-          buttonCam.addEventListener("mouseleave",() => {
-            handleMouseLeaveEvent();
-          },{passive: false});
-          
-          buttonShow.addEventListener("mouseleave",() => {
-            handleMouseLeaveEvent();
-          },{passive: false});
-    
-          buttonClass.addEventListener("mouseleave",() => {
-            handleMouseLeaveEvent();
-          },{passive: false});
-          
-          buttonDrag.addEventListener('mousedown', (e) => {
-            dragMouseDown(e);
-          });
-
-          buttonDrag.addEventListener("click",() => {
-            console.log(`sending message to ${EXTENSIONID}`);
-            chrome.runtime.sendMessage({greeting: "drag"}, function(response) { 
-              console.log(response.farewell); 
-            }); 
-          },{passive: false});
-
-          buttonsContainerDiv.addEventListener('mouseenter',()=>{
-            handleMouseOverEvent();
-          },{passive: false });
-
-          buttonsContainerDiv.addEventListener("mouseleave",() => {
-            handleMouseLeaveEvent();
-          },{passive: false});          
-
-          window.buttonsContainerDiv.addEventListener('mouseover', (e) => {
-            handleMouseOverEvent();
-          });          
-          window.buttonsContainerDiv.addEventListener('mousedown', (e) => {
-              dragMouseDown(e);
-          });          
-
-          buttonClose.addEventListener('click', () => {
-            chrome.runtime.sendMessage({greeting: "buttonsOpen"}, function(response) { 
-              if (response && response.farewell){
-                console.log(response.farewel); 
-                buttonsContainerDiv.style.visibility = 'hidden';
-              }
-            }); 
-          });
-    };
-    function dragMouseDown(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
-  
-    function elementDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      // set the element's new position:
-      window.buttonsContainerDiv.style.rigth = '';
-      window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
-      window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
-    }
-    function closeDragElement() {
-      /* stop moving when mouse button is released:*/
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
-    const handleMouseOverEvent = () =>{
-        buttonsContainerDiv.style.background = 'rgba(240, 243, 250,0.8)';
-        buttonClose.style.display = 'block';
-      };
-      
-     const handleMouseLeaveEvent = () =>{
-        buttonsContainerDiv.style.background = 'rgb(240, 243, 250)';
-        buttonsContainerDiv.style.boxShadow = 'none'
-        buttonClose.style.display = 'none';
-      };
-
+   
       const setUp = () =>{
         window.buttonsContainerDiv = getContainerButton();
         const buttonCam = getButtonCam();
@@ -254,7 +144,6 @@ const webFormContainer = () =>{
         const buttonClose= getButtonClose();
 
         const br = document.createElement('br');
-        const br0 = document.createElement('br');
         const br1 = document.createElement('br');
         const br2 = document.createElement('br');
 
@@ -263,8 +152,7 @@ const webFormContainer = () =>{
         setButtonClassBackground(buttonClass, true);
         setButtonCloseBackground(buttonClose);
         setButtonDragBackground(buttonDrag);
-        setEvents(window.buttonsContainerDiv,buttonClose,buttonCam,buttonShow,buttonClass,buttonDrag);
-        addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
+        addElementsToDiv(window.buttonsContainerDiv,buttonClose, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
       };
       return setUp();
 }

@@ -18,10 +18,10 @@ chrome.storage.sync.get("devicesList", ({ devicesList }) => {
   }
 });
 
-chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
-  //console.log(buttonsOpen);
-  webContainerClosed = buttonsOpen;
-  setButtonWebContainerBackground(buttonsOpen);
+chrome.storage.sync.get("hideWebContainer", ({hideWebContainer}) => {
+  //console.log(hideWebContainer);
+  webContainerClosed = hideWebContainer;
+  setButtonWebContainerBackground(hideWebContainer);
 });
 
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
@@ -161,15 +161,15 @@ buttonClass.addEventListener("click", async () => {
 
 button4WEB.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
-    //console.log(buttonsOpen);
-    webContainerClosed = buttonsOpen;
+  chrome.storage.sync.get("hideWebContainer", ({hideWebContainer}) => {
+    //console.log(hideWebContainer);
+    webContainerClosed = hideWebContainer;
     if (webContainerClosed) {
       //console.log('esta cerrado');
       webContainerClosed = !webContainerClosed;
       setButtonWebContainerBackground(webContainerClosed);
       //console.log('voy a abrirlo');
-      chrome.storage.sync.set({ 'buttonsOpen': false }, () => {
+      chrome.storage.sync.set({ 'hideWebContainer': false }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           function: showContainer,
@@ -180,7 +180,7 @@ button4WEB.addEventListener("click", async () => {
       webContainerClosed = !webContainerClosed;
       setButtonWebContainerBackground(webContainerClosed);
       //console.log('voy a cerrarlo');
-      chrome.storage.sync.set({ 'buttonsOpen': true }, () => {
+      chrome.storage.sync.set({ 'hideWebContainer': true }, () => {
         chrome.scripting.executeScript({
           target: { tabId: tab.id },
           function: closeContainer,
