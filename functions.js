@@ -56,7 +56,7 @@
 //   return navigator.mediaDevices.enumerateDevices();
 // }
 
-// function gotDevices(deviceInfos) {
+// async function  gotDevices(deviceInfos) {
 //   window.deviceInfos = deviceInfos; // make available to console
 //   console.log('Available input and output devices:', deviceInfos);
 //   for (const deviceInfo of deviceInfos) {
@@ -70,6 +70,8 @@
 //       videoSelect.appendChild(option);
 //     }
 //   }
+//       const defaultDevice =  deviceInfos.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId);
+//       console.log(defaultDevice);
 // }
 
 // function getStream() {
@@ -107,3 +109,26 @@ const testFunction = () =>{
         console.log("Test function");
 }
         
+const constraints = {
+      audio: false,
+      video: true
+};
+
+async function handleSuccess() {
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  console.log("Using stream: ",stream);
+  console.log("Devices: ",devices);
+  const video = document.querySelector('video');
+  const videoTracks = stream.getVideoTracks();
+  console.log("Got stream with constraints:", constraints);
+  console.log("Using video device: ",videoTracks);
+  console.log("Using video device: ",videoTracks[0].label);
+  window.stream = stream; // make variable available to browser console
+  if (window.stream) {
+    window.stream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+  video.srcObject = stream;
+}
