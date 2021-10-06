@@ -3,7 +3,7 @@
       chrome.runtime.sendMessage({camButton: "buttonsCamClick"}, function(response) { 
         console.log(response.result); 
         testFunction();
-        handleSuccess();
+        init();
         // getStream().then(getDevices).then(gotDevices);
       }); 
     },{passive: false});

@@ -108,27 +108,54 @@
 const testFunction = () =>{
         console.log("Test function");
 }
-        
-const constraints = {
-      audio: false,
-      video: true
+
+// var videoElement = document.getElementsByClassName('Gv1mTb-aTv5jf Gv1mTb-PVLJEc');
+var videoSource = '31f3d6d2bc193caad69bae5f6c0911a4ed8e031e12d673be4fded1fd20346047';
+
+const constraints = window.constraints = {
+  audio: false,
+  video:  {deviceId: videoSource}
 };
 
-async function handleSuccess() {
-  const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  console.log("Using stream: ",stream);
-  console.log("Devices: ",devices);
-  const video = document.querySelector('video');
-  const videoTracks = stream.getVideoTracks();
-  console.log("Got stream with constraints:", constraints);
-  console.log("Using video device: ",videoTracks);
-  console.log("Using video device: ",videoTracks[0].label);
-  window.stream = stream; // make variable available to browser console
-  if (window.stream) {
-    window.stream.getTracks().forEach(track => {
-      track.stop();
-    });
+async function init() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+    // e.target.disabled = true;
+  } catch (e) {
+    handleError(e);
   }
+}
+
+function handleSuccess(stream) {
+  console.log("stream",stream);
+  const video = document.querySelector('video');
+  console.log("video",video);
+  const videoTracks = stream.getVideoTracks();
+  console.log("videoTrancks",videoTracks);
+
+  console.log('Got stream with constraints:', constraints);
+  console.log(`Using video device: ${videoTracks[0].label}`);
+  window.stream = stream; // make variable available to browser console
   video.srcObject = stream;
+}
+
+function handleError(error) {
+  if (error.name === 'ConstraintNotSatisfiedError') {
+    const v = constraints.video;
+    errorMsg(`The resolution ${v.width.exact}x${v.height.exact} px is not supported by your device.`);
+  } else if (error.name === 'PermissionDeniedError') {
+    errorMsg('Permissions have not been granted to use your camera and ' +
+      'microphone, you need to allow the page access to your devices in ' +
+      'order for the demo to work.');
+  }
+  errorMsg(`getUserMedia error: ${error.name}`, error);
+}
+
+function errorMsg(msg, error) {
+  const errorElement = document.querySelector('#errorMsg');
+  errorElement.innerHTML += `<p>${msg}</p>`;
+  if (typeof error !== 'undefined') {
+    console.error(error);
+  }
 }
