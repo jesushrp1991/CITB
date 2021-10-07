@@ -1,6 +1,7 @@
 // background.js
 let defaultMode = 'none';
 let buttonsOpen = false;
+// const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYMICROPHONEDEVICELABEL = 'CITB';
 const MYAUDIODEVICELABEL = 'CITB';
@@ -18,7 +19,7 @@ const getAvailableMicrophone = (devicesList) => {
   ? existCITBMIC[0].deviceId : microphonesList.length > 0
   ? microphonesList[0].deviceId : undefined
 }
-//asd
+
 const getAvailableAudio = (devicesList) => {
   const audioList = devicesList.filter(x => x.kind == 'audiooutput');
   const existCITBSPK = audioList.filter(x => x.label.includes(MYAUDIODEVICELABEL))
@@ -61,29 +62,26 @@ const setAudioWhenUnplugged = (devicesList) => {
   });
 }
 
-const setVideoWhenUnplugged = (devicesList, sendResponse) => {
-  console.log("entro en el setVideoUnplugged");
+const setVideoWhenUnplugged = (devicesList) => {
+  console.log("entro en el setVideo ");
   chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
     const defaultVideoIndex = devicesList.findIndex(x => 
       (x.deviceId === defaultVideoId && x.kind === 'videoinput'));
     if (defaultVideoIndex < 0){
-      console.log('se desconecto la que estamos usando');
-      const videosList = devicesList.filter(x => x.kind === 'videoinput' && x.deviceId != "virtual");
-      console.log(`quedan aparte del que se desconecto ${videosList.length} dispositivos de video`);
-      console.log('los devices que quedan son ', videosList);
+      const videosList = devicesList.filter(x => x.kind == 'videoinput');
       chrome.storage.sync.set({
-        defaultVideoId: videosList.length > 0 ? videosList[0].deviceId : undefined//interesante si no encuentra algo pone undeifned al defaultvideo id y luego en media devices si lo que recibe en la llamada al video id es undefined no se hace nada, quizas por eso se paus la cmara
+        defaultVideoId: videosList.length > 0 ? videosList[0].deviceId : undefined
       }, () => {
         chrome.storage.sync.set({devicesList: devicesList}, () => {
           chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => 
-            sendResponse({farewell: defaultVideoId}) );//claro
+            sendResponse({farewell: defaultVideoId}) );
         });
       })
     }
   });
 }
 
-const setDeviceWhenPlugged = (device, devicesList, sendResponse) => {
+const setDeviceWhenPlugged = (device, devicesList) => {
   switch (device.kind) {
     case 'audioinput': {
       if (device.label === MYMICROPHONEDEVICELABEL)
@@ -116,7 +114,7 @@ chrome.runtime.onMessageExternal.addListener(
     if (request.devicesList) {
       // console.log("BACK ENTRO");
       chrome.storage.sync.get("devicesList", ({ devicesList }) => {
-      //  console.log("BACK devicesList",devicesList);
+      // console.log("BACK devicesList",devicesList);
         if (devicesList == undefined){
           // console.log("BACK ENTRO IF");
           devicesList = request.devicesList;
@@ -129,17 +127,17 @@ chrome.runtime.onMessageExternal.addListener(
             })
         } else {
           //  console.log("BACK request.devicesList.length",request.devicesList.length);
-          console.log("Not undefined device list back");
+           
           if (devicesList.length > request.devicesList.length){
             console.log('se ha desconectado un dispositivo');
             setMicrophoneWhenUnplugged(request.devicesList);
             setAudioWhenUnplugged(request.devicesList);
-            setVideoWhenUnplugged(request.devicesList, sendResponse);
+            setVideoWhenUnplugged(request.devicesList);
           } else if (devicesList.length < request.devicesList.length){
-            console.log('se ha conectado un dispositivo');
+            //console.log('se ha conectado un dispositivo');
             const difference = request.devicesList.filter(x => devicesList.findIndex(
               y => (x.deviceId === y.deviceId && x.kind === y.kind && x.label === y.label)) === -1);
-              setDeviceWhenPlugged(difference, request.devicesList, sendResponse);
+              setDeviceWhenPlugged(difference, request.devicesList);
           } else {
             chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => 
               sendResponse({farewell: defaultVideoId}) );

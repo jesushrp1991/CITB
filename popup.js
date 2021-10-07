@@ -4,6 +4,7 @@ let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let showActivated = false, classActivated = false, citbActivated;
+// const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYAUDIODEVICELABEL = 'CITB';
 let defaultVideo, defaultVideoLabel, webContainerClosed;
@@ -29,7 +30,12 @@ chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
   //console.log(defaultVideoId);
   if (defaultVideoId !== undefined) {
     defaultVideo = defaultVideoId;
-    defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
+    if (videosList != undefined){
+      const filteredVideoList = videosList.filter(x => x.deviceId === defaultVideoId);
+      if (filteredVideoList.length > 0){
+        defaultVideoLabel = filteredVideoList[0].label;
+      }
+    }
   }
 });
 
@@ -38,10 +44,8 @@ chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
   classActivated = defaultMode === 'class';
   setButtonShowBackground(showActivated);
   setButtonClassBackground(classActivated);
-  if (defaultVideo && defaultVideoLabel) {
-    citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
-    setButtonCamBackground(citbActivated)
-  }
+  citbActivated = (defaultVideo && defaultVideoLabel) ? defaultVideoLabel.includes(MYVIDEODDEVICELABEL) : false;
+  setButtonCamBackground(citbActivated);
 });
 
 // const setButtonWebContainerBackground = (isClosed) => {

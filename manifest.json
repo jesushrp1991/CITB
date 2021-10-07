@@ -1,20 +1,19 @@
 {
   "name": "ClassInTheBox",
-  "description": "Extension for configuring dinamically audio and video input for Class in the Box",
+  "description": "Sistema profesional de video conferencia: simple, rápido, con cancelación de ruido avanzada y portable",
   "version": "1.0.0",
   "manifest_version": 3,
-  "minimum_chrome_version": "10.0",
+  "minimum_chrome_version": "88.0",
   "background": {
     "service_worker": "background.js"
   },
   "permissions": [
     "storage",
-    "tabs",
     "activeTab",
     "scripting"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://meet.google.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -33,8 +32,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://meet.google.com/*",
-        "https://zoom.us/*"
+        "https://meet.google.com/*"
       ],
       "js": [
         "js/inject.js"
@@ -53,7 +51,7 @@
   }],
   "externally_connectable": {
     "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*", "https://web.skype.com/*","https://zoom.us/*"],
+    "matches": ["https://meet.google.com/*"],
     "accepts_tls_channel_id": true
   }
 }

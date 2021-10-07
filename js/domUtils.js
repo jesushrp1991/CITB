@@ -1,3 +1,4 @@
+// const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
 const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
 
 const getButtonShow = () => {
@@ -181,6 +182,7 @@ const setMicrophone = (microphone) => {
     window.myAudio.setAttribute('volume', '1.0');
     window.myAudio.setAttribute('controls', null);
     window.myAudio.setAttribute('autoplay', null);
+    window.myAudio.muted = true;
     document.body.appendChild(window.myAudio); 
   }
 
