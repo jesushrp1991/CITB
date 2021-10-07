@@ -144,24 +144,8 @@ const setMicrophone = (microphone) => {
     button.style.backgroundPosition = 'center';
   }
 
-  const handleMouseOverEvent = () =>{
-    //console.log('esta entrando al metodo');
-    document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.08)';
-    document.getElementById('buttonClose').style.display = 'block';
-    document.getElementById('buttonsContainer').style.boxShadow = '5px 5px 5px #999999'
-  };
+ 
   
-  const handleMouseLeaveEvent = () =>{
-    document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
-    document.getElementById('buttonsContainer').style.boxShadow = 'none'
-  };
-  
-  const handleDrag = (pos1,pos2) =>{
-    //console.log("ENTRO!!!");
-    let doc = document.getElementById('buttonsContainer');
-    doc.style.top = (doc.offsetTop - pos2) + "px";
-    doc.style.left = (doc.offsetLeft - pos1) + "px";
-  };
 
   const addElementsToDiv = (div, buttonClose,br0,buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag) => {
     div.appendChild(buttonClose);
@@ -186,14 +170,7 @@ const setMicrophone = (microphone) => {
     document.body.appendChild(window.myAudio); 
   }
 
-  const closeButtonContainer = (divContainer) => {
-    document.getElementById('buttonsContainer').style.visibility = 'hidden';
-    chrome.runtime.sendMessage(EXTENSIONID, { 'buttonsOpen': true }, async function (response) {
-      if (response && response.farewell){ 
-        //console.log(response.farewell);
-      }
-    });
-  };
+ 
 
   const getVirtualCam = () => {
     return {
@@ -202,14 +179,6 @@ const setMicrophone = (microphone) => {
       kind: "videoinput",
       label: "Virtual Class In The Box",
     }
-  }
-
-  const setElementVisibility = (element, visibility) => {
-    element.style.visibility = visibility;
-  }
-
-  const setElementDisplay = (element, display) => {
-    element.style.display = display
   }
 
 export { 
@@ -228,12 +197,6 @@ export {
     addElementsToDiv,
     createAudioElement,
     getVirtualCam,
-    setElementVisibility,
-    closeButtonContainer,
-    handleMouseOverEvent,
-    handleMouseLeaveEvent,
-    setElementDisplay,
     getButtonDrag,
-    setButtonDragBackground,
-    handleDrag
+    setButtonDragBackground
 }

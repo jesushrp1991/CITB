@@ -13,29 +13,32 @@ import {
   setButtonShowBackground,
   addElementsToDiv,
   createAudioElement,
-  getVirtualCam,
-  setElementDisplay,
-  setElementVisibility,
-  closeButtonContainer,
-  // handleMouseOverEvent,
-  // handleMouseLeaveEvent,
-  handleDrag,
+  getVirtualCam, 
   getButtonDrag,
   setButtonDragBackground
 } from './domUtils.js';
 
+import {
+  setCloseEvent,
+  handleMouseOverEvent,
+  handleMouseLeaveEvent, 
+  setbuttonShowClickEvent,
+  setbuttonClassClickEvent,
+} from './events.js';
+
 function monkeyPatchMediaDevices() {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (window.location.host === 'meet.google.com') {
-    // const MYVIDEODDEVICELABEL = '2K HD Camera';
-    const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
-    const MYAUDIODEVICELABEL = 'CITB';
-    // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
-    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+  // const MYVIDEODDEVICELABEL = '2K HD Camera';
+  const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+  const MYAUDIODEVICELABEL = 'CITB';
+   // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
+  const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
 
     document.onreadystatechange = (event) => {
-      //console.log(document.readyState);   
-      if (document.readyState == 'complete') {
+      
+        window.buttonsContainerDiv = getContainerButton();
+
+        if (document.readyState == 'complete') {
         window.assignModes = () => {
           try {
             chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
@@ -90,41 +93,18 @@ function monkeyPatchMediaDevices() {
           setMode('none');
         }
 
-        const buttonShow = getButtonShow();
-        buttonShow.addEventListener('click', () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-            if (citbMicrophone.length > 0) {
-              setMicrophone(citbMicrophone[0].deviceId);
-            } else {
-              alert('Could not change Microphone');
-            }
-          }
-          setMode(window.showActivated ? 'none' : 'show');
-        });
-
-        const buttonClass = getButtonClass();
-        buttonClass.addEventListener('click', () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-            if (citbMicrophone.length > 0) {
-              setMicrophone(citbMicrophone[0].deviceId);
-              setMode('none');
-            } else {
-              alert('Could not change Microphone');
-            }
-          } else {
-            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
-            if (otherMicrophones.length > 0) {
-              setMicrophone(otherMicrophones[0].deviceId);
-              setMode('class');
-            } else {
-              alert('Could not change Microphone');
-            }
-          }
-        });
-
+        
         const buttonCam = getButtonCam();
+        const buttonClass = getButtonClass();
+        const buttonShow = getButtonShow();
+        const buttonClose = getButtonClose();
+        const buttonDrag = getButtonDrag();
+
+        setbuttonClassClickEvent(buttonClass,window.classActivated,devices);
+        setbuttonShowClickEvent(buttonShow,window.classActivated,devices,window.showActivated);
+        setCloseEvent(buttonClose);
+
+
         buttonCam.addEventListener('click', () => {
           if (window.citbActivated) {
             const otherVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultVideoId));
@@ -142,16 +122,6 @@ function monkeyPatchMediaDevices() {
             }
           }
         });
-
-        const buttonClose = getButtonClose();
-        buttonClose.addEventListener('click', () => {
-          closeButtonContainer(window.buttonsContainerDiv);
-          // closeButtonContainer(buttonClose);
-        });
-        const buttonDrag = getButtonDrag();
-
-
-        window.buttonsContainerDiv = getContainerButton();
 
         buttonClose.addEventListener("mouseenter", () => {
           handleMouseOverEvent();
@@ -234,16 +204,7 @@ function monkeyPatchMediaDevices() {
           window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
         }
 
-        const handleMouseOverEvent = () => {
-          document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-          document.getElementById('buttonClose').style.display = 'block';
-        };
-
-        const handleMouseLeaveEvent = () => {
-          document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
-          document.getElementById('buttonsContainer').style.boxShadow = 'none'
-          document.getElementById('buttonClose').style.display = 'none';
-        };
+       
 
         function closeDragElement() {
           /* stop moving when mouse button is released:*/
@@ -557,7 +518,7 @@ function monkeyPatchMediaDevices() {
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
       return res;
     };
-  }
+  
 }
 
 export { monkeyPatchMediaDevices }
