@@ -3,11 +3,22 @@ const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYAUDIODEVICELABEL = 'CITB';
  // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
 const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+// import { compare } from "./constants";
 
-const citbMicrophone = (devices) => {
-  return devices.filter(
-    (x) => x.kind === "audioinput" && x.label.includes(MYAUDIODEVICELABEL)
-  );
+// const citbMicrophone = (devices) => {
+//   return devices.filter(
+//     (x) => x.kind === "audioinput" && x.label.includes(MYAUDIODEVICELABEL)
+//   );
+// };
+
+const citbMicrophone = (devices,sortKind,includeString,compare) => {
+  console.log("compare",compare);
+  switch(compare){
+    case compare.iqual:
+      return devices.filter( (x) => x.kind === sortKind && x.label.includes(includeString));    
+    case compare.distinct:
+      return devices.filter((x) => x.kind === sortKind && !x.label.includes(includeString));
+  }
 };
 
 const setMicrophone = (microphone) => {
@@ -38,4 +49,9 @@ const setMode = (mode) => {
     );
   };
 
-export {citbMicrophone,setMicrophone,setMode,closeButtonContainer}
+  const compare = {
+    iqual: "iqual",
+    distinct: "distinct",
+  }
+
+export {citbMicrophone,setMicrophone,setMode,closeButtonContainer,compare}

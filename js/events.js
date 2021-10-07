@@ -4,7 +4,9 @@ import {
   setMicrophone,
   setMode,
   closeButtonContainer,
+  compare
 } from "./functions.js";
+// import { compare } from "./constants";
 
 const setCloseEvent = (buttonClose) => {
   buttonClose.addEventListener("click", () => {
@@ -19,9 +21,8 @@ const setbuttonShowClickEvent = (
   showActivated
 ) => {
   buttonShow.addEventListener("click", () => {
-    console.log("SHOW");
     if (classActivated) {
-      const mic = citbMicrophone(devices);
+      const mic = citbMicrophone(devices,"audioinput",MYAUDIODEVICELABEL,compare.iqual);
       if (mic.length > 0) {
         setMicrophone(mic[0].deviceId);
       } else {
@@ -35,7 +36,7 @@ const setbuttonShowClickEvent = (
 const setbuttonClassClickEvent = (buttonClass, classActivated, devices) => {
   buttonClass.addEventListener("click",()=>{
     if (classActivated) {
-      const citbMicrophone = citbMicrophone(devices);
+      const citbMicrophone = citbMicrophone(devices,"audioinput",MYAUDIODEVICELABEL,compare.iqual);
       if (citbMicrophone.length > 0) {
         setMicrophone(citbMicrophone[0].deviceId);
         setMode("none");
@@ -43,9 +44,10 @@ const setbuttonClassClickEvent = (buttonClass, classActivated, devices) => {
         console.log("Could not change Microphone");
       }
     } else {
-      const otherMicrophones = devices.filter(
-        (x) => x.kind === "audioinput" && !x.label.includes(MYAUDIODEVICELABEL)
-      );
+      // const otherMicrophones = devices.filter(
+      //   (x) => x.kind === "audioinput" && !x.label.includes(MYAUDIODEVICELABEL)
+      // );
+      const otherMicrophones = citbMicrophone(devices,"audioinput",MYAUDIODEVICELABEL,compare.distinct);
       if (otherMicrophones.length > 0) {
         setMicrophone(otherMicrophones[0].deviceId);
         setMode("class");
