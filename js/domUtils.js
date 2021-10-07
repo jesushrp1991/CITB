@@ -54,6 +54,7 @@ const getButtonClose = () => {
 }
 
 const getContainerButton = () => {
+    console.log("Get Container");
     const div = document.createElement('div');
     div.setAttribute('id', 'buttonsContainer');
     div.style.position = 'absolute';

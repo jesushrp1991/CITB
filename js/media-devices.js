@@ -24,10 +24,11 @@ import {
   handleMouseLeaveEvent, 
   setbuttonShowClickEvent,
   setbuttonClassClickEvent,
+  setButtonCamClickEvent,
+  mouseDragEvents
 } from './events.js';
 
 function monkeyPatchMediaDevices() {
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   // const MYVIDEODDEVICELABEL = '2K HD Camera';
   const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
   const MYAUDIODEVICELABEL = 'CITB';
@@ -36,7 +37,6 @@ function monkeyPatchMediaDevices() {
 
     document.onreadystatechange = (event) => {
       
-        window.buttonsContainerDiv = getContainerButton();
 
         if (document.readyState == 'complete') {
         window.assignModes = () => {
@@ -99,120 +99,14 @@ function monkeyPatchMediaDevices() {
         const buttonShow = getButtonShow();
         const buttonClose = getButtonClose();
         const buttonDrag = getButtonDrag();
+        window.buttonsContainerDiv = getContainerButton();
 
         setbuttonClassClickEvent(buttonClass,window.classActivated,devices);
         setbuttonShowClickEvent(buttonShow,window.classActivated,devices,window.showActivated);
         setCloseEvent(buttonClose);
-
-
-        buttonCam.addEventListener('click', () => {
-          if (window.citbActivated) {
-            const otherVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultVideoId));
-            if (otherVideos.length > 0) {
-              setVideo(otherVideos[0].deviceId);
-            } else {
-              alert('Could not change Video');
-            }
-          } else {
-            const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
-            if (citbVideo.length > 0) {
-              setVideo(citbVideo[0].deviceId);
-            } else {
-              alert('Could not change Video');
-            }
-          }
-        });
-
-        buttonClose.addEventListener("mouseenter", () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        buttonCam.addEventListener("mouseenter", () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        buttonShow.addEventListener("mouseenter", () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        buttonClass.addEventListener("mouseenter", () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        buttonClose.addEventListener("mouseleave", () => {
-          handleMouseLeaveEvent();
-        }, { passive: false });
-
-        buttonCam.addEventListener("mouseleave", () => {
-          handleMouseLeaveEvent();
-        }, { passive: false });
-
-        buttonShow.addEventListener("mouseleave", () => {
-          handleMouseLeaveEvent();
-        }, { passive: false });
-
-        buttonClass.addEventListener("mouseleave", () => {
-          handleMouseLeaveEvent();
-        }, { passive: false });
-
-        window.buttonsContainerDiv.addEventListener('mouseenter', () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        window.buttonsContainerDiv.addEventListener("mouseleave", () => {
-          handleMouseLeaveEvent();
-        }, { passive: false });
-
-        window.buttonsContainerDiv.addEventListener("mouseover", () => {
-          handleMouseOverEvent();
-        }, { passive: false });
-
-        //BEGIN DRAG****///
-        window.buttonsContainerDiv.addEventListener('mousedown', (e) => {
-          dragMouseDown(e);
-          // handleDrag(window.buttonsContainerDiv);
-          // closeButtonContainer(buttonClose);
-        });
-        buttonDrag.addEventListener('mousedown', (e) => {
-          dragMouseDown(e);
-          // handleDrag(window.buttonsContainerDiv);
-          // closeButtonContainer(buttonClose);
-        });
-
-        function dragMouseDown(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // get the mouse cursor position at startup:
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          document.onmouseup = closeDragElement;
-          // call a function whenever the cursor moves:
-          document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // calculate the new cursor position:
-          pos1 = pos3 - e.clientX;
-          pos2 = pos4 - e.clientY;
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          // set the element's new position:
-          window.buttonsContainerDiv.style.rigth = '';
-          window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
-          window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
-        }
-
-       
-
-        function closeDragElement() {
-          /* stop moving when mouse button is released:*/
-          document.onmouseup = null;
-          document.onmousemove = null;
-        }
-
-        //END DRAG ***/
+        setButtonCamClickEvent(buttonCam,window.classActivated,devices);
+        mouseDragEvents(buttonClose,buttonCam,buttonShow,buttonClass,buttonClose,window.buttonsContainerDiv,buttonDrag) ;
+        
 
         const br = document.createElement('br');
         const br0 = document.createElement('br');
@@ -243,7 +137,7 @@ function monkeyPatchMediaDevices() {
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
       if (window.peerConection == undefined) {
         window.peerConection = this;
-        showDiv()
+        showDiv();
       }
       window.currentMediaStream = stream;
       window.currentTrack = track;
@@ -260,7 +154,7 @@ function monkeyPatchMediaDevices() {
                 const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId);
                 const peerConectionSenderVideoTracks = window.peerConection.getSenders().filter((s) => s.track.kind == 'video');
                 if (peerConectionSenderVideoTracks.length > 0) {
-                  const currentTrackLabel =defaultDevice[0].track.label;
+                  const currentTrackLabel =peerConectionSenderVideoTracks[0].track.label;
                   let run = false;
 
                   if (defaultDevice.length > 0) {
@@ -305,7 +199,7 @@ function monkeyPatchMediaDevices() {
                 throw 'could not get response from Service Worker';
               }
             } catch (error) {
-              console.log(error);
+              // console.log(error);
             }
           });
         } catch (error) {
@@ -392,7 +286,7 @@ function monkeyPatchMediaDevices() {
               throw 'could not get response from Service Worker';
             }
           } catch (error) {
-            console.log(error);
+            // console.log(error);
           }
         });
       } catch (error) {

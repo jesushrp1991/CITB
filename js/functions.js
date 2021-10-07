@@ -19,6 +19,7 @@ const setMicrophone = (microphone) => {
 
 const setMode = (mode) => {
     chrome.runtime.sendMessage(EXTENSIONID, { setDefaultMode: mode }, async function (response1) {
+      console.log("setMode",response1);
       if (response1 && response1.farewell){
       }
     });
