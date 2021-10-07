@@ -124,6 +124,5 @@ export {
     addElementsToDiv,
     createAudioElement,
     getVirtualCam,
-    getButtonDrag,
-    setButtonDragBackground
+    getButtonDrag
 }
