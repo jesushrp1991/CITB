@@ -5,7 +5,7 @@ if (window.location.host === 'meet.google.com') {
   const MYMICROPHONEDEVICELABEL = 'CITB';
   const MYAUDIODEVICELABEL = 'CITB';
   // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
-  const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+  const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
 
   let devices = await navigator.mediaDevices.enumerateDevices();
 

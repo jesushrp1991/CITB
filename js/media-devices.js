@@ -7,15 +7,11 @@ import {
   setMicrophone,
   setVideo,
   getContainerButton,
-  setButtonCamBackground,
-  setButtonCloseBackground,
-  setButtonClassBackground,
-  setButtonShowBackground,
+  setButtonBackground,
   addElementsToDiv,
   createAudioElement,
   getVirtualCam, 
   getButtonDrag,
-  setButtonDragBackground
 } from './domUtils.js';
 
 import {
@@ -29,11 +25,11 @@ import {
 } from './events.js';
 
 function monkeyPatchMediaDevices() {
-  // const MYVIDEODDEVICELABEL = '2K HD Camera';
-  const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+  const MYVIDEODDEVICELABEL = '2K HD Camera';
+  // const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
   const MYAUDIODEVICELABEL = 'CITB';
    // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
-  const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+  const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
 
     document.onreadystatechange = (event) => {
       
@@ -49,17 +45,15 @@ function monkeyPatchMediaDevices() {
                   window.myAudio.muted = !window.showActivated;
                 }
                 window.classActivated = window.activatedMode === 'class';
-                setButtonShowBackground(buttonShow, window.showActivated);
-                setButtonClassBackground(buttonClass, window.classActivated);
-                setButtonCloseBackground(buttonClose);
-                setButtonDragBackground(buttonDrag);
+                setButtonBackground(buttonShow, window.showActivated);
+                setButtonBackground(buttonClass, window.classActivated);
+                
               }
             });
             if (defaultVideoId && defaultVideoLabel) {
               window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
-              setButtonCamBackground(buttonCam, window.citbActivated)
-              setButtonCloseBackground(buttonClose);
-              setButtonDragBackground(buttonDrag);
+              setButtonBackground(buttonCam, window.citbActivated)
+              
             }
           } catch (error) {
             console.log(error);
@@ -67,12 +61,11 @@ function monkeyPatchMediaDevices() {
             window.showActivated = false;
             window.myAudio.muted = true;
             window.classActivated = false;
-            setButtonShowBackground(buttonShow, window.showActivated);
-            setButtonClassBackground(buttonClass, window.classActivated);
-            setButtonCloseBackground(buttonClose);
-            setButtonDragBackground(buttonDrag);
+            setButtonBackground(buttonShow, window.showActivated);
+            setButtonBackground(buttonClass, window.classActivated);
+            
             window.citbActivated = false;
-            setButtonCamBackground(buttonCam, window.citbActivated)
+            setButtonBackground(buttonCam, window.citbActivated)
           }
         }
 
@@ -129,20 +122,43 @@ function monkeyPatchMediaDevices() {
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
+    var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel;
     var currentMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
     let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
     let devices = [];
 
-    RTCPeerConnection.prototype.addTrack = async function (track, stream) {
-      if (window.peerConection == undefined) {
-        window.peerConection = this;
-        showDiv();
-      }
-      window.currentMediaStream = stream;
-      window.currentTrack = track;
-      await origAddTrack.apply(this, arguments);
+    RTCPeerConnection.prototype.createDataChannel = async function(label, options) {
+      window.localPeerConection = this;
+
+      
+     
+      window.localPeerConection.addEventListener("track", e => {
+        if (document.body.innerText.includes("Turn off microphone") && window.peerConection == undefined) {
+          console.log("INSIDE IF")
+          window.peerConection = window.localPeerConection;
+          showDiv();
+        }
+        console.log("TRACK ADDED")
+        console.log(e);
+        if (e.streams.length >= 1) {
+          window.currentMediaStream =  e.streams[0];
+        }
+        window.currentTrack = e.track;
+      }, false);
+      console.log("create data channel", label, options)
+      await origcreateDataChannel.apply(this,arguments)
     }
+    // RTCPeerConnection.prototype.addTrack = async function (track, stream) {
+    //   console.log("ADDTRACK")
+    //   if (window.peerConection == undefined) {
+    //     window.peerConection = this;
+    //     showDiv();
+    //   }
+    //   window.currentMediaStream = stream;
+    //   window.currentTrack = track;
+    //   await origAddTrack.apply(this, arguments);
+    // }
 
     const checkingVideo = async function () {
       if (window.peerConection) {

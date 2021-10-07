@@ -1,9 +1,8 @@
-// const MYVIDEODDEVICELABEL = '2K HD Camera';
-const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+const MYVIDEODDEVICELABEL = '2K HD Camera';
+// const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYAUDIODEVICELABEL = 'CITB';
  // const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
-const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
-// import { compare } from "./constants";
+const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
 
 // const citbMicrophone = (devices) => {
 //   return devices.filter(
