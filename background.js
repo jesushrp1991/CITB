@@ -9,6 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ webContainer: false });
     chrome.storage.sync.set({ defaultVideoId: 'CITB' });
     chrome.storage.sync.set({ citbCam: false });
+    chrome.storage.sync.set({ devicesList: [] });
     
 }); 
 
@@ -60,8 +61,15 @@ chrome.runtime.onMessage.addListener(
     }
     else if (request.getDefaultVideoId){
       chrome.storage.sync.get( 'defaultVideoId' ,({ videoID }) => {
-        console.log("Peticion de video id");
         sendResponse({defaultVideoId:videoID});
+      });
+    }
+    else if(request.deviceList){
+      console.log(`request.deviceList is ${request.deviceList}`);
+      chrome.storage.sync.set({devicesList: request.deviceList},()=>{
+        chrome.storage.sync.get( 'defaultVideoId' ,({ videoID }) => {
+          sendResponse({result:videoID});
+        });
       });
     }
   } 

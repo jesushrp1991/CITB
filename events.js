@@ -1,10 +1,9 @@
 
     document.getElementById('buttonCam').addEventListener("click",() => {
-      chrome.runtime.sendMessage({camButton: "buttonsCamClick"}, function(response) { 
+      chrome.runtime.sendMessage({camButton: "buttonsCamClick"}, async function(response) { 
         console.log(response.result); 
-        testFunction();
-        init();
-        // getStream().then(getDevices).then(gotDevices);
+        checkingVideo();
+        // init();
       }); 
     },{passive: false});
     
