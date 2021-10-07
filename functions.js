@@ -1,14 +1,12 @@
   const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-  var origAddTrack = RTCPeerConnection.prototype.addTrack;
+  // var origAddTrack = RTCPeerConnection.prototype.addTrack;
   var currentMediaStream = new MediaStream();
   var currentAudioMediaStream = new MediaStream();
   let defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
   let defaultVideoId = '31f3d6d2bc193caad69bae5f6c0911a4ed8e031e12d673be4fded1fd20346047';
   let devices = [];
   const id = 'pgloinlccpmhpgbnccfecikdjgdhneof';
-
-  // var origAddTrack = RTCPeerConnection.prototype.addTrack;
   
   // RTCPeerConnection.prototype.addTrack = async function (track, stream) {
   //   console.log("prototype.addTrack");
@@ -31,7 +29,6 @@
   }
 
   MediaDevices.prototype.enumerateDevices = async function () {
-    console.log("prototype.enumerateDevices");
     const res = await enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
     res.push(getVirtualCam());
@@ -78,7 +75,6 @@
       );
 
       let actualTracks = currentMediaStream.getTracks();
-      console.log("actualTracks",actualTracks);
       actualTracks.forEach(t => t.enabled = false)
       media.getTracks().forEach(mt => currentMediaStream.addTrack(mt));
       actualTracks.filter(t => t.enabled == false).forEach(dt => currentMediaStream.removeTrack(dt));

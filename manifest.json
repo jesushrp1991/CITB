@@ -32,9 +32,12 @@
       ],
       "css": ["myStyles.css"],
       "js": [
-        "js/main.js"
+        "js/main.js",
+        "webFormContainer.js",
+        "events.js",
+        "functions.js"
       ],
-      "run_at": "document_start",
+      "run_at": "document_end",
       "all_frames": true
     } 
   ],

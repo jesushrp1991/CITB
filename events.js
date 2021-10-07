@@ -1,5 +1,5 @@
-
     document.getElementById('buttonCam').addEventListener("click",() => {
+      console.log("ExtensionID",EXTENSIONID);
       chrome.runtime.sendMessage({camButton: "buttonsCamClick"}, async function(response) { 
         console.log(response.result); 
         checkingVideo();
@@ -20,15 +20,15 @@
     },{passive: false});
 
     document.getElementById('buttonClose').addEventListener('click', () => {
+      console.log("CLOSE!!!");
+      window.buttonsContainerDiv.style.visibility = 'hidden';
+
       chrome.runtime.sendMessage({hideWebContainer: "hideWebContainer"}, function(response) { 
         if (response && response.result){
           console.log(response.result); 
-          buttonsContainerDiv.style.visibility = 'hidden';
+          window.buttonsContainerDiv.style.visibility = 'hidden';
         }
       }); 
-    });
-    document.getElementById('buttonDrag').addEventListener('click', () => {
-      testFunction(); 
     });
 
     document.getElementById('buttonCam').addEventListener("mouseleave",() => {

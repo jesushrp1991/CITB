@@ -1,4 +1,4 @@
-const webFormContainer = () =>{
+// const webFormContainer = () =>{
     const getButtonShow = () => {
         const buttonShow = document.createElement('button');
         buttonShow.setAttribute('id', 'buttonShow');
@@ -154,6 +154,6 @@ const webFormContainer = () =>{
         setButtonDragBackground(buttonDrag);
         addElementsToDiv(window.buttonsContainerDiv,buttonClose, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
       };
-      return setUp();
-}
-export default  webFormContainer;
+      setUp();
+// }
+// export default  webFormContainer;
