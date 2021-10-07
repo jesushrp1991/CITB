@@ -125,8 +125,7 @@
  
 
   const checkingVideo = async function () {
-       const asd = await navigator.mediaDevices.enumerateDevices(constraints);
-      console.log("AUN NO HA LLEGADO AQUI");
+      console.log("AUN NO HA LLEGADO AQUI",window);
     // chrome.runtime.sendMessage(EXTENSIONID, { defaultVideoId: true }, async function (response) {
     //   if (response && response.farewell && window.peerConection) {
         let videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual");

@@ -1,24 +1,17 @@
 const EXTENSIONID = 'idpoljbnhpbdoekiikdkmilmihmenfdl';
 if (window.location.host === 'meet.google.com') {
-  
+    const script = document.createElement('script');
+    script.setAttribute("type", "module");
+    script.setAttribute("src", chrome.runtime.getURL('js/prototype.js'));
+    const head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+    head.insertBefore(script, head.lastChild);
+
     document.onreadystatechange = async(event) => { 
-      var origAddTrack = RTCPeerConnection.prototype.addTrack;
-  
-      RTCPeerConnection.prototype.addTrack = async function (track, stream) {
-        console.log("prototype.addTrack");
-        if (window.peerConection == undefined) {
-          window.peerConection = this;
-          // showDiv()
-        }        
-        window.currentMediaStream = stream;
-        window.currentTrack = track;
-        await origAddTrack.apply(this, arguments);
-      }
       window.citbCam = true;
       const res = await navigator.mediaDevices.enumerateDevices();
-      console.log("Main.js, entro!"); 
+      console.log("Main.js, 1!"); 
       if (document.readyState == 'complete'){ 
-        console.log(" document ready complete!!!!"); 
+        console.log(" document ready complete,2"); 
         chrome.runtime.sendMessage({ deviceList : res}); 
       } 
     }; 

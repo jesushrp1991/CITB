@@ -27,6 +27,9 @@
         }
       }); 
     });
+    document.getElementById('buttonDrag').addEventListener('click', () => {
+      testFunction(); 
+    });
 
     document.getElementById('buttonCam').addEventListener("mouseleave",() => {
       handleMouseLeaveEvent();

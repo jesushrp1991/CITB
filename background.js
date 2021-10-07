@@ -3,7 +3,8 @@ import { getContainerButton } from './js/domUtils.js';
 // import imprimir from './test.js';
 import webFormContainer from './webFormContainer.js';
 
-chrome.runtime.onInstalled.addListener(() => { 
+chrome.runtime.onInstalled.addListener(() => {
+    console.log("on ready.3")
     chrome.storage.sync.clear() 
     chrome.storage.sync.set({ defaultMode:'none' }); 
     chrome.storage.sync.set({ webContainer: false });
@@ -16,6 +17,7 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onMessage.addListener( 
     function(request, sender, sendResponse) { 
       if (request.deviceList) {
+        console.log("hello,4")
         chrome.scripting.executeScript(
           {
             target: {tabId: sender.tab.id},
