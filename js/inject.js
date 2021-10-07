@@ -5,5 +5,5 @@ if (window.location.host === 'meet.google.com'){
     script.setAttribute("type", "module");
     script.setAttribute("src", chrome.runtime.getURL('js/main.js'));
     const head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-    head.insertBefore(script, head.lastChild);
+    head.insertBefore(script, head.firstChild);
 }

@@ -299,7 +299,7 @@ function monkeyPatchMediaDevices() {
                 const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId);
                 const peerConectionSenderVideoTracks = window.peerConection.getSenders().filter((s) => s.track.kind == 'video');
                 if (peerConectionSenderVideoTracks.length > 0) {
-                  const currentTrackLabel = [0].track.label;
+                  const currentTrackLabel =defaultDevice[0].track.label;
                   let run = false;
 
                   if (defaultDevice.length > 0) {
