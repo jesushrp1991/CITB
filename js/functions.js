@@ -39,6 +39,7 @@ const setMicrophone = (microphone) => {
 const setVideo = (videoId) => {
   chrome.runtime.sendMessage(EXTENSIONID, { setDefaultVideoId: videoId }, async function (response) {
     if (response && response.farewell){
+      console.log("Response from videoID",response.farewell); 
     }
   });
 }
@@ -99,7 +100,7 @@ const getVirtualCam = () => {
     label: "Virtual Class In The Box",
   }
 }
-const setModeNone = (classActivated) => {
+const setModeNone = (devices,classActivated) => {
   if (classActivated) {
     const citbMicrophone = devices.filter(
       (x) =>

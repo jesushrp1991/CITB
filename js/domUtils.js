@@ -28,9 +28,9 @@ const getButtonClose = () => {
 }
 
 const getContainerButton = () => {
-    console.log("Get Container");
     const div = document.createElement('div');
     div.setAttribute('id', 'buttonsContainer');
+    div.className = 'CITBCONTAINER'
     div.style.position = 'absolute';
     div.style.zIndex = 999;
     div.style.width = '40px';
@@ -42,19 +42,10 @@ const getContainerButton = () => {
     // div.style.display = 'block';
     return div;
 }
-const getButtonDrag = () => {
-  const buttonDrag = document.createElement('button');
-  buttonDrag.setAttribute('id', 'buttonDrag');
-  return buttonDrag; 
-}
-
-  
-
-  const setButtonCloseBackground = () => {   
-    document.getElementById('buttonClose').style.backgroundImage = 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgIHZpZXdCb3g9IjAgMCA0OCA0OCIgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTM4IDEyLjgzbC0yLjgzLTIuODMtMTEuMTcgMTEuMTctMTEuMTctMTEuMTctMi44MyAyLjgzIDExLjE3IDExLjE3LTExLjE3IDExLjE3IDIuODMgMi44MyAxMS4xNy0xMS4xNyAxMS4xNyAxMS4xNyAyLjgzLTIuODMtMTEuMTctMTEuMTd6Ii8+PHBhdGggZD0iTTAgMGg0OHY0OGgtNDh6IiBmaWxsPSJub25lIi8+PC9zdmc+")';
-    document.getElementById('buttonClose').style.backgroundSize = '60px 60px !important';
-    document.getElementById('buttonClose').style.backgroundRepeat = 'no-repeat';
-    document.getElementById('buttonClose').style.backgroundPosition = 'center';
+  const getButtonDrag = () => {
+    const buttonDrag = document.createElement('button');
+    buttonDrag.setAttribute('id', 'buttonDrag');
+    return buttonDrag; 
   }
   const setButtonBackground = (button, activated) => {
     activated ? button.classList.add("active") : button.classList.remove("active");
@@ -71,8 +62,11 @@ const getButtonDrag = () => {
     div.appendChild(buttonClass);
     div.appendChild(br2);
     div.appendChild(buttonDrag);
-    document.body.appendChild(div);
-    div.style.display = 'none';
+    var testData = document.getElementById("buttonsContainer");
+    if (!testData) {
+      document.body.appendChild(div);
+      div.style.display = 'none';
+    }
   }
 
   const createAudioElement = () => {
@@ -86,8 +80,11 @@ const getButtonDrag = () => {
   }
 
   const showDiv = () => {
-    if (document.getElementById("buttonsContainer"))
+    var testData = document.getElementById("buttonsContainer").style.display;
+    if (testData == 'none'){
+      console.log("Mostrando DIV");
       document.getElementById("buttonsContainer").style.display = "block";
+    }
   };
 
  
@@ -100,7 +97,6 @@ export {
     setButtonBackground,
     addElementsToDiv,
     createAudioElement,
-    getVirtualCam,
     getButtonDrag,
-    setButtonDragBackground
+    showDiv,
 }
