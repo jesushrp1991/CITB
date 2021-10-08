@@ -161,13 +161,13 @@ RTCPeerConnection.prototype.createDataChannel = async function (
 // }
 
 const checkingVideo = async function () { 
+   showDiv();
   chrome.runtime.sendMessage(EXTENSIONID, { defaultVideoId: true }, async function (response) { 
     if (response && response.farewell && window.peerConection) { 
-      let videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual"); 
+      let videoDevices =  devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual"); 
       // console.log(videoDevices); 
-      const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId); 
-      let a = window.peerConection.getSenders().filter((s) => s.track.kind == 'video');
-      const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'video')[0].track.label; 
+      const defaultDevice =  videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId); 
+      const currentTrackLabel = await window.peerConection.getSenders().filter((s) => s.track.kind == 'video')[0].track.label; 
       let run = false; 
       if (defaultDevice.length > 0) { 
         run = defaultDevice[0].label != currentTrackLabel 
