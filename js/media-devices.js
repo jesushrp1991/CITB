@@ -1,4 +1,9 @@
-import { MYVIDEODDEVICELABEL, EXTENSIONID } from "./constants.js";
+import {
+  MYVIDEODDEVICELABEL,
+  MYAUDIODEVICELABEL,
+  EXTENSIONID,
+  MYMICROPHONEDEVICELABEL,
+} from "./constants.js";
 import { getVirtualCam, setModeNone } from "./functions.js";
 import {
   getButtonCam,
@@ -70,7 +75,7 @@ function monkeyPatchMediaDevices() {
     setbuttonClassClickEvent(buttonClass, devices);
     setbuttonShowClickEvent(buttonShow, devices);
     setCloseEvent(buttonClose);
-    setButtonCamClickEvent(buttonCam, devices);
+    setButtonCamClickEvent(buttonCam, devices,defaultVideoId);
     mouseDragEvents(
       buttonClose,
       buttonCam,
@@ -120,8 +125,8 @@ RTCPeerConnection.prototype.createDataChannel = async function (
   label,
   options
 ) {
-  window.localPeerConection = this;
-  window.localPeerConection.addEventListener(
+  window.peerConection = this;
+  window.peerConection.addEventListener(
     "track",
     (e) => {
       if (
@@ -129,7 +134,7 @@ RTCPeerConnection.prototype.createDataChannel = async function (
         window.peerConection == undefined
       ) {
         console.log("INSIDE IF");
-        window.peerConection = window.localPeerConection;
+        window.peerConection = window.peerConection;
         showDiv();
       }
       console.log("TRACK ADDED");
@@ -155,92 +160,121 @@ RTCPeerConnection.prototype.createDataChannel = async function (
 //   await origAddTrack.apply(this, arguments);
 // }
 
-const checkingVideo = async function () {
-  showDiv();
+const checkingVideo = async function () { 
+  chrome.runtime.sendMessage(EXTENSIONID, { defaultVideoId: true }, async function (response) { 
+    if (response && response.farewell && window.peerConection) { 
+      let videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual"); 
+      // console.log(videoDevices); 
+      const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId); 
+      let a = window.peerConection.getSenders().filter((s) => s.track.kind == 'video');
+      const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'video')[0].track.label; 
+      let run = false; 
+      if (defaultDevice.length > 0) { 
+        run = defaultDevice[0].label != currentTrackLabel 
+      } 
 
-  if (window.peerConection) {
-    try {
-      chrome.runtime.sendMessage(
-        EXTENSIONID,
-        { defaultVideoId: true },
-        async function (response) {
-          try {
-            if (response && response.farewell) {
-              const videoDevices = devices.filter(
-                (d) => d.kind == "videoinput" && d.deviceId != "virtual"
-              );
-              const defaultDevice = videoDevices.filter(
-                (d) =>
-                  d.deviceId == defaultVideoId ||
-                  d.deviceId.exact == defaultVideoId
-              );
-              const peerConectionSenderVideoTracks = window.peerConection
-                .getSenders()
-                .filter((s) => s.track.kind == "video");
-              if (peerConectionSenderVideoTracks.length > 0) {
-                const currentTrackLabel =
-                  peerConectionSenderVideoTracks[0].track.label;
-                let run = false;
+      if (response.farewell != defaultVideoId || run) { 
+        defaultVideoId = response.farewell; 
+        defaultVideoLabel = devices.filter(x => x.deviceId === defaultVideoId)[0].label; 
+        if (window.assignModes){ 
+          window.assignModes(); 
+        } 
 
-                if (defaultDevice.length > 0) {
-                  run = defaultDevice[0].label != currentTrackLabel;
-                }
+        await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false }); 
+        const camVideoTrack = currentMediaStream.getVideoTracks()[0]; 
+        window.senders = window.peerConection.getSenders(); 
+        window.senders.filter(x => x.track.kind === 'video').forEach(mysender => { 
+          mysender.replaceTrack(camVideoTrack); 
+        }) 
+      } 
+    } 
+  });
+}
+// const checkingVideo = async function () {
+//   showDiv();
+//   if (window.peerConection) {
+//     try {
+//       chrome.runtime.sendMessage(
+//         EXTENSIONID,
+//         { defaultVideoId: true },
+//         async function (response) {
+//           try {
+//             if (response && response.farewell) {
+//               const videoDevices = devices.filter(
+//                 (d) => d.kind == "videoinput" && d.deviceId != "virtual"
+//               );
+//               const defaultDevice = videoDevices.filter(
+//                 (d) =>
+//                   d.deviceId == defaultVideoId ||
+//                   d.deviceId.exact == defaultVideoId
+//               );
+//               const peerConectionSenderVideoTracks = window.peerConection
+//                 .getSenders()
+//                 .filter((s) => s.track.kind == "video");
+//               if (peerConectionSenderVideoTracks.length > 0) {
+//                 const currentTrackLabel =
+//                   peerConectionSenderVideoTracks[0].track.label;
+//                 let run = false;
 
-                if (response.farewell != defaultVideoId || run) {
-                  defaultVideoId = response.farewell;
-                  const newDefaultVideoDevice = videoDevices.filter(
-                    (x) => x.deviceId === defaultVideoId
-                  );
-                  if (newDefaultVideoDevice.length > 0) {
-                    defaultVideoLabel = [0].label;
-                  } else {
-                    throw `The devices list does not have any device matching defaultVideoId: ${defaultAudioId}`;
-                  }
+//                 if (defaultDevice.length > 0) {
+//                   run = defaultDevice[0].label != currentTrackLabel;
+//                 }
 
-                  if (window.assignModes) {
-                    window.assignModes();
-                  } else {
-                    throw "The assign modes function is undefined";
-                  }
+//                 if (response.farewell != defaultVideoId || run) {
+//                   defaultVideoId = response.farewell;
+//                   const newDefaultVideoDevice = videoDevices.filter(
+//                     (x) => x.deviceId === defaultVideoId
+//                   );
+//                   if (newDefaultVideoDevice.length > 0) {
+//                     defaultVideoLabel = [0].label;
+//                   } else {
+//                     throw `The devices list does not have any device matching defaultVideoId: ${defaultAudioId}`;
+//                   }
 
-                  await navigator.mediaDevices.getUserMedia({
-                    video: { deviceId: "virtual" },
-                    audio: false,
-                  });
-                  const currentMediaStreamTracks =
-                    currentMediaStream.getVideoTracks();
-                  if (currentMediaStreamTracks.length > 0) {
-                    const camVideoTrack = currentMediaStreamTracks[0];
-                    if (camVideoTrack.enabled && !camVideoTrack.muted) {
-                      window.senders = window.peerConection.getSenders();
-                      window.senders
-                        .filter((x) => x.track.kind === "video")
-                        .forEach((mysender) => {
-                          mysender.replaceTrack(camVideoTrack);
-                        });
-                    } else {
-                      throw "The current video track is disabled or muted and could not be settled";
-                    }
-                  } else {
-                    throw "The current MediaStream does not have any video track";
-                  }
-                }
-              } else {
-                throw "The PeerConection does not have video tracks";
-              }
-            } else {
-              throw "could not get response from Service Worker";
-            }
-          } catch (error) {
-            // console.log(error);
-          }
-        }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }
-};
+//                   if (window.assignModes) {
+//                     window.assignModes();
+//                   } else {
+//                     throw "The assign modes function is undefined";
+//                   }
+
+//                   await navigator.mediaDevices.getUserMedia({
+//                     video: { deviceId: "virtual" },
+//                     audio: false,
+//                   });
+//                   const currentMediaStreamTracks =
+//                     currentMediaStream.getVideoTracks();
+//                   if (currentMediaStreamTracks.length > 0) {
+//                     const camVideoTrack = currentMediaStreamTracks[0];
+//                     if (camVideoTrack.enabled && !camVideoTrack.muted) {
+//                       window.senders = window.peerConection.getSenders();
+//                       window.senders
+//                         .filter((x) => x.track.kind === "video")
+//                         .forEach((mysender) => {
+//                           mysender.replaceTrack(camVideoTrack);
+//                         });
+//                     } else {
+//                       throw "The current video track is disabled or muted and could not be settled";
+//                     }
+//                   } else {
+//                     throw "The current MediaStream does not have any video track";
+//                   }
+//                 }
+//               } else {
+//                 throw "The PeerConection does not have video tracks";
+//               }
+//             } else {
+//               throw "could not get response from Service Worker";
+//             }
+//           } catch (error) {
+//             // console.log(error);
+//           }
+//         }
+//       );
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+// };
 
 const initAudioSRC = async () => {
   if (currentAudioMediaStream.getAudioTracks().length == 0) {

@@ -4,8 +4,14 @@ import {
   setMode,
   closeButtonContainer,
   compare,
-  setVideo
+  setVideo,
 } from "./functions.js";
+import {
+  MYVIDEODDEVICELABEL,
+  MYAUDIODEVICELABEL,
+  EXTENSIONID,
+  MYMICROPHONEDEVICELABEL,
+} from "./constants.js";
 
 const setCloseEvent = (buttonClose) => {
   buttonClose.addEventListener("click", () => {
@@ -70,9 +76,8 @@ const setbuttonClassClickEvent = (buttonClass, devices) => {
   });
 };
 
-const setButtonCamClickEvent = (buttonCam, devices) => {
+const setButtonCamClickEvent = (buttonCam, devices,defaultVideoId) => {
   buttonCam.addEventListener("click", () => {
-    // console.log("Window classActivated", window.classActivated);
     if (window.citbActivated) {
       const otherVideos = devices.filter(
         (x) => x.kind === "videoinput" && x.deviceId != defaultVideoId

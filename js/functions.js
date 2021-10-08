@@ -24,6 +24,7 @@ const citbMicrophone = (devices, sortKind, includeString, compare) => {
       );
   }
 };
+(x) => x.kind === "videoinput" && x.deviceId != defaultVideoId;
 
 const setMicrophone = (microphone) => {
   chrome.runtime.sendMessage(
@@ -37,12 +38,17 @@ const setMicrophone = (microphone) => {
 };
 
 const setVideo = (videoId) => {
-  chrome.runtime.sendMessage(EXTENSIONID, { setDefaultVideoId: videoId }, async function (response) {
-    if (response && response.farewell){
-      console.log("Response from videoID",response.farewell); 
+  console.log("SetVideoID", videoId);
+  chrome.runtime.sendMessage(
+    EXTENSIONID,
+    { setDefaultVideoId: videoId },
+    async function (response) {
+      if (response && response.farewell) {
+        console.log("Response from videoID", response.farewell);
+      }
     }
-  });
-}
+  );
+};
 
 const setMode = (mode) => {
   chrome.runtime.sendMessage(
@@ -98,13 +104,12 @@ const getVirtualCam = () => {
     groupID: "uh",
     kind: "videoinput",
     label: "Virtual Class In The Box",
-  }
-}
-const setModeNone = (devices,classActivated) => {
+  };
+};
+const setModeNone = (devices, classActivated) => {
   if (classActivated) {
     const citbMicrophone = devices.filter(
-      (x) =>
-        x.kind === "audioinput" && x.label.includes(MYAUDIODEVICELABEL)
+      (x) => x.kind === "audioinput" && x.label.includes(MYAUDIODEVICELABEL)
     );
     if (citbMicrophone.length > 0) {
       setMicrophone(citbMicrophone[0].deviceId);
@@ -113,8 +118,7 @@ const setModeNone = (devices,classActivated) => {
     }
   }
   const citbVideo = devices.filter(
-    (x) =>
-      x.kind === "videoinput" && x.label.includes(MYVIDEODDEVICELABEL)
+    (x) => x.kind === "videoinput" && x.label.includes(MYVIDEODDEVICELABEL)
   );
   if (citbVideo.length > 0) {
     setVideo(citbVideo[0].deviceId);
@@ -137,5 +141,5 @@ export {
   filterCITBDevices,
   getListDiference,
   getVirtualCam,
-  setModeNone
+  setModeNone,
 };
