@@ -8,9 +8,9 @@ import {
   showDiv,
 } from "./domUtils.js";
 
-import { MYVIDEODDEVICELABEL, EXTENSIONID } from "constants.js";
-import { setWebContainer } from "setWebContainer.js";
-import { getVirtualCam, setModeNone } from "functions.js";
+import { MYVIDEODDEVICELABEL, EXTENSIONID } from "./constants.js";
+import { setWebContainer } from "./WebContainer.js";
+import { getVirtualCam, setModeNone } from "./functions.js";
 
 function monkeyPatchMediaDevices() {
   document.onreadystatechange = (event) => {
@@ -28,19 +28,19 @@ function monkeyPatchMediaDevices() {
                   window.myAudio.muted = !window.showActivated;
                 }
                 window.classActivated = window.activatedMode === "class";
-                setButtonShowBackground(buttonShow, window.showActivated);
-                setButtonClassBackground(buttonClass, window.classActivated);
-                setButtonCloseBackground(buttonClose);
-                setButtonDragBackground(buttonDrag);
+                setButtonShowBackground(window.showActivated);
+                setButtonClassBackground( window.classActivated);
+                setButtonCloseBackground();
+                setButtonDragBackground();
               }
             }
           );
           if (defaultVideoId && defaultVideoLabel) {
             window.citbActivated =
               defaultVideoLabel.includes(MYVIDEODDEVICELABEL);
-            setButtonCamBackground(buttonCam, window.citbActivated);
-            setButtonCloseBackground(buttonClose);
-            setButtonDragBackground(buttonDrag);
+            setButtonCamBackground(window.citbActivated);
+            setButtonCloseBackground();
+            setButtonDragBackground();
           }
         } catch (error) {
           console.log(error);
@@ -48,12 +48,12 @@ function monkeyPatchMediaDevices() {
           window.showActivated = false;
           window.myAudio.muted = true;
           window.classActivated = false;
-          setButtonShowBackground(buttonShow, window.showActivated);
-          setButtonClassBackground(buttonClass, window.classActivated);
-          setButtonCloseBackground(buttonClose);
-          setButtonDragBackground(buttonDrag);
+          setButtonShowBackground(window.showActivated);
+          setButtonClassBackground(window.classActivated);
+          setButtonCloseBackground();
+          setButtonDragBackground();
           window.citbActivated = false;
-          setButtonCamBackground(buttonCam, window.citbActivated);
+          setButtonCamBackground( window.citbActivated);
         }
       };
       //Creating the web container

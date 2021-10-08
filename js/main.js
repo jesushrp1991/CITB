@@ -1,11 +1,11 @@
 import { monkeyPatchMediaDevices } from "./media-devices.js";
 import {
   EXTENSIONID,
-} from "constants.js";
+} from "./constants.js";
 import {
   filterCITBDevices,
   getListDiference
-} from 'functions.js';
+} from './functions.js';
 
 if (window.location.host === "meet.google.com") {
   let devices = await navigator.mediaDevices.enumerateDevices();

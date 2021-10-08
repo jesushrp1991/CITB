@@ -48,7 +48,7 @@ const setWebContainer = () => {
   const br1 = document.createElement("br");
   const br2 = document.createElement("br");
 
-  addElementsToDiv(
+  return addElementsToDiv(
     window.buttonsContainerDiv,
     buttonClose,
     br0,

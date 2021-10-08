@@ -3,7 +3,7 @@ import {
   MYAUDIODEVICELABEL,
   EXTENSIONID,
   MYMICROPHONEDEVICELABEL,
-} from "constants.js";
+} from "./constants.js";
 
 // const citbMicrophone = (devices) => {
 //   return devices.filter(
