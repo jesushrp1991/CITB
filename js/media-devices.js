@@ -1,46 +1,58 @@
 import {
-  setButtonCamBackground,
-  setButtonCloseBackground,
-  setButtonClassBackground,
-  setButtonShowBackground,
+  getButtonCam,
+  getButtonClose,
+  getButtonClass,
+  getButtonShow,
+  setMode,
+  setMicrophone,
+  setVideo,
+  getContainerButton,
+  setButtonBackground,
+  addElementsToDiv,
   createAudioElement,
-  setButtonDragBackground,
-  showDiv,
-} from "./domUtils.js";
+  getVirtualCam, 
+  getButtonDrag,
+  setButtonDragBackground
+} from './domUtils.js';
 
 import { MYVIDEODDEVICELABEL, EXTENSIONID } from "./constants.js";
 import { setWebContainer } from "./WebContainer.js";
 import { getVirtualCam, setModeNone } from "./functions.js";
 
 function monkeyPatchMediaDevices() {
-  document.onreadystatechange = (event) => {
-    if (document.readyState == "complete") {
-      window.assignModes = () => {
-        try {
-          chrome.runtime.sendMessage(
-            EXTENSIONID,
-            { defaultMode: true },
-            async function (response) {
+    document.onreadystatechange = (event) => {
+        if (document.readyState == 'complete') {
+        window.assignModes = () => {
+          try {
+            chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
               if (response && response.farewell) {
                 window.activatedMode = response.farewell;
                 window.showActivated = window.activatedMode === "show";
                 if (window.myAudio != undefined) {
                   window.myAudio.muted = !window.showActivated;
                 }
-                window.classActivated = window.activatedMode === "class";
-                setButtonShowBackground(window.showActivated);
-                setButtonClassBackground( window.classActivated);
-                setButtonCloseBackground();
-                setButtonDragBackground();
+                window.classActivated = window.activatedMode === 'class';
+                setButtonBackground(buttonShow, window.showActivated);
+                setButtonBackground(buttonClass, window.classActivated);
+                
               }
+            });
+            if (defaultVideoId && defaultVideoLabel) {
+              window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
+              setButtonBackground(buttonCam, window.citbActivated)
+              
             }
-          );
-          if (defaultVideoId && defaultVideoLabel) {
-            window.citbActivated =
-              defaultVideoLabel.includes(MYVIDEODDEVICELABEL);
-            setButtonCamBackground(window.citbActivated);
-            setButtonCloseBackground();
-            setButtonDragBackground();
+          } catch (error) {
+            console.log(error);
+            window.activatedMode = 'none';
+            window.showActivated = false;
+            window.myAudio.muted = true;
+            window.classActivated = false;
+            setButtonBackground(buttonShow, window.showActivated);
+            setButtonBackground(buttonClass, window.classActivated);
+            
+            window.citbActivated = false;
+            setButtonBackground(buttonCam, window.citbActivated)
           }
         } catch (error) {
           console.log(error);
@@ -76,15 +88,46 @@ function monkeyPatchMediaDevices() {
     defaultAudioId;
   let devices = [];
 
-  RTCPeerConnection.prototype.addTrack = async function (track, stream) {
-    if (window.peerConection == undefined) {
-      window.peerConection = this;
-      showDiv();
+    const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
+    const getUserMediaFn = MediaDevices.prototype.getUserMedia;
+    var origAddTrack = RTCPeerConnection.prototype.addTrack;
+    var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel;
+    var currentMediaStream = new MediaStream();
+    var currentAudioMediaStream = new MediaStream();
+    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
+    let devices = [];
+
+    RTCPeerConnection.prototype.createDataChannel = async function(label, options) {
+      window.localPeerConection = this;
+
+      
+     
+      window.localPeerConection.addEventListener("track", e => {
+        if (document.body.innerText.includes("Turn off microphone") && window.peerConection == undefined) {
+          console.log("INSIDE IF")
+          window.peerConection = window.localPeerConection;
+          showDiv();
+        }
+        console.log("TRACK ADDED")
+        console.log(e);
+        if (e.streams.length >= 1) {
+          window.currentMediaStream =  e.streams[0];
+        }
+        window.currentTrack = e.track;
+      }, false);
+      console.log("create data channel", label, options)
+      await origcreateDataChannel.apply(this,arguments)
     }
-    window.currentMediaStream = stream;
-    window.currentTrack = track;
-    await origAddTrack.apply(this, arguments);
-  };
+    // RTCPeerConnection.prototype.addTrack = async function (track, stream) {
+    //   console.log("ADDTRACK")
+    //   if (window.peerConection == undefined) {
+    //     window.peerConection = this;
+    //     showDiv();
+    //   }
+    //   window.currentMediaStream = stream;
+    //   window.currentTrack = track;
+    //   await origAddTrack.apply(this, arguments);
+    // }
 
   const checkingVideo = async function () {
     if (window.peerConection) {
