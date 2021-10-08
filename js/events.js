@@ -1,4 +1,3 @@
-const EXTENSIONID = "pgloinlccpmhpgbnccfecikdjgdhneof";
 import {
   citbMicrophone,
   setMicrophone,
@@ -6,7 +5,6 @@ import {
   closeButtonContainer,
   compare
 } from "./functions.js";
-// import { compare } from "./constants";
 
 const setCloseEvent = (buttonClose) => {
   buttonClose.addEventListener("click", () => {

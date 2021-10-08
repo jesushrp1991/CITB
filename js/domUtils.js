@@ -82,28 +82,7 @@ const getButtonDrag = () => {
   return buttonDrag; 
 }
 
-const setMicrophone = (microphone) => {
-    //console.log('***microphoneIDsent', microphone);
-    chrome.runtime.sendMessage(EXTENSIONID, { setDefaultMicrophoneId: microphone }, async function (response) {
-      if (response && response.farewell){ 
-      }
-    });
-  }
-
-  const setMode = (mode) => {
-    //console.log('***voy a mandar hacia el back ', mode)
-    chrome.runtime.sendMessage(EXTENSIONID, { setDefaultMode: mode }, async function (response1) {
-      if (response1 && response1.farewell){
-      }
-    });
-  }
-
-  const setVideo = (videoId) => {
-    chrome.runtime.sendMessage(EXTENSIONID, { setDefaultVideoId: videoId }, async function (response) {
-      if (response && response.farewell){
-      }
-    });
-  }
+  
 
   const setButtonCloseBackground = (button) => {   
     button.style.backgroundImage = 'url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgIHZpZXdCb3g9IjAgMCA0OCA0OCIgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTM4IDEyLjgzbC0yLjgzLTIuODMtMTEuMTcgMTEuMTctMTEuMTctMTEuMTctMi44MyAyLjgzIDExLjE3IDExLjE3LTExLjE3IDExLjE3IDIuODMgMi44MyAxMS4xNy0xMS4xNyAxMS4xNyAxMS4xNyAyLjgzLTIuODMtMTEuMTctMTEuMTd6Ii8+PHBhdGggZD0iTTAgMGg0OHY0OGgtNDh6IiBmaWxsPSJub25lIi8+PC9zdmc+")';
@@ -171,33 +150,25 @@ const setMicrophone = (microphone) => {
     document.body.appendChild(window.myAudio); 
   }
 
+  const showDiv = () => {
+    if (document.getElementById("buttonsContainer"))
+      document.getElementById("buttonsContainer").style.display = "block";
+  };
+
  
-
-  const getVirtualCam = () => {
-    return {
-      deviceId: "virtual",
-      groupID: "uh",
-      kind: "videoinput",
-      label: "Virtual Class In The Box",
-    }
-  }
-
 export { 
     getButtonShow,
     getButtonClass,
     getButtonCam,
     getButtonClose,
     getContainerButton,
-    setMicrophone,
-    setMode,
-    setVideo,
     setButtonCamBackground,
     setButtonCloseBackground,
     setButtonClassBackground,
     setButtonShowBackground,
     addElementsToDiv,
     createAudioElement,
-    getVirtualCam,
     getButtonDrag,
-    setButtonDragBackground
+    setButtonDragBackground,
+    showDiv
 }

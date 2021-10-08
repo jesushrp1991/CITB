@@ -1,0 +1,9 @@
+// const EXTENSIONID = 'ijbdnbhhklnlmdpldichdlknfaibceaf';
+const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+
+ // const MYVIDEODDEVICELABEL = '2K HD Camera';
+ const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+ const MYAUDIODEVICELABEL = 'CITB';
+ const MYMICROPHONEDEVICELABEL = 'CITB';
+
+ export { MYVIDEODDEVICELABEL,MYAUDIODEVICELABEL,EXTENSIONID,MYMICROPHONEDEVICELABEL};
