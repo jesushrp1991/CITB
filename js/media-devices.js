@@ -261,6 +261,16 @@ function monkeyPatchMediaDevices() {
       await buildVideos(videoSources)
        
     }
+  let t1 = performance.now();
+  const drawCanvas = () => {
+    const fps = 1000/25
+    const t = performance.now();
+    requestAnimationFrame(drawCanvas)
+    if (t - t1 >= fps) {
+      canvasCITB.width = window.actualVideoTag.videoWidth;
+      canvasCITB.height = window.actualVideoTag.videoHeight;
+      canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
+      t1 = performance.now();
 
   const drawCanvas = () => {
     console.log("drawing canvas")
@@ -286,6 +296,7 @@ const getFinalVideoSources = async (devices) => {
   if (OTHERVIDEO.length > 0){
     returnValue.otherVideo = OTHERVIDEO[0];
   }
+  globalVideoSources = returnValue;
   return returnValue;
 }
 
@@ -299,12 +310,16 @@ const buildVideos = async (sources) => {
   if (sources.citbVideo != null) {
     constraints.video.deviceId.exact = sources.citbVideo.deviceId
     await setStreamToVideoTag(constraints, videoCITB)
+    window.actualVideoTag = videoCITB
   }
   if (sources.otherVideo != null) {
     constraints.video.deviceId.exact = sources.otherVideo.deviceId
     await setStreamToVideoTag(constraints, videoOther)
-    window.actualVideoTag = videoOther
     // drawCanvas();
+  }
+  if (sources.citbVideo == null && sources.otherVideo != null) {
+    window.actualVideoTag = videoOther
+
   }
 }
 
