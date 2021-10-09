@@ -1,4 +1,7 @@
 import { setEvents } from './eventos.js';
+import {enviroment } from './enviroment.js'
+
+
 import { 
   getButtonShow,
   getButtonClass,
@@ -16,21 +19,21 @@ import {
 } from './domUtils.js';
 function monkeyPatchMediaDevices() {
 
-  
+  const buttonShow = getButtonShow();        
+  const buttonClass = getButtonClass();
+  const buttonCam = getButtonCam();
+  const buttonClose= getButtonClose();
+  const buttonDrag= getButtonDrag();
   if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
-    const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
-    const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+    const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL;
+    const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
+    const EXTENSIONID = enviroment.EXTENSIONID;
     
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){
         console.log("DOCUMENT READY");
         
-        const buttonShow = getButtonShow();        
-        const buttonClass = getButtonClass();
-        const buttonCam = getButtonCam();
-        const buttonClose= getButtonClose();
-        const buttonDrag= getButtonDrag();
+       
         window.buttonsContainerDiv = getContainerButton();
         
         const br = document.createElement('br');
@@ -44,6 +47,12 @@ function monkeyPatchMediaDevices() {
         setButtonBackground(buttonShow, window.showActivated);
         setButtonBackground(buttonClass, window.classActivated);
         setButtonBackground(buttonDrag); 
+
+        if (window.actualVideoTag == videoCITB) {
+          window.citbActivated = true;
+          setButtonBackground(buttonCam, window.citbActivated) 
+
+        }
 
         const camCallBackFunction = () => {
           if(window.actualVideoTag.id == "OTHERVideo") 
@@ -132,7 +141,7 @@ function monkeyPatchMediaDevices() {
   
   //get devices
   
-const CITBCAMERALABEL = "Sirius USB2.0 Camera (0ac8:3340)"
+const CITBCAMERALABEL = "2K HD Camera"
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
@@ -161,6 +170,8 @@ const buildVideos = async (sources) => {
     constraints.video.deviceId.exact = sources.citbVideo.deviceId
     await setStreamToVideoTag(constraints, videoCITB)
     window.actualVideoTag = videoCITB
+    setButtonBackground(buttonCam, true) 
+
   }
   if (sources.otherVideo != null) {
     constraints.video.deviceId.exact = sources.otherVideo.deviceId
@@ -171,6 +182,7 @@ const buildVideos = async (sources) => {
     window.actualVideoTag = videoOther
 
   }
+  console.log("AFTER", window.actualVideoTag)
 }
 
 const setStreamToVideoTag = async (constraints ,video) => {

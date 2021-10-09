@@ -1,4 +1,7 @@
-const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+import {enviroment } from './enviroment.js'
+
+
+const EXTENSIONID = enviroment.EXTENSIONID;
 
 const getButtonShow = () => {
   const buttonShow = document.createElement('button');

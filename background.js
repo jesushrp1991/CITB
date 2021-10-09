@@ -1,9 +1,12 @@
+import {enviroment } from './enviroment.js'
+
+
 // background.js
 let defaultMode = 'none';
 let buttonsOpen = false;
-const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
-const MYMICROPHONEDEVICELABEL = 'CITB';
-const MYAUDIODEVICELABEL = 'CITB';
+const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL
+const MYMICROPHONEDEVICELABEL = enviroment.MYAUDIODEVICELABEL;
+const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;;
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
