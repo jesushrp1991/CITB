@@ -82,6 +82,7 @@ function monkeyPatchMediaDevices() {
     
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
+    var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
@@ -199,14 +200,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
       devices = res;
       // console.log(res);
       res.push(getVirtualCam());
-      // //console.log(res);
-      // chrome.runtime.sendMessage(EXTENSIONID, { devicesList: res }, function (response) {
-      //   if (response.farewell) {
-      //     defaultVideoId = response.farewell;
-      //     defaultVideoLabel = res.filter(x => x.deviceId === defaultVideoId).length > 0 ? res.filter(x => x.deviceId === defaultVideoId)[0].label : '';
-      //     //console.log("WILL CHANGE USERMEDIA", defaultVideoId)
-      //   }
-      // });
       return res;
     };
 
@@ -233,6 +226,27 @@ const setStreamToVideoTag = async (constraints ,video) => {
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
       return res;
     };
+    RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
+      window.localPeerConection = this; 
+ 
+       
+      
+      window.localPeerConection.addEventListener("track", e => { 
+        if (document.body.innerText.includes("Turn off microphone") && window.peerConection == undefined) { 
+          console.log("INSIDE IF") 
+          window.peerConection = window.localPeerConection; 
+          showDiv(); 
+        } 
+        console.log("TRACK ADDED") 
+        console.log(e); 
+        if (e.streams.length >= 1) { 
+          window.currentMediaStream =  e.streams[0]; 
+        } 
+        window.currentTrack = e.track; 
+      }, false); 
+      console.log("create data channel", label, options) 
+      await origcreateDataChannel.apply(this,arguments) 
+    } 
   }
 }
 
