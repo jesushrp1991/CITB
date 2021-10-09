@@ -17,6 +17,7 @@ import {
   getVirtualCam,
   getButtonDrag
 } from './domUtils.js';
+
 function monkeyPatchMediaDevices() {
 
   const buttonShow = getButtonShow();        
@@ -139,15 +140,13 @@ function monkeyPatchMediaDevices() {
       } 
     }
   
-  //get devices
-  
-const CITBCAMERALABEL = "2K HD Camera"
+  //get devices 
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
   const videoSources = sources.filter(s => s.kind == "videoinput");
-  const CITBVideo = videoSources.filter(s => s.label.includes(CITBCAMERALABEL));
-  const OTHERVIDEO = videoSources.filter(s => !s.label.includes(CITBCAMERALABEL));
+  const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+  const OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL));
   let returnValue = {citbVideo: null, otherVideo: null}
   if (CITBVideo.length > 0){
     returnValue.citbVideo = CITBVideo[0];
