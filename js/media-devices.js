@@ -116,23 +116,19 @@ function monkeyPatchMediaDevices() {
       await buildVideos(videoSources)
        
     }
-  // let t1 = performance.now();
-  // const drawCanvas = () => {
-  //   const fps = 1000/25
-  //   const t = performance.now();
-  //   requestAnimationFrame(drawCanvas)
-  //   if (t - t1 >= fps) {
-  //     canvasCITB.width = window.actualVideoTag.videoWidth;
-  //     canvasCITB.height = window.actualVideoTag.videoHeight;
-  //     canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
-  //     t1 = performance.now();
-
-  const drawCanvas = () => {
-    canvasCITB.width = window.actualVideoTag.videoWidth;
-    canvasCITB.height = window.actualVideoTag.videoHeight;
-    canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
-    setTimeout(drawCanvas,35);
-  }
+    let t1 = performance.now(); 
+ 
+    const drawCanvas = () => { 
+      const fps = 1000/30 
+      const t = performance.now(); 
+      requestAnimationFrame(drawCanvas) 
+      if (t - t1 >= fps) { 
+        canvasCITB.width = window.actualVideoTag.videoWidth; 
+        canvasCITB.height = window.actualVideoTag.videoHeight; 
+        canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height); 
+        t1 = performance.now(); 
+      } 
+    }
   
   //get devices
   
