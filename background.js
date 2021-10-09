@@ -1,12 +1,12 @@
-import {enviroment } from './enviroment.js'
+import {enviroment } from './js/enviroment.js'
 
 
 // background.js
 let defaultMode = 'none';
 let buttonsOpen = false;
-const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL
+const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL;
 const MYMICROPHONEDEVICELABEL = enviroment.MYAUDIODEVICELABEL;
-const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;;
+const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
