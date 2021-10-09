@@ -208,9 +208,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
       //     //console.log("WILL CHANGE USERMEDIA", defaultVideoId)
       //   }
       // });
-      if (defaultVideoId != undefined) {
-        setMediaStreamTracks()
-      }
       return res;
     };
 
@@ -227,7 +224,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices()
           await drawCanvas()
-          // await setMediaStreamTracks()
           return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);

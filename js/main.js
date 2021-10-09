@@ -2,9 +2,6 @@ import { monkeyPatchMediaDevices } from './media-devices.js';
 import {enviroment } from './enviroment.js'
 
 if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
-  const MYVIDEODDEVICELABEL = '2K HD Camera';
-  const MYMICROPHONEDEVICELABEL = 'CITB';
-  const MYAUDIODEVICELABEL = 'CITB';
   const EXTENSIONID = enviroment.EXTENSIONID;
 
   let devices = await navigator.mediaDevices.enumerateDevices();

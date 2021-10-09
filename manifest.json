@@ -13,7 +13,8 @@
     "scripting"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "https://meet.google.com/*",
+    "https://zoom.us/*"
   ],
   "action": {
     "default_popup": "popup.html",
