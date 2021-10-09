@@ -1,26 +1,20 @@
 import { 
-    getButtonShow,
-    getButtonClass,
-    getButtonCam,
-    getButtonClose,
-    getContainerButton,
-    setMicrophone,
-    setMode,
-    setVideo,
-    setButtonBackground,
-    addElementsToDiv,
-    createAudioElement,
-    getVirtualCam,
-    setElementVisibility,
-    closeButtonContainer,
-    handleMouseOverEvent,
-    handleMouseLeaveEvent,
-    setElementDisplay,
-    getButtonDrag,
-    handleDrag
+  getButtonShow,
+  getButtonClass,
+  getButtonCam,
+  getButtonClose,
+  getContainerButton,
+  setMicrophone,
+  setMode,
+  setVideo,
+  setButtonBackground,
+  addElementsToDiv,
+  createAudioElement,
+  getVirtualCam,
+  getButtonDrag
   } from './domUtils.js';
 
-const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction) =>{
+const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction) => {
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
@@ -113,7 +107,6 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
       
       function dragMouseDown(e) {
-        console.log("dragMouseDown",e);
         e = e || window.event;
         e.preventDefault();
         pos3 = e.clientX;
@@ -123,7 +116,6 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       }
     
       function elementDrag(e) {
-     console.log("Event",e);
         e = e || window.event;
         e.preventDefault();
         pos1 = pos3 - e.clientX;
@@ -136,7 +128,6 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       }
     
       const handleMouseOverEvent = () =>{
-          console.log("mouse over event");
         document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
         document.getElementById('buttonClose').style.display = 'block';
       };
@@ -150,9 +141,8 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
-      }
-}
-
+      };
+};
 export { 
     setEvents
 }

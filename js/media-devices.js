@@ -1,30 +1,19 @@
+import { setEvents } from './eventos.js';
 import { 
+  getButtonShow,
+  getButtonClass,
   getButtonCam,
   getButtonClose,
-  getButtonClass,
-  getButtonShow,
-  setMode,
-  setMicrophone,
-  setVideo,
   getContainerButton,
-  setButtonCamBackground,
-  setButtonCloseBackground,
-  setButtonClassBackground,
-  setButtonShowBackground,
+  setMicrophone,
+  setMode,
+  setVideo,
+  setButtonBackground,
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  setElementDisplay,
-  setElementVisibility,
-  closeButtonContainer,
-  // handleMouseOverEvent,
-  // handleMouseLeaveEvent,
-  handleDrag,
-  getButtonDrag,
-  setButtonDragBackground
+  getButtonDrag
 } from './domUtils.js';
-import { setEvents } from './events';
-
 function monkeyPatchMediaDevices() {
 
   
@@ -33,7 +22,7 @@ function monkeyPatchMediaDevices() {
     const MYAUDIODEVICELABEL = 'CITB';
     const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
-    document.onreadystatechange = (event) => {     
+    document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){
         console.log("DOCUMENT READY");
         
@@ -51,20 +40,23 @@ function monkeyPatchMediaDevices() {
         
         addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
         
-        setButtonCamBackground(buttonCam, window.citbActivated) 
-        setButtonShowBackground(buttonShow, window.showActivated);
-        setButtonClassBackground(buttonClass, window.classActivated);
-        setButtonDragBackground(buttonDrag); 
+        setButtonBackground(buttonCam, window.citbActivated) 
+        setButtonBackground(buttonShow, window.showActivated);
+        setButtonBackground(buttonClass, window.classActivated);
+        setButtonBackground(buttonDrag); 
 
         const camCallBackFunction = () => {
-          console.log("cam click",window.actualVideoTag.id); 
           if(window.actualVideoTag.id == "OTHERVideo") 
            { 
              window.actualVideoTag = videoCITB; 
-              
+             window.citbActivated = true;  
            } 
-          else 
-           window.actualVideoTag = videoOther; 
+          else {
+              window.actualVideoTag = videoOther; 
+             window.citbActivated = false;
+          }
+          setButtonBackground(buttonCam, window.citbActivated) 
+          
         } 
 
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction);
@@ -73,6 +65,7 @@ function monkeyPatchMediaDevices() {
     }
 
     const showDiv = () => {
+      console.log("buttonsContainer");
       if (document.getElementById('buttonsContainer'))
       document.getElementById('buttonsContainer').style.display = 'block';
     }
@@ -82,7 +75,7 @@ function monkeyPatchMediaDevices() {
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMode, defaultMicrophoneId,defaultAudioId;
+    let defaultVideoId, defaultMode, defaultMicrophoneId,defaultAudioId,globalVideoSources;
     let devices = [];
 
     //add two video tags to the dom
@@ -135,7 +128,6 @@ function monkeyPatchMediaDevices() {
   //     t1 = performance.now();
 
   const drawCanvas = () => {
-    console.log("drawing canvas")
     canvasCITB.width = window.actualVideoTag.videoWidth;
     canvasCITB.height = window.actualVideoTag.videoHeight;
     canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
@@ -187,7 +179,7 @@ const buildVideos = async (sources) => {
 
 const setStreamToVideoTag = async (constraints ,video) => {
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-    console.log("video vide src", video, stream)
+    // console.log("video vide src", video, stream)
     video.srcObject = stream;
   }).catch(err => {
     console.log(err)
