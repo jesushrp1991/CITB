@@ -3,13 +3,12 @@
   "description": "Extension for configuring dinamically audio and video input for Class in the Box",
   "version": "1.0.0",
   "manifest_version": 3,
-  "minimum_chrome_version": "10.0",
+  "minimum_chrome_version": "88",
   "background": {
     "service_worker": "background.js"
   },
   "permissions": [
     "storage",
-    "tabs",
     "activeTab",
     "scripting"
   ],
@@ -52,8 +51,8 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*", "https://web.skype.com/*","https://zoom.us/*"],
+    "ids": ["cmipmijaddfhnallmpjbfdibgiggooem"],
+    "matches": ["https://meet.google.com/*"],
     "accepts_tls_channel_id": true
   }
 }

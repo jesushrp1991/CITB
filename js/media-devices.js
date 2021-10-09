@@ -25,11 +25,13 @@ import {
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
+
+  
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
-    const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+    const MYVIDEODDEVICELABEL = '2K HD Camera';
     const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+    const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
     
     document.onreadystatechange = (event) => {     
       //console.log(document.readyState);   
@@ -261,9 +263,101 @@ function monkeyPatchMediaDevices() {
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origAddTrack = RTCPeerConnection.prototype.addTrack;
     var currentMediaStream = new MediaStream();
+    var currentCanvasMediaStream = new MediaStream();
+
+
     var currentAudioMediaStream = new MediaStream();
     let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
     let devices = [];
+
+    //add two video tags to the dom
+    const videoCITB = document.createElement('video');
+    videoCITB.setAttribute('id', 'CITBVideo')
+    videoCITB.setAttribute('playsinline', "")
+    videoCITB.setAttribute('autoplay', "")
+    videoCITB.style.display = 'none';
+    document.body.appendChild(videoCITB);
+
+    const videoOther = document.createElement('video');
+    videoOther.setAttribute('id', 'OTHERVideo')
+    videoOther.setAttribute('playsinline', "")
+    videoOther.setAttribute('autoplay', "")
+    videoOther.style.display = 'none';
+    document.body.appendChild(videoOther);
+
+    //add canvas to the DOM
+    const canvasCITB = document.createElement('canvas');
+    canvasCITB.setAttribute('id', 'canvasCITB')
+    document.body.appendChild(canvasCITB);
+    window.canvas = canvasCITB
+    const buildVideoContainersAndCanvas = async () => {
+      
+      currentCanvasMediaStream = canvasCITB.captureStream();
+    }
+
+    const builVideosFromDevices = async () => {
+
+      const devices = await enumerateDevicesFn.call(navigator.mediaDevices)
+      console.log("DEVICES VIDEO", devices);
+      const videoSources = await getFinalVideoSources(devices)
+      console.log(videoSources);
+      await buildVideos(videoSources)
+       
+    }
+
+  const drawCanvas = () => {
+    console.log("drawing canvas")
+    canvasCITB.width = window.actualVideoTag.videoWidth;
+    canvasCITB.height = window.actualVideoTag.videoHeight;
+    canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
+    setTimeout(drawCanvas,20);
+  }
+  
+  //get devices
+  
+const CITBCAMERALABEL = "2K HD Camera"
+const getFinalVideoSources = async (devices) => {
+  const sources = devices;
+  const videoSources = sources.filter(s => s.kind == "videoinput");
+  const CITBVideo = videoSources.filter(s => s.label.includes(CITBCAMERALABEL));
+  const OTHERVIDEO = videoSources.filter(s => !s.label.includes(CITBCAMERALABEL));
+  let returnValue = {citbVideo: null, otherVideo: null}
+  if (CITBVideo.length > 0){
+    returnValue.citbVideo = CITBVideo[0];
+  }
+  if (OTHERVIDEO.length > 0){
+    returnValue.otherVideo = OTHERVIDEO[0];
+  }
+  return returnValue;
+}
+
+const buildVideos = async (sources) => {
+  let constraints = {
+    video: {
+      deviceId: { exact: "" },
+    },
+    audio: false,
+  };
+  if (sources.citbVideo != null) {
+    constraints.video.deviceId.exact = sources.citbVideo.deviceId
+    await setStreamToVideoTag(constraints, videoCITB)
+  }
+  if (sources.otherVideo != null) {
+    constraints.video.deviceId.exact = sources.otherVideo.deviceId
+    await setStreamToVideoTag(constraints, videoOther)
+    window.actualVideoTag = videoOther
+    // drawCanvas();
+  }
+}
+
+const setStreamToVideoTag = async (constraints ,video) => {
+  navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+    console.log("video vide src", video, stream)
+    video.srcObject = stream;
+  }).catch(err => {
+    console.log(err)
+  });
+}
 
     RTCPeerConnection.prototype.addTrack = async function (track, stream) {
       if (window.peerConection == undefined) {
@@ -459,8 +553,11 @@ function monkeyPatchMediaDevices() {
           args[0].video.deviceId === "virtual" ||
           args[0].video.deviceId.exact === "virtual"
         ) {
-          await setMediaStreamTracks()
-          return currentMediaStream;
+          await buildVideoContainersAndCanvas();
+          await builVideosFromDevices()
+          await drawCanvas()
+          // await setMediaStreamTracks()
+          return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           currentMediaStream = res;

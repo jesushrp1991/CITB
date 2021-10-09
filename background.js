@@ -1,7 +1,7 @@
 // background.js
 let defaultMode = 'none';
 let buttonsOpen = false;
-const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+const MYVIDEODDEVICELABEL = '2K HD Camera';
 const MYMICROPHONEDEVICELABEL = 'CITB';
 const MYAUDIODEVICELABEL = 'CITB';
 

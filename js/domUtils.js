@@ -1,4 +1,4 @@
-const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
+const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
 
 const getButtonShow = () => {
     const buttonShow = document.createElement('button');
