@@ -163,7 +163,7 @@ chrome.runtime.onMessageExternal.addListener(
         sendResponse({farewell: request.setDefaultMode}) );
     } else if (request.defaultMicrophoneId){
       chrome.storage.sync.get("defaultMicrophoneId", ({ defaultMicrophoneId }) => 
-        sendResponse({farewell: defaultMicrophoneId}) );
+        sendResponse({defaultMicrophoneId: defaultMicrophoneId}) );
     } else if (request.setDefaultMicrophoneId){
       //console.log('***microphoneIDBack', request.setDefaultMicrophoneId);
       chrome.storage.sync.set({ 'defaultMicrophoneId' : request.setDefaultMicrophoneId }, () =>

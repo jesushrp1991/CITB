@@ -1,5 +1,5 @@
 const enviroment = {
-    EXTENSIONID: "cmipmijaddfhnallmpjbfdibgiggooem",
+    EXTENSIONID: "pmbeajhggkgdldmekoenjhcljbhaojpb",
     MYVIDEODDEVICELABEL: "2K HD Camera",
     MYAUDIODEVICELABEL: 'CITB'
 }

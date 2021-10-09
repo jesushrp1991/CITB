@@ -31,11 +31,12 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
         setMode(window.showActivated ? 'none' : 'show');
       });
       buttonClass.addEventListener('click', () => {
+        console.log('modo class');
         if (window.classActivated) {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
           if(citbMicrophone.length > 0){
             setMicrophone(citbMicrophone[0].deviceId);
-            setMode('none');
+            setButtonBackground(buttonClass, false);
           }else{
             alert('Could not change Microphone');
           }
@@ -43,7 +44,7 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
           if (otherMicrophones.length > 0){
             setMicrophone(otherMicrophones[0].deviceId);
-            setMode('class');
+            setButtonBackground(buttonClass, true);
           }else{
             alert('Could not change Microphone');
           }

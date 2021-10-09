@@ -140,8 +140,32 @@ function monkeyPatchMediaDevices() {
         t1 = performance.now(); 
       } 
     }
+
+  const checkingMicrophoneId = async function () {
+    chrome.runtime.sendMessage(EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
+      try {
+        if (response && response.defaultMicrophoneId && window.localPeerConection) {
+          if (response.defaultMicrophoneId != defaultMicrophoneId) {
+            console.log("INSIDE INSIDE", defaultDevice[0].label, currentTrackLabel)
+            defaultMicrophoneId = response.farewell;
   
-  //get devices 
+            currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks.length > 0){
+              const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
+              const senders = window.localPeerConection.getSenders();
+              senders.filter(x => x.track.kind === 'audio').forEach(mysender => {
+                mysender.replaceTrack(micAudioTrack);
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.log('no voy a cambiar el modo debido a este error: ', error)
+      }
+    });
+  }
+
+  setInterval(checkingMicrophoneId, 500)
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
