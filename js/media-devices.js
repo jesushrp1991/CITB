@@ -23,178 +23,26 @@ import {
   getButtonDrag,
   setButtonDragBackground
 } from './domUtils.js';
+import { setEvents } from './events';
 
 function monkeyPatchMediaDevices() {
 
   
-  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
     const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
     const MYAUDIODEVICELABEL = 'CITB';
     const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
     document.onreadystatechange = (event) => {     
-      //console.log(document.readyState);   
       if (document.readyState == 'complete'){
         console.log("DOCUMENT READY");
         
-        
-        const buttonShow = getButtonShow();
-        buttonShow.addEventListener('click', () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-            if(citbMicrophone.length > 0){
-              setMicrophone(citbMicrophone[0].deviceId);
-            }else{
-              alert('Could not change Microphone');
-            }
-          }
-          setMode(window.showActivated ? 'none' : 'show');
-        });
-  
+        const buttonShow = getButtonShow();        
         const buttonClass = getButtonClass();
-        buttonClass.addEventListener('click', () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-            if(citbMicrophone.length > 0){
-              setMicrophone(citbMicrophone[0].deviceId);
-              setMode('none');
-            }else{
-              alert('Could not change Microphone');
-            }
-          }else {
-            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
-            if (otherMicrophones.length > 0){
-              setMicrophone(otherMicrophones[0].deviceId);
-              setMode('class');
-            }else{
-              alert('Could not change Microphone');
-            }
-          }
-        });
-  
         const buttonCam = getButtonCam();
-        buttonCam.addEventListener('click', () => {
-          console.log("cam click",window.actualVideoTag.id);
-          if(window.actualVideoTag.id == "OTHERVideo")
-           {
-             window.actualVideoTag = videoCITB;
-             
-           }
-          else
-           window.actualVideoTag = videoOther;
-
-        });
-  
         const buttonClose= getButtonClose();
-        buttonClose.addEventListener('click', () => {
-            closeButtonContainer(window.buttonsContainerDiv);
-            // closeButtonContainer(buttonClose);
-        });
         const buttonDrag= getButtonDrag();
-        
-  
         window.buttonsContainerDiv = getContainerButton();
-  
-        buttonClose.addEventListener("mouseenter",() => {
-          handleMouseOverEvent();
-        },{passive: false});
-  
-        buttonCam.addEventListener("mouseenter",() => {
-          handleMouseOverEvent();
-        },{passive: false});
-        
-        buttonShow.addEventListener("mouseenter",() => {
-          handleMouseOverEvent();
-        },{passive: false});
-  
-        buttonClass.addEventListener("mouseenter",() => {
-          handleMouseOverEvent();
-        },{passive: false});
-  
-        buttonClose.addEventListener("mouseleave",() => {
-          handleMouseLeaveEvent();
-        },{passive: false});
-  
-        buttonCam.addEventListener("mouseleave",() => {
-          handleMouseLeaveEvent();
-        },{passive: false});
-        
-        buttonShow.addEventListener("mouseleave",() => {
-          handleMouseLeaveEvent();
-        },{passive: false});
-  
-        buttonClass.addEventListener("mouseleave",() => {
-          handleMouseLeaveEvent();
-        },{passive: false});
-  
-        window.buttonsContainerDiv.addEventListener('mouseenter',()=>{
-          handleMouseOverEvent();
-        },{passive: false });
-  
-        window.buttonsContainerDiv.addEventListener("mouseleave",() => {
-          handleMouseLeaveEvent();
-        },{passive: false});
-  
-        window.buttonsContainerDiv.addEventListener("mouseover",() => {
-          handleMouseOverEvent();
-        },{passive: false});
-        
-        //BEGIN DRAG****///
-        window.buttonsContainerDiv.addEventListener('mousedown', (e) => {
-           dragMouseDown(e);
-          // handleDrag(window.buttonsContainerDiv);
-          // closeButtonContainer(buttonClose);
-        });
-        buttonDrag.addEventListener('mousedown', (e) => {
-           dragMouseDown(e);
-          // handleDrag(window.buttonsContainerDiv);
-          // closeButtonContainer(buttonClose);
-        });
-        
-        function dragMouseDown(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // get the mouse cursor position at startup:
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          document.onmouseup = closeDragElement;
-          // call a function whenever the cursor moves:
-          document.onmousemove = elementDrag;
-        }
-      
-        function elementDrag(e) {
-          e = e || window.event;
-          e.preventDefault();
-          // calculate the new cursor position:
-          pos1 = pos3 - e.clientX;
-          pos2 = pos4 - e.clientY;
-          pos3 = e.clientX;
-          pos4 = e.clientY;
-          // set the element's new position:
-          window.buttonsContainerDiv.style.rigth = '';
-          window.buttonsContainerDiv.style.top = (window.buttonsContainerDiv.offsetTop - pos2) + "px";
-          window.buttonsContainerDiv.style.left = (window.buttonsContainerDiv.offsetLeft - pos1) + "px";
-        }
-  
-        const handleMouseOverEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-          document.getElementById('buttonClose').style.display = 'block';
-        };
-        
-        const handleMouseLeaveEvent = () =>{
-          document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
-          document.getElementById('buttonsContainer').style.boxShadow = 'none'
-          document.getElementById('buttonClose').style.display = 'none';
-        };
-      
-        function closeDragElement() {
-          /* stop moving when mouse button is released:*/
-          document.onmouseup = null;
-          document.onmousemove = null;
-        }
-  
-        //END DRAG ***/
         
         const br = document.createElement('br');
         const br0 = document.createElement('br');
@@ -202,10 +50,24 @@ function monkeyPatchMediaDevices() {
         const br2 = document.createElement('br');
         
         addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
+        
         setButtonCamBackground(buttonCam, window.citbActivated) 
         setButtonShowBackground(buttonShow, window.showActivated);
         setButtonClassBackground(buttonClass, window.classActivated);
         setButtonDragBackground(buttonDrag); 
+
+        const camCallBackFunction = () => {
+          console.log("cam click",window.actualVideoTag.id); 
+          if(window.actualVideoTag.id == "OTHERVideo") 
+           { 
+             window.actualVideoTag = videoCITB; 
+              
+           } 
+          else 
+           window.actualVideoTag = videoOther; 
+        } 
+
+        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction);
         showDiv();
       } 
     }
@@ -261,16 +123,16 @@ function monkeyPatchMediaDevices() {
       await buildVideos(videoSources)
        
     }
-  let t1 = performance.now();
-  const drawCanvas = () => {
-    const fps = 1000/25
-    const t = performance.now();
-    requestAnimationFrame(drawCanvas)
-    if (t - t1 >= fps) {
-      canvasCITB.width = window.actualVideoTag.videoWidth;
-      canvasCITB.height = window.actualVideoTag.videoHeight;
-      canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
-      t1 = performance.now();
+  // let t1 = performance.now();
+  // const drawCanvas = () => {
+  //   const fps = 1000/25
+  //   const t = performance.now();
+  //   requestAnimationFrame(drawCanvas)
+  //   if (t - t1 >= fps) {
+  //     canvasCITB.width = window.actualVideoTag.videoWidth;
+  //     canvasCITB.height = window.actualVideoTag.videoHeight;
+  //     canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
+  //     t1 = performance.now();
 
   const drawCanvas = () => {
     console.log("drawing canvas")
