@@ -11,7 +11,8 @@ import {
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  getButtonDrag
+  getButtonDrag,
+  closeButtonContainer
   } from './domUtils.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction) => {

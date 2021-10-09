@@ -110,6 +110,19 @@ const getVirtualCam = () => {
   }
 }
 
+const closeButtonContainer = () => {
+  document.getElementById("buttonsContainer").style.visibility = "hidden";
+  chrome.runtime.sendMessage(
+    EXTENSIONID,
+    { buttonsOpen: true },
+    async function (response) {
+      if (response && response.farewell) {
+        //console.log(response.farewell);
+      }
+    }
+  );
+};
+
 export { 
   getButtonShow,
   getButtonClass,
@@ -123,5 +136,6 @@ export {
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  getButtonDrag
+  getButtonDrag,
+  closeButtonContainer
 }
