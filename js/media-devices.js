@@ -29,55 +29,16 @@ function monkeyPatchMediaDevices() {
   
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
-    const MYVIDEODDEVICELABEL = '2K HD Camera';
+    const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
     const MYAUDIODEVICELABEL = 'CITB';
-    const EXTENSIONID = 'cmipmijaddfhnallmpjbfdibgiggooem';
+    const EXTENSIONID = 'pgloinlccpmhpgbnccfecikdjgdhneof';
     
     document.onreadystatechange = (event) => {     
       //console.log(document.readyState);   
       if (document.readyState == 'complete'){
-        window.assignModes = () => {
-          chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
-            if (response && response.farewell){
-              console.log("response assign modes",response.farewell);
-              window.activatedMode = response.farewell;
-              window.showActivated = window.activatedMode === 'show';
-              if (window.myAudio != undefined){
-                window.myAudio.muted = !window.showActivated;
-              }
-              window.classActivated = window.activatedMode === 'class';
-              setButtonShowBackground(buttonShow, window.showActivated);
-              setButtonClassBackground(buttonClass, window.classActivated);
-              // setButtonCloseBackground(buttonClose);
-              // setButtonDragBackground(buttonDrag);
-            }
-          });
-          if (defaultVideoId && defaultVideoLabel) {
-            console.log("defaultVideoID",defaultVideoId);
-            window.citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
-            setButtonCamBackground(buttonCam, window.citbActivated)
-            setButtonCloseBackground(buttonClose);
-            setButtonDragBackground(buttonDrag);
-          }
-        }
-  
-        const setModeNone = () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-            if(citbMicrophone.length > 0){
-              setMicrophone(citbMicrophone[0].deviceId);
-            }else{
-              alert('Could not change Microphone');
-            }
-          }
-          const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
-          console.log("CITB",citbVideo);
-            if(citbVideo.length > 0){
-              setVideo(citbVideo[0].deviceId);
-            }
-          setMode('none');
-        }
-  
+        console.log("DOCUMENT READY");
+        
+        
         const buttonShow = getButtonShow();
         buttonShow.addEventListener('click', () => {
           if (window.classActivated) {
@@ -114,21 +75,15 @@ function monkeyPatchMediaDevices() {
   
         const buttonCam = getButtonCam();
         buttonCam.addEventListener('click', () => {
-          if (window.citbActivated){
-            const otherVideos = devices.filter(x => (x.kind === 'videoinput' && x.deviceId != defaultVideoId));
-            if (otherVideos.length > 0){
-              setVideo(otherVideos[0].deviceId);
-            }else{
-              alert('Could not change Video');
-            }
-          }else{
-            const citbVideo = devices.filter(x => (x.kind === 'videoinput' && x.label.includes(MYVIDEODDEVICELABEL)));
-            if(citbVideo.length > 0){
-              setVideo(citbVideo[0].deviceId);
-            }else{
-              alert('Could not change Video');
-            }
-          }
+          console.log("cam click",window.actualVideoTag.id);
+          if(window.actualVideoTag.id == "OTHERVideo")
+           {
+             window.actualVideoTag = videoCITB;
+             
+           }
+          else
+           window.actualVideoTag = videoOther;
+
         });
   
         const buttonClose= getButtonClose();
@@ -247,10 +202,11 @@ function monkeyPatchMediaDevices() {
         const br2 = document.createElement('br');
         
         addElementsToDiv(window.buttonsContainerDiv,buttonClose,br0, buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
-        
-        createAudioElement();
-  
-        setModeNone();
+        setButtonCamBackground(buttonCam, window.citbActivated) 
+        setButtonShowBackground(buttonShow, window.showActivated);
+        setButtonClassBackground(buttonClass, window.classActivated);
+        setButtonDragBackground(buttonDrag); 
+        showDiv();
       } 
     }
 
@@ -261,13 +217,10 @@ function monkeyPatchMediaDevices() {
     
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-    var origAddTrack = RTCPeerConnection.prototype.addTrack;
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
-
-
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMode, defaultVideoLabel, defaultMicrophoneId, defaultMicrophoneLabel, defaultAudioId;
+    let defaultVideoId, defaultMode, defaultMicrophoneId,defaultAudioId;
     let devices = [];
 
     //add two video tags to the dom
@@ -276,20 +229,24 @@ function monkeyPatchMediaDevices() {
     videoCITB.setAttribute('playsinline', "")
     videoCITB.setAttribute('autoplay', "")
     videoCITB.style.display = 'none';
-    document.body.appendChild(videoCITB);
+    if(document.readyState == "complete")
+      document.body.appendChild(videoCITB);
 
     const videoOther = document.createElement('video');
     videoOther.setAttribute('id', 'OTHERVideo')
     videoOther.setAttribute('playsinline', "")
     videoOther.setAttribute('autoplay', "")
     videoOther.style.display = 'none';
-    document.body.appendChild(videoOther);
+    if(document.readyState == "complete")
+      document.body.appendChild(videoOther);
 
     //add canvas to the DOM
     const canvasCITB = document.createElement('canvas');
     canvasCITB.setAttribute('id', 'canvasCITB')
-    document.body.appendChild(canvasCITB);
+    if(document.readyState == "complete")
+      document.body.appendChild(canvasCITB);
     window.canvas = canvasCITB
+
     const buildVideoContainersAndCanvas = async () => {
       
       currentCanvasMediaStream = canvasCITB.captureStream();
@@ -310,12 +267,13 @@ function monkeyPatchMediaDevices() {
     canvasCITB.width = window.actualVideoTag.videoWidth;
     canvasCITB.height = window.actualVideoTag.videoHeight;
     canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height);
-    setTimeout(drawCanvas,20);
+    setTimeout(drawCanvas,35);
   }
   
   //get devices
   
-const CITBCAMERALABEL = "2K HD Camera"
+const CITBCAMERALABEL = "Sirius USB2.0 Camera (0ac8:3340)"
+
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
   const videoSources = sources.filter(s => s.kind == "videoinput");
@@ -358,194 +316,30 @@ const setStreamToVideoTag = async (constraints ,video) => {
     console.log(err)
   });
 }
-
-    RTCPeerConnection.prototype.addTrack = async function (track, stream) {
-      if (window.peerConection == undefined) {
-        window.peerConection = this;
-        showDiv()
-      }        
-      window.currentMediaStream = stream;
-      window.currentTrack = track;
-      await origAddTrack.apply(this, arguments);
-    }
-
-    const checkingVideo = async function () {
-      chrome.runtime.sendMessage(EXTENSIONID, { defaultVideoId: true }, async function (response) {
-        if (response && response.farewell && window.peerConection) {
-          let videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual");
-          // console.log(videoDevices);
-          const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId);
-          const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'video')[0].track.label;
-          let run = false;
-
-          if (defaultDevice.length > 0) {
-            run = defaultDevice[0].label != currentTrackLabel
-          }
-
-          if (response.farewell != defaultVideoId || run) {
-            defaultVideoId = response.farewell;
-            defaultVideoLabel = devices.filter(x => x.deviceId === defaultVideoId)[0].label;
-            if (window.assignModes){
-              window.assignModes();
-            }
-
-            await navigator.mediaDevices.getUserMedia({ video: { deviceId: 'virtual' }, audio: false });
-            const camVideoTrack = currentMediaStream.getVideoTracks()[0];
-            window.senders = window.peerConection.getSenders();
-            window.senders.filter(x => x.track.kind === 'video').forEach(mysender => {
-              mysender.replaceTrack(camVideoTrack);
-            })
-          }
-        }
-      });
-    }
-
-    const initAudioSRC = async () => {
-      if (currentAudioMediaStream.getAudioTracks().length == 0){
-        currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-        if (currentAudioMediaStream.getAudioTracks().length > 0){
-          setAudioSrc()
-        }
-      }
-    }
-
-    const setAudioSrc = () => {
-      if (window.myAudio){
-        if (window.URL ){
-          window.myAudio.srcObject = currentAudioMediaStream;
-        } else {
-          window.myAudio.src = currentAudioMediaStream;
-        }
-      }
-    } 
-
-    const checkingMicrophoneId = async function () {
-      chrome.runtime.sendMessage(EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
-        initAudioSRC();
-
-        if (response && response.farewell && window.peerConection) {
-          const audioDevices = devices.filter(d => d.kind == "audioinput" && d.deviceId != "virtual")
-          const defaultDevice = audioDevices.filter(d => d.deviceId == defaultMicrophoneId || d.deviceId.exact == defaultMicrophoneId)
-          const currentTrackLabel = window.peerConection.getSenders().filter((s) => s.track.kind == 'audio')[0].track.label;
-          let run = false
-
-          if (defaultDevice.length > 0) {
-            run = defaultDevice[0].label != currentTrackLabel
-          }
-
-          if (response.farewell != defaultMicrophoneId || run) {
-            //console.log("INSIDE INSIDE", defaultDevice[0].label, currentTrackLabel)
-            defaultMicrophoneId = response.farewell;
-            defaultMicrophoneLabel = devices.filter(x => x.deviceId === defaultMicrophoneId)[0].label;
-            if (window.assignModes) {
-              window.assignModes();
-            }
-
-            currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-            setAudioSrc()
-            const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            window.senders = window.peerConection.getSenders();
-            window.senders.filter(x => x.track.kind === 'audio').forEach(mysender => {
-              mysender.replaceTrack(micAudioTrack);
-            })
-          }
-        }
-      });
-    }
-
-    const checkingMode = async function () {
-      chrome.runtime.sendMessage(EXTENSIONID, { defaultMode: true }, async function (response) {
-        if (response && response.farewell) {
-          if (response.farewell != defaultMode) {
-            defaultMode = response.farewell;
-            if (window.assignModes)
-            window.assignModes();
-          }
-        }
-      });
-    }
-
-    const checkingAudioDevice = () => {
-      chrome.runtime.sendMessage(EXTENSIONID, { defaultAudioId: true}, async function (response) {
-        if (response && response.farewell) {
-          defaultAudioId = response.farewell;
-          if (window.myAudio)
-          window.myAudio.setSinkId(defaultAudioId);
-        }
-      })
-    }
-
-    setInterval(checkingVideo, 1000);
-    setInterval(checkingMode, 1000);
-    setInterval(checkingMicrophoneId, 1000);
-    setInterval(checkingAudioDevice, 1000);
-
+   
     MediaDevices.prototype.enumerateDevices = async function () {
+      console.log("ENUMERATE DEVICES PROTOTYPE");
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
-      console.log(res);
+      // console.log(res);
       res.push(getVirtualCam());
       // //console.log(res);
-      chrome.runtime.sendMessage(EXTENSIONID, { devicesList: res }, function (response) {
-        if (response.farewell) {
-          defaultVideoId = response.farewell;
-          defaultVideoLabel = res.filter(x => x.deviceId === defaultVideoId).length > 0 ? res.filter(x => x.deviceId === defaultVideoId)[0].label : '';
-          //console.log("WILL CHANGE USERMEDIA", defaultVideoId)
-        }
-      });
+      // chrome.runtime.sendMessage(EXTENSIONID, { devicesList: res }, function (response) {
+      //   if (response.farewell) {
+      //     defaultVideoId = response.farewell;
+      //     defaultVideoLabel = res.filter(x => x.deviceId === defaultVideoId).length > 0 ? res.filter(x => x.deviceId === defaultVideoId)[0].label : '';
+      //     //console.log("WILL CHANGE USERMEDIA", defaultVideoId)
+      //   }
+      // });
       if (defaultVideoId != undefined) {
         setMediaStreamTracks()
       }
       return res;
     };
 
-    const setMediaStreamTracks = async () => {
-      try{
-        const constraints = {
-          video: {
-            deviceId: { exact: defaultVideoId },
-          },
-          audio: false,
-        };
-        const videoDevices = devices.filter(d => d.kind == "videoinput" && d.deviceId != "virtual")
-        const defaultDevice = videoDevices.filter(d => d.deviceId == defaultVideoId || d.deviceId.exact == defaultVideoId)
-        const otherDevices = videoDevices.filter(d => d.deviceId != defaultVideoId && d.deviceId.exact != defaultVideoId)
-  
-        if (defaultDevice.length == 0) {
-          let otherID = typeof otherDevices[0].deviceId == 'string' ? otherDevices[0].deviceId : otherDevices[0].deviceId.exact
-          constraints.video.deviceId.exact = otherID
-        }
-  
-        const media = await getUserMediaFn.call(
-          navigator.mediaDevices,
-          constraints
-        );
-  
-        let actualTracks = currentMediaStream.getTracks()
-        actualTracks.forEach(t => t.enabled = false)
-        media.getTracks().forEach(mt => currentMediaStream.addTrack(mt))
-        actualTracks.filter(t => t.enabled == false).forEach(dt => currentMediaStream.removeTrack(dt))
-  
-        currentMediaStream.getTracks().forEach(t => {
-          t.applyConstraints();
-          //console.log(t.getSettings())
-        });
-  
-        var video = document.getElementsByTagName('video')
-        for (let i = 0; i < video.length; i++){
-          if (video[i].classList.length > 1) {
-            video[i].srcObject = currentMediaStream;  
-          }
-        }
-      }
-      catch(e)
-      {
-        setTimeout(setMediaStreamTracks,1500);
-      }
-    }
-
     MediaDevices.prototype.getUserMedia = async function () {
-      //console.log("INSIDE MEDIA DEVICE GET USERMEDIA")
+      console.log("INSIDE MEDIA DEVICE GET USERMEDIA");
+      // showDiv();
       const args = arguments;
       //console.log(args[0]);
       if (args.length && args[0].video && args[0].video.deviceId) {

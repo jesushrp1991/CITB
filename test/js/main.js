@@ -7,7 +7,7 @@
  */
 
 'use strict';
-const CITBCAMERALABEL = "2K HD Camera"
+const CITBCAMERALABEL = "Sirius USB2.0 Camera (0ac8:3340)"
 const getDevices = async () => {
   await navigator.mediaDevices.getUserMedia({audio: true, video: true});   
   return await navigator.mediaDevices.enumerateDevices();

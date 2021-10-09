@@ -4,7 +4,7 @@ let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let showActivated = false, classActivated = false, citbActivated;
-const MYVIDEODDEVICELABEL = '2K HD Camera';
+const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
 const MYAUDIODEVICELABEL = 'CITB';
 let defaultVideo, defaultVideoLabel, webContainerClosed;
 
