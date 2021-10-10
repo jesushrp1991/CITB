@@ -98,7 +98,7 @@ function monkeyPatchMediaDevices() {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
           if (otherMicrophones.length > 0){
             setMicrophone(otherMicrophones[0].deviceId);
-            window.classActivated = !window.classActivated;
+            window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
             return true
           }
@@ -110,7 +110,7 @@ function monkeyPatchMediaDevices() {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
               setMicrophone(citbMicrophone[0].deviceId);
-              window.classActivated = !window.classActivated;
+              window.classActivated = false;
               setButtonBackground(buttonClass, window.classActivated)
               return true;
             }
@@ -311,19 +311,27 @@ const setStreamToVideoTag = async (constraints ,video) => {
 }
    
 const initAudioSRC = async () => {
+  console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
   if (currentAudioMediaStream.getAudioTracks().length == 0){
     currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
     if (currentAudioMediaStream.getAudioTracks().length > 0){
       setAudioSrc()
     }
+  }else {
+    setAudioSrc()
+
   }
 }
 
 const setAudioSrc = () => {
+  console.log("setAudioSRC")
   if (window.myAudio){
     if (window.URL ){
+      console.log("set audio srcObject")
       window.myAudio.srcObject = currentAudioMediaStream;
     } else {
+      console.log("set audio src")
+
       window.myAudio.src = currentAudioMediaStream;
     }
   }
