@@ -63,7 +63,9 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonCam, window.citbActivated)
         } 
         
-        const setShowMode = () =>{
+       
+
+        const showCallBackFunction = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
                 if(window.showActivated){
@@ -82,12 +84,8 @@ function monkeyPatchMediaDevices() {
                 window.showActivated = !window.showActivated 
                 setButtonBackground(buttonShow, window.showActivated);
             }else{
-              alert('Could not change Microphone');
-            }  
-        }
-
-        const showCallBackFunction = () => {
-          setShowMode();
+              // alert('Could not change Microphone');
+            } 
         };
         
         const classCallBackFunction = () => {
@@ -96,12 +94,16 @@ function monkeyPatchMediaDevices() {
             if(citbMicrophone.length > 0){
               setMicrophone(citbMicrophone[0].deviceId);
               window.classActivated = !window.classActivated;
-              setMode('class');
-              defaultMode = 'class';
+              setMode('none');
+              defaultMode = 'none';
             }else{
-              alert('Could not change to CITB Microphone');
+              // alert('Could not change to CITB Microphone');
             }
           }else {
+            if (window.classActivated) {
+              window.showActivated = !window.showActivated;
+              //Run something to deactivate class
+            }
             const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if (otherMicrophones.length > 0){
               setMicrophone(otherMicrophones[0].deviceId);
@@ -109,7 +111,7 @@ function monkeyPatchMediaDevices() {
               setMode('class');
               defaultMode = 'class';
             }else{
-              alert('Could not change Microphone');
+              // alert('Could not change Microphone');
             }
           }
           setButtonBackground(buttonClass, window.classActivated)
@@ -134,15 +136,15 @@ function monkeyPatchMediaDevices() {
               if (response.farewell != defaultMode) {                
                 if(response.farewell == 'show')
                   {
-                    setShowMode();
+                    showCallBackFunction();
                   }
                 else if (response.farewell == 'class')
                   {
-                      console.log(defaultMode);
+                    classCallBackFunction();
                   }
                 else{
-                  setShowMode();
-                  
+                  showCallBackFunction();
+                  classCallBackFunction();
                 }
               }
             }
