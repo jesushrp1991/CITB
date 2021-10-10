@@ -16,6 +16,7 @@ import {
   getButtonDrag
 } from './domUtils.js';
 
+import {speachCommands} from './spechCommands.js';
 function monkeyPatchMediaDevices() {
     let canChangeCameras = true;
     let canActivateShow = true;
@@ -384,6 +385,7 @@ const setAudioSrc = () => {
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices()
           await drawCanvas()
+          speachCommands();
           return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
