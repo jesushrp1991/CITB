@@ -57,20 +57,40 @@ function monkeyPatchMediaDevices() {
 
         const camCallBackFunction = () => {
           if(window.actualVideoTag.id == "OTHERVideo") 
-           { 
-             window.actualVideoTag = videoCITB; 
-             window.citbActivated = true;  
-           } 
+          { 
+            window.actualVideoTag = videoCITB; 
+            window.citbActivated = true;  
+          } 
           else {
               window.actualVideoTag = videoOther; 
-             window.citbActivated = false;
+            window.citbActivated = false;
           }
-          setButtonBackground(buttonCam, window.citbActivated) 
-          
+          setButtonBackground(buttonCam, window.citbActivated)
         } 
 
-        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction);
+        const showCallBackFunction = () => {
+          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+                if(window.showActivated){
+                  window.myAudio.muted = true;                        
+                }else{
+                  window.myAudio.muted = false;
+                  if (window.classActivated) {
+                    window.classActivated = !window.classActivated;
+                    //Run something to deactivate class
+                  }
+                }
+                window.showActivated = !window.showActivated 
+                setButtonBackground(buttonShow, window.showActivated);
+            }else{
+              alert('Could not change Microphone');
+            }  
+        };
+
+        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction);
         showDiv();
+        createAudioElement();
+        initAudioSRC();
       } 
     }
 
@@ -182,7 +202,6 @@ const buildVideos = async (sources) => {
     window.actualVideoTag = videoOther
 
   }
-  console.log("AFTER", window.actualVideoTag)
 }
 
 const setStreamToVideoTag = async (constraints ,video) => {
@@ -194,6 +213,24 @@ const setStreamToVideoTag = async (constraints ,video) => {
   });
 }
    
+const initAudioSRC = async () => {
+  if (currentAudioMediaStream.getAudioTracks().length == 0){
+    currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+    if (currentAudioMediaStream.getAudioTracks().length > 0){
+      setAudioSrc()
+    }
+  }
+}
+
+const setAudioSrc = () => {
+  if (window.myAudio){
+    if (window.URL ){
+      window.myAudio.srcObject = currentAudioMediaStream;
+    } else {
+      window.myAudio.src = currentAudioMediaStream;
+    }
+  }
+} 
     MediaDevices.prototype.enumerateDevices = async function () {
       console.log("ENUMERATE DEVICES PROTOTYPE");
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
@@ -204,10 +241,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
     };
 
     MediaDevices.prototype.getUserMedia = async function () {
-      console.log("INSIDE MEDIA DEVICE GET USERMEDIA");
-      // showDiv();
       const args = arguments;
-      //console.log(args[0]);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -228,11 +262,8 @@ const setStreamToVideoTag = async (constraints ,video) => {
     };
     RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
       window.localPeerConection = this; 
- 
-       
-      
       window.localPeerConection.addEventListener("track", e => { 
-        if (document.body.innerText.includes("Turn off microphone") && window.peerConection == undefined) { 
+        if (window.peerConection == undefined) { 
           console.log("INSIDE IF") 
           window.peerConection = window.localPeerConection; 
           showDiv(); 
