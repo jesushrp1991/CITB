@@ -27,7 +27,6 @@ const getButtonClose = () => {
 };
 
 const getContainerButton = () => {
-  console.log("Get Container");
   const div = document.createElement("div");
   div.setAttribute("id", "buttonsContainer");
   div.style.position = "absolute";
@@ -38,7 +37,6 @@ const getContainerButton = () => {
   div.style.right = "16px";
   div.style.background = "rgb(240, 243, 250)";
   div.style.borderRadius = "20px";
-  // div.style.display = 'block';
   return div;
 };
 const getButtonDrag = () => {
@@ -48,7 +46,6 @@ const getButtonDrag = () => {
 };
 
 const setMicrophone = (microphone) => {
-  //console.log('***microphoneIDsent', microphone);
   chrome.runtime.sendMessage(
     enviroment.EXTENSIONID,
     { setDefaultMicrophoneId: microphone },
@@ -110,7 +107,7 @@ const getVirtualCam = () => {
 
 const closeButtonContainer = () => {
   document.getElementById("buttonsContainer").style.visibility = "hidden";
-  chrome.runtime.sendMessage(enviroment.enviroment.EXTENSIONID, { buttonsOpen: true });
+  chrome.runtime.sendMessage(enviroment.EXTENSIONID, { buttonsOpen: true });
 };
 
 export {
