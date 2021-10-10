@@ -15,22 +15,13 @@ import {
   closeButtonContainer
   } from './domUtils.js';
 
-const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction) => {
+const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction) => {
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
-    buttonShow.addEventListener('click', () => {
-        if (window.classActivated) {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-            setMicrophone(citbMicrophone[0].deviceId);
-          }else{
-            alert('Could not change Microphone');
-          }
-        }
-        setMode(window.showActivated ? 'none' : 'show');
-      });
-      buttonClass.addEventListener('click', () => {
+    buttonShow.addEventListener('click', showCallBackFunction);
+
+    buttonClass.addEventListener('click', () => {
         if (window.classActivated) {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
           if(citbMicrophone.length > 0){
