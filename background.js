@@ -179,7 +179,7 @@ chrome.runtime.onMessageExternal.addListener(
       //console.log('received in the backgorund ', request.buttonsOpen);
       chrome.storage.sync.set({ buttonsOpen: request.buttonsOpen }, () => {
         //console.log('se seteo en el storage el contenedor cerrado');
-        sendResponse({farewell: "se ha cerrado el contendor webv"});
+        // sendResponse({farewell: "se ha cerrado el contendor webv"});
       });
     }
   }

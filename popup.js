@@ -1,14 +1,12 @@
-import {enviroment } from './js/enviroment.js'
-
-
 // Initialize select with default mode 
 let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let showActivated = false, classActivated = false, citbActivated;
-const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL;
-const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
+const EXTENSIONID = "pgloinlccpmhpgbnccfecikdjgdhneof";
+const MYVIDEODDEVICELABEL = "Sirius USB2.0 Camera (0ac8:3340)";
+const MYAUDIODEVICELABEL = 'Varios micrófonos (Realtek High Definition Audio)';
 let defaultVideo, defaultVideoLabel, webContainerClosed;
 
 let microphonesList = [];
