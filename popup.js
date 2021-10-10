@@ -1,4 +1,4 @@
-import {enviroment } from './enviroment.js'
+import {enviroment } from './js/enviroment.js'
 
 
 // Initialize select with default mode 
