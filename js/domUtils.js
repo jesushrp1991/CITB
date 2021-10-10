@@ -50,7 +50,7 @@ const getButtonDrag = () => {
 const setMicrophone = (microphone) => {
   //console.log('***microphoneIDsent', microphone);
   chrome.runtime.sendMessage(
-    EXTENSIONID,
+    enviroment.EXTENSIONID,
     { setDefaultMicrophoneId: microphone },
     async function (response) {
       if (response && response.farewell) {
@@ -110,7 +110,7 @@ const getVirtualCam = () => {
 
 const closeButtonContainer = () => {
   document.getElementById("buttonsContainer").style.visibility = "hidden";
-  chrome.runtime.sendMessage(enviroment.EXTENSIONID, { buttonsOpen: true });
+  chrome.runtime.sendMessage(enviroment.enviroment.EXTENSIONID, { buttonsOpen: true });
 };
 
 export {

@@ -63,58 +63,71 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonCam, window.citbActivated)
         } 
         
-       
+       const activateShowMode = () => {
+          window.myAudio.muted = false;
+          defaultMode = 'show';
+          setMode('show');
+          window.showActivated = true;
+          setButtonBackground(buttonShow, window.showActivated);
+
+       }
+
+        const deactivateShowMode = () => {
+          window.myAudio.muted = true;   
+          defaultMode = 'none';
+          setMode('none');
+          window.showActivated = false;
+          setButtonBackground(buttonShow, window.showActivated);
+        }
 
         const showCallBackFunction = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-            if(citbMicrophone.length > 0){
-                if(window.showActivated){
-                  window.myAudio.muted = true;   
-                  defaultMode = 'none';
-                  setMode('none');
-                }else{
-                  window.myAudio.muted = false;
-                  defaultMode = 'show';
-                  setMode('show');
-                  if (window.classActivated) {
-                    window.classActivated = !window.classActivated;
-                    //Run something to deactivate class
-                  }
-                }
-                window.showActivated = !window.showActivated 
-                setButtonBackground(buttonShow, window.showActivated);
-            }else{
-              // alert('Could not change Microphone');
-            } 
+          if(citbMicrophone.length > 0){
+              if(window.showActivated){
+                deactivateShowMode()
+              }else{
+                deactivateClassMode();
+                activateShowMode();
+              }
+          }else{
+            // alert('Could not change Microphone');
+          } 
         };
-        
-        const classCallBackFunction = () => {
-          if (window.classActivated) {
-            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+
+        const activateClassMode = () => {
+          const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+          if (otherMicrophones.length > 0){
+            setMicrophone(otherMicrophones[0].deviceId);
+            window.classActivated = !window.classActivated;
+            setButtonBackground(buttonClass, window.classActivated)
+            return true
+          }
+          return false;
+          
+        }
+
+        const deactivateClassMode = () => {
+          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
               setMicrophone(citbMicrophone[0].deviceId);
               window.classActivated = !window.classActivated;
-              setMode('none');
-              defaultMode = 'none';
-            }else{
-              // alert('Could not change to CITB Microphone');
+              setButtonBackground(buttonClass, window.classActivated)
+              return true;
             }
+            return false
+        }
+        
+        const classCallBackFunction = () => {
+          if (window.classActivated) {
+           deactivateClassMode();
+           setMode('none');
+           defaultMode = 'none';
           }else {
-            if (window.classActivated) {
-              window.showActivated = !window.showActivated;
-              //Run something to deactivate class
-            }
-            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-            if (otherMicrophones.length > 0){
-              setMicrophone(otherMicrophones[0].deviceId);
-              window.classActivated = !window.classActivated;
+            if (activateClassMode() ) {
               setMode('class');
               defaultMode = 'class';
-            }else{
-              // alert('Could not change Microphone');
             }
           }
-          setButtonBackground(buttonClass, window.classActivated)
         } 
 
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
@@ -133,7 +146,8 @@ function monkeyPatchMediaDevices() {
         const checkDefaultMode = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
             if (response && response.farewell) {
-              if (response.farewell != defaultMode) {                
+              if (response.farewell != defaultMode) {   
+                console.log(response.farewell);             
                 if(response.farewell == 'show')
                   {
                     showCallBackFunction();
@@ -143,8 +157,8 @@ function monkeyPatchMediaDevices() {
                     classCallBackFunction();
                   }
                 else{
-                  showCallBackFunction();
-                  classCallBackFunction();
+                  deactivateClassMode();
+                  deactivateShowMode();
                 }
               }
             }
@@ -263,6 +277,7 @@ const getFinalVideoSources = async (devices) => {
 }
 
 const buildVideos = async (sources) => {
+  console.log("buildVideos", sources);
   let constraints = {
     video: {
       deviceId: { exact: "" },
