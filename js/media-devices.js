@@ -97,6 +97,7 @@ function monkeyPatchMediaDevices() {
         const activateClassMode = () => {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
           if (otherMicrophones.length > 0){
+            console.log("othermic", otherMicrophones[0])
             setMicrophone(otherMicrophones[0].deviceId);
             window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
@@ -240,13 +241,18 @@ function monkeyPatchMediaDevices() {
       try {
         if (response && response.defaultMicrophoneId && window.localPeerConection) {
           if (response.defaultMicrophoneId != defaultMicrophoneId) {
+            console.log("INSIDE check mic");
+
             defaultMicrophoneId = response.defaultMicrophoneId;
   
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks.length > 0){
+            console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
+            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
               const senders = window.localPeerConection.getSenders();
-              senders.filter(x => x.track.kind === 'audio').forEach(mysender => {
+              const sendersWithTracks = senders.filter( s => s.track != null);
+              console.log(sendersWithTracks)
+              sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
                 mysender.replaceTrack(micAudioTrack);
               });
             }
