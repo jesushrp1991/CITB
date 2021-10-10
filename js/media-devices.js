@@ -18,6 +18,8 @@ import {
 
 function monkeyPatchMediaDevices() {
     let canChangeCameras = true;
+    let canActivateShow = true;
+    let canActivateClass = true;
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
     const buttonCam = getButtonCam();
@@ -49,6 +51,7 @@ function monkeyPatchMediaDevices() {
         }
 
         const camCallBackFunction = () => {
+          console.log("CAM CALLBACK")
           if (!canChangeCameras) {return};
           if(window.actualVideoTag.id == "OTHERVideo") 
           { 
@@ -91,7 +94,7 @@ function monkeyPatchMediaDevices() {
                 activateShowMode();
               }
           }else{
-            alert('Could not change Microphone');
+            // alert('Could not change Microphone');
           } 
         };
 
@@ -105,6 +108,7 @@ function monkeyPatchMediaDevices() {
             return true
           }
           return false;
+          
         }
 
         const deactivateClassMode = () => {
@@ -127,8 +131,6 @@ function monkeyPatchMediaDevices() {
             if (activateClassMode() ) {
               setMode('class');
               defaultMode = 'class';
-            }else{
-              alert('Could not change Microphone');
             }
           }
         } 
@@ -140,6 +142,10 @@ function monkeyPatchMediaDevices() {
         
         const checkVideoId = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
+              if (globalVideoSources.citbVideo == null) {
+                setVideo('other') 
+                return
+              } 
               response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
               setButtonBackground(buttonCam, window.citbActivated);
               window.citbActivated ? window.actualVideoTag.id == "CITBVideo" : window.actualVideoTag.id == "OTHERVideo";
@@ -194,6 +200,15 @@ function monkeyPatchMediaDevices() {
     videoCITB.setAttribute('playsinline', "")
     videoCITB.setAttribute('autoplay', "")
     videoCITB.style.display = 'none';
+    videoCITB.addEventListener("pause", (event) => {
+      console.log("video has been paused", event)
+    })
+    videoCITB.addEventListener("ended", (event) => {
+      console.log("video has been ended", event)
+    })
+    videoCITB.addEventListener("error", (event) => {
+      console.log("video has been error", event)
+    })
     if(document.readyState == "complete")
       document.body.appendChild(videoCITB);
 
@@ -293,19 +308,25 @@ const buildVideos = async (sources) => {
     audio: false,
   };
   if (sources.citbVideo != null) {
+    console.log("INSIDE CITBVIDEO")
     constraints.video.deviceId.exact = sources.citbVideo.deviceId
     await setStreamToVideoTag(constraints, videoCITB)
     window.actualVideoTag = videoCITB
+    window.citbActivated = true
     setButtonBackground(buttonCam, true) 
     canChangeCameras = true;
+    setVideo('citb')
 
   }
   if (sources.otherVideo != null) {
+    console.log("INSIDE OTHER VIDEO")
     constraints.video.deviceId.exact = sources.otherVideo.deviceId
     await setStreamToVideoTag(constraints, videoOther)
     // drawCanvas();
   }
   if (sources.citbVideo == null && sources.otherVideo != null) {
+    console.log("INSIDE LAST IF")
+    window.citbActivated = false
     window.actualVideoTag = videoOther
     setButtonBackground(buttonCam, false) 
     canChangeCameras = false;
@@ -399,6 +420,14 @@ const setAudioSrc = () => {
       chrome.runtime.sendMessage(enviroment.EXTENSIONID, { devicesList: res }, async function (response) { 
       });
     });
+
+    const checkDevices = () => {
+      navigator.mediaDevices.enumerateDevices()
+      setTimeout(() => {
+        checkDevices()
+      }, 1000)
+    }
+    checkDevices();
 }
 
 export { monkeyPatchMediaDevices }
