@@ -18,8 +18,6 @@ import {
 
 function monkeyPatchMediaDevices() {
     let canChangeCameras = true;
-    let canActivateShow = true;
-    let canActivateClass = true;
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
     const buttonCam = getButtonCam();
@@ -93,7 +91,7 @@ function monkeyPatchMediaDevices() {
                 activateShowMode();
               }
           }else{
-            // alert('Could not change Microphone');
+            alert('Could not change Microphone');
           } 
         };
 
@@ -107,7 +105,6 @@ function monkeyPatchMediaDevices() {
             return true
           }
           return false;
-          
         }
 
         const deactivateClassMode = () => {
@@ -130,6 +127,8 @@ function monkeyPatchMediaDevices() {
             if (activateClassMode() ) {
               setMode('class');
               defaultMode = 'class';
+            }else{
+              alert('Could not change Microphone');
             }
           }
         } 
