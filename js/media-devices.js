@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-
+import { setMode,setVideo } from './functions.js';
 
 import { 
   getButtonShow,
@@ -9,8 +9,6 @@ import {
   getButtonClose,
   getContainerButton,
   setMicrophone,
-  setMode,
-  setVideo,
   setButtonBackground,
   addElementsToDiv,
   createAudioElement,
@@ -20,20 +18,13 @@ import {
 
 function monkeyPatchMediaDevices() {
 
-  const buttonShow = getButtonShow();        
-  const buttonClass = getButtonClass();
-  const buttonCam = getButtonCam();
-  const buttonClose= getButtonClose();
-  const buttonDrag= getButtonDrag();
-  if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
-    const MYVIDEODDEVICELABEL = enviroment.MYVIDEODDEVICELABEL;
-    const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
-    const EXTENSIONID = enviroment.EXTENSIONID;
-    
+    const buttonShow = getButtonShow();        
+    const buttonClass = getButtonClass();
+    const buttonCam = getButtonCam();
+    const buttonClose= getButtonClose();
+    const buttonDrag= getButtonDrag();  
     document.onreadystatechange = (event) => {
-      if (document.readyState == 'complete'){
-        console.log("DOCUMENT READY");
-        
+      if (document.readyState == 'complete'){      
        
         window.buttonsContainerDiv = getContainerButton();
         
@@ -59,11 +50,13 @@ function monkeyPatchMediaDevices() {
           if(window.actualVideoTag.id == "OTHERVideo") 
           { 
             window.actualVideoTag = videoCITB; 
-            window.citbActivated = true;  
+            window.citbActivated = true;
+            setVideo('citb');
           } 
           else {
               window.actualVideoTag = videoOther; 
-            window.citbActivated = false;
+              window.citbActivated = false;
+              setVideo('other');
           }
           setButtonBackground(buttonCam, window.citbActivated)
         } 
@@ -112,6 +105,17 @@ function monkeyPatchMediaDevices() {
         showDiv();
         createAudioElement();
         initAudioSRC();
+        
+        const checkVideoId = () => {
+          chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
+              response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
+              setButtonBackground(buttonCam, window.citbActivated);
+              window.citbActivated ? window.actualVideoTag.id == "CITBVideo" : window.actualVideoTag.id == "OTHERVideo";
+              window.citbActivated ? window.actualVideoTag = videoCITB : window.actualVideoTag = videoOther;
+          });
+        }
+
+        setInterval(checkVideoId,250);
       } 
     }
 
@@ -323,7 +327,6 @@ const setAudioSrc = () => {
       console.log("create data channel", label, options) 
       await origcreateDataChannel.apply(this,arguments) 
     } 
-  }
 }
 
 export { monkeyPatchMediaDevices }

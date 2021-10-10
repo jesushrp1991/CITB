@@ -1,20 +1,6 @@
 import { 
-  getButtonShow,
-  getButtonClass,
-  getButtonCam,
-  getButtonClose,
-  getContainerButton,
-  setMicrophone,
-  setMode,
-  setVideo,
-  setButtonBackground,
-  addElementsToDiv,
-  createAudioElement,
-  getVirtualCam,
-  getButtonDrag,
   closeButtonContainer
   } from './domUtils.js';
-  import {enviroment } from './enviroment.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
     

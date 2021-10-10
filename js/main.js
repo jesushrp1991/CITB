@@ -43,8 +43,9 @@ if (window.location.host === 'meet.google.com' || window.location.host === 'zoom
     chrome.runtime.sendMessage(EXTENSIONID, { devicesList: res }, async function (response) { 
     });
   });
-
-  monkeyPatchMediaDevices();
+  if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
+    monkeyPatchMediaDevices();
+  }
 
   
   

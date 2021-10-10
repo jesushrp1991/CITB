@@ -7,7 +7,7 @@ let showActivated = false, classActivated = false, citbActivated;
 const EXTENSIONID = "pgloinlccpmhpgbnccfecikdjgdhneof";
 const MYVIDEODDEVICELABEL = "Sirius USB2.0 Camera (0ac8:3340)";
 const MYAUDIODEVICELABEL = 'Varios micrófonos (Realtek High Definition Audio)';
-let defaultVideo, defaultVideoLabel, webContainerClosed;
+let defaultVideo, webContainerClosed;
 
 let microphonesList = [];
 let videosList = []
@@ -26,12 +26,13 @@ chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
 });
 
 chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
-  //console.log('asdsadasdaa');
-  //console.log(defaultVideoId);
-  if (defaultVideoId !== undefined) {
-    defaultVideo = defaultVideoId;
-    defaultVideoLabel = videosList.filter(x => x.deviceId === defaultVideoId)[0].label;
+  if (defaultVideoId == "citb") {
+    citbActivated = true;
   }
+  else{
+    citbActivated = false;
+  }
+  setButtonCamBackground(citbActivated);
 });
 
 chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
@@ -39,8 +40,7 @@ chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
   classActivated = defaultMode === 'class';
   setButtonShowBackground(showActivated);
   setButtonClassBackground(classActivated);
-  if (defaultVideo && defaultVideoLabel) {
-    citbActivated = defaultVideoLabel.includes(MYVIDEODDEVICELABEL)
+  if (defaultVideo) {
     setButtonCamBackground(citbActivated)
   }
 });
@@ -54,13 +54,12 @@ chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
 // }
 
 const setButtonCamBackground = (citbActivated) => {
-  const button = document.getElementById('button1');
   if (citbActivated) {
-    button.classList.remove('button1Deactivated');
-    button.classList.add('button1Activated');
+    buttonCam.classList.remove('button1Deactivated');
+    buttonCam.classList.add('button1Activated');
   } else {
-    button.classList.remove('button1Activated');
-    button.classList.add('button1Deactivated');
+    buttonCam.classList.remove('button1Activated');
+    buttonCam.classList.add('button1Deactivated');
   }
 }
 
@@ -87,35 +86,17 @@ const setButtonClassBackground = (citbActivated) => {
 }
 
 buttonCam.addEventListener("click", async () => {
-  //console.log('le dio clic al boton de la camara');
   if (citbActivated) {
-    //console.log('esta activado',videosList);
-    const otherVideos = videosList.filter(x => (x.deviceId != defaultVideo));
-    //console.log('other videos length', otherVideos.length);
-    if (otherVideos.length > 0) {
-      //console.log('entro al if')
-      chrome.storage.sync.set({ defaultVideoId: otherVideos[0].deviceId }, () => {
-        //console.log('seteo el valor en el storage');
+      chrome.storage.sync.set({ defaultVideoId: 'other' }, () => {
         citbActivated = false;
         setButtonCamBackground(citbActivated);
       });
-    } else {
-      alert('Could not change Video');
-    }
+    
   } else {
-    //console.log('no esta activado')
-    const citbVideo = videosList.filter(x => (x.label.includes(MYVIDEODDEVICELABEL)));
-    //console.log('other videos length', citbVideo.length);
-    if (citbVideo.length > 0) {
-      //console.log('entro al if')
-      chrome.storage.sync.set({ defaultVideoId: citbVideo[0].deviceId }, () => {
-        //console.log('seteo el valor en el storage');
+      chrome.storage.sync.set({ defaultVideoId: 'citb' }, () => {
         citbActivated = true
         setButtonCamBackground(citbActivated);
       });
-    } else {
-      alert('Could not change Video');
-    }
   }
 });
 

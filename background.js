@@ -12,6 +12,8 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.clear()
   chrome.storage.sync.set({ defaultMode });
   chrome.storage.sync.set({ buttonsOpen });
+  // //TODO check this dinamically becouse can open the extension whitout an citb
+  chrome.storage.sync.set({ defaultVideoId : 'citb'});
 });
 
 const getAvailableMicrophone = (devicesList) => {
@@ -153,8 +155,9 @@ chrome.runtime.onMessageExternal.addListener(
       chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => 
         sendResponse({farewell: defaultVideoId}) );
     } else if (request.setDefaultVideoId){
-      chrome.storage.sync.set({ defaultVideoId: request.setDefaultVideoId }, () =>
-        sendResponse({farewell: request.setDefaultVideoId}) );
+      chrome.storage.sync.set({ defaultVideoId: request.setDefaultVideoId }, () =>{
+        sendResponse({farewell: request.setDefaultVideoId}) 
+      });
     } else if (request.defaultMode){
       chrome.storage.sync.get("defaultMode", ({ defaultMode }) => 
         sendResponse({farewell: defaultMode}) );

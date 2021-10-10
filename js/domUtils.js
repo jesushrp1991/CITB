@@ -59,29 +59,6 @@ const setMicrophone = (microphone) => {
   );
 };
 
-const setMode = (mode) => {
-  //console.log('***voy a mandar hacia el back ', mode)
-  chrome.runtime.sendMessage(
-    EXTENSIONID,
-    { setDefaultMode: mode },
-    async function (response1) {
-      if (response1 && response1.farewell) {
-      }
-    }
-  );
-};
-
-const setVideo = (videoId) => {
-  chrome.runtime.sendMessage(
-    EXTENSIONID,
-    { setDefaultVideoId: videoId },
-    async function (response) {
-      if (response && response.farewell) {
-      }
-    }
-  );
-};
-
 const setButtonBackground = (button, activated) => {
   activated
     ? button.classList.add("active")
@@ -143,8 +120,6 @@ export {
   getButtonClose,
   getContainerButton,
   setMicrophone,
-  setMode,
-  setVideo,
   setButtonBackground,
   addElementsToDiv,
   createAudioElement,
