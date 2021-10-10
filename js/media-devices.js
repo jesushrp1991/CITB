@@ -67,6 +67,25 @@ function monkeyPatchMediaDevices() {
           }
           setButtonBackground(buttonCam, window.citbActivated)
         } 
+
+        const showCallBackFunction = () => {
+          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+                if(window.showActivated){
+                  window.myAudio.muted = true;                        
+                }else{
+                  window.myAudio.muted = false;
+                  if (window.classActivated) {
+                    window.classActivated = !window.classActivated;
+                    //Run something to deactivate class
+                  }
+                }
+                window.showActivated = !window.showActivated 
+                setButtonBackground(buttonShow, window.showActivated);
+            }else{
+              alert('Could not change Microphone');
+            }  
+        };
         
         const classCallBackFunction = () => {
           if (window.classActivated) {
@@ -89,26 +108,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonClass, window.classActivated)
         } 
 
-        const showCallBackFunction = () => {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-            if(citbMicrophone.length > 0){
-                if(window.showActivated){
-                  window.myAudio.muted = true;                        
-                }else{
-                  window.myAudio.muted = false;
-                  if (window.classActivated) {
-                    window.classActivated = !window.classActivated;
-                    //Run something to deactivate class
-                  }
-                }
-                window.showActivated = !window.showActivated 
-                setButtonBackground(buttonShow, window.showActivated);
-            }else{
-              alert('Could not change Microphone');
-            }  
-        };
-
-        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction);
+        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
         createAudioElement();
         initAudioSRC();

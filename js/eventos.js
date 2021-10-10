@@ -16,30 +16,17 @@ import {
   } from './domUtils.js';
   import {enviroment } from './enviroment.js';
 
-const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,classCallBackFunction) => {
-    const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
+const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
     buttonShow.addEventListener('click', showCallBackFunction);
-
-    buttonClass.addEventListener('click', () => {
-        if (window.classActivated) {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-            setMicrophone(citbMicrophone[0].deviceId);
-          }else{
-            alert('Could not change Microphone');
-          }
-        }
-        setMode(window.showActivated ? 'none' : 'show');
-      });
       
-      buttonClass.addEventListener('click', classCallBackFunction);
+    buttonClass.addEventListener('click', classCallBackFunction);
       
-      buttonClose.addEventListener('click', () => {
-          closeButtonContainer(buttonsContainerDiv);
-      });
+    buttonClose.addEventListener('click', () => {
+        closeButtonContainer(buttonsContainerDiv);
+    });
     
       buttonClose.addEventListener("mouseenter",() => {
         handleMouseOverEvent();
