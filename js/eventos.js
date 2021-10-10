@@ -14,8 +14,10 @@ import {
   getButtonDrag,
   closeButtonContainer
   } from './domUtils.js';
+  import {enviroment } from './enviroment.js';
 
-const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction) => {
+const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,classCallBackFunction) => {
+    const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
@@ -26,20 +28,14 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(MYAUDIODEVICELABEL)));
           if(citbMicrophone.length > 0){
             setMicrophone(citbMicrophone[0].deviceId);
-            setMode('none');
-          }else{
-            alert('Could not change Microphone');
-          }
-        }else {
-          const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(MYAUDIODEVICELABEL)));
-          if (otherMicrophones.length > 0){
-            setMicrophone(otherMicrophones[0].deviceId);
-            setMode('class');
           }else{
             alert('Could not change Microphone');
           }
         }
+        setMode(window.showActivated ? 'none' : 'show');
       });
+      
+      buttonClass.addEventListener('click', classCallBackFunction);
       
       buttonClose.addEventListener('click', () => {
           closeButtonContainer(buttonsContainerDiv);

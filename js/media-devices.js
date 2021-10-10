@@ -1,5 +1,5 @@
 import { setEvents } from './eventos.js';
-import {enviroment } from './enviroment.js'
+import {enviroment } from './enviroment.js';
 
 
 import { 
@@ -66,6 +66,27 @@ function monkeyPatchMediaDevices() {
             window.citbActivated = false;
           }
           setButtonBackground(buttonCam, window.citbActivated)
+        } 
+        
+        const classCallBackFunction = () => {
+          if (window.classActivated) {
+            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+              setMicrophone(citbMicrophone[0].deviceId);
+              window.classActivated = !window.classActivated;
+            }else{
+              alert('Could not change to CITB Microphone');
+            }
+          }else {
+            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if (otherMicrophones.length > 0){
+              setMicrophone(otherMicrophones[0].deviceId);
+              window.classActivated = !window.classActivated;
+            }else{
+              alert('Could not change Microphone');
+            }
+          }
+          setButtonBackground(buttonClass, window.classActivated)
         } 
 
         const showCallBackFunction = () => {
@@ -160,8 +181,32 @@ function monkeyPatchMediaDevices() {
         t1 = performance.now(); 
       } 
     }
+
+  const checkingMicrophoneId = async function () {
+    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
+      try {
+        if (response && response.defaultMicrophoneId && window.localPeerConection) {
+          if (response.defaultMicrophoneId != defaultMicrophoneId) {
+            console.log("checkingMicrophoneID");
+            defaultMicrophoneId = response.defaultMicrophoneId;
   
-  //get devices 
+            currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks.length > 0){
+              const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
+              const senders = window.localPeerConection.getSenders();
+              senders.filter(x => x.track.kind === 'audio').forEach(mysender => {
+                mysender.replaceTrack(micAudioTrack);
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.log('no voy a cambiar el modo debido a este error: ', error)
+      }
+    });
+  }
+
+setInterval(checkingMicrophoneId, 500)
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
