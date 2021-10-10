@@ -17,7 +17,9 @@ import {
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
-
+    let canChangeCameras = true;
+    let canActivateShow = true;
+    let canActivateClass = true;
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
     const buttonCam = getButtonCam();
@@ -49,6 +51,7 @@ function monkeyPatchMediaDevices() {
         }
 
         const camCallBackFunction = () => {
+          if (!canChangeCameras) {return};
           if(window.actualVideoTag.id == "OTHERVideo") 
           { 
             window.actualVideoTag = videoCITB; 
@@ -295,6 +298,7 @@ const buildVideos = async (sources) => {
     await setStreamToVideoTag(constraints, videoCITB)
     window.actualVideoTag = videoCITB
     setButtonBackground(buttonCam, true) 
+    canChangeCameras = true;
 
   }
   if (sources.otherVideo != null) {
@@ -304,7 +308,8 @@ const buildVideos = async (sources) => {
   }
   if (sources.citbVideo == null && sources.otherVideo != null) {
     window.actualVideoTag = videoOther
-
+    setButtonBackground(buttonCam, false) 
+    canChangeCameras = false;
   }
 }
 
@@ -382,7 +387,19 @@ const setAudioSrc = () => {
         window.currentTrack = e.track; 
       }, false); 
       await origcreateDataChannel.apply(this,arguments) 
-    } 
+    }
+    
+    
+    navigator.mediaDevices.addEventListener('devicechange', async function (event) {
+      console.log('device plugged or unplugged, update de info,')
+      const res = await navigator.mediaDevices.enumerateDevices();
+      console.log("Lista de dispositivos",res);
+      await buildVideoContainersAndCanvas();
+      await builVideosFromDevices()
+
+      chrome.runtime.sendMessage(enviroment.EXTENSIONID, { devicesList: res }, async function (response) { 
+      });
+    });
 }
 
 export { monkeyPatchMediaDevices }

@@ -36,13 +36,6 @@ if (window.location.host === 'meet.google.com' || window.location.host === 'zoom
   // });
 
 
-  navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-    console.log('device plugged or unplugged, update de info,')
-    const res = await navigator.mediaDevices.enumerateDevices();
-    console.log("Lista de dispositivos",res);
-    chrome.runtime.sendMessage(EXTENSIONID, { devicesList: res }, async function (response) { 
-    });
-  });
   if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
     monkeyPatchMediaDevices();
   }
