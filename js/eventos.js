@@ -14,8 +14,10 @@ import {
   getButtonDrag,
   closeButtonContainer
   } from './domUtils.js';
+  import {enviroment } from './enviroment.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction) => {
+    const MYAUDIODEVICELABEL = enviroment.MYAUDIODEVICELABEL;
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
@@ -30,6 +32,7 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
         }
         setMode(window.showActivated ? 'none' : 'show');
       });
+      
       buttonClass.addEventListener('click', () => {
         console.log('modo class');
         if (window.classActivated) {

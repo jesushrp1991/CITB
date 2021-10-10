@@ -1,5 +1,5 @@
 import { setEvents } from './eventos.js';
-import {enviroment } from './enviroment.js'
+import {enviroment } from './enviroment.js';
 
 
 import { 
@@ -146,8 +146,8 @@ function monkeyPatchMediaDevices() {
       try {
         if (response && response.defaultMicrophoneId && window.localPeerConection) {
           if (response.defaultMicrophoneId != defaultMicrophoneId) {
-            console.log("INSIDE INSIDE", defaultDevice[0].label, currentTrackLabel)
-            defaultMicrophoneId = response.farewell;
+            console.log("INSIDE INSIDE")
+            defaultMicrophoneId = response.defaultMicrophoneId;
   
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks.length > 0){

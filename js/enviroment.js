@@ -1,7 +1,7 @@
 const enviroment = {
-    EXTENSIONID: "pmbeajhggkgdldmekoenjhcljbhaojpb",
-    MYVIDEODDEVICELABEL: "2K HD Camera",
-    MYAUDIODEVICELABEL: 'CITB'
+    EXTENSIONID: "mkodjolllifkapdaggjabifdafbciclf",
+    MYVIDEODDEVICELABEL: "Easy",
+    MYAUDIODEVICELABEL: 'Redmi'
 }
 
 export { 
