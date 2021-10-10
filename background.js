@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({ defaultMode });
   chrome.storage.sync.set({ buttonsOpen });
   // //TODO check this dinamically becouse can open the extension whitout an citb
-  chrome.storage.sync.set({ defaultVideoId : MYVIDEODDEVICELABEL});
+  chrome.storage.sync.set({ defaultVideoId : 'citb'});
 });
 
 const getAvailableMicrophone = (devicesList) => {

@@ -131,11 +131,9 @@ function monkeyPatchMediaDevices() {
         const checkDefaultMode = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
             if (response && response.farewell) {
-              console.log("response.farewell",response.farewell);
               if (response.farewell != defaultMode) {                
                 if(response.farewell == 'show')
                   {
-                    console.log(defaultMode);
                     setShowMode();
                   }
                 else if (response.farewell == 'class')
@@ -157,7 +155,6 @@ function monkeyPatchMediaDevices() {
     }
 
     const showDiv = () => {
-      console.log("buttonsContainer");
       if (document.getElementById('buttonsContainer'))
       document.getElementById('buttonsContainer').style.display = 'block';
     }
@@ -204,9 +201,7 @@ function monkeyPatchMediaDevices() {
     const builVideosFromDevices = async () => {
 
       const devices = await enumerateDevicesFn.call(navigator.mediaDevices)
-      console.log("DEVICES VIDEO", devices);
       const videoSources = await getFinalVideoSources(devices)
-      console.log(videoSources);
       await buildVideos(videoSources)
        
     }
@@ -229,7 +224,6 @@ function monkeyPatchMediaDevices() {
       try {
         if (response && response.defaultMicrophoneId && window.localPeerConection) {
           if (response.defaultMicrophoneId != defaultMicrophoneId) {
-            console.log("checkingMicrophoneID");
             defaultMicrophoneId = response.defaultMicrophoneId;
   
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
@@ -293,7 +287,6 @@ const buildVideos = async (sources) => {
 
 const setStreamToVideoTag = async (constraints ,video) => {
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-    // console.log("video vide src", video, stream)
     video.srcObject = stream;
   }).catch(err => {
     console.log(err)
@@ -319,10 +312,8 @@ const setAudioSrc = () => {
   }
 } 
     MediaDevices.prototype.enumerateDevices = async function () {
-      console.log("ENUMERATE DEVICES PROTOTYPE");
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
-      // console.log(res);
       res.push(getVirtualCam());
       return res;
     };
@@ -351,18 +342,14 @@ const setAudioSrc = () => {
       window.localPeerConection = this; 
       window.localPeerConection.addEventListener("track", e => { 
         if (window.peerConection == undefined) { 
-          console.log("INSIDE IF") 
           window.peerConection = window.localPeerConection; 
           showDiv(); 
         } 
-        console.log("TRACK ADDED") 
-        console.log(e); 
         if (e.streams.length >= 1) { 
           window.currentMediaStream =  e.streams[0]; 
         } 
         window.currentTrack = e.track; 
       }, false); 
-      console.log("create data channel", label, options) 
       await origcreateDataChannel.apply(this,arguments) 
     } 
 }
