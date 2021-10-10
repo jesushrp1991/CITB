@@ -68,8 +68,32 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonCam, window.citbActivated) 
           
         } 
+        
+        const classCallBackFunction = () => {
+          if (window.classActivated) {
+            const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if(citbMicrophone.length > 0){
+              setMicrophone(citbMicrophone[0].deviceId);
+              window.classActivated = !window.classActivated;
+            }else{
+              alert('Could not change to CITB Microphone');
+            }
+          }else {
+            const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+            if (otherMicrophones.length > 0){
+              setMicrophone(otherMicrophones[0].deviceId);
+              window.classActivated = !window.classActivated;
+            }else{
+              alert('Could not change Microphone');
+            }
+          }
+          setButtonBackground(buttonClass, window.classActivated)
+        } 
 
-        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction);
+
+
+
+        setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,classCallBackFunction);
         showDiv();
       } 
     }
@@ -142,11 +166,11 @@ function monkeyPatchMediaDevices() {
     }
 
   const checkingMicrophoneId = async function () {
-    chrome.runtime.sendMessage(EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
+    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
       try {
         if (response && response.defaultMicrophoneId && window.localPeerConection) {
           if (response.defaultMicrophoneId != defaultMicrophoneId) {
-            console.log("INSIDE INSIDE")
+            console.log("checkingMicrophoneID");
             defaultMicrophoneId = response.defaultMicrophoneId;
   
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
@@ -165,7 +189,7 @@ function monkeyPatchMediaDevices() {
     });
   }
 
-  setInterval(checkingMicrophoneId, 500)
+setInterval(checkingMicrophoneId, 500)
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
