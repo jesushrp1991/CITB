@@ -1,7 +1,6 @@
 import { enviroment } from "./enviroment.js";
 
 const setMode = (mode) => {
-  //console.log('***voy a mandar hacia el back ', mode)
   chrome.runtime.sendMessage(
     enviroment.EXTENSIONID,
     { setDefaultMode: mode },

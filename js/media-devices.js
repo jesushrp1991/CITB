@@ -23,6 +23,8 @@ function monkeyPatchMediaDevices() {
     const buttonCam = getButtonCam();
     const buttonClose= getButtonClose();
     const buttonDrag= getButtonDrag();  
+    window.showActivated = false;
+    window.classActivated = false;
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){      
        
@@ -60,14 +62,18 @@ function monkeyPatchMediaDevices() {
           }
           setButtonBackground(buttonCam, window.citbActivated)
         } 
-
-        const showCallBackFunction = () => {
+        
+        const setShowMode = () =>{
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
                 if(window.showActivated){
-                  window.myAudio.muted = true;                        
+                  window.myAudio.muted = true;   
+                  defaultMode = 'none';
+                  setMode('none');
                 }else{
                   window.myAudio.muted = false;
+                  defaultMode = 'show';
+                  setMode('show');
                   if (window.classActivated) {
                     window.classActivated = !window.classActivated;
                     //Run something to deactivate class
@@ -78,6 +84,10 @@ function monkeyPatchMediaDevices() {
             }else{
               alert('Could not change Microphone');
             }  
+        }
+
+        const showCallBackFunction = () => {
+          setShowMode();
         };
         
         const classCallBackFunction = () => {
@@ -86,6 +96,8 @@ function monkeyPatchMediaDevices() {
             if(citbMicrophone.length > 0){
               setMicrophone(citbMicrophone[0].deviceId);
               window.classActivated = !window.classActivated;
+              setMode('class');
+              defaultMode = 'class';
             }else{
               alert('Could not change to CITB Microphone');
             }
@@ -94,6 +106,8 @@ function monkeyPatchMediaDevices() {
             if (otherMicrophones.length > 0){
               setMicrophone(otherMicrophones[0].deviceId);
               window.classActivated = !window.classActivated;
+              setMode('class');
+              defaultMode = 'class';
             }else{
               alert('Could not change Microphone');
             }
@@ -114,8 +128,31 @@ function monkeyPatchMediaDevices() {
               window.citbActivated ? window.actualVideoTag = videoCITB : window.actualVideoTag = videoOther;
           });
         }
+        const checkDefaultMode = () => {
+          chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
+            if (response && response.farewell) {
+              console.log("response.farewell",response.farewell);
+              if (response.farewell != defaultMode) {                
+                if(response.farewell == 'show')
+                  {
+                    console.log(defaultMode);
+                    setShowMode();
+                  }
+                else if (response.farewell == 'class')
+                  {
+                      console.log(defaultMode);
+                  }
+                else{
+                  setShowMode();
+                  
+                }
+              }
+            }
+          });
+        };
 
         setInterval(checkVideoId,250);
+        setInterval(checkDefaultMode,250);
       } 
     }
 
@@ -131,7 +168,8 @@ function monkeyPatchMediaDevices() {
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMode, defaultMicrophoneId,defaultAudioId,globalVideoSources;
+    let defaultVideoId, defaultMicrophoneId,defaultAudioId,globalVideoSources;
+    let defaultMode = 'none';
     let devices = [];
 
     //add two video tags to the dom
