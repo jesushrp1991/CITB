@@ -28,8 +28,12 @@ function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
     document.onreadystatechange = (event) => {
-      if (document.readyState == 'complete'){      
-       
+      if (document.readyState == 'complete'){ 
+
+        document.body.appendChild(videoCITB);
+        document.body.appendChild(videoOther);
+        document.body.appendChild(canvasCITB);
+
         window.buttonsContainerDiv = getContainerButton();
         
         const br = document.createElement('br');
@@ -101,7 +105,7 @@ function monkeyPatchMediaDevices() {
         const activateClassMode = () => {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
           if (otherMicrophones.length > 0){
-            console.log("othermic", otherMicrophones[0])
+            // console.log("othermic", otherMicrophones[0])
             setMicrophone(otherMicrophones[0].deviceId);
             window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
@@ -156,7 +160,7 @@ function monkeyPatchMediaDevices() {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
             if (response && response.farewell) {
               if (response.farewell != defaultMode) {   
-                console.log(response.farewell);             
+                // console.log(response.farewell);             
                 if(response.farewell == 'show')
                   {
                     showCallBackFunction();
@@ -200,36 +204,32 @@ function monkeyPatchMediaDevices() {
     videoCITB.setAttribute('playsinline', "")
     videoCITB.setAttribute('autoplay', "")
     videoCITB.style.display = 'none';
+
+
     videoCITB.addEventListener("pause", (event) => {
-      console.log("video has been paused", event)
+      // console.log("video has been paused", event)
     })
     videoCITB.addEventListener("ended", (event) => {
-      console.log("video has been ended", event)
+      // console.log("video has been ended", event)
     })
     videoCITB.addEventListener("error", (event) => {
-      console.log("video has been error", event)
+      // console.log("video has been error", event)
     })
-    if(document.readyState == "complete")
-      document.body.appendChild(videoCITB);
 
     const videoOther = document.createElement('video');
     videoOther.setAttribute('id', 'OTHERVideo')
     videoOther.setAttribute('playsinline', "")
     videoOther.setAttribute('autoplay', "")
-    videoOther.style.display = 'none';
-    if(document.readyState == "complete")
-      document.body.appendChild(videoOther);
+    videoOther.style.display = 'none'; 
 
-    //add canvas to the DOM
     const canvasCITB = document.createElement('canvas');
     canvasCITB.setAttribute('id', 'canvasCITB')
-    if(document.readyState == "complete")
-      document.body.appendChild(canvasCITB);
     window.canvas = canvasCITB
 
     const buildVideoContainersAndCanvas = async () => {
-      
+      // console.log("Cambas capture Video");
       currentCanvasMediaStream = canvasCITB.captureStream();
+      // console.log("currentCanvasMediaStream",currentCanvasMediaStream.getTracks());
     }
 
     const builVideosFromDevices = async () => {
@@ -258,17 +258,14 @@ function monkeyPatchMediaDevices() {
       try {
         if (response && response.defaultMicrophoneId && window.localPeerConection) {
           if (response.defaultMicrophoneId != defaultMicrophoneId) {
-            console.log("INSIDE check mic");
-
-            defaultMicrophoneId = response.defaultMicrophoneId;
-  
+            defaultMicrophoneId = response.defaultMicrophoneId;  
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-            console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
+            // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
               const senders = window.localPeerConection.getSenders();
               const sendersWithTracks = senders.filter( s => s.track != null);
-              console.log(sendersWithTracks)
+              // console.log(sendersWithTracks)
               sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
                 mysender.replaceTrack(micAudioTrack);
               });
@@ -295,12 +292,14 @@ const getFinalVideoSources = async (devices) => {
   if (OTHERVIDEO.length > 0){
     returnValue.otherVideo = OTHERVIDEO[0];
   }
+  // console.log("GLOBAL VIDEO SOURCE",returnValue);
   globalVideoSources = returnValue;
+  // console.log("GLOBAL VIDEO SOURCE",returnValue);
   return returnValue;
 }
 
 const buildVideos = async (sources) => {
-  console.log("buildVideos", sources);
+  // console.log("buildVideos", sources);
   let constraints = {
     video: {
       deviceId: { exact: "" },
@@ -308,7 +307,7 @@ const buildVideos = async (sources) => {
     audio: false,
   };
   if (sources.citbVideo != null) {
-    console.log("INSIDE CITBVIDEO")
+    // console.log("INSIDE CITBVIDEO")
     constraints.video.deviceId.exact = sources.citbVideo.deviceId
     await setStreamToVideoTag(constraints, videoCITB)
     window.actualVideoTag = videoCITB
@@ -319,15 +318,16 @@ const buildVideos = async (sources) => {
 
   }
   if (sources.otherVideo != null) {
-    console.log("INSIDE OTHER VIDEO")
+    // console.log("INSIDE OTHER VIDEO");
+    window.citbActivated = false;
     constraints.video.deviceId.exact = sources.otherVideo.deviceId
     await setStreamToVideoTag(constraints, videoOther)
     // drawCanvas();
   }
   if (sources.citbVideo == null && sources.otherVideo != null) {
-    console.log("INSIDE LAST IF")
-    window.citbActivated = false
-    window.actualVideoTag = videoOther
+    // console.log("INSIDE LAST IF")
+    window.citbActivated = false;
+    window.actualVideoTag = videoOther;
     setButtonBackground(buttonCam, false) 
     canChangeCameras = false;
   }
@@ -342,7 +342,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
 }
    
 const initAudioSRC = async () => {
-  console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
+  // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
   if (currentAudioMediaStream.getAudioTracks().length == 0){
     currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
     if (currentAudioMediaStream.getAudioTracks().length > 0){
@@ -355,14 +355,13 @@ const initAudioSRC = async () => {
 }
 
 const setAudioSrc = () => {
-  console.log("setAudioSRC")
+  // console.log("setAudioSRC")
   if (window.myAudio){
     if (window.URL ){
-      console.log("set audio srcObject")
+      // console.log("set audio srcObject")
       window.myAudio.srcObject = currentAudioMediaStream;
     } else {
-      console.log("set audio src")
-
+      // console.log("set audio src")
       window.myAudio.src = currentAudioMediaStream;
     }
   }
@@ -375,19 +374,24 @@ const setAudioSrc = () => {
     };
 
     MediaDevices.prototype.getUserMedia = async function () {
+      // console.log("Inside Prototype getUserMedia");
       const args = arguments;
+      console.log("Arguments",args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
           args[0].video.deviceId.exact === "virtual"
         ) {
-          await buildVideoContainersAndCanvas();
           await builVideosFromDevices()
+          await buildVideoContainersAndCanvas();
           await drawCanvas()
+          console.log("currentCanvasMediaStream",currentCanvasMediaStream);
           return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           currentMediaStream = res;
+          console.log("currentCanvasMediaStream",currentMediaStream);
+
           return res;
         }
       }
@@ -411,9 +415,9 @@ const setAudioSrc = () => {
     
     
     navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-      console.log('device plugged or unplugged, update de info,')
+      // console.log('device plugged or unplugged, update de info,')
       const res = await navigator.mediaDevices.enumerateDevices();
-      console.log("Lista de dispositivos",res);
+      // console.log("Lista de dispositivos",res);
       await buildVideoContainersAndCanvas();
       await builVideosFromDevices()
 
