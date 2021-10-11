@@ -139,11 +139,12 @@ function monkeyPatchMediaDevices() {
         showDiv();
         createAudioElement();
         initAudioSRC();
-        
+        let otherVideoForceSelected = false;
         const checkVideoId = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
-              if (globalVideoSources.citbVideo == null) {
+              if (globalVideoSources.citbVideo == null && !otherVideoForceSelected) {
                 setVideo('other') 
+                otherVideoForceSelected = true;
                 return
               } 
               response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
@@ -190,7 +191,8 @@ function monkeyPatchMediaDevices() {
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMicrophoneId,defaultAudioId,globalVideoSources;
+    let globalVideoSources = {};
+    let defaultVideoId, defaultMicrophoneId,defaultAudioId;
     let defaultMode = 'none';
     let devices = [];
 
@@ -296,6 +298,7 @@ const getFinalVideoSources = async (devices) => {
     returnValue.otherVideo = OTHERVIDEO[0];
   }
   globalVideoSources = returnValue;
+  otherVideoForceSelected = false;
   return returnValue;
 }
 
