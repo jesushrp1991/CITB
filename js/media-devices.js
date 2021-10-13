@@ -31,7 +31,7 @@ function monkeyPatchMediaDevices() {
     window.classActivated = false;
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
-
+        console.log(devices);
         document.body.appendChild(videoCITB);
         document.body.appendChild(videoOther);
         document.body.appendChild(canvasCITB);
@@ -90,18 +90,54 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, window.showActivated);
         }
 
-        const showCallBackFunction = () => {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-              if(window.showActivated){
-                deactivateShowMode()
-              }else{
-                deactivateClassMode();
-                activateShowMode();
+        const toggleShowMode = async () => {
+          console.log(showModeEnabled);
+          if (showModeEnabled) {
+              //disable
+              if (showAudioContext != null) {
+                  showAudioContext.close();
+                  showAudioContext = null;
+                  showModeEnabled = false;
+                  setButtonBackground(buttonShow, showModeEnabled);
+
               }
-          }else{
-            // alert('Could not change Microphone');
-          } 
+          } else {
+              //enable 
+              showAudioContext = new AudioContext();
+              const CITBMicMedia = await getCITBMicMedia(); 
+              const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+              source.connect(showAudioContext.destination);
+              showModeEnabled = true;
+              setButtonBackground(buttonShow, showModeEnabled);
+
+          }
+      }
+      const getCITBMicMedia = async() =>{
+        const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+        console.log("citbMicrophone",citbMicrophone);
+        let constraints = {
+          video: false,
+          audio: {
+            deviceId: { exact: citbMicrophone[0].deviceId },
+          },
+        };
+        let result = await navigator.mediaDevices.getUserMedia(constraints);
+        return result;
+      }
+
+        const showCallBackFunction = () => {
+          // const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+          // if(citbMicrophone.length > 0){
+          //     if(window.showActivated){
+          //       deactivateShowMode()
+          //     }else{
+          //       deactivateClassMode();
+          //       activateShowMode();
+          //     }
+          // }else{
+          //   // alert('Could not change Microphone');
+          // } 
+          toggleShowMode();
         };
 
         const activateClassMode = () => {
@@ -200,6 +236,14 @@ function monkeyPatchMediaDevices() {
     let defaultVideoId, defaultMicrophoneId,defaultAudioId;
     let defaultMode = 'none';
     let devices = [];
+    const audioCTX = new AudioContext();
+    var showAudioContext;
+    let showModeEnabled = false;
+    var source;
+    var p = navigator.mediaDevices.getUserMedia({ audio: { type: "input"}});
+    p.then(frame => {
+      source = audioCTX.createMediaStreamSource(frame);         
+     });
 
     //add two video tags to the dom
     const videoCITB = document.createElement('video');
