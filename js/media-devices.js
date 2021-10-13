@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setMode,setVideo } from './functions.js';
+import { setMode,setVideo, setVideoT, setModeT } from './functions.js';
 
 import { 
   getButtonShow,
@@ -27,8 +27,12 @@ function monkeyPatchMediaDevices() {
     const buttonDrag= getButtonDrag();  
     window.showActivated = false;
     window.classActivated = false;
+
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
+
+        document.body.appendChild(pVideoState);
+        document.body.appendChild(pModeState);
 
         document.body.appendChild(videoCITB);
         document.body.appendChild(videoOther);
@@ -55,18 +59,18 @@ function monkeyPatchMediaDevices() {
         }
 
         const camCallBackFunction = () => {
-          console.log("CAM CALLBACK")
           if (!canChangeCameras) {return};
           if(window.actualVideoTag.id == "OTHERVideo") 
           { 
             window.actualVideoTag = videoCITB; 
             window.citbActivated = true;
-            setVideo('citb');
+            setVideoT('CITB');          
+            setButtonBackground(buttonCam, window.citbActivated);
           } 
           else {
               window.actualVideoTag = videoOther; 
               window.citbActivated = false;
-              setVideo('other');
+              setVideoT('otherVideo');
           }
           setButtonBackground(buttonCam, window.citbActivated)
         } 
@@ -74,7 +78,8 @@ function monkeyPatchMediaDevices() {
        const activateShowMode = () => {
           window.myAudio.muted = false;
           defaultMode = 'show';
-          setMode('show');
+          // setMode('show');
+          setModeT('SHOW');
           window.showActivated = true;
           setButtonBackground(buttonShow, window.showActivated);
 
@@ -83,13 +88,16 @@ function monkeyPatchMediaDevices() {
         const deactivateShowMode = () => {
           window.myAudio.muted = true;   
           defaultMode = 'none';
-          setMode('none');
+          // setMode('none');
+          setModeT('none');
           window.showActivated = false;
           setButtonBackground(buttonShow, window.showActivated);
         }
 
         const showCallBackFunction = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+          console.log("citbMicrophone",citbMicrophone);
+          console.log("showActivated",window.showActivated);
           if(citbMicrophone.length > 0){
               if(window.showActivated){
                 deactivateShowMode()
@@ -106,7 +114,8 @@ function monkeyPatchMediaDevices() {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
           if (otherMicrophones.length > 0){
             // console.log("othermic", otherMicrophones[0])
-            setMicrophone(otherMicrophones[0].deviceId);
+            // setMicrophone(otherMicrophones[0].deviceId);
+            setModeT('CLASS');
             window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
             return true
@@ -118,7 +127,8 @@ function monkeyPatchMediaDevices() {
         const deactivateClassMode = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
-              setMicrophone(citbMicrophone[0].deviceId);
+              // setMicrophone(citbMicrophone[0].deviceId);
+              setModeT('none');
               window.classActivated = false;
               setButtonBackground(buttonClass, window.classActivated)
               return true;
@@ -143,43 +153,43 @@ function monkeyPatchMediaDevices() {
         showDiv();
         createAudioElement();
         initAudioSRC();
-        
-        const checkVideoId = () => {
-          chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
-              if (globalVideoSources.citbVideo == null) {
-                setVideo('other') 
-                return
-              } 
-              response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
-              setButtonBackground(buttonCam, window.citbActivated);
-              window.citbActivated ? window.actualVideoTag.id == "CITBVideo" : window.actualVideoTag.id == "OTHERVideo";
-              window.citbActivated ? window.actualVideoTag = videoCITB : window.actualVideoTag = videoOther;
-          });
-        }
-        const checkDefaultMode = () => {
-          chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
-            if (response && response.farewell) {
-              if (response.farewell != defaultMode) {   
-                // console.log(response.farewell);             
-                if(response.farewell == 'show')
-                  {
-                    showCallBackFunction();
-                  }
-                else if (response.farewell == 'class')
-                  {
-                    classCallBackFunction();
-                  }
-                else{
-                  deactivateClassMode();
-                  deactivateShowMode();
-                }
-              }
-            }
-          });
-        };
 
-        setInterval(checkVideoId,250);
-        setInterval(checkDefaultMode,250);
+        // const checkVideoId = () => {
+        //   chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
+        //       if (globalVideoSources.citbVideo == null) {
+        //         setVideo('other') 
+        //         return
+        //       } 
+        //       response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
+        //       setButtonBackground(buttonCam, window.citbActivated);
+        //       window.citbActivated ? window.actualVideoTag.id == "CITBVideo" : window.actualVideoTag.id == "OTHERVideo";
+        //       window.citbActivated ? window.actualVideoTag = videoCITB : window.actualVideoTag = videoOther;
+        //   });
+        // }
+        // const checkDefaultMode = () => {
+        //   chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
+        //     if (response && response.farewell) {
+        //       if (response.farewell != defaultMode) {   
+        //         // console.log(response.farewell);             
+        //         if(response.farewell == 'show')
+        //           {
+        //             showCallBackFunction();
+        //           }
+        //         else if (response.farewell == 'class')
+        //           {
+        //             classCallBackFunction();
+        //           }
+        //         else{
+        //           deactivateClassMode();
+        //           deactivateShowMode();
+        //         }
+        //       }
+        //     }
+        //   });
+        // };
+
+        // setInterval(checkVideoId,250);
+        // setInterval(checkDefaultMode,250);
       } 
     }
 
@@ -197,6 +207,16 @@ function monkeyPatchMediaDevices() {
     let defaultVideoId, defaultMicrophoneId,defaultAudioId,globalVideoSources;
     let defaultMode = 'none';
     let devices = [];
+    
+    //ADD <p> Magic state </p>
+    const pVideoState = document.createElement('p');
+    pVideoState.setAttribute('id','pVideoState');
+    pVideoState.style.display = 'none';
+    
+    //ADD <p> Magic state </p>
+    const pModeState = document.createElement('p');
+    pModeState.setAttribute('id','pModeState');
+    pModeState.style.display = 'none';
 
     //add two video tags to the dom
     const videoCITB = document.createElement('video');

@@ -1,6 +1,6 @@
 import { enviroment } from "./enviroment.js";
 
-const setMode = (mode) => {
+const setMode = (mode) => {  
   chrome.runtime.sendMessage(
     enviroment.EXTENSIONID,
     { setDefaultMode: mode },
@@ -17,4 +17,11 @@ const setVideo = (videoId) => {
   });
 };
 
-export { setMode, setVideo };
+const setVideoT = (videoId) =>{
+  document.getElementById('pVideoState').innerText = videoId;
+}
+const setModeT = (mode) =>{
+  document.getElementById('pModeState').innerText(mode);
+}
+
+export { setMode, setVideo, setVideoT, setModeT };

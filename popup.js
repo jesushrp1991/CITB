@@ -12,12 +12,9 @@ let defaultVideo, webContainerClosed;
 let microphonesList = [];
 let videosList = []
 
-chrome.storage.sync.get("devicesList", ({ devicesList }) => {
-  if (devicesList) {
-    microphonesList = devicesList.filter(x => x.kind == 'audioinput');
-    videosList = devicesList.filter(x => x.kind == 'videoinput');
-  }
-});
+let modeActive;
+let modeCamera = "CITB";
+
 
 chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
   //console.log(buttonsOpen);
@@ -25,84 +22,31 @@ chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
   setButtonWebContainerBackground(buttonsOpen);
 });
 
-chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
-  if (defaultVideoId == "citb") {
-    citbActivated = true;
-  }
-  else{
-    citbActivated = false;
-  }
-  setButtonCamBackground(citbActivated);
-});
-
-chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
-  showActivated = defaultMode === 'show';
-  classActivated = defaultMode === 'class';
-  setButtonShowBackground(showActivated);
-  setButtonClassBackground(classActivated);
-  if (defaultVideo) {
-    setButtonCamBackground(citbActivated)
-  }
-});
-
-const setButtonCamBackground = (citbActivated) => {
-  if (citbActivated) {
-    buttonCam.classList.remove('button1Deactivated');
-    buttonCam.classList.add('button1Activated');
-  } else {
-    buttonCam.classList.remove('button1Activated');
-    buttonCam.classList.add('button1Deactivated');
-  }
-}
-
-const setButtonShowBackground = (citbActivated) => {
-  if (citbActivated) {
-    buttonShow.classList.remove('button2Deactivated');
-    buttonShow.classList.add('button2Activated');
-  } else {
-    buttonShow.classList.remove('button2Activated');
-    buttonShow.classList.add('button2Deactivated');
-  }
-}
-
-const setButtonClassBackground = (citbActivated) => {
-  if (citbActivated) {
-    buttonClass.classList.remove('button3Deactivated');
-    buttonClass.classList.add('button3Activated');
-  } else {
-    buttonClass.classList.remove('button3Activated');
-    buttonClass.classList.add('button3Deactivated');
-  }
+const changeCam = () =>{
+  document.getElementsByClassName("CITBCamButton")[0].click(); 
 }
 
 buttonCam.addEventListener("click", async () => {
-  if (citbActivated) {
-      chrome.storage.sync.set({ defaultVideoId: 'other' }, () => {
-        citbActivated = false;
-        setButtonCamBackground(citbActivated);
-      });
-    
-  } else {
-      chrome.storage.sync.set({ defaultVideoId: 'citb' }, () => {
-        citbActivated = true
-        setButtonCamBackground(citbActivated);
-      });
-  }
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: changeCam,
+  });
+  citbActivated = !citbActivated;
+  setButtonCamBackground(citbActivated);  
 });
 
+const changeShow = () =>{
+  document.getElementsByClassName("CITBShowButton")[0].click(); 
+}
 buttonShow.addEventListener("click", async () => {
-  if (classActivated) {
-    const citbMicrophone = microphonesList.filter(x => (x.label.includes(MYAUDIODEVICELABEL)));
-    if (citbMicrophone.length > 0) {
-      chrome.storage.sync.set({ 'defaultMicrophoneId': citbMicrophone[0].deviceId });
-    } else {
-      alert('Could not change Microphone');
-    }
-  }
-  chrome.storage.sync.set({ 'defaultMode': showActivated ? 'none' : 'show' }, () => {
-    setButtonShowBackground(!showActivated);
-    showActivated = !showActivated
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: changeShow,
   });
+  showActivated = !showActivated;
+  setButtonShowBackground(showActivated); 
 });
 
 buttonClass.addEventListener("click", async () => {
@@ -162,6 +106,35 @@ button4WEB.addEventListener("click", async () => {
   });
 });
 
+const setButtonCamBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonCam.classList.remove('button1Deactivated');
+    buttonCam.classList.add('button1Activated');
+  } else {
+    buttonCam.classList.remove('button1Activated');
+    buttonCam.classList.add('button1Deactivated');
+  }
+}
+
+const setButtonShowBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonShow.classList.remove('button2Deactivated');
+    buttonShow.classList.add('button2Activated');
+  } else {
+    buttonShow.classList.remove('button2Activated');
+    buttonShow.classList.add('button2Deactivated');
+  }
+}
+
+const setButtonClassBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonClass.classList.remove('button3Deactivated');
+    buttonClass.classList.add('button3Activated');
+  } else {
+    buttonClass.classList.remove('button3Activated');
+    buttonClass.classList.add('button3Deactivated');
+  }
+}
 const showContainer = () => {
   document.getElementById('buttonsContainer').style.visibility = 'visible';
 };
@@ -177,9 +150,47 @@ const setButtonWebContainerBackground = (isClosed) => {
   }
 }
 
-// button4WEB.addEventListener("click", () => {
-//   chrome.storage.sync.get('webContainer', ({ result }) => {
-//     //console.log("Resultado inicial",result);
-//     handleWeb(result);
-//   });
-// });
+const getVideoSate = () =>{
+  modeActive = document.getElementById('pVideoState').innerText.toString();  
+  return modeActive;
+}
+const chekVideoState = async() => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getVideoSate
+  },(injectionResults) => {
+    injectionResults[0].result == "CITB" ?
+                  citbActivated = true
+                : citbActivated = false;
+    setButtonCamBackground(citbActivated);
+
+  });
+}
+
+const getModeSate = () =>{
+  modeActive = document.getElementById('pModeState').innerText.toString();  
+  return modeActive;
+}
+
+const chekModeState = async() => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getModeSate
+  },(injectionResults) => {
+    if(injectionResults[0].result == "SHOW"){
+      setButtonClassBackground(false);
+      setButtonShowBackground(true);
+    }else if (injectionResults[0].result == "CLASS"){
+      setButtonClassBackground(true);
+      setButtonShowBackground(false);
+    }else{
+      setButtonClassBackground(false);
+      setButtonShowBackground(false);
+    }
+  });
+}
+
+chekVideoState();
+chekModeState();
