@@ -104,6 +104,14 @@ const getVirtualCam = () => {
     label: "Virtual Class In The Box",
   };
 };
+const getVirtualMic = () => {
+  return {
+    deviceId: "virtualMic",
+    groupID: "uh",
+    kind: "audioinput",
+    label: "Virtual Class In The Box",
+  };
+};
 
 const closeButtonContainer = () => {
   document.getElementById("buttonsContainer").style.visibility = "hidden";
@@ -123,4 +131,5 @@ export {
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,
+  getVirtualMic
 };

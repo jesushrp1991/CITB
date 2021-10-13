@@ -13,7 +13,8 @@ import {
   addElementsToDiv,
   createAudioElement,
   getVirtualCam,
-  getButtonDrag
+  getButtonDrag,
+  getVirtualMic
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
@@ -31,7 +32,7 @@ function monkeyPatchMediaDevices() {
     window.classActivated = false;
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
-        console.log(devices);
+        // console.log(devices);
         document.body.appendChild(videoCITB);
         document.body.appendChild(videoOther);
         document.body.appendChild(canvasCITB);
@@ -90,31 +91,8 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, window.showActivated);
         }
 
-        const toggleShowMode = async () => {
-          console.log(showModeEnabled);
-          if (showModeEnabled) {
-              //disable
-              if (showAudioContext != null) {
-                  showAudioContext.close();
-                  showAudioContext = null;
-                  showModeEnabled = false;
-                  setButtonBackground(buttonShow, showModeEnabled);
-
-              }
-          } else {
-              //enable 
-              showAudioContext = new AudioContext();
-              const CITBMicMedia = await getCITBMicMedia(); 
-              const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
-              source.connect(showAudioContext.destination);
-              showModeEnabled = true;
-              setButtonBackground(buttonShow, showModeEnabled);
-
-          }
-      }
       const getCITBMicMedia = async() =>{
         const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-        console.log("citbMicrophone",citbMicrophone);
         let constraints = {
           video: false,
           audio: {
@@ -125,19 +103,25 @@ function monkeyPatchMediaDevices() {
         return result;
       }
 
-        const showCallBackFunction = () => {
-          // const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          // if(citbMicrophone.length > 0){
-          //     if(window.showActivated){
-          //       deactivateShowMode()
-          //     }else{
-          //       deactivateClassMode();
-          //       activateShowMode();
-          //     }
-          // }else{
-          //   // alert('Could not change Microphone');
-          // } 
-          toggleShowMode();
+        const showCallBackFunction = async() => {
+          if (showModeEnabled) {
+            //disable
+            if (showAudioContext != null) {
+                showAudioContext.close();
+                showAudioContext = null;
+                showModeEnabled = false;
+                setButtonBackground(buttonShow, showModeEnabled);
+            }
+        } else {
+            //enable 
+            showAudioContext = new AudioContext();
+            const CITBMicMedia = await getCITBMicMedia(); 
+            const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+            source.connect(showAudioContext.destination);
+            showModeEnabled = true;
+            setButtonBackground(buttonShow, showModeEnabled);
+
+        }
         };
 
         const activateClassMode = () => {
@@ -165,22 +149,33 @@ function monkeyPatchMediaDevices() {
         }
         
         const classCallBackFunction = () => {
+          // if (window.classActivated) {
+          //  deactivateClassMode();
+          //  setMode('none');
+          //  defaultMode = 'none';
+          // }else {
+          //   if (activateClassMode() ) {
+          //     setMode('class');
+          //     defaultMode = 'class';
+          //   }
+          // }
           if (window.classActivated) {
-           deactivateClassMode();
-           setMode('none');
-           defaultMode = 'none';
-          }else {
-            if (activateClassMode() ) {
-              setMode('class');
-              defaultMode = 'class';
-            }
+            CITBSource.disconnect(singleDestionation)
+            PCSource.connect(singleDestionation)
+            window.classActivated = false;
+          }else{
+            PCSource.disconnect(singleDestionation)
+            CITBSource.connect(singleDestionation)
+            window.classActivated = true;
           }
+
+          
         } 
 
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
         createAudioElement();
-        initAudioSRC();
+        // initAudioSRC();
         const checkVideoId = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
               if (globalVideoSources.citbVideo == null && !otherVideoForceSelected) {
@@ -216,7 +211,7 @@ function monkeyPatchMediaDevices() {
           });
         };
 
-        setInterval(checkVideoId,250);
+        // setInterval(checkVideoId,250);
         setInterval(checkDefaultMode,250);
       } 
     }
@@ -245,6 +240,7 @@ function monkeyPatchMediaDevices() {
       source = audioCTX.createMediaStreamSource(frame);         
      });
 
+     
     //add two video tags to the dom
     const videoCITB = document.createElement('video');
     videoCITB.setAttribute('id', 'CITBVideo')
@@ -299,33 +295,6 @@ function monkeyPatchMediaDevices() {
         t1 = performance.now(); 
       } 
     }
-
-//   const checkingMicrophoneId = async function () {
-//     chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
-//       try {
-//         if (response && response.defaultMicrophoneId && window.localPeerConection) {
-//           if (response.defaultMicrophoneId != defaultMicrophoneId) {
-//             defaultMicrophoneId = response.defaultMicrophoneId;  
-//             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-//             // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
-//             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
-//               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-//               const senders = window.localPeerConection.getSenders();
-//               const sendersWithTracks = senders.filter( s => s.track != null);
-//               // console.log(sendersWithTracks)
-//               sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
-//                 mysender.replaceTrack(micAudioTrack);
-//               });
-//             }
-//           }
-//         }
-//       } catch (error) {
-//         console.log('no voy a cambiar el modo debido a este error: ', error)
-//       }
-//     });
-//   }
-
-// setInterval(checkingMicrophoneId, 500)
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
@@ -413,17 +382,53 @@ const setAudioSrc = () => {
     }
   }
 } 
+
+  const classRoomAudioContext = new AudioContext();//1er paso
+  let CITBMediaStream = null;
+  let PCMediaStream = null;
+
+  const buildAudio = async() => {
+    // const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+    // const pcMicrophone = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+
+    // let constraints = {
+    //   video: false,
+    //   audio: {
+    //     deviceId: { exact: citbMicrophone[0].deviceId },
+    //   },
+    // };
+    // let constraintsPC = {
+    //   video: false,
+    //   audio: {
+    //     deviceId: { exact: pcMicrophone[0].deviceId },
+    //   },
+    // };
+
+    //  CITBMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+    //  PCMediaStream = await navigator.mediaDevices.getUserMedia(constraintsPC);
+
+    //  const CITBSource = audioContext.createMediaStreamSource(CITBMediaStream)
+    //  const PCSource = audioContext.createMediaStreamSource(PCMediaStream)
+    //  const singleDestionation = audioContext.createMediaStreamDestination()
+     
+      // const virtualMic = devices.filter(x => (x.kind === 'audioinput' && x.label.includes("virtualMic")));
+      // console.log("virtualMic",virtualMic);
+      // virtualMic.stream = singleDestionation.stream; 
+
+
+  }
+  
     MediaDevices.prototype.enumerateDevices = async function () {
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
       res.push(getVirtualCam());
+      res.push(getVirtualMic());
       return res;
     };
 
     MediaDevices.prototype.getUserMedia = async function () {
       // console.log("Inside Prototype getUserMedia");
       const args = arguments;
-      console.log("Arguments",args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -432,13 +437,11 @@ const setAudioSrc = () => {
           await builVideosFromDevices()
           await buildVideoContainersAndCanvas();
           await drawCanvas()
-          console.log("currentCanvasMediaStream",currentCanvasMediaStream);
+          // await buildAudio();
           return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           currentMediaStream = res;
-          console.log("currentCanvasMediaStream",currentMediaStream);
-
           return res;
         }
       }
