@@ -300,32 +300,32 @@ function monkeyPatchMediaDevices() {
       } 
     }
 
-  const checkingMicrophoneId = async function () {
-    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
-      try {
-        if (response && response.defaultMicrophoneId && window.localPeerConection) {
-          if (response.defaultMicrophoneId != defaultMicrophoneId) {
-            defaultMicrophoneId = response.defaultMicrophoneId;  
-            currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-            // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
-            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
-              const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-              const senders = window.localPeerConection.getSenders();
-              const sendersWithTracks = senders.filter( s => s.track != null);
-              // console.log(sendersWithTracks)
-              sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
-                mysender.replaceTrack(micAudioTrack);
-              });
-            }
-          }
-        }
-      } catch (error) {
-        console.log('no voy a cambiar el modo debido a este error: ', error)
-      }
-    });
-  }
+//   const checkingMicrophoneId = async function () {
+//     chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
+//       try {
+//         if (response && response.defaultMicrophoneId && window.localPeerConection) {
+//           if (response.defaultMicrophoneId != defaultMicrophoneId) {
+//             defaultMicrophoneId = response.defaultMicrophoneId;  
+//             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
+//             // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
+//             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
+//               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
+//               const senders = window.localPeerConection.getSenders();
+//               const sendersWithTracks = senders.filter( s => s.track != null);
+//               // console.log(sendersWithTracks)
+//               sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
+//                 mysender.replaceTrack(micAudioTrack);
+//               });
+//             }
+//           }
+//         }
+//       } catch (error) {
+//         console.log('no voy a cambiar el modo debido a este error: ', error)
+//       }
+//     });
+//   }
 
-setInterval(checkingMicrophoneId, 500)
+// setInterval(checkingMicrophoneId, 500)
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
