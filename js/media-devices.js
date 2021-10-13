@@ -20,6 +20,8 @@ function monkeyPatchMediaDevices() {
     let canChangeCameras = true;
     let canActivateShow = true;
     let canActivateClass = true;
+    let otherVideoForceSelected = false;
+
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
     const buttonCam = getButtonCam();
@@ -143,7 +145,6 @@ function monkeyPatchMediaDevices() {
         showDiv();
         createAudioElement();
         initAudioSRC();
-        let otherVideoForceSelected = false;
         const checkVideoId = () => {
           chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
               if (globalVideoSources.citbVideo == null && !otherVideoForceSelected) {
