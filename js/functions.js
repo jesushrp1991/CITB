@@ -17,11 +17,11 @@ const setVideo = (videoId) => {
   });
 };
 
-const setVideoT = (videoId) =>{
-  document.getElementById('pVideoState').innerText = videoId;
+const setVideoT = (mode) =>{
+  document.getElementById('pVideoState').innerText = mode;
 }
 const setModeT = (mode) =>{
-  document.getElementById('pModeState').innerText(mode);
+  document.getElementById('pModeState').innerText = mode;
 }
 
 export { setMode, setVideo, setVideoT, setModeT };

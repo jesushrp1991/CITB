@@ -25,6 +25,15 @@ chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
 const changeCam = () =>{
   document.getElementsByClassName("CITBCamButton")[0].click(); 
 }
+const setButtonCamBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonCam.classList.remove('button1Deactivated');
+    buttonCam.classList.add('button1Activated');
+  } else {
+    buttonCam.classList.remove('button1Activated');
+    buttonCam.classList.add('button1Deactivated');
+  }
+}
 
 buttonCam.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -36,6 +45,15 @@ buttonCam.addEventListener("click", async () => {
   setButtonCamBackground(citbActivated);  
 });
 
+const setButtonShowBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonShow.classList.remove('button2Deactivated');
+    buttonShow.classList.add('button2Activated');
+  } else {
+    buttonShow.classList.remove('button2Activated');
+    buttonShow.classList.add('button2Deactivated');
+  }
+}
 const changeShow = () =>{
   document.getElementsByClassName("CITBShowButton")[0].click(); 
 }
@@ -106,25 +124,6 @@ button4WEB.addEventListener("click", async () => {
   });
 });
 
-const setButtonCamBackground = (citbActivated) => {
-  if (citbActivated) {
-    buttonCam.classList.remove('button1Deactivated');
-    buttonCam.classList.add('button1Activated');
-  } else {
-    buttonCam.classList.remove('button1Activated');
-    buttonCam.classList.add('button1Deactivated');
-  }
-}
-
-const setButtonShowBackground = (citbActivated) => {
-  if (citbActivated) {
-    buttonShow.classList.remove('button2Deactivated');
-    buttonShow.classList.add('button2Activated');
-  } else {
-    buttonShow.classList.remove('button2Activated');
-    buttonShow.classList.add('button2Deactivated');
-  }
-}
 
 const setButtonClassBackground = (citbActivated) => {
   if (citbActivated) {
@@ -180,9 +179,11 @@ const chekModeState = async() => {
     function: getModeSate
   },(injectionResults) => {
     if(injectionResults[0].result == "SHOW"){
+      showActivated = true
       setButtonClassBackground(false);
       setButtonShowBackground(true);
     }else if (injectionResults[0].result == "CLASS"){
+      classActivated = true;
       setButtonClassBackground(true);
       setButtonShowBackground(false);
     }else{

@@ -78,17 +78,14 @@ function monkeyPatchMediaDevices() {
        const activateShowMode = () => {
           window.myAudio.muted = false;
           defaultMode = 'show';
-          // setMode('show');
           setModeT('SHOW');
           window.showActivated = true;
           setButtonBackground(buttonShow, window.showActivated);
-
        }
 
         const deactivateShowMode = () => {
           window.myAudio.muted = true;   
           defaultMode = 'none';
-          // setMode('none');
           setModeT('none');
           window.showActivated = false;
           setButtonBackground(buttonShow, window.showActivated);
@@ -96,8 +93,6 @@ function monkeyPatchMediaDevices() {
 
         const showCallBackFunction = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          console.log("citbMicrophone",citbMicrophone);
-          console.log("showActivated",window.showActivated);
           if(citbMicrophone.length > 0){
               if(window.showActivated){
                 deactivateShowMode()
@@ -106,7 +101,6 @@ function monkeyPatchMediaDevices() {
                 activateShowMode();
               }
           }else{
-            // alert('Could not change Microphone');
           } 
         };
 
