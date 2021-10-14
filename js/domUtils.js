@@ -88,6 +88,16 @@ const closeButtonContainer = () => {
   document.getElementById("buttonsContainer").style.visibility = "hidden";
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
+const setMicrophone = (microphone) => { 
+  chrome.runtime.sendMessage( 
+    enviroment.EXTENSIONID, 
+    { setDefaultMicrophoneId: microphone }, 
+    async function (response) { 
+      if (response && response.farewell) { 
+      } 
+    } 
+  ); 
+}; 
 
 export {
   getButtonShow,
@@ -100,4 +110,5 @@ export {
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,
+  setMicrophone
 };

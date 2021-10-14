@@ -11,7 +11,8 @@ import {
   setButtonBackground,
   addElementsToDiv,
   getVirtualCam,
-  getButtonDrag
+  getButtonDrag,
+  setMicrophone
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
@@ -127,40 +128,46 @@ function monkeyPatchMediaDevices() {
           } 
         };
 
-        const activateClassMode = () => {
-            try{
-              console.log(singleDestionation);
-              console.log(PCSource);
-              // CITBSource.disconnect(singleDestionation);
-              PCSource.connect(singleDestionation);
-              setModeT('CLASS');
-              window.classActivated = true;
-            setButtonBackground(buttonClass, window.classActivated)
-            }catch(e){
-              console.log(e);
-            }
-        }
-
-        const deactivateClassMode = () => {
-          PCSource.disconnect(singleDestionation);
-          CITBSource.connect(singleDestionation);
-          setModeT('none');
-          window.classActivated = false;
-          setButtonBackground(buttonClass, window.classActivated);
-
-        }
-        
-        const classCallBackFunction = () => {
-          console.log("classCallBackFunction",window.classActivated)
-          if (window.classActivated) {
-           deactivateClassMode();
-           defaultMode = 'none';
-          }else {
-            activateClassMode();
-          }
+        const activateClassMode = () => { 
+          const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+          if (otherMicrophones.length > 0){ 
+            // console.log("othermic", otherMicrophones[0]) 
+            setMicrophone(otherMicrophones[0].deviceId); 
+            window.classActivated = true; 
+            setButtonBackground(buttonClass, window.classActivated) 
+            return true 
+          } 
+          return false; 
+           
         } 
+ 
+        const deactivateClassMode = () => { 
+          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+            if(citbMicrophone.length > 0){ 
+              setMicrophone(citbMicrophone[0].deviceId); 
+              window.classActivated = false; 
+              setButtonBackground(buttonClass, window.classActivated) 
+              return true; 
+            } 
+            return false 
+        } 
+         
+        const classCallBackFunction = () => { 
+          if (window.classActivated) { 
+           deactivateClassMode(); 
+           setMode('none'); 
+           defaultMode = 'none'; 
+          }else { 
+            if (activateClassMode() ) { 
+              setMode('class'); 
+              defaultMode = 'class'; 
+            } 
+          } 
+        }  
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
+        createAudioElement(); 
+        initAudioSRC(); 
       } 
     }//END ONREADY STATE CHANGE
 
@@ -262,6 +269,33 @@ function monkeyPatchMediaDevices() {
         t1 = performance.now(); 
       } 
     }
+    
+  const checkingMicrophoneId = async function () { 
+    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) { 
+      try { 
+        if (response && response.defaultMicrophoneId && window.localPeerConection) { 
+          if (response.defaultMicrophoneId != defaultMicrophoneId) { 
+            defaultMicrophoneId = response.defaultMicrophoneId;   
+            currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false }); 
+            // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks()) 
+            if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){ 
+              const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
+              const senders = window.localPeerConection.getSenders(); 
+              const sendersWithTracks = senders.filter( s => s.track != null); 
+              // console.log(sendersWithTracks) 
+              sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => { 
+                mysender.replaceTrack(micAudioTrack); 
+              }); 
+            } 
+          } 
+        } 
+      } catch (error) { 
+        console.log('no voy a cambiar el modo debido a este error: ', error) 
+      } 
+    }); 
+  } 
+setInterval(checkingMicrophoneId, 500) ;
+
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
   const videoSources = sources.filter(s => s.kind == "videoinput");
@@ -320,6 +354,32 @@ const setStreamToVideoTag = async (constraints ,video) => {
     console.log(err)
   });
 }
+
+const initAudioSRC = async () => { 
+  // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks()) 
+  if (currentAudioMediaStream.getAudioTracks().length == 0){ 
+    currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false }); 
+    if (currentAudioMediaStream.getAudioTracks().length > 0){ 
+      setAudioSrc() 
+    } 
+  }else { 
+    setAudioSrc() 
+ 
+  } 
+} 
+ 
+const setAudioSrc = () => { 
+  // console.log("setAudioSRC") 
+  if (window.myAudio){ 
+    if (window.URL ){ 
+      // console.log("set audio srcObject") 
+      window.myAudio.srcObject = currentAudioMediaStream; 
+    } else { 
+      // console.log("set audio src") 
+      window.myAudio.src = currentAudioMediaStream; 
+    } 
+  } 
+}  
    
     MediaDevices.prototype.enumerateDevices = async function () {
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
@@ -407,52 +467,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
       }, 1000)
     }
     checkDevices();
-
-     //VARIABLES PARA CLASS MODE///
-     let CITBMediaStream,PCMediaStream;
-     let CITBSource,PCSource;
-     let classRoomAudioContext = new AudioContext();
-     let singleDestionation = classRoomAudioContext.createMediaStreamDestination();
-
-     //VARIABLES PARA CLASS MODE///
-     
-     //SET MEDIASTREAM///
-     const buildAudio = async() => { 
-       try{
-        CITBMediaStream = null;
-        PCMediaStream = null;
-        const res = await navigator.mediaDevices.enumerateDevices();
-        console.log(res, enviroment.MYAUDIODEVICELABEL)
-        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-        const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-
-        console.log("AsdasdasdasD",citbMicrophone,pcMicrophone);
-
-        let constraints = { 
-          video: false, 
-          audio: { 
-            deviceId: citbMicrophone[0].deviceId ,  
-          }, 
-        }; 
-        let constraintsPC = { 
-          video: false, 
-          audio: { 
-            deviceId: pcMicrophone[0].deviceId , 
-          }, 
-        }; 
-         CITBMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-         PCMediaStream = await navigator.mediaDevices.getUserMedia(constraintsPC); 
-
-         CITBSource = classRoomAudioContext.createMediaStreamSource(CITBMediaStream);
-         PCSource = classRoomAudioContext.createMediaStreamSource(PCMediaStream);  
-        
-         CITBSource.connect(singleDestionation);
-        //  PCSource.connect(singleDestionation);    
-       }catch(e){
-         console.log("BuildAudio error",e);
-       }
-     }   
-     //END SET MEDIASTREAM///
 }
 
 export { monkeyPatchMediaDevices }
