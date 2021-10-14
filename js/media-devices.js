@@ -74,33 +74,38 @@ function monkeyPatchMediaDevices() {
           }
           setButtonBackground(buttonCam, window.citbActivated)
         } 
-        
-       const activateShowMode = () => {
-          window.myAudio.muted = false;
-          defaultMode = 'show';
-          setModeT('SHOW');
-          window.showActivated = true;
-          setButtonBackground(buttonShow, window.showActivated);
-       }
 
-        const deactivateShowMode = () => {
-          window.myAudio.muted = true;   
-          defaultMode = 'none';
-          setModeT('none');
-          window.showActivated = false;
-          setButtonBackground(buttonShow, window.showActivated);
-        }
+        const getCITBMicMedia = async() =>{ 
+          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+          console.log("citbMicrophone",citbMicrophone); 
+          let constraints = { 
+            video: false, 
+            audio: { 
+              deviceId: { exact: citbMicrophone[0].deviceId }, 
+            }, 
+          }; 
+          let result = await navigator.mediaDevices.getUserMedia(constraints); 
+          return result; 
+        } 
+        const showCallBackFunction = async() => {
+          if (showModeEnabled) { 
+              //disable 
+              if (showAudioContext != null) { 
+                  showAudioContext.close(); 
+                  showAudioContext = null; 
+                  showModeEnabled = false; 
+                  setButtonBackground(buttonShow, showModeEnabled); 
 
-        const showCallBackFunction = () => {
-          const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          if(citbMicrophone.length > 0){
-              if(window.showActivated){
-                deactivateShowMode()
-              }else{
-                deactivateClassMode();
-                activateShowMode();
-              }
-          }else{
+              } 
+          } else { 
+              //enable  
+              showAudioContext = new AudioContext(); 
+              const CITBMicMedia = await getCITBMicMedia();  
+              const source = showAudioContext.createMediaStreamSource(CITBMicMedia); 
+              source.connect(showAudioContext.destination); 
+              showModeEnabled = true; 
+              setButtonBackground(buttonShow, showModeEnabled); 
+
           } 
         };
 
@@ -162,10 +167,17 @@ function monkeyPatchMediaDevices() {
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultVideoId, defaultMicrophoneId,defaultAudioId,globalVideoSources;
+    let defaultMicrophoneId,defaultAudioId,globalVideoSources;
     let defaultMode = 'none';
     let devices = [];
-    
+    const audioCTX = new AudioContext(); 
+    var showAudioContext; 
+    let showModeEnabled = false; 
+    var source; 
+    var p = navigator.mediaDevices.getUserMedia({ audio: { type: "input"}}); 
+    p.then(frame => { 
+      source = audioCTX.createMediaStreamSource(frame);          
+     }); 
     //ADD <p> Magic state </p>
     const pVideoState = document.createElement('p');
     pVideoState.setAttribute('id','pVideoState');
