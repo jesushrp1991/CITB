@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setMode,setVideo, setVideoT, setModeT } from './functions.js';
+import { setVideoT, setModeT } from './functions.js';
 
 import { 
   getButtonShow,
@@ -8,7 +8,6 @@ import {
   getButtonCam,
   getButtonClose,
   getContainerButton,
-  setMicrophone,
   setButtonBackground,
   addElementsToDiv,
   createAudioElement,
@@ -33,6 +32,7 @@ function monkeyPatchMediaDevices() {
 
         document.body.appendChild(pVideoState);
         document.body.appendChild(pModeState);
+        document.body.appendChild(pWebContainerState);
 
         document.body.appendChild(videoCITB);
         document.body.appendChild(videoOther);
@@ -54,8 +54,8 @@ function monkeyPatchMediaDevices() {
 
         if (window.actualVideoTag == videoCITB) {
           window.citbActivated = true;
-          setButtonBackground(buttonCam, window.citbActivated) 
-
+          setVideoT('CITB');          
+          setButtonBackground(buttonCam, window.citbActivated)
         }
 
         const camCallBackFunction = () => {
@@ -106,9 +106,9 @@ function monkeyPatchMediaDevices() {
 
         const activateClassMode = () => {
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
+          console.log(otherMicrophones);
           if (otherMicrophones.length > 0){
             // console.log("othermic", otherMicrophones[0])
-            // setMicrophone(otherMicrophones[0].deviceId);
             setModeT('CLASS');
             window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
@@ -121,7 +121,6 @@ function monkeyPatchMediaDevices() {
         const deactivateClassMode = () => {
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
             if(citbMicrophone.length > 0){
-              // setMicrophone(citbMicrophone[0].deviceId);
               setModeT('none');
               window.classActivated = false;
               setButtonBackground(buttonClass, window.classActivated)
@@ -131,65 +130,30 @@ function monkeyPatchMediaDevices() {
         }
         
         const classCallBackFunction = () => {
+          console.log("classCallBackFunction",window.classActivated)
           if (window.classActivated) {
            deactivateClassMode();
-           setMode('none');
+           setModeT('none');
            defaultMode = 'none';
           }else {
             if (activateClassMode() ) {
-              setMode('class');
+              setModeT('CLASS');
               defaultMode = 'class';
             }
           }
         } 
-
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
         createAudioElement();
         initAudioSRC();
-
-        // const checkVideoId = () => {
-        //   chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultVideoId: true }, async function (response) {
-        //       if (globalVideoSources.citbVideo == null) {
-        //         setVideo('other') 
-        //         return
-        //       } 
-        //       response.farewell == 'citb' ?   window.citbActivated = true :    window.citbActivated = false;
-        //       setButtonBackground(buttonCam, window.citbActivated);
-        //       window.citbActivated ? window.actualVideoTag.id == "CITBVideo" : window.actualVideoTag.id == "OTHERVideo";
-        //       window.citbActivated ? window.actualVideoTag = videoCITB : window.actualVideoTag = videoOther;
-        //   });
-        // }
-        // const checkDefaultMode = () => {
-        //   chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMode: true }, async function (response) {
-        //     if (response && response.farewell) {
-        //       if (response.farewell != defaultMode) {   
-        //         // console.log(response.farewell);             
-        //         if(response.farewell == 'show')
-        //           {
-        //             showCallBackFunction();
-        //           }
-        //         else if (response.farewell == 'class')
-        //           {
-        //             classCallBackFunction();
-        //           }
-        //         else{
-        //           deactivateClassMode();
-        //           deactivateShowMode();
-        //         }
-        //       }
-        //     }
-        //   });
-        // };
-
-        // setInterval(checkVideoId,250);
-        // setInterval(checkDefaultMode,250);
       } 
     }
 
     const showDiv = () => {
-      if (document.getElementById('buttonsContainer'))
-      document.getElementById('buttonsContainer').style.display = 'block';
+      if (document.getElementById('buttonsContainer')){
+        document.getElementById('buttonsContainer').style.display = 'block';
+        document.getElementById("pWebContainerState").innerText = "OPEN";
+      }
     }
     
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
@@ -211,6 +175,11 @@ function monkeyPatchMediaDevices() {
     const pModeState = document.createElement('p');
     pModeState.setAttribute('id','pModeState');
     pModeState.style.display = 'none';
+
+    //ADD <p> Magic state </p>
+    const pWebContainerState = document.createElement('p');
+    pWebContainerState.setAttribute('id','pWebContainerState');
+    pWebContainerState.style.display = 'none';
 
     //add two video tags to the dom
     const videoCITB = document.createElement('video');
@@ -328,8 +297,6 @@ const buildVideos = async (sources) => {
     window.citbActivated = true
     setButtonBackground(buttonCam, true) 
     canChangeCameras = true;
-    setVideo('citb')
-
   }
   if (sources.otherVideo != null) {
     // console.log("INSIDE OTHER VIDEO");
@@ -390,7 +357,7 @@ const setAudioSrc = () => {
     MediaDevices.prototype.getUserMedia = async function () {
       // console.log("Inside Prototype getUserMedia");
       const args = arguments;
-      console.log("Arguments",args);
+      // console.log("Arguments",args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -399,12 +366,12 @@ const setAudioSrc = () => {
           await builVideosFromDevices()
           await buildVideoContainersAndCanvas();
           await drawCanvas()
-          console.log("currentCanvasMediaStream",currentCanvasMediaStream);
+          // console.log("currentCanvasMediaStream",currentCanvasMediaStream);
           return currentCanvasMediaStream;
         } else {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           currentMediaStream = res;
-          console.log("currentCanvasMediaStream",currentMediaStream);
+          // console.log("currentCanvasMediaStream",currentMediaStream);
 
           return res;
         }

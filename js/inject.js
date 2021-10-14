@@ -1,5 +1,5 @@
 'use strict';
-console.log("Host",window.location.host);
+// console.log("Host",window.location.host);
 if (window.location.host === 'meet.google.com' || window.location.host === 'zoom.us') {
     const script = document.createElement('script');
     script.setAttribute("type", "module");

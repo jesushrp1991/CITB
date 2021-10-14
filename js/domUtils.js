@@ -45,17 +45,6 @@ const getButtonDrag = () => {
   return buttonDrag;
 };
 
-const setMicrophone = (microphone) => {
-  chrome.runtime.sendMessage(
-    enviroment.EXTENSIONID,
-    { setDefaultMicrophoneId: microphone },
-    async function (response) {
-      if (response && response.farewell) {
-      }
-    }
-  );
-};
-
 const setButtonBackground = (button, activated) => {
   activated
     ? button.classList.add("active")
@@ -107,7 +96,7 @@ const getVirtualCam = () => {
 
 const closeButtonContainer = () => {
   document.getElementById("buttonsContainer").style.visibility = "hidden";
-  chrome.runtime.sendMessage(enviroment.EXTENSIONID, { buttonsOpen: true });
+  document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 
 export {
@@ -116,7 +105,6 @@ export {
   getButtonCam,
   getButtonClose,
   getContainerButton,
-  setMicrophone,
   setButtonBackground,
   addElementsToDiv,
   createAudioElement,
