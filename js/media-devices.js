@@ -82,14 +82,27 @@ function monkeyPatchMediaDevices() {
 
         const getCITBMicMedia = async() =>{ 
           const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-          let constraints = { 
-            video: false, 
-            audio: { 
-              deviceId: { exact: citbMicrophone[0].deviceId }, 
-            }, 
-          }; 
-          let result = await navigator.mediaDevices.getUserMedia(constraints); 
-          return result; 
+          if(citbMicrophone.length > 0){
+            let constraints = { 
+              video: false, 
+              audio: { 
+                deviceId: { exact: citbMicrophone[0].deviceId }, 
+              }, 
+            }; 
+            let result = await navigator.mediaDevices.getUserMedia(constraints); 
+            return result; 
+          }
+          else{
+            let otherMicrophone = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+            let constraints = { 
+              video: false, 
+              audio: { 
+                deviceId: { exact: otherMicrophone[0].deviceId }, 
+              }, 
+            }; 
+            let result = await navigator.mediaDevices.getUserMedia(constraints); 
+            return result; 
+          }
         }
 
         const showCallBackFunction = async() => {
@@ -117,6 +130,7 @@ function monkeyPatchMediaDevices() {
         const activateClassMode = () => {
             try{
               console.log(singleDestionation);
+              console.log(PCSource);
               // CITBSource.disconnect(singleDestionation);
               PCSource.connect(singleDestionation);
               setModeT('CLASS');
@@ -317,7 +331,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
 
     MediaDevices.prototype.getUserMedia = async function () {
       const args = arguments;
-      console.log(args);
+      // console.log(args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -333,14 +347,15 @@ const setStreamToVideoTag = async (constraints ,video) => {
           return res;
         }
       }
-      if (args.length && args[0].audio && args[0].audio.deviceId) {
+      if (args.length && args[0].audio && args[0].audio.mandatory.sourceId) {
         if (          
           args[0].audio.mandatory.sourceId === "virtualMic" ||
           args[0].audio.mandatory.sourceId.exact === "virtualMic"
         ){
-          console.log("Entro a virtual MIC");
-          await buildAudio(); 
-          return virtualDevice;
+          buildAudio();
+          // console.log("Entro a virtual MIC");
+          // console.log("singleDestination.stream",singleDestionation)
+          return singleDestionation.stream;
         }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
@@ -382,60 +397,48 @@ const setStreamToVideoTag = async (constraints ,video) => {
     checkDevices();
 
      //VARIABLES PARA CLASS MODE///
-     const classRoomAudioContext = new AudioContext();
-     let CITBMediaStream = null;
-     let PCMediaStream = null;
-     let CITBSource,PCSource,virtualDevice ;
+     let CITBMediaStream,PCMediaStream;
+     let CITBSource,PCSource;
+     let classRoomAudioContext = new AudioContext();
      let singleDestionation = classRoomAudioContext.createMediaStreamDestination();
+
      //VARIABLES PARA CLASS MODE///
      
      //SET MEDIASTREAM///
      const buildAudio = async() => { 
        try{
+        CITBMediaStream = null;
+        PCMediaStream = null;
         const res = await navigator.mediaDevices.enumerateDevices();
-        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-        const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-        const virtualMic = res.filter(x => (x.kind === 'audioinput' && x.deviceId.includes("virtualMic"))); 
+        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label == enviroment.MYAUDIODEVICELABEL)); 
+        const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
 
-        console.log("citbMIC",citbMicrophone[2].deviceId);
-        console.log("pcMicrophone",pcMicrophone[0].deviceId);
-        console.log("virtualMic",virtualMic[0].deviceId);
- 
+        console.log("AsdasdasdasD",citbMicrophone,pcMicrophone);
+
         let constraints = { 
           video: false, 
           audio: { 
-            deviceId: { exact: citbMicrophone[2].deviceId }, 
+            deviceId: citbMicrophone[0].deviceId ,  
           }, 
         }; 
         let constraintsPC = { 
           video: false, 
           audio: { 
-            deviceId: { exact: pcMicrophone[0].deviceId }, 
+            deviceId: pcMicrophone[0].deviceId , 
           }, 
         }; 
-        let constraintsVirtualMic = { 
-         video: false, 
-         audio: { 
-           deviceId: { exact: 'virtualMic' }, 
-         }, 
-       }; 
-         CITBMediaStream = await navigator.mediaDevices.getUserMedia(constraints); 
-         PCMediaStream = await navigator.mediaDevices.getUserMedia(constraintsPC);  
+         CITBMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+         PCMediaStream = await navigator.mediaDevices.getUserMedia(constraintsPC); 
+
          CITBSource = classRoomAudioContext.createMediaStreamSource(CITBMediaStream);
          PCSource = classRoomAudioContext.createMediaStreamSource(PCMediaStream);  
-         console.log(res);
-         virtualDevice = await navigator.mediaDevices.getUserMedia(constraintsVirtualMic); 
-        //  CITBSource.connect(singleDestionation);
-        //  PCSource.connect(singleDestionation);
         
-        //  console.log("singleDestination",singleDestionation);
-        //  virtualDevice.stream = singleDestionation.stream;
-        //  return virtualDevice;
+         CITBSource.connect(singleDestionation);
+        //  PCSource.connect(singleDestionation);    
        }catch(e){
          console.log("BuildAudio error",e);
        }
      }   
-     buildAudio();
      //END SET MEDIASTREAM///
 }
 

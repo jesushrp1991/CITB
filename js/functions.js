@@ -14,7 +14,7 @@ const getVirtualMic = () => {
     deviceId: "virtualMic", 
     groupID: "uh", 
     kind: "audioinput", 
-    label: "Virtual Class In The Box", 
+    label: "Virtual Class In The Box Mic", 
   }; 
 }; 
  
