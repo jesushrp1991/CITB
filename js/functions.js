@@ -5,4 +5,9 @@ const setModeT = (mode) =>{
   document.getElementById('pModeState').innerText = mode;
 }
 
-export { setVideoT, setModeT };
+const setCITBCam = (exitsCam) =>{
+  document.getElementById('pModeExistsCam').innerText = exitsCam;
+
+}
+
+export { setVideoT, setModeT, setCITBCam };

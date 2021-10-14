@@ -75,16 +75,6 @@ const addElementsToDiv = (
   div.style.display = "none";
 };
 
-const createAudioElement = () => {
-  window.myAudio = document.createElement("audio");
-  window.myAudio.setAttribute("id", "speaker");
-  window.myAudio.setAttribute("volume", "1.0");
-  window.myAudio.setAttribute("controls", null);
-  window.myAudio.setAttribute("autoplay", null);
-  window.myAudio.muted = true;
-  document.body.appendChild(window.myAudio);
-};
-
 const getVirtualCam = () => {
   return {
     deviceId: "virtual",
@@ -107,7 +97,6 @@ export {
   getContainerButton,
   setButtonBackground,
   addElementsToDiv,
-  createAudioElement,
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,

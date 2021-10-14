@@ -4,7 +4,7 @@ let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 
-let showActivated = false, classActivated = false, citbActivated,webContainerActivated;
+let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
 
 const changeCam = () =>{
   document.getElementsByClassName("CITBCamButton")[0].click(); 
@@ -20,6 +20,7 @@ const setButtonCamBackground = (citbActivated) => {
 }
 
 buttonCam.addEventListener("click", async () => {
+  if (!canChangeCameras) {return};
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
@@ -174,7 +175,24 @@ const chekWebContainerState = async() => {
                   webContainerActivated = true
                 : webContainerActivated = false;
     setButtonWebContainerBackground(webContainerActivated);
-    console.log("WEBCONTAINER 1",webContainerActivated);
   });
 }
 chekWebContainerState();
+
+const getpModeExistsCamState = () =>{
+  let isOpen = document.getElementById('pModeExistsCam').innerText.toString();  
+  return isOpen;
+}
+const chekpModeExistsCamState = async() => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getpModeExistsCamState
+  },(injectionResults) => {
+    console.log(injectionResults);
+    injectionResults[0].result == "true" ?
+                  canChangeCameras = true
+                : canChangeCameras = false;
+  });
+}
+chekpModeExistsCamState();

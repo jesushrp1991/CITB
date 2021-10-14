@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT } from './functions.js';
+import { setVideoT, setModeT,setCITBCam } from './functions.js';
 
 import { 
   getButtonShow,
@@ -10,34 +10,37 @@ import {
   getContainerButton,
   setButtonBackground,
   addElementsToDiv,
-  createAudioElement,
   getVirtualCam,
   getButtonDrag
 } from './domUtils.js';
 
 function monkeyPatchMediaDevices() {
     let canChangeCameras = true;
-    let canActivateShow = true;
-    let canActivateClass = true;
+    window.showActivated = false;
+    window.classActivated = false;
+
+    //WEB CONTAINER
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
     const buttonCam = getButtonCam();
     const buttonClose= getButtonClose();
     const buttonDrag= getButtonDrag();  
-    window.showActivated = false;
-    window.classActivated = false;
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
 
+        //HTML TAGS TO SYNC WHIT POPUP
         document.body.appendChild(pVideoState);
         document.body.appendChild(pModeState);
         document.body.appendChild(pWebContainerState);
-
+        document.body.appendChild(pModeExistsCam);
+        
+        //HTML MEDIA TAGS TO MANAGE CAMERAS
         document.body.appendChild(videoCITB);
         document.body.appendChild(videoOther);
         document.body.appendChild(canvasCITB);
 
+        //WEB CONTAINER
         window.buttonsContainerDiv = getContainerButton();
         
         const br = document.createElement('br');
@@ -57,6 +60,8 @@ function monkeyPatchMediaDevices() {
           setVideoT('CITB');          
           setButtonBackground(buttonCam, window.citbActivated)
         }
+        //Set if posible change camera (if there are a CITB camera)
+        canChangeCameras ? setCITBCam(true) : setCITBCam(false);
 
         const camCallBackFunction = () => {
           if (!canChangeCameras) {return};
@@ -86,7 +91,8 @@ function monkeyPatchMediaDevices() {
           }; 
           let result = await navigator.mediaDevices.getUserMedia(constraints); 
           return result; 
-        } 
+        }
+
         const showCallBackFunction = async() => {
           if (showModeEnabled) { 
               //disable 
@@ -149,10 +155,8 @@ function monkeyPatchMediaDevices() {
         } 
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
-        createAudioElement();
-        initAudioSRC();
       } 
-    }
+    }//END ONREADY STATE CHANGE
 
     const showDiv = () => {
       if (document.getElementById('buttonsContainer')){
@@ -167,7 +171,7 @@ function monkeyPatchMediaDevices() {
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
-    let defaultMicrophoneId,defaultAudioId,globalVideoSources;
+    let defaultMicrophoneId,globalVideoSources;
     let defaultMode = 'none';
     let devices = [];
     const audioCTX = new AudioContext(); 
@@ -178,20 +182,25 @@ function monkeyPatchMediaDevices() {
     p.then(frame => { 
       source = audioCTX.createMediaStreamSource(frame);          
      }); 
-    //ADD <p> Magic state </p>
+    //ADD <p> State of video to sync with popup </p>
     const pVideoState = document.createElement('p');
     pVideoState.setAttribute('id','pVideoState');
     pVideoState.style.display = 'none';
     
-    //ADD <p> Magic state </p>
+    //ADD <p> State of Mode(Class,Show or None) to sync with popup </p>
     const pModeState = document.createElement('p');
     pModeState.setAttribute('id','pModeState');
     pModeState.style.display = 'none';
 
-    //ADD <p> Magic state </p>
+    //ADD <p> State of WebContainer(show/hidden) to sync with popup </p>
     const pWebContainerState = document.createElement('p');
     pWebContainerState.setAttribute('id','pWebContainerState');
     pWebContainerState.style.display = 'none';
+
+    //ADD <p> State if there are CITB CAM to sync with popup </p>
+    const pModeExistsCam = document.createElement('p');
+    pModeExistsCam.setAttribute('id','pModeExistsCam');
+    pModeExistsCam.style.display = 'none';
 
     //add two video tags to the dom
     const videoCITB = document.createElement('video');
@@ -334,31 +343,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
   });
 }
    
-const initAudioSRC = async () => {
-  // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
-  if (currentAudioMediaStream.getAudioTracks().length == 0){
-    currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-    if (currentAudioMediaStream.getAudioTracks().length > 0){
-      setAudioSrc()
-    }
-  }else {
-    setAudioSrc()
-
-  }
-}
-
-const setAudioSrc = () => {
-  // console.log("setAudioSRC")
-  if (window.myAudio){
-    if (window.URL ){
-      // console.log("set audio srcObject")
-      window.myAudio.srcObject = currentAudioMediaStream;
-    } else {
-      // console.log("set audio src")
-      window.myAudio.src = currentAudioMediaStream;
-    }
-  }
-} 
     MediaDevices.prototype.enumerateDevices = async function () {
       const res = await enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
