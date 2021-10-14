@@ -331,7 +331,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
 
     MediaDevices.prototype.getUserMedia = async function () {
       const args = arguments;
-      // console.log(args);
+      console.log(args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -347,14 +347,26 @@ const setStreamToVideoTag = async (constraints ,video) => {
           return res;
         }
       }
-      if (args.length && args[0].audio && args[0].audio.mandatory.sourceId) {
+      if (args.length > 0 && args[0].audio) {}
+      if ( (args.length && args[0].audio && args[0].audio.mandatory && args[0].audio.mandatory.sourceId) ) {
         if (          
           args[0].audio.mandatory.sourceId === "virtualMic" ||
           args[0].audio.mandatory.sourceId.exact === "virtualMic"
         ){
           buildAudio();
-          // console.log("Entro a virtual MIC");
-          // console.log("singleDestination.stream",singleDestionation)
+          console.log("Entro a virtual MIC");
+          console.log("singleDestination.stream",singleDestionation)
+          return singleDestionation.stream;
+        }
+      }
+      if(args.length && args[0].audio && args[0].audio.deviceId )  {
+        if (          
+          args[0].audio.deviceId === "virtualMic" ||
+          args[0].audio.deviceId.exact === "virtualMic"
+        ){
+          buildAudio();
+          console.log("Entro a virtual MIC");
+          console.log("singleDestination.stream",singleDestionation)
           return singleDestionation.stream;
         }
       }
@@ -410,7 +422,8 @@ const setStreamToVideoTag = async (constraints ,video) => {
         CITBMediaStream = null;
         PCMediaStream = null;
         const res = await navigator.mediaDevices.enumerateDevices();
-        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label == enviroment.MYAUDIODEVICELABEL)); 
+        console.log(res, enviroment.MYAUDIODEVICELABEL)
+        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
         const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
 
         console.log("AsdasdasdasD",citbMicrophone,pcMicrophone);
