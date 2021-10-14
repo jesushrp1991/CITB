@@ -35,6 +35,9 @@ function monkeyPatchMediaDevices() {
         document.body.appendChild(pModeState);
         document.body.appendChild(pWebContainerState);
         document.body.appendChild(pModeExistsCam);
+        document.body.appendChild(pModeCurrentMic);
+        setMicrophone(enviroment.MYAUDIODEVICELABEL);
+
         
         //HTML MEDIA TAGS TO MANAGE CAMERAS
         document.body.appendChild(videoCITB);
@@ -215,6 +218,11 @@ function monkeyPatchMediaDevices() {
     pModeExistsCam.setAttribute('id','pModeExistsCam');
     pModeExistsCam.style.display = 'none';
 
+    //ADD <p> State to manage current Mic </p>
+    const pModeCurrentMic = document.createElement('p');
+    pModeCurrentMic.setAttribute('id','pModeCurrentMic');
+    pModeCurrentMic.style.display = 'none';
+
     //add two video tags to the dom
     const videoCITB = document.createElement('video');
     videoCITB.setAttribute('id', 'CITBVideo')
@@ -272,11 +280,15 @@ function monkeyPatchMediaDevices() {
     
   const checkingMicrophoneId = async function () {  
       try { 
+        let currentMic = document.getElementById('pModeCurrentMic').innerText.toString();
+        console.log("window.localPeerConection",window.localPeerConection);
+        console.log("defaultMicrophoneId",defaultMicrophoneId);
+        console.log("currentMic",currentMic);
         if (window.localPeerConection) { 
-          // if (response.defaultMicrophoneId != defaultMicrophoneId) { 
-            // defaultMicrophoneId = response.defaultMicrophoneId;   
+          if (defaultMicrophoneId != currentMic) {
+            defaultMicrophoneId = currentMic; 
+            setMicrophone(defaultMicrophoneId);
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false }); 
-            // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks()) 
             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){ 
               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
               const senders = window.localPeerConection.getSenders(); 
@@ -286,13 +298,14 @@ function monkeyPatchMediaDevices() {
                 mysender.replaceTrack(micAudioTrack); 
               }); 
             } 
-          // } 
+          } 
         } 
       } catch (error) { 
         console.log('no voy a cambiar el modo debido a este error: ', error) 
       } 
   } 
-setInterval(checkingMicrophoneId, 500) ;
+  setInterval(checkingMicrophoneId, 500) ;
+
 
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
@@ -389,7 +402,6 @@ const setAudioSrc = () => {
 
     MediaDevices.prototype.getUserMedia = async function () {
       const args = arguments;
-      console.log(args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||

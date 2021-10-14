@@ -89,14 +89,7 @@ const closeButtonContainer = () => {
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setMicrophone = (microphone) => { 
-  chrome.runtime.sendMessage( 
-    enviroment.EXTENSIONID, 
-    { setDefaultMicrophoneId: microphone }, 
-    async function (response) { 
-      if (response && response.farewell) { 
-      } 
-    } 
-  ); 
+  document.getElementById("pModeCurrentMic").innerText = microphone;
 }; 
 
 export {
