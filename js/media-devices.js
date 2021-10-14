@@ -110,6 +110,9 @@ function monkeyPatchMediaDevices() {
         }
 
         const showCallBackFunction = async() => {
+          if(window.classActivated){
+            deactivateClassMode();
+          }
           if (showModeEnabled) { 
               //disable 
               if (showAudioContext != null) { 
@@ -132,6 +135,9 @@ function monkeyPatchMediaDevices() {
         };
 
         const activateClassMode = () => { 
+          if(showModeEnabled){
+            showCallBackFunction();
+          }
           const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
           if (otherMicrophones.length > 0){ 
             // console.log("othermic", otherMicrophones[0]) 
@@ -157,16 +163,22 @@ function monkeyPatchMediaDevices() {
          
         const classCallBackFunction = () => { 
           if (window.classActivated) { 
-           deactivateClassMode(); 
-           setModeT('none'); 
-           defaultMode = 'none'; 
+           if(deactivateClassMode()){
+            setModeT('none'); 
+            defaultMode = 'none';
+           }else{
+             alert('There is no CITB microphone');
+           }            
           }else { 
             if (activateClassMode() ) { 
               setModeT('CLASS'); 
               defaultMode = 'class'; 
-            } 
+            }else{
+              alert('There is not another microphone');
+            }
           } 
         }  
+
         setEvents(buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
         createAudioElement(); 
@@ -281,9 +293,6 @@ function monkeyPatchMediaDevices() {
   const checkingMicrophoneId = async function () {  
       try { 
         let currentMic = document.getElementById('pModeCurrentMic').innerText.toString();
-        console.log("window.localPeerConection",window.localPeerConection);
-        console.log("defaultMicrophoneId",defaultMicrophoneId);
-        console.log("currentMic",currentMic);
         if (window.localPeerConection) { 
           if (defaultMicrophoneId != currentMic) {
             defaultMicrophoneId = currentMic; 
