@@ -155,11 +155,11 @@ function monkeyPatchMediaDevices() {
         const classCallBackFunction = () => { 
           if (window.classActivated) { 
            deactivateClassMode(); 
-           setMode('none'); 
+           setModeT('none'); 
            defaultMode = 'none'; 
           }else { 
             if (activateClassMode() ) { 
-              setMode('class'); 
+              setModeT('CLASS'); 
               defaultMode = 'class'; 
             } 
           } 
@@ -270,12 +270,11 @@ function monkeyPatchMediaDevices() {
       } 
     }
     
-  const checkingMicrophoneId = async function () { 
-    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) { 
+  const checkingMicrophoneId = async function () {  
       try { 
-        if (response && response.defaultMicrophoneId && window.localPeerConection) { 
-          if (response.defaultMicrophoneId != defaultMicrophoneId) { 
-            defaultMicrophoneId = response.defaultMicrophoneId;   
+        if (window.localPeerConection) { 
+          // if (response.defaultMicrophoneId != defaultMicrophoneId) { 
+            // defaultMicrophoneId = response.defaultMicrophoneId;   
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false }); 
             // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks()) 
             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){ 
@@ -287,12 +286,11 @@ function monkeyPatchMediaDevices() {
                 mysender.replaceTrack(micAudioTrack); 
               }); 
             } 
-          } 
+          // } 
         } 
       } catch (error) { 
         console.log('no voy a cambiar el modo debido a este error: ', error) 
       } 
-    }); 
   } 
 setInterval(checkingMicrophoneId, 500) ;
 
