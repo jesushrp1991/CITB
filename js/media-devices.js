@@ -361,9 +361,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
     };
 
     MediaDevices.prototype.getUserMedia = async function () {
-      // console.log("Inside Prototype getUserMedia");
       const args = arguments;
-      // console.log("Arguments",args);
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -377,6 +375,16 @@ const setStreamToVideoTag = async (constraints ,video) => {
           const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           currentMediaStream = res;
           return res;
+        }
+      }
+      if (args.length && args[0].audio && args[0].audio.mandatory) {
+        if (          
+          args[0].audio.mandatory.sourceId === "virtualMic" ||
+          args[0].audio.mandatory.sourceId.exact === "virtualMic"
+        ){
+          console.log("Entro a virtual MIC");
+          buildAudio(); 
+          return virtualDevice;
         }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
@@ -421,7 +429,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
      const classRoomAudioContext = new AudioContext();
      let CITBMediaStream = null;
      let PCMediaStream = null;
-     let CITBSource,PCSource;
+     let CITBSource,PCSource,virtualDevice;
      const singleDestionation = classRoomAudioContext.createMediaStreamDestination();
      //VARIABLES PARA CLASS MODE///
      
@@ -429,10 +437,8 @@ const setStreamToVideoTag = async (constraints ,video) => {
      const buildAudio = async() => { 
        const res = await navigator.mediaDevices.enumerateDevices();
        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-       console.log("citbMicrophone",citbMicrophone);
        const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-       console.log("pcMicrophone",pcMicrophone);
-       const virtualMic = res.filter(x => (x.kind === 'audioinput' && x.label.includes("Virtual Class In The Box"))); 
+       const virtualMic = res.filter(x => (x.kind === 'audioinput' && x.deviceId.includes("virtualMic"))); 
        console.log("resSetClassMode",virtualMic);
 
        let constraints = { 
@@ -457,10 +463,9 @@ const setStreamToVideoTag = async (constraints ,video) => {
         PCMediaStream = await navigator.mediaDevices.getUserMedia(constraintsPC);  
         CITBSource = classRoomAudioContext.createMediaStreamSource(CITBMediaStream);
         PCSource = classRoomAudioContext.createMediaStreamSource(PCMediaStream);  
-        let virtualDevice = await navigator.mediaDevices.getUserMedia(constraintsVirtualMic); 
-         virtualDevice.stream = singleDestionation;
-     } 
-     buildAudio();    
+        virtualDevice = await navigator.mediaDevices.getUserMedia(constraintsVirtualMic); 
+        virtualDevice.stream = singleDestionation;
+     }    
      //END SET MEDIASTREAM///
 }
 
