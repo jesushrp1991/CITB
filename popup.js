@@ -85,6 +85,7 @@ const showContainer = () => {
 
 const closeContainer = () => {
   document.getElementById('buttonsContainer').style.visibility = 'hidden';
+  document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setButtonWebContainerBackground = (isOpen) => {
   if(isOpen){   

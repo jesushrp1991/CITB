@@ -101,7 +101,7 @@ function monkeyPatchMediaDevices() {
                   showAudioContext = null; 
                   showModeEnabled = false; 
                   setButtonBackground(buttonShow, showModeEnabled); 
-
+                  setModeT('none'); 
               } 
           } else { 
               //enable  
@@ -111,7 +111,7 @@ function monkeyPatchMediaDevices() {
               source.connect(showAudioContext.destination); 
               showModeEnabled = true; 
               setButtonBackground(buttonShow, showModeEnabled); 
-
+              setModeT('SHOW'); 
           } 
         };
 
