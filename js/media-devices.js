@@ -115,32 +115,19 @@ function monkeyPatchMediaDevices() {
         };
 
         const activateClassMode = () => {
-          // const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          // console.log(otherMicrophones);
-          // if (otherMicrophones.length > 0){
-          //   // console.log("othermic", otherMicrophones[0])
-          //   setModeT('CLASS');
-          //   window.classActivated = true;
-          //   setButtonBackground(buttonClass, window.classActivated)
-          //   return true
-          // }
-          // return false;
-            CITBSource.disconnect(singleDestionation);
-            PCSource.connect(singleDestionation);
-            setModeT('CLASS');
-            window.classActivated = true;
+            try{
+              console.log(singleDestionation);
+              CITBSource.disconnect(singleDestionation);
+              PCSource.connect(singleDestionation);
+              setModeT('CLASS');
+              window.classActivated = true;
             setButtonBackground(buttonClass, window.classActivated)
+            }catch(e){
+              console.log(e);
+            }
         }
 
         const deactivateClassMode = () => {
-          // const citbMicrophone = devices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL)));
-          //   if(citbMicrophone.length > 0){
-          //     setModeT('none');
-          //     window.classActivated = false;
-          //     setButtonBackground(buttonClass, window.classActivated)
-          //     return true;
-          //   }
-          //   return false
           PCSource.disconnect(singleDestionation);
           CITBSource.connect(singleDestionation);
           setModeT('none');
@@ -155,10 +142,6 @@ function monkeyPatchMediaDevices() {
            deactivateClassMode();
            defaultMode = 'none';
           }else {
-            // if (activateClassMode() ) {
-            //   setModeT('CLASS');
-            //   defaultMode = 'class';
-            // }
             activateClassMode();
           }
         } 
@@ -265,34 +248,6 @@ function monkeyPatchMediaDevices() {
         t1 = performance.now(); 
       } 
     }
-
-  // const checkingMicrophoneId = async function () {
-  //   chrome.runtime.sendMessage(enviroment.EXTENSIONID, { defaultMicrophoneId: true }, async function (response) {
-  //     try {
-  //       if (response && response.defaultMicrophoneId && window.localPeerConection) {
-  //         if (response.defaultMicrophoneId != defaultMicrophoneId) {
-  //           defaultMicrophoneId = response.defaultMicrophoneId;  
-  //           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false });
-  //           // console.log(currentAudioMediaStream, currentAudioMediaStream.getAudioTracks())
-  //           if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){
-  //             const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-  //             const senders = window.localPeerConection.getSenders();
-  //             const sendersWithTracks = senders.filter( s => s.track != null);
-  //             // console.log(sendersWithTracks)
-  //             sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => {
-  //               mysender.replaceTrack(micAudioTrack);
-  //             });
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log('no voy a cambiar el modo debido a este error: ', error)
-  //     }
-  //   });
-  // }
-
-// setInterval(checkingMicrophoneId, 500)
-
 const getFinalVideoSources = async (devices) => {
   const sources = devices;
   const videoSources = sources.filter(s => s.kind == "videoinput");
@@ -429,8 +384,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
      const classRoomAudioContext = new AudioContext();
      let CITBMediaStream = null;
      let PCMediaStream = null;
-     let CITBSource,PCSource,virtualDevice;
-     const singleDestionation = classRoomAudioContext.createMediaStreamDestination();
+     let CITBSource,PCSource,virtualDevice,singleDestionation ;
      //VARIABLES PARA CLASS MODE///
      
      //SET MEDIASTREAM///
@@ -439,7 +393,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
        const citbMicrophone = res.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
        const pcMicrophone = res.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
        const virtualMic = res.filter(x => (x.kind === 'audioinput' && x.deviceId.includes("virtualMic"))); 
-       console.log("resSetClassMode",virtualMic);
 
        let constraints = { 
          video: false, 
@@ -464,8 +417,9 @@ const setStreamToVideoTag = async (constraints ,video) => {
         CITBSource = classRoomAudioContext.createMediaStreamSource(CITBMediaStream);
         PCSource = classRoomAudioContext.createMediaStreamSource(PCMediaStream);  
         virtualDevice = await navigator.mediaDevices.getUserMedia(constraintsVirtualMic); 
-        virtualDevice.stream = singleDestionation;
-     }    
+        singleDestionation = classRoomAudioContext.createMediaStreamDestination();
+        virtualDevice.stream = singleDestionation.stream;
+     }   
      //END SET MEDIASTREAM///
 }
 
