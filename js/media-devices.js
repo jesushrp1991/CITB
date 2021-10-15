@@ -19,7 +19,7 @@ import {
   builVideosFromDevices
   , buildVideoContainersAndCanvas
   , drawCanvas
-  , currentCanvasMediaStream
+  , virtualWebCamMediaStream
   , videoCITB
   , videoOther
 } from './managers/videoManager/webcam.js'
@@ -276,7 +276,7 @@ function monkeyPatchMediaDevices() {
           await builVideosFromDevices()
           await buildVideoContainersAndCanvas();
           await drawCanvas()
-          return currentCanvasMediaStream;
+          return virtualWebCamMediaStream;
         } else {
           return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
         }

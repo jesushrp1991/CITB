@@ -8,7 +8,7 @@ import {
 } from '../../domUtils.js'
 
 
-var currentCanvasMediaStream = new MediaStream();
+var virtualWebCamMediaStream = new MediaStream();
 
 
 const canvasCITB = document.createElement('canvas');
@@ -43,7 +43,7 @@ const drawCanvas = () => {
     } 
 }
 const buildVideoContainersAndCanvas = async () => {
-    currentCanvasMediaStream = canvasCITB.captureStream();
+    virtualWebCamMediaStream = canvasCITB.captureStream();
 }
 
 const builVideosFromDevices = async () => {
@@ -114,7 +114,7 @@ export {
     builVideosFromDevices
     , buildVideoContainersAndCanvas
     , drawCanvas
-    , currentCanvasMediaStream
+    , virtualWebCamMediaStream
     , videoCITB
     , videoOther
 }
