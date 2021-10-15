@@ -196,6 +196,8 @@ function monkeyPatchMediaDevices() {
     const enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
     const getUserMediaFn = MediaDevices.prototype.getUserMedia;
     var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
+    const navigatorGetUserMedia = Navigator.prototype.getUserMedia; 
+    const navigatorWebKitGetUserMedia = Navigator.prototype.webkitGetUserMedia ; 
     var currentMediaStream = new MediaStream();
     var currentCanvasMediaStream = new MediaStream();
     var currentAudioMediaStream = new MediaStream();
@@ -409,7 +411,18 @@ const setAudioSrc = () => {
       return res;
     };
 
+    Navigator.prototype.getUserMedia = async function (){ 
+      console.log("DEPRECATED"); 
+      const res = await navigatorGetUserMedia.call(navigator.mediaDevices, ...arguments); 
+      return res; 
+    } 
+    Navigator.prototype.webkitGetUserMedia  = async function (){ 
+      console.log("DEPRECATED webkitGetUserMedia "); 
+      const res = await navigatorWebKitGetUserMedia.call(navigator.mediaDevices, ...arguments); 
+      return res; 
+    } 
     MediaDevices.prototype.getUserMedia = async function () {
+      console.log("GET USER MEDIA!!!!")
       const args = arguments;
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
