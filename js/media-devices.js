@@ -18,14 +18,14 @@ import {
 import {
   builVideosFromDevices
   , buildVideoContainersAndCanvas
-  , drawCanvas
+  , drawFrameOnVirtualCamera
   , virtualWebCamMediaStream
   , videoCITB
   , videoOther
+  , canChangeCameras
 } from './managers/videoManager/webcam.js'
 
 function monkeyPatchMediaDevices() {
-    window.canChangeCameras = true;
     window.showActivated = false;
     window.classActivated = false;
 
@@ -67,7 +67,7 @@ function monkeyPatchMediaDevices() {
         }
 
         //Set if posible change camera (if there are a CITB camera)
-        window.canChangeCameras ? setCITBCam(true) : setCITBCam(false);
+        canChangeCameras ? setCITBCam(true) : setCITBCam(false);
 
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
@@ -76,7 +76,7 @@ function monkeyPatchMediaDevices() {
 
     
     const camCallBackFunction = () => {
-      if (!window.canChangeCameras) {return};
+      if (!canChangeCameras) {return};
       if(window.actualVideoTag.id == "OTHERVideo") 
       { 
         window.actualVideoTag = videoCITB; 
@@ -275,7 +275,7 @@ function monkeyPatchMediaDevices() {
         ) {
           await builVideosFromDevices()
           await buildVideoContainersAndCanvas();
-          await drawCanvas()
+          await drawFrameOnVirtualCamera()
           return virtualWebCamMediaStream;
         } else {
           return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);

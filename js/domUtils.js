@@ -1,5 +1,28 @@
 import { enviroment } from "./enviroment.js";
 
+const generateVirtualWebCamCanvas = () => {
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'virtualWebCamCanvasVideoContainer')
+    return canvas
+}
+
+const generateVideoContainerWithId = (videoId) => {
+  const video = document.createElement('video');
+  video.setAttribute('id', videoId);
+  video.setAttribute('playsinline', "")
+  video.setAttribute('autoplay', "")
+  video.style.display = 'none';
+  return video
+}
+
+const generateCITBVideoContainer = () => {
+  return generateVideoContainerWithId('CITBVideo')
+}
+
+const generateOtherVideoContainer = () => {
+  return generateVideoContainerWithId('OTHERVideo')
+}
+
 const getButtonShow = () => {
   const buttonShow = document.createElement("button");
   buttonShow.className = "CITBButton";
@@ -93,6 +116,7 @@ const setMicrophone = (microphone) => {
 }; 
 
 export {
+  generateVirtualWebCamCanvas,
   getButtonShow,
   getButtonClass,
   getButtonCam,
@@ -103,5 +127,7 @@ export {
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,
-  setMicrophone
+  setMicrophone,
+  generateOtherVideoContainer,
+  generateCITBVideoContainer
 };

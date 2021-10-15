@@ -1,4 +1,3 @@
-
 import {
     enviroment
 } from '../../enviroment.js'
@@ -7,44 +6,46 @@ import {
     setButtonBackground
 } from '../../domUtils.js'
 
+import { 
+    generateVirtualWebCamCanvas
+    , generateCITBVideoContainer
+    , generateOtherVideoContainer
+} from '../../domUtils.js'
 
+
+var canChangeCameras = true;
 var virtualWebCamMediaStream = new MediaStream();
+const virtualWebCamCanvasVideoContainer = generateVirtualWebCamCanvas();
+const videoCITB = generateCITBVideoContainer();
+const videoOther = generateOtherVideoContainer();
+let timeFromLastFrame = performance.now(); 
 
 
-const canvasCITB = document.createElement('canvas');
-canvasCITB.setAttribute('id', 'canvasCITB')
-window.canvas = canvasCITB
-
-//add two video tags to the dom
-const videoCITB = document.createElement('video');
-videoCITB.setAttribute('id', 'CITBVideo')
-videoCITB.setAttribute('playsinline', "")
-videoCITB.setAttribute('autoplay', "")
-videoCITB.style.display = 'none';
-
-
-const videoOther = document.createElement('video');
-videoOther.setAttribute('id', 'OTHERVideo')
-videoOther.setAttribute('playsinline', "")
-videoOther.setAttribute('autoplay', "")
-videoOther.style.display = 'none'; 
-
-let t1 = performance.now(); 
-
-const drawCanvas = () => { 
+const drawFrameOnVirtualCamera = () => { 
     const fps = 1000/30 
-    const t = performance.now(); 
-    requestAnimationFrame(drawCanvas) 
-    if (t - t1 >= fps) { 
-      canvasCITB.width = window.actualVideoTag.videoWidth; 
-      canvasCITB.height = window.actualVideoTag.videoHeight; 
-      canvasCITB.getContext('2d').drawImage(window.actualVideoTag, 0, 0, canvasCITB.width, canvasCITB.height); 
-      t1 = performance.now(); 
+    const timeCurrent = performance.now(); 
+    requestAnimationFrame(drawFrameOnVirtualCamera);
+    if (timeCurrent - timeFromLastFrame >= fps) { 
+      virtualWebCamCanvasVideoContainer.width = window.actualVideoTag.videoWidth; 
+      virtualWebCamCanvasVideoContainer.height = window.actualVideoTag.videoHeight; 
+      virtualWebCamCanvasVideoContainer
+        .getContext('2d')
+        .drawImage(
+            window.actualVideoTag
+            , 0
+            , 0
+            , virtualWebCamCanvasVideoContainer.width
+            , virtualWebCamCanvasVideoContainer.height
+        ); 
+      timeFromLastFrame = performance.now(); 
     } 
 }
+
+
 const buildVideoContainersAndCanvas = async () => {
-    virtualWebCamMediaStream = canvasCITB.captureStream();
+    virtualWebCamMediaStream = virtualWebCamCanvasVideoContainer.captureStream();
 }
+
 
 const builVideosFromDevices = async () => {
     const devices = await window.enumerateDevicesFn.call(navigator.mediaDevices)
@@ -53,8 +54,17 @@ const builVideosFromDevices = async () => {
 }
 
 
+const setStreamToVideoTag = async (constraints ,video) => {
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            video.srcObject = stream;
+        }).catch(err => {
+            console.log(err)
+        });
+}
+
+
 const buildVideos = async (sources) => {
-    // console.log("buildVideos", sources);
     let constraints = {
       video: {
         deviceId: { exact: "" },
@@ -62,37 +72,25 @@ const buildVideos = async (sources) => {
       audio: false,
     };
     if (sources.citbVideo != null) {
-      // console.log("INSIDE CITBVIDEO")
       constraints.video.deviceId.exact = sources.citbVideo.deviceId
       await setStreamToVideoTag(constraints, videoCITB)
       window.actualVideoTag = videoCITB
       window.citbActivated = true
       setButtonBackground(window.buttonCam, true) 
-      window.canChangeCameras = true;
+      canChangeCameras = true;
     }
     if (sources.otherVideo != null) {
-      // console.log("INSIDE OTHER VIDEO");
       window.citbActivated = false;
       constraints.video.deviceId.exact = sources.otherVideo.deviceId
       await setStreamToVideoTag(constraints, videoOther)
-      // drawCanvas();
     }
     if (sources.citbVideo == null && sources.otherVideo != null) {
-      // console.log("INSIDE LAST IF")
       window.citbActivated = false;
       window.actualVideoTag = videoOther;
       setButtonBackground(window.buttonCam, false) 
-      window.canChangeCameras = false;
+      canChangeCameras = false;
     }
-  }
-  
-  const setStreamToVideoTag = async (constraints ,video) => {
-    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-      video.srcObject = stream;
-    }).catch(err => {
-      console.log(err)
-    });
-  }
+}
 
 
 const getFinalVideoSources = async (devices) => {
@@ -110,11 +108,13 @@ const getFinalVideoSources = async (devices) => {
     return returnValue;
 }
 
+
 export {
     builVideosFromDevices
     , buildVideoContainersAndCanvas
-    , drawCanvas
+    , drawFrameOnVirtualCamera
     , virtualWebCamMediaStream
     , videoCITB
     , videoOther
+    , canChangeCameras
 }
