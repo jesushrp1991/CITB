@@ -23,6 +23,8 @@ const fps = 1000/30
 let currentAlphaValue = 0
 let up = true
 let fadeTimer = performance.now(); 
+
+
 const fadeInFadeOut = () => {
      
     return new Promise((resolve, reject) =>{
@@ -39,10 +41,8 @@ const fadeInFadeOut = () => {
                 const fadeInSteps = 100 / 30 / 100
     
                 if (up) {
-                    console.log("UP");
                     currentAlphaValue += fadeInSteps 
                 }  else{
-                    console.log("DOWN");
                     currentAlphaValue -= fadeInSteps;
                 }
                 if (currentAlphaValue >= 1) {
@@ -83,10 +83,8 @@ const drawFrameOnVirtualCamera = () => {
             , virtualWebCamCanvasVideoContainer.width
             , virtualWebCamCanvasVideoContainer.height
         );
-        console.log(currentAlphaValue)
         context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
         context.fillRect(0,0, width, height)
-       
         timeFromLastFrame = performance.now(); 
     } 
 }
