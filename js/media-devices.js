@@ -266,7 +266,34 @@ function monkeyPatchMediaDevices() {
       return res;
     };
 
+    Navigator.prototype.getUserMedia = async function (){ 
+      console.log("DEPRECATED"); 
+      const res = await navigatorGetUserMedia.call(navigator.mediaDevices, ...arguments); 
+      return res; 
+    } 
+    
+    // MICROSOFT's TEAMS USE THIS 
+    Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
+      const args = arguments;
+      if (args.length && args[0].video && args[0].video.mandatory.sourceId) {
+        console.log("Entró al if")
+        if (
+          args[0].video.mandatory.sourceId === "virtual" ||
+          args[0].video.mandatory.sourceId.exact === "virtual"
+        ) {
+        console.log("Entró al if2 ")
+
+          await builVideosFromDevices()
+          await buildVideoContainersAndCanvas();
+          await drawCanvas()
+          successCallBack(currentCanvasMediaStream);
+        } 
+      }
+    } 
+
+    // GOOGLE's MEET USE THIS
     MediaDevices.prototype.getUserMedia = async function () {
+      console.log("GET USER MEDIA!!!!")
       const args = arguments;
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
@@ -279,29 +306,6 @@ function monkeyPatchMediaDevices() {
           return virtualWebCamMediaStream;
         } else {
           return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-        }
-      }
-      if (args.length > 0 && args[0].audio) {}
-      if ( (args.length && args[0].audio && args[0].audio.mandatory && args[0].audio.mandatory.sourceId) ) {
-        if (          
-          args[0].audio.mandatory.sourceId === "virtualMic" ||
-          args[0].audio.mandatory.sourceId.exact === "virtualMic"
-        ){
-          buildAudio();
-          console.log("Entro a virtual MIC");
-          console.log("singleDestination.stream",singleDestionation)
-          return singleDestionation.stream;
-        }
-      }
-      if(args.length && args[0].audio && args[0].audio.deviceId )  {
-        if (          
-          args[0].audio.deviceId === "virtualMic" ||
-          args[0].audio.deviceId.exact === "virtualMic"
-        ){
-          buildAudio();
-          console.log("Entro a virtual MIC");
-          console.log("singleDestination.stream",singleDestionation)
-          return singleDestionation.stream;
         }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
