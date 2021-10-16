@@ -19,25 +19,75 @@ const virtualWebCamCanvasVideoContainer = generateVirtualWebCamCanvas();
 const videoCITB = generateCITBVideoContainer();
 const videoOther = generateOtherVideoContainer();
 let timeFromLastFrame = performance.now(); 
+const fps = 1000/30 
+let currentAlphaValue = 0
+let up = true
+let fadeTimer = performance.now(); 
+const fadeInFadeOut = () => {
+     
+    return new Promise((resolve, reject) =>{
+        let done = false;
+        const runLoop = () => {
+            const timeCurrent = performance.now(); 
+            if (!done) {
+                requestAnimationFrame(runLoop);
+    
+            }
+    
+            if (timeCurrent - fadeTimer >= fps) { 
+                console.log("FADE IN FADEOUT")
+                const fadeInSteps = 100 / 30 / 100
+    
+                if (up) {
+                    console.log("UP");
+                    currentAlphaValue += fadeInSteps 
+                }  else{
+                    console.log("DOWN");
+                    currentAlphaValue -= fadeInSteps;
+                }
+                if (currentAlphaValue >= 1) {
+                        currentAlphaValue = 1;
+                        up = false
+                        done = true
+                        return resolve();
+                        return
+                }
+                if (currentAlphaValue <= 0 ) {
+                    currentAlphaValue = 0;
+                    up = true
+                    done = true
+                    return resolve();
+                }
+            }
+        }
+        runLoop();  
+    })
+    
+    
+}
 
 
 const drawFrameOnVirtualCamera = () => { 
-    const fps = 1000/30 
     const timeCurrent = performance.now(); 
     requestAnimationFrame(drawFrameOnVirtualCamera);
     if (timeCurrent - timeFromLastFrame >= fps) { 
-      virtualWebCamCanvasVideoContainer.width = window.actualVideoTag.videoWidth; 
-      virtualWebCamCanvasVideoContainer.height = window.actualVideoTag.videoHeight; 
-      virtualWebCamCanvasVideoContainer
-        .getContext('2d')
-        .drawImage(
+        const width = window.actualVideoTag.videoWidth; 
+        const height = window.actualVideoTag.videoHeight; 
+        virtualWebCamCanvasVideoContainer.width = width;
+        virtualWebCamCanvasVideoContainer.height = height;
+        const context = virtualWebCamCanvasVideoContainer.getContext('2d');
+        context.drawImage(
             window.actualVideoTag
             , 0
             , 0
             , virtualWebCamCanvasVideoContainer.width
             , virtualWebCamCanvasVideoContainer.height
-        ); 
-      timeFromLastFrame = performance.now(); 
+        );
+        console.log(currentAlphaValue)
+        context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
+        context.fillRect(0,0, width, height)
+       
+        timeFromLastFrame = performance.now(); 
     } 
 }
 
@@ -117,4 +167,5 @@ export {
     , videoCITB
     , videoOther
     , canChangeCameras
+    , fadeInFadeOut
 }

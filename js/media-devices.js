@@ -23,6 +23,7 @@ import {
   , videoCITB
   , videoOther
   , canChangeCameras
+  , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
 function monkeyPatchMediaDevices() {
@@ -75,21 +76,27 @@ function monkeyPatchMediaDevices() {
     }//END ONREADY STATE CHANGE
 
     
-    const camCallBackFunction = () => {
+    const camCallBackFunction = async () => {
       if (!canChangeCameras) {return};
       if(window.actualVideoTag.id == "OTHERVideo") 
       { 
+        await fadeInFadeOut();
         window.actualVideoTag = videoCITB; 
         window.citbActivated = true;
         setVideoT('CITB');          
-        setButtonBackground(window.buttonCam, window.citbActivated);
+        await fadeInFadeOut();
+
       } 
       else {
+          await fadeInFadeOut();
           window.actualVideoTag = videoOther; 
           window.citbActivated = false;
           setVideoT('otherVideo');
+          await fadeInFadeOut();
+
       }
       setButtonBackground(window.buttonCam, window.citbActivated)
+
     } 
 
     const getCITBMicMedia = async() =>{ 
@@ -287,7 +294,7 @@ function monkeyPatchMediaDevices() {
 
   Navigator.prototype.getUserMedia = Navigator.prototype.webkitGetUserMedia
 
-  
+
   // GOOGLE's MEET USE THIS
   MediaDevices.prototype.getUserMedia = async function () {
     console.log("GET USER MEDIA!!!!")
