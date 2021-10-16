@@ -37,7 +37,6 @@ const fadeInFadeOut = () => {
             }
     
             if (timeCurrent - fadeTimer >= fps) { 
-                console.log("FADE IN FADEOUT")
                 const fadeInSteps = 100 / 30 / 100
     
                 if (up) {
