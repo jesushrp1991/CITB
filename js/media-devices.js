@@ -258,93 +258,92 @@ function monkeyPatchMediaDevices() {
 
  
    
-    MediaDevices.prototype.enumerateDevices = async function () {
-      const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
-      devices = res;
-      res.push(getVirtualCam());
-      res.push(getVirtualMic());
-      return res;
-    };
+  MediaDevices.prototype.enumerateDevices = async function () {
+    const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
+    devices = res;
+    res.push(getVirtualCam());
+    res.push(getVirtualMic());
+    return res;
+  };
+  
+  // MICROSOFT's TEAMS USE THIS 
+  Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
+    if ( constrains.video && constrains.video.mandatory.sourceId) {
+      console.log("Entró al if")
+      if (
+        constrains.video.mandatory.sourceId === "virtual" ||
+        constrains.video.mandatory.sourceId.exact === "virtual"
+      ) {
+      console.log("Entró al if2 ")
 
-    Navigator.prototype.getUserMedia = async function (){ 
-      console.log("DEPRECATED"); 
-      const res = await navigatorGetUserMedia.call(navigator.mediaDevices, ...arguments); 
-      return res; 
-    } 
-    
-    // MICROSOFT's TEAMS USE THIS 
-    Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
-      const args = arguments;
-      if (args.length && args[0].video && args[0].video.mandatory.sourceId) {
-        console.log("Entró al if")
-        if (
-          args[0].video.mandatory.sourceId === "virtual" ||
-          args[0].video.mandatory.sourceId.exact === "virtual"
-        ) {
-        console.log("Entró al if2 ")
-
-          await builVideosFromDevices()
-          await buildVideoContainersAndCanvas();
-          await drawCanvas()
-          successCallBack(currentCanvasMediaStream);
-        } 
-      }
-    } 
-
-    // GOOGLE's MEET USE THIS
-    MediaDevices.prototype.getUserMedia = async function () {
-      console.log("GET USER MEDIA!!!!")
-      const args = arguments;
-      if (args.length && args[0].video && args[0].video.deviceId) {
-        if (
-          args[0].video.deviceId === "virtual" ||
-          args[0].video.deviceId.exact === "virtual"
-        ) {
-          await builVideosFromDevices()
-          await buildVideoContainersAndCanvas();
-          await drawFrameOnVirtualCamera()
-          return virtualWebCamMediaStream;
-        } else {
-          return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-        }
-      }
-      const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-      return res;
-    };
-    RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
-      window.localPeerConection = this; 
-      window.localPeerConection.addEventListener("track", e => { 
-        if (window.peerConection == undefined) { 
-          window.peerConection = window.localPeerConection; 
-          showDiv(); 
-        } 
-        if (e.streams.length >= 1) { 
-          window.currentMediaStream =  e.streams[0]; 
-        } 
-        window.currentTrack = e.track; 
-      }, false); 
-      await origcreateDataChannel.apply(this,arguments) 
+        await builVideosFromDevices()
+        await buildVideoContainersAndCanvas();
+        await drawCanvas()
+        successCallBack(currentCanvasMediaStream);
+      } 
     }
-    
-    
-    navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-      // console.log('device plugged or unplugged, update de info,')
-      const res = await navigator.mediaDevices.enumerateDevices();
-      // console.log("Lista de dispositivos",res);
-      await buildVideoContainersAndCanvas();
-      await builVideosFromDevices()
+  } 
 
-      chrome.runtime.sendMessage(enviroment.EXTENSIONID, { devicesList: res }, async function (response) { 
-      });
+
+  Navigator.prototype.getUserMedia = Navigator.prototype.webkitGetUserMedia
+
+  
+  // GOOGLE's MEET USE THIS
+  MediaDevices.prototype.getUserMedia = async function () {
+    console.log("GET USER MEDIA!!!!")
+    const args = arguments;
+    if (args.length && args[0].video && args[0].video.deviceId) {
+      if (
+        args[0].video.deviceId === "virtual" ||
+        args[0].video.deviceId.exact === "virtual"
+      ) {
+        await builVideosFromDevices()
+        await buildVideoContainersAndCanvas();
+        await drawFrameOnVirtualCamera()
+        return virtualWebCamMediaStream;
+      } else {
+        return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+      }
+    }
+    const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+    return res;
+  };
+
+
+  RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
+    window.localPeerConection = this; 
+    window.localPeerConection.addEventListener("track", e => { 
+      if (window.peerConection == undefined) { 
+        window.peerConection = window.localPeerConection; 
+        showDiv(); 
+      } 
+      if (e.streams.length >= 1) { 
+        window.currentMediaStream =  e.streams[0]; 
+      } 
+      window.currentTrack = e.track; 
+    }, false); 
+    await origcreateDataChannel.apply(this,arguments) 
+  }
+  
+  
+  navigator.mediaDevices.addEventListener('devicechange', async function (event) {
+    // console.log('device plugged or unplugged, update de info,')
+    const res = await navigator.mediaDevices.enumerateDevices();
+    // console.log("Lista de dispositivos",res);
+    await buildVideoContainersAndCanvas();
+    await builVideosFromDevices()
+
+    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { devicesList: res }, async function (response) { 
     });
+  });
 
-    const checkDevices = () => {
-      navigator.mediaDevices.enumerateDevices()
-      setTimeout(() => {
-        checkDevices()
-      }, 1000)
-    }
-    checkDevices();
+  const checkDevices = () => {
+    navigator.mediaDevices.enumerateDevices()
+    setTimeout(() => {
+      checkDevices()
+    }, 1000)
+  }
+  checkDevices();
 }
 
 export { monkeyPatchMediaDevices }
