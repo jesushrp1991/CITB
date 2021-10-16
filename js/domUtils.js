@@ -1,5 +1,3 @@
-import { enviroment } from "./enviroment.js";
-
 const generateVirtualWebCamCanvas = () => {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'virtualWebCamCanvasVideoContainer')

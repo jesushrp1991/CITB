@@ -9,14 +9,6 @@ const setCITBCam = (exitsCam) =>{
   document.getElementById('pModeExistsCam').innerText = exitsCam;
 
 }
-const getVirtualMic = () => { 
-  return { 
-    deviceId: "virtualMic", 
-    groupID: "uh", 
-    kind: "audioinput", 
-    label: "Virtual Class In The Box Mic", 
-  }; 
-}; 
- 
 
-export { setVideoT, setModeT, setCITBCam, getVirtualMic };
+
+export { setVideoT, setModeT, setCITBCam };

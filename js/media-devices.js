@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT,setCITBCam, getVirtualMic } from './functions.js';
+import { setVideoT, setModeT,setCITBCam } from './functions.js';
 
 import { 
   getButtonShow,
@@ -269,20 +269,16 @@ function monkeyPatchMediaDevices() {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
     res.push(getVirtualCam());
-    res.push(getVirtualMic());
     return res;
   };
   
   // MICROSOFT's TEAMS USE THIS 
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
     if ( constrains.video && constrains.video.mandatory.sourceId) {
-      console.log("Entró al if")
       if (
         constrains.video.mandatory.sourceId === "virtual" ||
         constrains.video.mandatory.sourceId.exact === "virtual"
       ) {
-      console.log("Entró al if2 ")
-
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawCanvas()
@@ -297,7 +293,7 @@ function monkeyPatchMediaDevices() {
 
   // GOOGLE's MEET USE THIS
   MediaDevices.prototype.getUserMedia = async function () {
-    console.log("GET USER MEDIA!!!!")
+    // console.log("GET USER MEDIA!!!!")
     const args = arguments;
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
@@ -339,9 +335,6 @@ function monkeyPatchMediaDevices() {
     // console.log("Lista de dispositivos",res);
     await buildVideoContainersAndCanvas();
     await builVideosFromDevices()
-
-    chrome.runtime.sendMessage(enviroment.EXTENSIONID, { devicesList: res }, async function (response) { 
-    });
   });
 
   const checkDevices = () => {
