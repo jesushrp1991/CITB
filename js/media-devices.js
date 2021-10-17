@@ -281,8 +281,8 @@ function monkeyPatchMediaDevices() {
       ) {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
-        await drawCanvas()
-        successCallBack(currentCanvasMediaStream);
+        await drawFrameOnVirtualCamera()
+        successCallBack(virtualWebCamMediaStream);
       } 
     }
   } 
