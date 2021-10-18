@@ -26,6 +26,8 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
+// import { gestureDetector } from './managers/gestureManager/gesture.js'
+
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
@@ -39,6 +41,8 @@ function monkeyPatchMediaDevices() {
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
+
+        document.body.appendChild(virtualWebCamMediaStream);
 
         //HTML TAGS TO SYNC WHIT POPUP
         document.body.appendChild(pVideoState);
@@ -72,6 +76,7 @@ function monkeyPatchMediaDevices() {
 
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
+        // gestureDetector();
       } 
     }//END ONREADY STATE CHANGE
 
