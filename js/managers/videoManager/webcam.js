@@ -67,8 +67,8 @@ const fadeInFadeOut = () => {
     
     
 }
-const predictionFramesToSkip = 10;
-let predictionFrameCount = 0;
+
+
 const drawFrameOnVirtualCamera = async () => { 
     const timeCurrent = performance.now(); 
     requestAnimationFrame(drawFrameOnVirtualCamera);
@@ -87,8 +87,7 @@ const drawFrameOnVirtualCamera = async () => {
         );
         context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
         context.fillRect(0,0, width, height)
-        detectGesture(virtualWebCamCanvasVideoContainer)
-        
+        detectGesture(virtualWebCamCanvasVideoContainer);        
         timeFromLastFrame = performance.now(); 
     } 
 }
