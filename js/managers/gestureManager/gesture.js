@@ -32,11 +32,14 @@ const defaultParams = {
 };
 const gestureDetector = () => {
   console.log("handTrackLoad 1");
-  handTrack.load(defaultParams).then(model => { 
+  handTrack.load().then(model => { 
       console.log("handTrackLoad 2");
       model.detect(virtualWebCamMediaStream).then(predictions => {
         console.log('Predictions: ', predictions) // bbox predictions
       });
+  })
+  .catch(err => {
+    console.log(err)
   });
 }
 export { gestureDetector };

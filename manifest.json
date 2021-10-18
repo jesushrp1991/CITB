@@ -36,8 +36,7 @@
         "https://teams.live.com/*"
       ],
       "js": [
-        "js/inject.js",
-        "js/managers/gestureManager/handtrack.min.js"
+        "js/inject.js"
       ],
       "css": ["css/floatinbuttons.css"],
       "run_at": "document_start",
