@@ -15,7 +15,7 @@ const labelMap = {
   6: "tip",
   7: "pinchtip",
 };
-
+let model;
 const defaultParams = {
   flipHorizontal: false,
   outputStride: 16,
@@ -32,14 +32,49 @@ const defaultParams = {
 };
 const gestureDetector = () => {
   console.log("handTrackLoad 1");
-  handTrack.load().then(model => { 
-      console.log("handTrackLoad 2");
-      model.detect(virtualWebCamMediaStream).then(predictions => {
-        console.log('Predictions: ', predictions) // bbox predictions
-      });
+  handTrack.load().then(m => { 
+    model = m
+    console.log("handTrackLoad 2");
+     
   })
   .catch(err => {
     console.log(err)
   });
 }
-export { gestureDetector };
+let predictionFrameCount = 0;
+const predictionFramesToSkip = 3;
+let predictionsCount = 0;
+let predictions = [];
+const detectGesture = async (canvas) => {
+  if (model != undefined) {
+    if (predictionFrameCount == predictionFramesToSkip) {
+        const predic = await model.detect(canvas);
+        predic.filter(x => x.score > 0.60 && x.label != "face").forEach(p => {
+          predictions.push(p)
+        })
+        predictionFrameCount = 0;
+        predictionsCount += 1;
+        if (predictionsCount == 24) {
+          console.log(predictions)
+          const open = predictions.filter( x => x.label == "open");
+          const closed = predictions.filter (x => x.label == "closed");
+          const point = predictions.filter (x => x.label == "point");
+
+          if (open.length > 0 && closed.length > 1) {
+            document.getElementsByClassName("CITBCamButton")[0].click(); 
+            predictions = [];
+
+          }
+          else if (open.length > 0 && point.length > 0) {
+            document.getElementsByClassName("CITBClassButton")[0].click(); 
+            predictions = [];
+          }
+          predictionsCount = 0;
+          predictions = [];
+        }
+
+    }
+    predictionFrameCount += 1
+}
+}
+export { gestureDetector, detectGesture };

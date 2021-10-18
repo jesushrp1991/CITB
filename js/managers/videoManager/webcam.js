@@ -12,6 +12,9 @@ import {
     , generateOtherVideoContainer
 } from '../../domUtils.js'
 
+import {
+    detectGesture
+} from '../gestureManager/gesture.js'
 
 var canChangeCameras = true;
 var virtualWebCamMediaStream = new MediaStream();
@@ -64,9 +67,9 @@ const fadeInFadeOut = () => {
     
     
 }
-
-
-const drawFrameOnVirtualCamera = () => { 
+const predictionFramesToSkip = 10;
+let predictionFrameCount = 0;
+const drawFrameOnVirtualCamera = async () => { 
     const timeCurrent = performance.now(); 
     requestAnimationFrame(drawFrameOnVirtualCamera);
     if (timeCurrent - timeFromLastFrame >= fps) { 
@@ -84,6 +87,8 @@ const drawFrameOnVirtualCamera = () => {
         );
         context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
         context.fillRect(0,0, width, height)
+        detectGesture(virtualWebCamCanvasVideoContainer)
+        
         timeFromLastFrame = performance.now(); 
     } 
 }
