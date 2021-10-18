@@ -102,6 +102,7 @@ const builVideosFromDevices = async () => {
 
 
 const setStreamToVideoTag = async (constraints ,video) => {
+    console.log("constraints in webCam.js",constraints);   
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
             video.srcObject = stream;
@@ -112,12 +113,26 @@ const setStreamToVideoTag = async (constraints ,video) => {
 
 
 const buildVideos = async (sources) => {
-    let constraints = {
-      video: {
-        deviceId: { exact: "" },
-      },
-      audio: false,
-    };
+    let constraints;
+    if(window.isZoom){
+        console.log("IS ZOOM")
+        constraints = {
+            video: {
+              deviceId: { exact: "" },
+              height: 360,
+              width: 640,
+            },
+            audio: false,
+          };
+    }
+    else{
+        constraints = {
+            video: {
+              deviceId: { exact: "" },
+            },
+            audio: false,
+          };
+    }
     if (sources.citbVideo != null) {
       constraints.video.deviceId.exact = sources.citbVideo.deviceId
       await setStreamToVideoTag(constraints, videoCITB)

@@ -199,9 +199,6 @@ function monkeyPatchMediaDevices() {
       }
     }
     
-    window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
-    const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-    var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
     var currentAudioMediaStream = new MediaStream();
     let defaultMicrophoneId;
     let devices = [];
@@ -264,7 +261,8 @@ function monkeyPatchMediaDevices() {
 
 
  
-   
+  window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
+
   MediaDevices.prototype.enumerateDevices = async function () {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
@@ -273,6 +271,8 @@ function monkeyPatchMediaDevices() {
   };
   
   // MICROSOFT's TEAMS USE THIS 
+  const getUserMediaFn = MediaDevices.prototype.getUserMedia;
+
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
     if ( constrains.video && constrains.video.mandatory.sourceId) {
       if (
@@ -292,18 +292,47 @@ function monkeyPatchMediaDevices() {
 
 
   // GOOGLE's MEET USE THIS
-  MediaDevices.prototype.getUserMedia = async function () {
-    // console.log("GET USER MEDIA!!!!")
+  MediaDevices.prototype.getUserMedia = async function (constrains) {
+    console.log("GET USER MEDIA!!!!");
+    console.log(constrains);
+    console.log(devices);
     const args = arguments;
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
         args[0].video.deviceId === "virtual" ||
         args[0].video.deviceId.exact === "virtual"
       ) {
-        await builVideosFromDevices()
-        await buildVideoContainersAndCanvas();
-        await drawFrameOnVirtualCamera()
-        return virtualWebCamMediaStream;
+        if(window.location.host.includes("zoom.us")){
+          window.isZoom = true;
+          console.log("ZOOM");
+          // await builVideosFromDevices()
+          // await buildVideoContainersAndCanvas();
+          // await drawFrameOnVirtualCamera()
+          // return virtualWebCamMediaStream;
+          constraints = {
+            video: {
+              // deviceId: { exact: "2052e1424f02350ac98e6f1d2a6be214b4915cdda5dcc2330975c0d83d486d5a" },
+              deviceId: { exact: "d215bc480120103c27e1811cd741c7e309a1952254a83dbc3e7cec8b27a13e87" },
+              // height: 360,
+              // width: 640,
+            },
+            audio: false,
+          };
+          navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
+                video.srcObject = stream;
+                return stream;
+            }).catch(err => {
+                console.log(err)
+            });
+
+        }else{
+          await builVideosFromDevices()
+          await buildVideoContainersAndCanvas();
+          await drawFrameOnVirtualCamera()
+          return virtualWebCamMediaStream;
+        }
+        
       } else {
         return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
       }
@@ -312,6 +341,7 @@ function monkeyPatchMediaDevices() {
     return res;
   };
 
+  var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
 
   RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
     window.localPeerConection = this; 
