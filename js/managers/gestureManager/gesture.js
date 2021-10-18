@@ -3,7 +3,6 @@ import {
   , videoCITB
   , videoOther
 } from '../videoManager/webcam.js'
-import { handTrack } from './handtrack.min.js';
 const basePath = "./webmodel";
 // const basePath = "webmodel/";
 

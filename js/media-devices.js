@@ -26,7 +26,7 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
-// import { gestureDetector } from './managers/gestureManager/gesture.js'
+import { gestureDetector } from './managers/gestureManager/gesture.js'
 
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
@@ -75,7 +75,7 @@ function monkeyPatchMediaDevices() {
 
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
-        // gestureDetector();
+        gestureDetector();
       } 
     }//END ONREADY STATE CHANGE
 
