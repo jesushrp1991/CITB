@@ -42,7 +42,6 @@ function monkeyPatchMediaDevices() {
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
 
-        document.body.appendChild(virtualWebCamMediaStream);
 
         //HTML TAGS TO SYNC WHIT POPUP
         document.body.appendChild(pVideoState);
