@@ -1,8 +1,4 @@
-import {
-  virtualWebCamMediaStream
-  , videoCITB
-  , videoOther
-} from '../videoManager/webcam.js'
+import {enviroment } from './enviroment.js';
 const basePath = "./webmodel";
 // const basePath = "webmodel/";
 
@@ -53,7 +49,7 @@ const detectGesture = async (canvas) => {
         })
         predictionFrameCount = 0;
         predictionsCount += 1;
-        if (predictionsCount == 24) {
+        if (predictionsCount == enviroment.predictionsCount) {
           console.log(predictions)
           const open = predictions.filter( x => x.label == "open");
           const closed = predictions.filter (x => x.label == "closed");
