@@ -24,9 +24,13 @@ import {
   , videoOther
   , canChangeCameras
   , fadeInFadeOut
-} from './managers/videoManager/webcam.js'
+} from './managers/videoManager/webcam.js';
 
-import { gestureDetector } from './managers/gestureManager/gesture.js'
+import { gestureDetector } from './managers/gestureManager/gesture.js';
+
+import {
+  createRecord,
+} from './managers/recordManager/record.js';
 
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
@@ -73,7 +77,19 @@ function monkeyPatchMediaDevices() {
         //Set if posible change camera (if there are a CITB camera)
         canChangeCameras ? setCITBCam(true) : setCITBCam(false);
 
-        setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
+        setEvents(  
+            buttonShow
+          , buttonClass
+          , window.buttonCam
+          , buttonClose
+          , buttonsContainerDiv
+          , camCallBackFunction
+          , showCallBackFunction
+          , classCallBackFunction
+          , buttonDrag
+          , dragCallBackFunction
+        );
+
         showDiv();
         gestureDetector();
       } 
@@ -195,6 +211,12 @@ function monkeyPatchMediaDevices() {
         }
       } 
     }  
+
+    let isRecording = false;
+    const dragCallBackFunction = () =>{
+      createRecord(virtualWebCamMediaStream,isRecording);
+      isRecording = !isRecording;
+    }
 
     const showDiv = () => {
       if (document.getElementById('buttonsContainer')){

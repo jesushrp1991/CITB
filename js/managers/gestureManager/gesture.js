@@ -50,7 +50,7 @@ const detectGesture = async (canvas) => {
         predictionFrameCount = 0;
         predictionsCount += 1;
         if (predictionsCount == enviroment.predictionsCount) {
-          console.log(predictions)
+          // console.log(predictions)
           const open = predictions.filter( x => x.label == "open");
           const closed = predictions.filter (x => x.label == "closed");
           const point = predictions.filter (x => x.label == "point");
