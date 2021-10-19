@@ -1,4 +1,4 @@
-import {enviroment } from './enviroment.js';
+import {enviroment } from '../../enviroment.js';
 const basePath = "./webmodel";
 // const basePath = "webmodel/";
 
