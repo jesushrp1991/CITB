@@ -26,6 +26,7 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
+import {speachCommands} from './spechCommands.js';
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
@@ -303,6 +304,7 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
+        speachCommands();
         return virtualWebCamMediaStream;
       } else {
         return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
