@@ -28,6 +28,8 @@ import {
 
 import { gestureDetector } from './managers/gestureManager/gesture.js'
 
+import {speachCommands} from './managers/voiceManager/voice.js';
+
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
@@ -307,6 +309,7 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
+        speachCommands();
         return virtualWebCamMediaStream;
       } else {
         return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
