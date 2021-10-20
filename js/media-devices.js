@@ -116,17 +116,8 @@ function monkeyPatchMediaDevices() {
         }; 
         let result = await navigator.mediaDevices.getUserMedia(constraints); 
         return result; 
-      }
-      else{
-        let otherMicrophone = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
-        let constraints = { 
-          video: false, 
-          audio: { 
-            deviceId: { exact: otherMicrophone[0].deviceId }, 
-          }, 
-        }; 
-        let result = await navigator.mediaDevices.getUserMedia(constraints); 
-        return result; 
+      }else {
+        return null;
       }
     }
 
@@ -147,6 +138,12 @@ function monkeyPatchMediaDevices() {
           //enable  
           showAudioContext = new AudioContext(); 
           const CITBMicMedia = await getCITBMicMedia();  
+          if (CITBMicMedia == null) {
+            setButtonBackground(buttonShow, false); 
+            setModeT('none'); 
+            return;
+
+          }
           const source = showAudioContext.createMediaStreamSource(CITBMicMedia); 
           source.connect(showAudioContext.destination); 
           showModeEnabled = true; 
