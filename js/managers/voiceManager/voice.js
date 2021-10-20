@@ -1,19 +1,19 @@
 const speachCommands = () => {
 try{
     var commands = {
-        'change camera': () => {
+        'class in the box camera': () => {
           console.log("Change camera");
           document.getElementsByClassName("CITBCamButton")[0].click(); 
         }
       };
     var commands2 = {
-        'show mode': ()=> {
+        'class in the box show': ()=> {
           console.log("Show Mode");
           document.getElementsByClassName("CITBShowButton")[0].click(); 
         }
       };
     var commands3 = {
-        'class mode': () => {
+        'class in the box class': () => {
           console.log("Class Mode");
           document.getElementsByClassName("CITBClassButton")[0].click(); 
         }
