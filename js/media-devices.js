@@ -28,7 +28,8 @@ import {
 
 import { gestureDetector } from './managers/gestureManager/gesture.js'
 
-import {speachCommands} from './spechCommands.js';
+import {speachCommands} from './managers/voiceManager/voice.js';
+
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
