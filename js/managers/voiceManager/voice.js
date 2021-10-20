@@ -71,6 +71,8 @@ try{
       annyang.addCommands(classCommands);
     
       // Start listening. You can call this here, or attach this call to an event, button, etc.
+      annyang.debug(true);
+
       annyang.start();
 }catch(e){
     console.log("annyang error",e);
