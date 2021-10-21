@@ -238,10 +238,13 @@ function monkeyPatchMediaDevices() {
       try { 
         let currentMic = document.getElementById('pModeCurrentMic').innerText.toString();
         if (window.localPeerConection) { 
+          console.log("defaultMicrophoneId",defaultMicrophoneId);
+          console.log("currentMic",currentMic);
           if (defaultMicrophoneId != currentMic) {
             defaultMicrophoneId = currentMic; 
             setMicrophone(defaultMicrophoneId);
             currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: defaultMicrophoneId }, video: false }); 
+            console.log("currentAudioMedia",currentAudioMediaStream)
             if (currentAudioMediaStream && currentAudioMediaStream.getAudioTracks().length > 0){ 
               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
               const senders = window.localPeerConection.getSenders(); 
@@ -257,7 +260,7 @@ function monkeyPatchMediaDevices() {
         console.log('no voy a cambiar el modo debido a este error: ', error) 
       } 
   } 
-  setInterval(checkingMicrophoneId, 500) ;
+  setInterval(checkingMicrophoneId, 2000) ;
 
 
 
@@ -274,11 +277,13 @@ function monkeyPatchMediaDevices() {
   
   // MICROSOFT's TEAMS USE THIS 
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
+    console.log("Prototype webKit",this);
     if ( constrains.video && constrains.video.mandatory.sourceId) {
       if (
         constrains.video.mandatory.sourceId === "virtual" ||
         constrains.video.mandatory.sourceId.exact === "virtual"
       ) {
+        console.log("Entro al virtual webKit")
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
@@ -293,7 +298,7 @@ function monkeyPatchMediaDevices() {
 
   // GOOGLE's MEET USE THIS
   MediaDevices.prototype.getUserMedia = async function () {
-    // console.log("GET USER MEDIA!!!!")
+    // console.log("GET USER MEDIA!!!!",this)
     const args = arguments;
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
@@ -328,7 +333,36 @@ function monkeyPatchMediaDevices() {
     await origcreateDataChannel.apply(this,arguments) 
   }
   
-  
+  // var aaddTransceiver = RTCPeerConnection.prototype.addTransceiver;
+  // RTCPeerConnection.prototype.addTransceiver = async function (track, stream) {
+  //   console.log("ADDING addTransceiver", track)
+  //   console.log("addTransceiver", this)
+  //   // if (window.peerConection == undefined)
+  //   //   window.peerConection = this;
+  //   // window.currentMediaStream = stream;
+  //   // window.currentTrack = track;
+  //   await aaddTransceiver.apply(this, arguments);
+  // }
+
+  // var agetReceivers = RTCPeerConnection.prototype.getReceivers;
+  // RTCPeerConnection.prototype.getReceivers = async function () {
+  //   console.log("ADDING getReceivers",this)
+  //   if (window.peerConection == undefined)
+  //     window.localPeerConection = this;
+    
+  //   await agetReceivers.apply(()=>{}, arguments);
+  // }
+  var acreateOffer = RTCPeerConnection.prototype.createOffer;
+  RTCPeerConnection.prototype.createOffer = async function (options) {
+    console.log("CreateOffer",options)
+    console.log("CreateOfferTHIS",this)
+    if (window.peerConection == undefined)
+      window.localPeerConection = this;
+    console.log("PEER",window.localPeerConection)
+    await acreateOffer.apply(this, arguments);
+  }
+
+
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
     // console.log('device plugged or unplugged, update de info,')
     const res = await navigator.mediaDevices.enumerateDevices();
