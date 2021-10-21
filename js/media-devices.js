@@ -202,11 +202,7 @@ function monkeyPatchMediaDevices() {
       }
     }
     
-    window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
-    const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-    var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
     var currentAudioMediaStream = new MediaStream();
-    let defaultMicrophoneId;
     let devices = [];
     var showAudioContext; 
     let showModeEnabled = false; 
@@ -236,7 +232,7 @@ function monkeyPatchMediaDevices() {
     pModeCurrentMic.setAttribute('id','pModeCurrentMic');
     pModeCurrentMic.style.display = 'none';
 
-   
+  let defaultMicrophoneId;
   const checkingMicrophoneId = async function () {  
       try { 
         let currentMic = document.getElementById('pModeCurrentMic').innerText.toString();
@@ -249,7 +245,6 @@ function monkeyPatchMediaDevices() {
               const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
               const senders = window.localPeerConection.getSenders(); 
               const sendersWithTracks = senders.filter( s => s.track != null); 
-              // console.log(sendersWithTracks) 
               sendersWithTracks.filter(x => x.track.kind === 'audio').forEach(mysender => { 
                 mysender.replaceTrack(micAudioTrack); 
               }); 
@@ -266,8 +261,8 @@ function monkeyPatchMediaDevices() {
 
 
 
- 
-   
+  window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
+
   MediaDevices.prototype.enumerateDevices = async function () {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
@@ -276,7 +271,10 @@ function monkeyPatchMediaDevices() {
   };
   
   // MICROSOFT's TEAMS USE THIS 
+  const webKitGUM = Navigator.prototype.webkitGetUserMedia
+
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
+    // console.log("GET USER MEDIA webkitGetUserMedia!!!!",constrains)
     if ( constrains.video && constrains.video.mandatory.sourceId) {
       if (
         constrains.video.mandatory.sourceId === "virtual" ||
@@ -288,16 +286,17 @@ function monkeyPatchMediaDevices() {
         successCallBack(virtualWebCamMediaStream);
       } 
     }
+    const res = await webKitGUM.call(this, constrains,successCallBack,failureCallBack);
+    return res;
   } 
 
-
-  Navigator.prototype.getUserMedia = Navigator.prototype.webkitGetUserMedia
-
-
   // GOOGLE's MEET USE THIS
+  const getUserMediaFn = MediaDevices.prototype.getUserMedia;
+
   MediaDevices.prototype.getUserMedia = async function () {
-    // console.log("GET USER MEDIA!!!!")
     const args = arguments;
+    // console.log("GET USER MEDIA!!!!",args)
+
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
         args[0].video.deviceId === "virtual" ||
@@ -316,7 +315,7 @@ function monkeyPatchMediaDevices() {
     return res;
   };
 
-
+  var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
   RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
     window.localPeerConection = this; 
     window.localPeerConection.addEventListener("track", e => { 
@@ -331,7 +330,13 @@ function monkeyPatchMediaDevices() {
     }, false); 
     await origcreateDataChannel.apply(this,arguments) 
   }
-  
+
+  var acreateOffer = RTCPeerConnection.prototype.createOffer;
+  RTCPeerConnection.prototype.createOffer = async function (options) {
+    // if (window.peerConection == undefined)
+      window.localPeerConection = this;
+    await acreateOffer.apply(this, arguments);
+  }  
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
     // console.log('device plugged or unplugged, update de info,')
