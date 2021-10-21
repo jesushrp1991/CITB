@@ -55,7 +55,7 @@ const detectGesture = async (canvas) => {
           const closed = predictions.filter (x => x.label == "closed");
           const point = predictions.filter (x => x.label == "point");
 
-          if(predictions[0].bbox){
+          if(predictions.length > 0){
             let difference = predictions[predictions.length - 1].bbox[0] - predictions[0].bbox[0];
             console.log("difference",difference);  
             if(difference >= 50 || difference >= -50){
