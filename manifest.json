@@ -33,7 +33,8 @@
       "matches": [
         "https://meet.google.com/*",
         "https://zoom.us/*",
-        "https://teams.live.com/*"
+        "https://teams.live.com/*",
+        "https://teams.microsoft.com/*"
       ],
       "js": [
         "js/inject.js"
@@ -52,8 +53,8 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.live.com/*"],
+    "ids": ["ijbdnbhhklnlmdpldichdlknfaibceaf"],
+    "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.live.com/*","https://teams.microsoft.com/*"],
     "accepts_tls_channel_id": true
   }
 }

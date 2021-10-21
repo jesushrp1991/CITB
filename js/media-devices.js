@@ -26,8 +26,6 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
-import { gestureDetector } from './managers/gestureManager/gesture.js'
-
 import {speachCommands} from './managers/voiceManager/voice.js';
 
 function monkeyPatchMediaDevices() {
@@ -74,10 +72,8 @@ function monkeyPatchMediaDevices() {
 
         //Set if posible change camera (if there are a CITB camera)
         canChangeCameras ? setCITBCam(true) : setCITBCam(false);
-
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
-        showDiv();
-        gestureDetector();
+        showDiv();        
       } 
     }//END ONREADY STATE CHANGE
 
@@ -158,7 +154,6 @@ function monkeyPatchMediaDevices() {
       }
       const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
       if (otherMicrophones.length > 0){ 
-        // console.log("othermic", otherMicrophones[0]) 
         setMicrophone(otherMicrophones[0].deviceId); 
         window.classActivated = true; 
         setButtonBackground(buttonClass, window.classActivated) 
@@ -195,10 +190,12 @@ function monkeyPatchMediaDevices() {
       } 
     }  
 
+    var isShow = false;
     const showDiv = () => {
-      if (document.getElementById('buttonsContainer')){
+      if (document.getElementById('buttonsContainer') && !isShow){
         document.getElementById('buttonsContainer').style.display = 'block';
         document.getElementById("pWebContainerState").innerText = "OPEN";
+        isShow = true;
       }
     }
     
@@ -274,7 +271,6 @@ function monkeyPatchMediaDevices() {
   const webKitGUM = Navigator.prototype.webkitGetUserMedia
 
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
-    // console.log("GET USER MEDIA webkitGetUserMedia!!!!",constrains)
     if ( constrains.video && constrains.video.mandatory.sourceId) {
       if (
         constrains.video.mandatory.sourceId === "virtual" ||
@@ -295,7 +291,6 @@ function monkeyPatchMediaDevices() {
 
   MediaDevices.prototype.getUserMedia = async function () {
     const args = arguments;
-    // console.log("GET USER MEDIA!!!!",args)
 
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
@@ -335,15 +330,12 @@ function monkeyPatchMediaDevices() {
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
-    // if (window.peerConection == undefined)
       window.localPeerConection = this;
     await acreateOffer.apply(this, arguments);
   }  
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-    // console.log('device plugged or unplugged, update de info,')
     const res = await navigator.mediaDevices.enumerateDevices();
-    // console.log("Lista de dispositivos",res);
     await buildVideoContainersAndCanvas();
     await builVideosFromDevices()
   });

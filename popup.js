@@ -171,7 +171,6 @@ const chekWebContainerState = async() => {
     target: { tabId: tab.id },
     function: getWebContainerState
   },(injectionResults) => {
-    console.log(injectionResults);
     injectionResults[0].result == "OPEN" ?
                   webContainerActivated = true
                 : webContainerActivated = false;
@@ -190,7 +189,6 @@ const chekpModeExistsCamState = async() => {
     target: { tabId: tab.id },
     function: getpModeExistsCamState
   },(injectionResults) => {
-    console.log(injectionResults);
     injectionResults[0].result == "true" ?
                   canChangeCameras = true
                 : canChangeCameras = false;
