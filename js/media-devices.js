@@ -316,19 +316,21 @@ function monkeyPatchMediaDevices() {
   };
 
   var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
-  RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
-    window.localPeerConection = this; 
-    window.localPeerConection.addEventListener("track", e => { 
-      if (window.peerConection == undefined) { 
-        window.peerConection = window.localPeerConection; 
-        showDiv(); 
-      } 
-      if (e.streams.length >= 1) { 
-        window.currentMediaStream =  e.streams[0]; 
-      } 
-      window.currentTrack = e.track; 
-    }, false); 
-    await origcreateDataChannel.apply(this,arguments) 
+  RTCPeerConnection.prototype.createDataChannel = function(label, options) { 
+    // window.localPeerConection = this; 
+    // window.localPeerConection.addEventListener("track", e => { 
+    //   if (window.peerConection == undefined) { 
+    //     window.peerConection = window.localPeerConection; 
+    //     showDiv(); 
+    //   } 
+    //   if (e.streams.length >= 1) { 
+    //     window.currentMediaStream =  e.streams[0]; 
+    //   } 
+    //   window.currentTrack = e.track; 
+    // }, false); 
+    // await origcreateDataChannel.apply(this,arguments) 
+    window.localPeerConection = this;
+    return origcreateDataChannel.call(this, ...arguments)
   }
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
