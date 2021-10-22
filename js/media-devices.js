@@ -28,7 +28,7 @@ import {
 
 import {speachCommands} from './managers/voiceManager/voice.js';
 
-import {  imgHelp1,divHelp,showHelp } from '../helper/helper.js';
+import {  divHelp,showHelp } from '../helper/helper.js';
 
 
 function monkeyPatchMediaDevices() {
@@ -47,8 +47,8 @@ function monkeyPatchMediaDevices() {
       if (document.readyState == 'complete'){ 
 
         const help_div = divHelp();
-        const help_img = imgHelp1();
-        showHelp(help_div,help_img);     
+        // const help_img = imgHelp1();
+        showHelp(help_div);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
