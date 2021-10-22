@@ -28,10 +28,14 @@ import {
 
 import {speachCommands} from './managers/voiceManager/voice.js';
 
+import {  imgHelp1,divHelp,showHelp } from '../helper/helper.js';
+
+
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
 
+    
     //WEB CONTAINER
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
@@ -41,6 +45,10 @@ function monkeyPatchMediaDevices() {
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
+
+        const help_div = divHelp();
+        const help_img = imgHelp1();
+        showHelp(help_div,help_img);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
