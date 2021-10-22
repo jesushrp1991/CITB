@@ -13,6 +13,15 @@ const helptButtonNext2 = () => {
     helptButtonNext.textContent = 'Next';
     return helptButtonNext;
   };
+
+const helptButtonNext3 = () => {
+    const helptButtonNext = document.createElement("button");
+    helptButtonNext.setAttribute("id", "helptButtonNext3");
+    helptButtonNext.setAttribute("class", "helptButtonNextClass");
+    helptButtonNext.textContent = 'Next';
+    return helptButtonNext;
+  };
+
 const divHelp = () => {
     const divHelp = document.createElement("div");
     divHelp.setAttribute("id", "help_div");
@@ -39,6 +48,15 @@ const divHelp2 = () => {
     return divHelp;
   };
 
+const divHelp3 = () => {
+    const divHelp = document.createElement("div");
+    divHelp.setAttribute("id", "help_div3");
+    divHelp.setAttribute('class', 'helpImg4');
+    divHelp.style.zIndex = 999;
+    divHelp.style.display = "none";    
+    return divHelp;
+  };
+
 const showHelp = (help_div,button) =>{  
     help_div.appendChild(button);  
     document.body.appendChild(help_div);
@@ -48,8 +66,10 @@ const showHelp = (help_div,button) =>{
 export {
     helptButtonNext1,
     helptButtonNext2,
+    helptButtonNext3,
     divHelp,
     divHelp1,
     divHelp2,
+    divHelp3,
     showHelp
 }

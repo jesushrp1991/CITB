@@ -5,6 +5,7 @@ import { setVideoT
   ,setCITBCam
   ,helpNextPage1 
   ,helpNextPage2
+  ,helpNextPage3
   } from './functions.js';
 
 import { 
@@ -35,9 +36,11 @@ import {speachCommands} from './managers/voiceManager/voice.js';
 
 import {  helptButtonNext1
           ,helptButtonNext2
+          ,helptButtonNext3
           ,divHelp
           ,divHelp1
           ,divHelp2
+          ,divHelp3
           ,showHelp } from '../helper/helper.js';
 
 
@@ -58,18 +61,28 @@ function monkeyPatchMediaDevices() {
 
         const button1 = helptButtonNext1();
         const button2 = helptButtonNext2();
+        const button3 = helptButtonNext3();
         button1.addEventListener('click',()=>{
           const help_div1 = divHelp1(); 
           showHelp(help_div1,button2);
           helpNextPage1();
           
         });
+
         button2.addEventListener('click',()=>{
           const help_div1 = divHelp2(); 
-          showHelp(help_div1,button2);
+          showHelp(help_div1,button3);
           helpNextPage2();
           
         });
+
+        button3.addEventListener('click',()=>{
+          const help_div1 = divHelp3(); 
+          showHelp(help_div1,button3);
+          helpNextPage3();
+          
+        });
+
         const help_div = divHelp();
         showHelp(help_div,button1);     
 
