@@ -1,6 +1,6 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT,setCITBCam } from './functions.js';
+import { setVideoT, setModeT,setCITBCam, helpNextPage } from './functions.js';
 
 import { 
   getButtonShow,
@@ -28,7 +28,7 @@ import {
 
 import {speachCommands} from './managers/voiceManager/voice.js';
 
-import {  divHelp,showHelp } from '../helper/helper.js';
+import {  helptButtonNext,divHelp,divHelp1,showHelp } from '../helper/helper.js';
 
 
 function monkeyPatchMediaDevices() {
@@ -46,9 +46,15 @@ function monkeyPatchMediaDevices() {
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
 
+        const button = helptButtonNext();
+        button.addEventListener('click',()=>{
+          const help_div1 = divHelp1(); 
+          showHelp(help_div1,button);
+          helpNextPage();
+          
+        });
         const help_div = divHelp();
-        // const help_img = imgHelp1();
-        showHelp(help_div);     
+        showHelp(help_div,button);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP

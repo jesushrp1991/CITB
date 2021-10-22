@@ -10,5 +10,10 @@ const setCITBCam = (exitsCam) =>{
 
 }
 
+const helpNextPage = () =>{
+  document.getElementById('help_div').style.display = 'none';
+  document.getElementById('help_div1').style.display = 'block';
+}
 
-export { setVideoT, setModeT, setCITBCam };
+
+export { setVideoT, setModeT, setCITBCam, helpNextPage };
