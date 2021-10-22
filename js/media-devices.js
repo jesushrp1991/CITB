@@ -1,6 +1,11 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT,setCITBCam, helpNextPage } from './functions.js';
+import { setVideoT
+  , setModeT
+  ,setCITBCam
+  ,helpNextPage1 
+  ,helpNextPage2
+  } from './functions.js';
 
 import { 
   getButtonShow,
@@ -28,7 +33,12 @@ import {
 
 import {speachCommands} from './managers/voiceManager/voice.js';
 
-import {  helptButtonNext,divHelp,divHelp1,showHelp } from '../helper/helper.js';
+import {  helptButtonNext1
+          ,helptButtonNext2
+          ,divHelp
+          ,divHelp1
+          ,divHelp2
+          ,showHelp } from '../helper/helper.js';
 
 
 function monkeyPatchMediaDevices() {
@@ -46,15 +56,22 @@ function monkeyPatchMediaDevices() {
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
 
-        const button = helptButtonNext();
-        button.addEventListener('click',()=>{
+        const button1 = helptButtonNext1();
+        const button2 = helptButtonNext2();
+        button1.addEventListener('click',()=>{
           const help_div1 = divHelp1(); 
-          showHelp(help_div1,button);
-          helpNextPage();
+          showHelp(help_div1,button2);
+          helpNextPage1();
+          
+        });
+        button2.addEventListener('click',()=>{
+          const help_div1 = divHelp2(); 
+          showHelp(help_div1,button2);
+          helpNextPage2();
           
         });
         const help_div = divHelp();
-        showHelp(help_div,button);     
+        showHelp(help_div,button1);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
