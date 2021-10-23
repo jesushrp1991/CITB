@@ -42,6 +42,8 @@ const helpNextPage6 = () =>{
 
 const helpNextPage7 = () =>{
   document.getElementById('help_div6').style.display = 'none';
+  document.getElementById('backgroundDiv').style.display = 'none';
+
 }
 
 

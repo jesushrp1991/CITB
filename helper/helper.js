@@ -117,9 +117,12 @@ const divHelp5 = () => {
   };
 
 const showHelp = (help_div,button) =>{  
+  console.log("SHOW HGELP!!!",help_div,button )
+
     help_div.appendChild(button);  
     document.body.appendChild(help_div);
-    // console.log("SHOW HGELP!!!",help_div,help_img )
+
+
 }
 
 export {

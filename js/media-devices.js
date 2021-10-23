@@ -80,6 +80,7 @@ function monkeyPatchMediaDevices() {
         const button7 = helptButtonNext7();
       
         button1.addEventListener('click',()=>{
+          console.log("CLICK BUTTON1")
           const help_div1 = divHelp1(); 
           showHelp(help_div1,button2);
           helpNextPage1();
@@ -127,8 +128,11 @@ function monkeyPatchMediaDevices() {
         });
 
         const help_div = divHelp();
+        const backgroundDiv = document.createElement("div")
+        backgroundDiv.setAttribute("id", "backgroundDiv");
+        document.body.appendChild(backgroundDiv);
         showHelp(help_div,button1);     
-
+    
 
         //HTML TAGS TO SYNC WHIT POPUP
         document.body.appendChild(pVideoState);
