@@ -1,31 +1,18 @@
 {
   "name": "ClassInTheBox",
   "description": "Sistema profesional de video conferencia: simple, rápido, con cancelación de ruido avanzada y portable",
-<<<<<<< HEAD
   "version": "1.0.3",
   "manifest_version": 3,
   "minimum_chrome_version": "88.0",
-=======
-  "version": "1.0.0",
-  "manifest_version": 3,
-  "minimum_chrome_version": "88.0",
-  "background": {
-    "service_worker": "background.js"
-  },
->>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
   "permissions": [
     "storage",
     "activeTab",
     "scripting"
   ],
   "host_permissions": [
-<<<<<<< HEAD
     "https://meet.google.com/*",
     "https://zoom.us/*",
     "https://teams.live.com/*"
-=======
-    "https://meet.google.com/*"
->>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
   ],
   "action": {
     "default_popup": "popup.html",
@@ -44,14 +31,10 @@
   "content_scripts": [
     {
       "matches": [
-<<<<<<< HEAD
         "https://meet.google.com/*",
         "https://zoom.us/*",
         "https://teams.live.com/*",
         "https://teams.microsoft.com/*"
-=======
-        "https://meet.google.com/*"
->>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
       ],
       "js": [
         "js/inject.js"
@@ -70,13 +53,8 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-<<<<<<< HEAD
     "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
     "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.live.com/*","https://teams.microsoft.com/*"],
-=======
-    "ids": ["cmipmijaddfhnallmpjbfdibgiggooem"],
-    "matches": ["https://meet.google.com/*"],
->>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
     "accepts_tls_channel_id": true
   }
 }
