@@ -30,6 +30,20 @@ const helpNextPage4 = () =>{
   document.getElementById('help_div4').style.display = 'block';
 }
 
+const helpNextPage5 = () =>{
+  document.getElementById('help_div4').style.display = 'none';
+  document.getElementById('help_div5').style.display = 'block';
+}
+
+const helpNextPage6 = () =>{
+  document.getElementById('help_div5').style.display = 'none';
+  document.getElementById('help_div6').style.display = 'block';
+}
+
+const helpNextPage7 = () =>{
+  document.getElementById('help_div6').style.display = 'none';
+}
+
 
 export { setVideoT,
         setModeT,
@@ -37,5 +51,8 @@ export { setVideoT,
         helpNextPage1,
         helpNextPage2,
         helpNextPage3,
-        helpNextPage4
+        helpNextPage4,
+        helpNextPage5,
+        helpNextPage6,
+        helpNextPage7
       };

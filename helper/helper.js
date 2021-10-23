@@ -22,11 +22,35 @@ const helptButtonNext3 = () => {
     return helptButtonNext;
   };
 
-  const helptButtonNext4 = () => {
+const helptButtonNext4 = () => {
     const helptButtonNext = document.createElement("button");
     helptButtonNext.setAttribute("id", "helptButtonNext4");
     helptButtonNext.setAttribute("class", "helptButtonNextClass");
     helptButtonNext.textContent = 'Next';
+    return helptButtonNext;
+  };
+
+const helptButtonNext5 = () => {
+    const helptButtonNext = document.createElement("button");
+    helptButtonNext.setAttribute("id", "helptButtonNext5");
+    helptButtonNext.setAttribute("class", "helptButtonNextClass");
+    helptButtonNext.textContent = 'Next';
+    return helptButtonNext;
+  };
+
+const helptButtonNext6 = () => {
+    const helptButtonNext = document.createElement("button");
+    helptButtonNext.setAttribute("id", "helptButtonNext6");
+    helptButtonNext.setAttribute("class", "helptButtonNextClass");
+    helptButtonNext.textContent = 'Next';
+    return helptButtonNext;
+  };
+
+const helptButtonNext7 = () => {
+    const helptButtonNext = document.createElement("button");
+    helptButtonNext.setAttribute("id", "helptButtonNext7");
+    helptButtonNext.setAttribute("class", "helptButtonNextClass");
+    helptButtonNext.textContent = 'Close';
     return helptButtonNext;
   };
 
@@ -74,6 +98,24 @@ const divHelp4 = () => {
     return divHelp;
   };
 
+const divHelp5 = () => {
+    const divHelp = document.createElement("div");
+    divHelp.setAttribute("id", "help_div5");
+    divHelp.setAttribute('class', 'helpImg6');
+    divHelp.style.zIndex = 999;
+    divHelp.style.display = "none";    
+    return divHelp;
+  };
+
+  const divHelp6 = () => {
+    const divHelp = document.createElement("div");
+    divHelp.setAttribute("id", "help_div6");
+    divHelp.setAttribute('class', 'helpImg7');
+    divHelp.style.zIndex = 999;
+    divHelp.style.display = "none";    
+    return divHelp;
+  };
+
 const showHelp = (help_div,button) =>{  
     help_div.appendChild(button);  
     document.body.appendChild(help_div);
@@ -85,10 +127,15 @@ export {
     helptButtonNext2,
     helptButtonNext3,
     helptButtonNext4,
+    helptButtonNext5,
+    helptButtonNext6,
+    helptButtonNext7,
     divHelp,
     divHelp1,
     divHelp2,
     divHelp3,
     divHelp4,
+    divHelp5,
+    divHelp6,
     showHelp
 }
