@@ -312,18 +312,7 @@ function monkeyPatchMediaDevices() {
 
   var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
   RTCPeerConnection.prototype.createDataChannel = function(label, options) { 
-    // window.localPeerConection = this; 
-    // window.localPeerConection.addEventListener("track", e => { 
-    //   if (window.peerConection == undefined) { 
-    //     window.peerConection = window.localPeerConection; 
-    //     showDiv(); 
-    //   } 
-    //   if (e.streams.length >= 1) { 
-    //     window.currentMediaStream =  e.streams[0]; 
-    //   } 
-    //   window.currentTrack = e.track; 
-    // }, false); 
-    // await origcreateDataChannel.apply(this,arguments) 
+
     window.localPeerConection = this;
     return origcreateDataChannel.call(this, ...arguments)
   }
@@ -331,7 +320,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
       window.localPeerConection = this;
-    await acreateOffer.apply(this, arguments);
+      return await acreateOffer.apply(this, arguments);
   }  
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
