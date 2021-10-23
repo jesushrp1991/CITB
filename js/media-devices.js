@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
 import { setVideoT
@@ -25,34 +24,6 @@ import {
   getButtonDrag,
   setMicrophone
 } from './domUtils.js';
-=======
-import {
-  MYVIDEODDEVICELABEL,
-  MYAUDIODEVICELABEL,
-  EXTENSIONID,
-  MYMICROPHONEDEVICELABEL,
-} from "./constants.js";
-import { getVirtualCam, setModeNone } from "./functions.js";
-import {
-  getButtonCam,
-  getButtonClose,
-  getButtonClass,
-  getButtonShow,
-  getContainerButton,
-  addElementsToDiv,
-  getButtonDrag,
-  setButtonBackground,
-  createAudioElement,
-  showDiv,
-} from "./domUtils.js";
-import {
-  setCloseEvent,
-  setbuttonShowClickEvent,
-  setbuttonClassClickEvent,
-  setButtonCamClickEvent,
-  mouseDragEvents,
-} from "./events.js";
->>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
 
 import {
   builVideosFromDevices
