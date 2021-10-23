@@ -23,6 +23,7 @@ a {
     border-radius: 50%;
   }
 
-  html, body {
-    min-height: 70%;
+  img{
+    max-width:70%;
+    max-height:100%;
   }
