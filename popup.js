@@ -3,6 +3,53 @@ let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
+<<<<<<< HEAD
+=======
+let showActivated = false, classActivated = false, citbActivated;
+// const MYVIDEODDEVICELABEL = '2K HD Camera';
+const MYVIDEODDEVICELABEL = 'Sirius USB2.0 Camera (0ac8:3340)';
+const MYAUDIODEVICELABEL = 'CITB';
+let defaultVideo, defaultVideoLabel, webContainerClosed;
+
+let microphonesList = [];
+let videosList = []
+
+chrome.storage.sync.get("devicesList", ({ devicesList }) => {
+  if (devicesList) {
+    microphonesList = devicesList.filter(x => x.kind == 'audioinput');
+    videosList = devicesList.filter(x => x.kind == 'videoinput');
+  }
+});
+
+chrome.storage.sync.get("buttonsOpen", ({buttonsOpen}) => {
+  //console.log(buttonsOpen);
+  webContainerClosed = buttonsOpen;
+  setButtonWebContainerBackground(buttonsOpen);
+});
+
+chrome.storage.sync.get("defaultVideoId", ({ defaultVideoId }) => {
+  //console.log('asdsadasdaa');
+  //console.log(defaultVideoId);
+  if (defaultVideoId !== undefined) {
+    defaultVideo = defaultVideoId;
+    if (videosList != undefined){
+      const filteredVideoList = videosList.filter(x => x.deviceId === defaultVideoId);
+      if (filteredVideoList.length > 0){
+        defaultVideoLabel = filteredVideoList[0].label;
+      }
+    }
+  }
+});
+
+chrome.storage.sync.get("defaultMode", ({ defaultMode }) => {
+  showActivated = defaultMode === 'show';
+  classActivated = defaultMode === 'class';
+  setButtonShowBackground(showActivated);
+  setButtonClassBackground(classActivated);
+  citbActivated = (defaultVideo && defaultVideoLabel) ? defaultVideoLabel.includes(MYVIDEODDEVICELABEL) : false;
+  setButtonCamBackground(citbActivated);
+});
+>>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
 
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
 

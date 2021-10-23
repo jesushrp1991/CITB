@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
 import { setVideoT
@@ -24,6 +25,34 @@ import {
   getButtonDrag,
   setMicrophone
 } from './domUtils.js';
+=======
+import {
+  MYVIDEODDEVICELABEL,
+  MYAUDIODEVICELABEL,
+  EXTENSIONID,
+  MYMICROPHONEDEVICELABEL,
+} from "./constants.js";
+import { getVirtualCam, setModeNone } from "./functions.js";
+import {
+  getButtonCam,
+  getButtonClose,
+  getButtonClass,
+  getButtonShow,
+  getContainerButton,
+  addElementsToDiv,
+  getButtonDrag,
+  setButtonBackground,
+  createAudioElement,
+  showDiv,
+} from "./domUtils.js";
+import {
+  setCloseEvent,
+  setbuttonShowClickEvent,
+  setbuttonClassClickEvent,
+  setButtonCamClickEvent,
+  mouseDragEvents,
+} from "./events.js";
+>>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
 
 import {
   builVideosFromDevices
@@ -373,6 +402,7 @@ function monkeyPatchMediaDevices() {
     return res;
   } 
 
+<<<<<<< HEAD
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
 
@@ -435,5 +465,58 @@ function monkeyPatchMediaDevices() {
   }
   checkDevices();
 }
+=======
+    const media = await getUserMediaFn.call(
+      navigator.mediaDevices,
+      constraints
+    );
 
-export { monkeyPatchMediaDevices }
+    let actualTracks = currentMediaStream.getTracks();
+    actualTracks.forEach((t) => (t.enabled = false));
+    media.getTracks().forEach((mt) => currentMediaStream.addTrack(mt));
+    actualTracks
+      .filter((t) => t.enabled == false)
+      .forEach((dt) => currentMediaStream.removeTrack(dt));
+
+    currentMediaStream.getTracks().forEach((t) => {
+      t.applyConstraints();
+      //console.log(t.getSettings())
+    });
+
+    var video = document.getElementsByTagName("video");
+    for (let i = 0; i < video.length; i++) {
+      if (video[i].classList.length > 1) {
+        video[i].srcObject = currentMediaStream;
+      }
+    }
+  } catch (e) {
+    setTimeout(setMediaStreamTracks, 1500);
+  }
+};
+
+MediaDevices.prototype.getUserMedia = async function () {
+  //console.log("INSIDE MEDIA DEVICE GET USERMEDIA")
+  const args = arguments;
+  //console.log(args[0]);
+  if (args.length && args[0].video && args[0].video.deviceId) {
+    if (
+      args[0].video.deviceId === "virtual" ||
+      args[0].video.deviceId.exact === "virtual"
+    ) {
+      await setMediaStreamTracks();
+      return;
+    } else {
+      const res = await getUserMediaFn.call(
+        navigator.mediaDevices,
+        ...arguments
+      );
+      currentMediaStream = res;
+      return res;
+    }
+  }
+  const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+  return res;
+};
+>>>>>>> f6df13b762f40f667cf676b26c1e289b07b4e527
+
+export { monkeyPatchMediaDevices };
