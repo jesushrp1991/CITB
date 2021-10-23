@@ -26,7 +26,6 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
-import { gestureDetector } from './managers/gestureManager/gesture.js'
 
 import {speachCommands} from './managers/voiceManager/voice.js';
 
@@ -77,7 +76,6 @@ function monkeyPatchMediaDevices() {
 
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
         showDiv();
-        gestureDetector();
       } 
     }//END ONREADY STATE CHANGE
 
@@ -317,26 +315,14 @@ function monkeyPatchMediaDevices() {
   };
 
 
-  RTCPeerConnection.prototype.createDataChannel = async function(label, options) { 
+  RTCPeerConnection.prototype.createDataChannel = function() { 
     window.localPeerConection = this; 
-    window.localPeerConection.addEventListener("track", e => { 
-      if (window.peerConection == undefined) { 
-        window.peerConection = window.localPeerConection; 
-        showDiv(); 
-      } 
-      if (e.streams.length >= 1) { 
-        window.currentMediaStream =  e.streams[0]; 
-      } 
-      window.currentTrack = e.track; 
-    }, false); 
-    await origcreateDataChannel.apply(this,arguments) 
+    return origcreateDataChannel.apply(this,arguments) 
   }
   
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-    // console.log('device plugged or unplugged, update de info,')
     const res = await navigator.mediaDevices.enumerateDevices();
-    // console.log("Lista de dispositivos",res);
     await buildVideoContainersAndCanvas();
     await builVideosFromDevices()
   });
