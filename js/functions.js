@@ -25,11 +25,17 @@ const helpNextPage3 = () =>{
   document.getElementById('help_div3').style.display = 'block';
 }
 
+const helpNextPage4 = () =>{
+  document.getElementById('help_div3').style.display = 'none';
+  document.getElementById('help_div4').style.display = 'block';
+}
+
 
 export { setVideoT,
         setModeT,
         setCITBCam,
         helpNextPage1,
         helpNextPage2,
-        helpNextPage3
+        helpNextPage3,
+        helpNextPage4
       };
