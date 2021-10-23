@@ -12,7 +12,7 @@
   "host_permissions": [
     "https://meet.google.com/*",
     "https://zoom.us/*",
-    "https://teams.live.com/*"
+    "https://teams.microsoft.com/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -33,7 +33,7 @@
       "matches": [
         "https://meet.google.com/*",
         "https://zoom.us/*",
-        "https://teams.live.com/*"
+        "https://teams.microsoft.com/*"
       ],
       "js": [
         "js/inject.js"
@@ -53,7 +53,7 @@
   }],
   "externally_connectable": {
     "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.live.com/*"],
+    "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.microsoft.com/*"],
     "accepts_tls_channel_id": true
   }
 }
