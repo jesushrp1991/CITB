@@ -316,10 +316,21 @@ function monkeyPatchMediaDevices() {
 
 
   RTCPeerConnection.prototype.createDataChannel = function() { 
-    window.localPeerConection = this; 
+    if (window.localPeerConection == undefined) {
+      window.localPeerConection = this; 
+    }
     return origcreateDataChannel.apply(this,arguments) 
   }
-  
+  var acreateOffer = RTCPeerConnection.prototype.createOffer; 
+  RTCPeerConnection.prototype.createOffer = async function (options) { 
+    if (window.localPeerConection == undefined) {
+      window.localPeerConection = this; 
+    }
+    console.log("CreateOffer",options) 
+    console.log("CreateOfferTHIS",this) 
+    
+    return await acreateOffer.apply(this, arguments); 
+  } 
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
     const res = await navigator.mediaDevices.enumerateDevices();
