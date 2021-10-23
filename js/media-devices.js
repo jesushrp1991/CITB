@@ -422,7 +422,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
       window.localPeerConection = this;
-    await acreateOffer.apply(this, arguments);
+    return await acreateOffer.apply(this, arguments);
   }  
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
