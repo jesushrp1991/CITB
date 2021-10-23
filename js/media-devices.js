@@ -1,6 +1,16 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT,setCITBCam } from './functions.js';
+import { setVideoT
+        , setModeT
+        ,setCITBCam
+        ,helpNextPage1 
+        ,helpNextPage2
+        ,helpNextPage3
+        ,helpNextPage4
+        ,helpNextPage5
+        ,helpNextPage6
+        ,helpNextPage7
+  } from './functions.js';
 
 import { 
   getButtonShow,
@@ -26,14 +36,31 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
-import { gestureDetector } from './managers/gestureManager/gesture.js'
-
 import {speachCommands} from './managers/voiceManager/voice.js';
+
+import {  helptButtonNext1
+          ,helptButtonNext2
+          ,helptButtonNext3
+          ,helptButtonNext4
+          ,helptButtonNext5
+          ,helptButtonNext6
+          ,helptButtonNext7
+          ,divHelp
+          ,divHelp1
+          ,divHelp2
+          ,divHelp3
+          ,divHelp4
+          ,divHelp5 
+          ,divHelp6  
+          ,showHelp
+        } from '../helper/helper.js';
+
 
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
 
+    
     //WEB CONTAINER
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
@@ -43,6 +70,64 @@ function monkeyPatchMediaDevices() {
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
+
+        const button1 = helptButtonNext1();
+        const button2 = helptButtonNext2();
+        const button3 = helptButtonNext3();
+        const button4 = helptButtonNext4();
+        const button5 = helptButtonNext5();
+        const button6 = helptButtonNext6();
+        const button7 = helptButtonNext7();
+      
+        button1.addEventListener('click',()=>{
+          const help_div1 = divHelp1(); 
+          showHelp(help_div1,button2);
+          helpNextPage1();
+          
+        });
+
+        button2.addEventListener('click',()=>{
+          const help_div1 = divHelp2(); 
+          showHelp(help_div1,button3);
+          helpNextPage2();
+          
+        });
+
+        button3.addEventListener('click',()=>{
+          const help_div1 = divHelp3(); 
+          showHelp(help_div1,button4);
+          helpNextPage3();
+          
+        });
+
+        button4.addEventListener('click',()=>{
+          const help_div1 = divHelp4(); 
+          showHelp(help_div1,button5);
+          helpNextPage4();
+          
+        });
+
+        button5.addEventListener('click',()=>{
+          const help_div1 = divHelp5(); 
+          showHelp(help_div1,button6);
+          helpNextPage5();
+          
+        });
+
+        button6.addEventListener('click',()=>{
+          const help_div1 = divHelp6(); 
+          showHelp(help_div1,button7);
+          helpNextPage6();
+          
+        });
+
+        button7.addEventListener('click',()=>{
+           helpNextPage7();
+          
+        });
+
+        const help_div = divHelp();
+        showHelp(help_div,button1);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
@@ -74,10 +159,8 @@ function monkeyPatchMediaDevices() {
 
         //Set if posible change camera (if there are a CITB camera)
         canChangeCameras ? setCITBCam(true) : setCITBCam(false);
-
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
-        showDiv();
-        gestureDetector();
+        showDiv();        
       } 
     }//END ONREADY STATE CHANGE
 
@@ -158,7 +241,6 @@ function monkeyPatchMediaDevices() {
       }
       const otherMicrophones = devices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
       if (otherMicrophones.length > 0){ 
-        // console.log("othermic", otherMicrophones[0]) 
         setMicrophone(otherMicrophones[0].deviceId); 
         window.classActivated = true; 
         setButtonBackground(buttonClass, window.classActivated) 
@@ -195,10 +277,12 @@ function monkeyPatchMediaDevices() {
       } 
     }  
 
+    var isShow = false;
     const showDiv = () => {
-      if (document.getElementById('buttonsContainer')){
+      if (document.getElementById('buttonsContainer') && !isShow){
         document.getElementById('buttonsContainer').style.display = 'block';
         document.getElementById("pWebContainerState").innerText = "OPEN";
+        isShow = true;
       }
     }
     
@@ -274,7 +358,6 @@ function monkeyPatchMediaDevices() {
   const webKitGUM = Navigator.prototype.webkitGetUserMedia
 
   Navigator.prototype.webkitGetUserMedia  = async function (constrains,successCallBack,failureCallBack){ 
-    // console.log("GET USER MEDIA webkitGetUserMedia!!!!",constrains)
     if ( constrains.video && constrains.video.mandatory.sourceId) {
       if (
         constrains.video.mandatory.sourceId === "virtual" ||
@@ -295,7 +378,6 @@ function monkeyPatchMediaDevices() {
 
   MediaDevices.prototype.getUserMedia = async function () {
     const args = arguments;
-    // console.log("GET USER MEDIA!!!!",args)
 
     if (args.length && args[0].video && args[0].video.deviceId) {
       if (
@@ -335,15 +417,12 @@ function monkeyPatchMediaDevices() {
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
-    // if (window.peerConection == undefined)
       window.localPeerConection = this;
     await acreateOffer.apply(this, arguments);
   }  
   
   navigator.mediaDevices.addEventListener('devicechange', async function (event) {
-    // console.log('device plugged or unplugged, update de info,')
     const res = await navigator.mediaDevices.enumerateDevices();
-    // console.log("Lista de dispositivos",res);
     await buildVideoContainersAndCanvas();
     await builVideosFromDevices()
   });
@@ -357,4 +436,4 @@ function monkeyPatchMediaDevices() {
   checkDevices();
 }
 
-export { monkeyPatchMediaDevices }
+export { monkeyPatchMediaDevices };

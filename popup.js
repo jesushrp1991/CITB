@@ -3,7 +3,6 @@ let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
-
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
 
 const changeCam = () =>{
@@ -171,7 +170,6 @@ const chekWebContainerState = async() => {
     target: { tabId: tab.id },
     function: getWebContainerState
   },(injectionResults) => {
-    console.log(injectionResults);
     injectionResults[0].result == "OPEN" ?
                   webContainerActivated = true
                 : webContainerActivated = false;
@@ -190,7 +188,6 @@ const chekpModeExistsCamState = async() => {
     target: { tabId: tab.id },
     function: getpModeExistsCamState
   },(injectionResults) => {
-    console.log(injectionResults);
     injectionResults[0].result == "true" ?
                   canChangeCameras = true
                 : canChangeCameras = false;
