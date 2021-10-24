@@ -23,7 +23,6 @@ import {
   , videoCITB
   , videoOther
   , canChangeCameras
-  , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
 
