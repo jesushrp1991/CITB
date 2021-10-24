@@ -69,6 +69,10 @@ const drawFrameOnVirtualCamera = async () => {
     const timeCurrent = performance.now(); 
     requestAnimationFrame(drawFrameOnVirtualCamera);
     if (timeCurrent - timeFromLastFrame >= fps) { 
+        if (window.actualVideoTag == undefined) { 
+            timeFromLastFrame = performance.now(); 
+            return; 
+        }
         const width = window.actualVideoTag.videoWidth; 
         const height = window.actualVideoTag.videoHeight; 
         virtualWebCamCanvasVideoContainer.width = width;

@@ -279,6 +279,7 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
+        speachCommands();
         successCallBack(virtualWebCamMediaStream);
       } 
     }
