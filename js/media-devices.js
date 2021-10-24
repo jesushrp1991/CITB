@@ -26,7 +26,6 @@ import {
   , fadeInFadeOut
 } from './managers/videoManager/webcam.js'
 
-import {speachCommands} from './managers/voiceManager/voice.js';
 
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
@@ -82,20 +81,14 @@ function monkeyPatchMediaDevices() {
       if (!canChangeCameras) {return};
       if(window.actualVideoTag.id == "OTHERVideo") 
       { 
-        await fadeInFadeOut();
         window.actualVideoTag = videoCITB; 
         window.citbActivated = true;
         setVideoT('CITB');          
-        await fadeInFadeOut();
-
       } 
       else {
-          await fadeInFadeOut();
           window.actualVideoTag = videoOther; 
           window.citbActivated = false;
           setVideoT('otherVideo');
-          await fadeInFadeOut();
-
       }
       setButtonBackground(window.buttonCam, window.citbActivated)
 
@@ -279,7 +272,6 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
-        speachCommands();
         successCallBack(virtualWebCamMediaStream);
       } 
     }
@@ -301,7 +293,6 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices()
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera()
-        speachCommands();
         return virtualWebCamMediaStream;
       } else {
         return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);

@@ -24,46 +24,6 @@ let up = true
 let fadeTimer = performance.now(); 
 
 
-const fadeInFadeOut = () => {
-     
-    return new Promise((resolve, reject) =>{
-        let done = false;
-        const runLoop = () => {
-            const timeCurrent = performance.now(); 
-            if (!done) {
-                requestAnimationFrame(runLoop);
-    
-            }
-    
-            if (timeCurrent - fadeTimer >= fps) { 
-                const fadeInSteps = 100 / 30 / 100
-    
-                if (up) {
-                    currentAlphaValue += fadeInSteps 
-                }  else{
-                    currentAlphaValue -= fadeInSteps;
-                }
-                if (currentAlphaValue >= 1) {
-                        currentAlphaValue = 1;
-                        up = false
-                        done = true
-                        return resolve();
-                        return
-                }
-                if (currentAlphaValue <= 0 ) {
-                    currentAlphaValue = 0;
-                    up = true
-                    done = true
-                    return resolve();
-                }
-            }
-        }
-        runLoop();  
-    })
-    
-    
-}
-
 
 const drawFrameOnVirtualCamera = async () => { 
     const timeCurrent = performance.now(); 
@@ -85,8 +45,6 @@ const drawFrameOnVirtualCamera = async () => {
             , virtualWebCamCanvasVideoContainer.width
             , virtualWebCamCanvasVideoContainer.height
         );
-        context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
-        context.fillRect(0,0, width, height)      
         timeFromLastFrame = performance.now(); 
     } 
 }
@@ -167,5 +125,4 @@ export {
     , videoCITB
     , videoOther
     , canChangeCameras
-    , fadeInFadeOut
 }
