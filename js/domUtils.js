@@ -45,7 +45,7 @@ const getButtonCam = () => {
 const getButtonRec = () => {
   const buttonCam = document.createElement("button");
   buttonCam.className = "CITBButton";
-  buttonCam.classList.add("CITBRecButton");
+  buttonCam.classList.add("CITBCamButton");
   return buttonCam;
 };
 
@@ -102,7 +102,7 @@ const addElementsToDiv = (
   div.appendChild(buttonClass);
   div.appendChild(br2);
   div.appendChild(buttonRec),
-  div.appendChild(b3),
+  div.appendChild(br3),
   div.appendChild(buttonDrag);
   document.body.appendChild(div);
   div.style.display = "none";

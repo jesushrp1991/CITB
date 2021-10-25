@@ -9,19 +9,19 @@ import {
 
 //return tab screen capture
 async function captureScreen() {
-    mediaConstraints = {
+   var mediaConstraints = {
       video: {
         cursor: 'always',
         resizeMode: 'crop-and-scale'
       }
     }
   
-    const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
+    const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
     return screenStream
 }
 
 //return audio record
-async function captureMediaDevices(mediaConstraintse) {
+async function captureMediaDevices(mediaConstraints) {
   const stream = await navigator.mediaDevices.getUserMedia(mediaConstraints)
   
   return stream
