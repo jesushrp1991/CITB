@@ -12,22 +12,28 @@ const divHelp = () => {
     divHelp.setAttribute('class', 'container');  
     return divHelp;
   };
-const divHelpBox = () => {
-    const divHelpBox = document.createElement("div");
-    divHelpBox.setAttribute("id", "help_div");
-    divHelpBox.setAttribute('class', 'box');   
+const imgHelp = () => {
+    const divHelpBox = document.createElement("img");
+    divHelpBox.setAttribute("id", "box");
+    // divHelpBox.setAttribute('class', 'container');   
     return divHelpBox;
   };
 const showHelp = (help_div,divHelpBox,button) =>{  
+    setEventButtonNext(button);
     help_div.appendChild(divHelpBox);
-    divHelpBox.src = chrome.runtime.getURL (`helper/img/2.png`);
-    divHelpBox.appendChild(button);  
+    divHelpBox.src = "chrome-extension://pgloinlccpmhpgbnccfecikdjgdhneof/helper/img/1.png";
+    help_div.appendChild(button);  
     document.body.appendChild(help_div);
+}
+
+const setEventButtonNext = (button,setEventButtonNextFunction) =>{
+  button.addEventListener('click', setEventButtonNextFunction);
 }
 
 export {
     helptButtonNext,
-    divHelpBox,
+    imgHelp,
     divHelp,
-    showHelp
+    showHelp,
+    setEventButtonNext
 }

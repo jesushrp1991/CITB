@@ -73,23 +73,34 @@
     position: absolute;
     width: 85px;
     height: 25px;
-    top: 10px;
-    right: 10px;
+    top: 80px;
+    right: 80px;
     background-color: rgba(0, 255, 21, 4);
-    border-radius: 20px;
+    border-radius: 10px;
+    z-index: 995;
   }
   .helptButtonNextClass:hover{
     background-color: rgba(0, 255, 21, 0.3);
   }
 
 .container {
-    display: flex;              /* establish flex container */
-    flex-direction: column;     /* stack flex items vertically */
-    justify-content: center;    /* center items vertically, in this case */
-    align-items: center;        /* center items horizontally, in this case */
+    display: flex;              
+    flex-direction: column;     
+    justify-content: center;    
+    align-items: center;        
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    height:100%;
+    width:100%; 
+    background: rgba(51,51,51,0.7);
+    z-index: 990;
 }
 .box {
     /* width: 300px;
     margin: 5px; */
     text-align: center;
+    max-width: 90%;
 }
