@@ -8,9 +8,12 @@ const helpFunction = () => {
 }
 const changeImg = (imgCount) =>{
     let imgTag = document.getElementById("imgTag");
+    let aTag = document.getElementById("collado");
     console.log("imgCount",imgCount);
-    if(imgCount >= 8){
-        console.log("Entró");
+    if(imgCount == 7){
+        aTag.text = "Cerrar";
+    }else if(imgCount >= 8){
+        console.log("Cerrar!!!")
         parent.closeIFrame();
     }else{
         imgTag.src = chrome.runtime.getURL (`helper/img/${imgCount}.png`);
