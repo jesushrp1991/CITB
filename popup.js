@@ -3,7 +3,6 @@ let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
-
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
 
 const changeCam = () =>{
