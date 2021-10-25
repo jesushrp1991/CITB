@@ -69,7 +69,7 @@
     margin-left: 9px;
 }
 
-#iframe{
+#iframeHelp{
     display: block;       /* iframes are inline by default */
     background: #000;
     border: none;         /* Reset default border */
