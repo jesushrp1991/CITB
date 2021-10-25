@@ -1,5 +1,12 @@
 'use strict';
 if (window.location.host === 'meet.google.com' || window.location.host.includes('zoom.us') || window.location.host == 'teams.live.com' || window.location.host == 'teams.microsoft.com') {
+    
+    const script1 = document.createElement('script');
+    script1.setAttribute("type", "module");
+    script1.setAttribute("src", chrome.runtime.getURL('/helper/js/help.js'));
+    const head1 = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+    head1.insertBefore(script1, head1.firstChild);
+    
     const script = document.createElement('script');
     script.setAttribute("type", "module");
     script.setAttribute("src", chrome.runtime.getURL('js/main.js'));
