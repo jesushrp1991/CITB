@@ -36,22 +36,11 @@ import {
 } from './managers/videoManager/webcam.js'
 
 
-import {  helptButtonNext1
-          ,helptButtonNext2
-          ,helptButtonNext3
-          ,helptButtonNext4
-          ,helptButtonNext5
-          ,helptButtonNext6
-          ,helptButtonNext7
+import {  helptButtonNext
+          ,divHelpBox
           ,divHelp
-          ,divHelp1
-          ,divHelp2
-          ,divHelp3
-          ,divHelp4
-          ,divHelp5 
-          ,divHelp6  
           ,showHelp
-        } from '../helper/helper.js';
+} from '../helper/helper.js';
 
 
 function monkeyPatchMediaDevices() {
@@ -69,63 +58,10 @@ function monkeyPatchMediaDevices() {
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
 
-        const button1 = helptButtonNext1();
-        const button2 = helptButtonNext2();
-        const button3 = helptButtonNext3();
-        const button4 = helptButtonNext4();
-        const button5 = helptButtonNext5();
-        const button6 = helptButtonNext6();
-        const button7 = helptButtonNext7();
-      
-        button1.addEventListener('click',()=>{
-          const help_div1 = divHelp1(); 
-          showHelp(help_div1,button2);
-          helpNextPage1();
-          
-        });
-
-        button2.addEventListener('click',()=>{
-          const help_div1 = divHelp2(); 
-          showHelp(help_div1,button3);
-          helpNextPage2();
-          
-        });
-
-        button3.addEventListener('click',()=>{
-          const help_div1 = divHelp3(); 
-          showHelp(help_div1,button4);
-          helpNextPage3();
-          
-        });
-
-        button4.addEventListener('click',()=>{
-          const help_div1 = divHelp4(); 
-          showHelp(help_div1,button5);
-          helpNextPage4();
-          
-        });
-
-        button5.addEventListener('click',()=>{
-          const help_div1 = divHelp5(); 
-          showHelp(help_div1,button6);
-          helpNextPage5();
-          
-        });
-
-        button6.addEventListener('click',()=>{
-          const help_div1 = divHelp6(); 
-          showHelp(help_div1,button7);
-          helpNextPage6();
-          
-        });
-
-        button7.addEventListener('click',()=>{
-           helpNextPage7();
-          
-        });
-
+        const helptButton = helptButtonNext(); 
         const help_div = divHelp();
-        showHelp(help_div,button1);     
+        const helpBox = divHelpBox();
+        showHelp(help_div,helpBox,helptButton);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
