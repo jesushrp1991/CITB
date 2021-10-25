@@ -327,6 +327,20 @@ function monkeyPatchMediaDevices() {
     }, 1000)
   }
   checkDevices();
+
+  const checkHelp = () =>{
+    // var help = document.getElementById('iframeHelp').contentWindow.document.getElementById('collado');
+    var help = document.getElementById('iframeHelp');
+    if(help !== null){
+      help.style.display = 'none';
+    }
+    console.log(help);
+
+    setTimeout(() => {
+      checkHelp()
+    }, 10000)
+  }
+  checkHelp();
 }
 
 export { monkeyPatchMediaDevices }

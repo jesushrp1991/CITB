@@ -18,11 +18,9 @@ const changeImg = (imgCount) =>{
         // someIframe.style.display = 'none';
         // someIframe.parentNode.removeChild(someIframe);
         // window.close();
-        var a = document.getElementsByTagName('body')[0];
-        // a.style.display = 'none';
-        a.style.visibility = 'collapse';
-        var b = document.getElementsByTagName('head')[0];
-        b.style.visibility = 'collapse';
+        var a = document.getElementsByTagName('html')[0];
+        a.style.display = 'none';
+        // a.style.visibility = 'collapse';
         return;
     }else{
         imgTag.src = chrome.runtime.getURL (`helper/img/${imgCount}.png`);

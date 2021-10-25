@@ -14,11 +14,6 @@ if (window.location.host === 'meet.google.com' || window.location.host.includes(
             iFrame.src  = chrome.runtime.getURL ("/helper/index.html");
             const documentBody = document.body || document.getElementsByTagName("body")[0] ;
             documentBody.insertBefore (iFrame, documentBody.firstChild);
-
-            // const script1 = document.createElement('script');
-            // script1.setAttribute("type", "module");
-            // script1.setAttribute("src", chrome.runtime.getURL('/helper/js/help.js'));
-            // documentBody.insertBefore (script1, documentBody.lastChild);
         }
     }
    
