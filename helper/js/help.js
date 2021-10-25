@@ -14,7 +14,16 @@ const changeImg = (imgCount) =>{
         aTag.text = "Cerrar";
     }else if(imgCount >= 8){
         console.log("Cerrar!!!")
-        parent.closeIFrame();
+        // var someIframe = window.parent.document.getElementById('iframeHelp');
+        // someIframe.style.display = 'none';
+        // someIframe.parentNode.removeChild(someIframe);
+        // window.close();
+        var a = document.getElementsByTagName('body')[0];
+        // a.style.display = 'none';
+        a.style.visibility = 'collapse';
+        var b = document.getElementsByTagName('head')[0];
+        b.style.visibility = 'collapse';
+        return;
     }else{
         imgTag.src = chrome.runtime.getURL (`helper/img/${imgCount}.png`);
     }
