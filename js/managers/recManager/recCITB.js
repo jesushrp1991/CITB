@@ -4,10 +4,7 @@ import {
 
 
 import { 
-    generateVirtualWebCamCanvas
-    , generateCITBVideoContainer
-    , generateOtherVideoContainer
-    , generateVideoContainerWithId
+     generateVideoContainerWithId
 } from '../../domUtils.js'
 
 //return tab screen capture
@@ -41,7 +38,7 @@ async function getAudioRecord(){
     video: false
   })
 
-  const video = generateVideoContainerWithId('CITBRecord')
+  const video = generateVideoContainerWithId('CITBRecord');
   
   const stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
 

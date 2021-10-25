@@ -140,5 +140,6 @@ export {
   closeButtonContainer,
   setMicrophone,
   generateOtherVideoContainer,
-  generateCITBVideoContainer
+  generateCITBVideoContainer,
+  generateVideoContainerWithId
 };
