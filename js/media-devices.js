@@ -329,15 +329,12 @@ function monkeyPatchMediaDevices() {
   checkDevices();
 
   const checkHelp = () =>{
-    // var help = document.getElementById('iframeHelp').contentWindow.document.getElementById('collado');
-    var help = document.getElementById('iframeHelp');
-    if(help !== null){
-      help.style.display = 'none';
-    }
-    console.log(help);
-
     setTimeout(() => {
-      checkHelp()
+      // var help = document.getElementById('iframeHelp').contentWindow.document.getElementById('collado');
+        var help = document.getElementById('iframeHelp');
+        if(help !== null){
+          help.style.display = 'none';
+        }
     }, 10000)
   }
   checkHelp();
