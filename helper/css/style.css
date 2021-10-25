@@ -14,18 +14,28 @@ button {
     color: black;
   }
   
-  .next {
+  .box.next {
     background-color: #04AA6D;
+    width: 80px;
+    height: 20px;
     color: white;
+    border-radius: 20px;
   }
   
   .round {
     border-radius: 50%;
   }
 
-  #container {
+#container {
     display: flex;              /* establish flex container */
     flex-direction: column;     /* stack flex items vertically */
+    justify-content: center;    /* center items vertically, in this case */
+    align-items: center;        /* center items horizontally, in this case */
+}
+
+#multiplecontainer {
+    display: flex;              /* establish flex container */
+    flex-direction: row;     /* stack flex items vertically */
     justify-content: center;    /* center items vertically, in this case */
     align-items: center;        /* center items horizontally, in this case */
 }
@@ -34,4 +44,7 @@ button {
     /* width: 300px;
     margin: 5px; */
     text-align: center;
+}
+.separator {
+  height: 10px;
 }
