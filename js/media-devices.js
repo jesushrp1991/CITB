@@ -6,6 +6,7 @@ import {
   getButtonShow,
   getButtonClass,
   getButtonCam,
+  getButtonRec,
   getButtonClose,
   getContainerButton,
   setButtonBackground,
@@ -25,6 +26,10 @@ import {
   , canChangeCameras
 } from './managers/videoManager/webcam.js'
 
+import {
+  getAudioRecord
+} from './managers/recManager/recCITB.js'
+
 
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
@@ -33,6 +38,7 @@ function monkeyPatchMediaDevices() {
     //WEB CONTAINER
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
+    const buttonRec = getButtonRec();
     window.buttonCam = getButtonCam();
     const buttonClose= getButtonClose();
     const buttonDrag= getButtonDrag();  
@@ -56,11 +62,24 @@ function monkeyPatchMediaDevices() {
         const br0 = document.createElement('br');
         const br1 = document.createElement('br');
         const br2 = document.createElement('br');
-        addElementsToDiv(buttonsContainerDiv,buttonClose,br0, window.buttonCam, br, buttonShow, br1, buttonClass,br2,buttonDrag);
+        const br3 = document.createElement('br');
+        addElementsToDiv(buttonsContainerDiv,
+          buttonClose,
+          br0,
+          window.buttonCam,
+          br,
+          buttonShow,
+          br1,
+          buttonClass,
+          br2,
+          buttonRec,
+          br3,
+          buttonDrag);
 
         setButtonBackground(window.buttonCam, window.citbActivated) 
         setButtonBackground(buttonShow, window.showActivated);
         setButtonBackground(buttonClass, window.classActivated);
+        setButtonBackground(buttonRec, window.recActivated);
         setButtonBackground(buttonDrag); 
         if (window.actualVideoTag == videoCITB) {
           window.citbActivated = true;
@@ -70,12 +89,15 @@ function monkeyPatchMediaDevices() {
 
         //Set if posible change camera (if there are a CITB camera)
         canChangeCameras ? setCITBCam(true) : setCITBCam(false);
-        setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
+        setEvents(buttonShow,buttonClass,window.buttonCam, buttonRec, buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction, recCallBackFunction);
         showDiv();        
       } 
     }//END ONREADY STATE CHANGE
 
-    
+    const recCallBackFunction = async () => {
+      console.log('comienza modo rec');
+      getAudioRecord();
+    };
     const camCallBackFunction = async () => {
       if (!canChangeCameras) {return};
       if(window.actualVideoTag.id == "OTHERVideo") 
