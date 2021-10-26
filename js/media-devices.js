@@ -98,8 +98,9 @@ function monkeyPatchMediaDevices() {
 
     const recCallBackFunction = async () => {
       console.log('comienza modo rec');
-      recordAudioScreen();
-      recordAudioWebCam();
+      
+      //recordAudioScreen();
+      //recordAudioWebCam();
      
     };
     const camCallBackFunction = async () => {
