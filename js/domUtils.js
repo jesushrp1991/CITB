@@ -41,6 +41,14 @@ const getButtonCam = () => {
   buttonCam.classList.add("CITBCamButton");
   return buttonCam;
 };
+
+const getButtonRec = () => {
+  const buttonCam = document.createElement("button");
+  buttonCam.className = "CITBButton";
+  buttonCam.classList.add("CITBCamButton");
+  return buttonCam;
+};
+
 const getButtonClose = () => {
   const buttonClose = document.createElement("button");
   buttonClose.setAttribute("id", "buttonClose");
@@ -82,6 +90,8 @@ const addElementsToDiv = (
   br1,
   buttonClass,
   br2,
+  buttonRec,
+  br3,
   buttonDrag
 ) => {
   div.appendChild(buttonClose);
@@ -91,6 +101,8 @@ const addElementsToDiv = (
   div.appendChild(br1);
   div.appendChild(buttonClass);
   div.appendChild(br2);
+  div.appendChild(buttonRec),
+  div.appendChild(br3),
   div.appendChild(buttonDrag);
   document.body.appendChild(div);
   div.style.display = "none";
@@ -174,10 +186,12 @@ export {
   setButtonBackground,
   addElementsToDiv,
   getVirtualCam,
+  getButtonRec,
   getButtonDrag,
   closeButtonContainer,
   setMicrophone,
   generateOtherVideoContainer,
+  generateVideoContainerWithId
   generateCITBVideoContainer,
   setVideoT, 
   setModeT, 

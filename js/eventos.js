@@ -2,13 +2,26 @@ import {
   closeButtonContainer
   } from './domUtils.js';
 
-const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
+const setEvents = (
+  buttonShow,
+  buttonClass,
+  buttonCam,
+  buttonRec,
+  buttonClose,
+  buttonsContainerDiv,
+  camCallBackFunction,
+  showCallBackFunction,
+  classCallBackFunction,
+  recCallBackFunction
+  ) => {
     
     buttonCam.addEventListener('click', camCallBackFunction);
 
     buttonShow.addEventListener('click', showCallBackFunction);
       
     buttonClass.addEventListener('click', classCallBackFunction);
+
+    buttonRec.addEventListener('click', recCallBackFunction);
       
     buttonClose.addEventListener('click', () => {
         closeButtonContainer(buttonsContainerDiv);
@@ -29,6 +42,10 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       buttonClass.addEventListener("mouseenter",() => {
         handleMouseOverEvent();
       },{passive: false});
+
+      buttonRec.addEventListener("mouseenter",() => {
+        handleMouseOverEvent();
+      },{passive: false});
     
       buttonClose.addEventListener("mouseleave",() => {
         handleMouseLeaveEvent();
@@ -43,6 +60,10 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       },{passive: false});
     
       buttonClass.addEventListener("mouseleave",() => {
+        handleMouseLeaveEvent();
+      },{passive: false});
+
+      buttonRec.addEventListener("mouseleave",() => {
         handleMouseLeaveEvent();
       },{passive: false});
     

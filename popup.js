@@ -2,9 +2,10 @@
 let buttonCam = document.getElementById('button1');
 let buttonShow = document.getElementById('button2');
 let buttonClass = document.getElementById('button3');
+let buttonRec= document.getElementById('button5');
 let button4WEB = document.getElementById('button4');
 
-let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
+let showActivated = false, classActivated = false, recActivated = false, citbActivated,webContainerActivated,canChangeCameras;
 
 const changeCam = () =>{
   document.getElementsByClassName("CITBCamButton")[0].click(); 
@@ -74,6 +75,40 @@ buttonClass.addEventListener("click", async () => {
   });
   classActivated = !classActivated;
   setButtonClassBackground(classActivated);
+});
+
+const setButtonrRecBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonClass.classList.remove('button3Deactivated');
+    buttonClass.classList.add('button3Activated');
+  } else {
+    buttonClass.classList.remove('button3Activated');
+    buttonClass.classList.add('button3Deactivated');
+  }
+}
+
+const setButtonRecBackground = (citbActivated) => {
+  if (citbActivated) {
+    buttonRec.classList.remove('button5Deactivated');
+    buttonRec.classList.add('button5Activated');
+  } else {
+    buttonRec.classList.remove('button5Activated');
+    buttonRec.classList.add('button5Deactivated');
+  }
+}
+
+const changeRec = () =>{
+  document.getElementsByClassName("CITBRecButton")[0].click(); 
+}
+
+buttonRec.addEventListener("click", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: changeRec,
+  });
+  recActivated = !recActivated;
+  setButtonRecBackground(recActivated);
 });
  
 
@@ -148,13 +183,24 @@ const chekModeState = async() => {
       showActivated = true
       setButtonClassBackground(false);
       setButtonShowBackground(true);
+      setButtonRecBackground(false);
+      SET
     }else if (injectionResults[0].result == "CLASS"){
       classActivated = true;
       setButtonClassBackground(true);
       setButtonShowBackground(false);
-    }else{
+      setButtonRecBackground(false);
+    } else if(injectionResults[0].result == "REC"){
+
       setButtonClassBackground(false);
       setButtonShowBackground(false);
+      setButtonRecBackground(true);
+
+    } else {
+    
+      setButtonClassBackground(false);
+      setButtonShowBackground(false);
+      setButtonRecBackground(false);
     }
   });
 }
