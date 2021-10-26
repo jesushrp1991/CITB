@@ -99,8 +99,6 @@
     z-index: 990;
 }
 .box {
-    /* width: 300px;
-    margin: 5px; */
     text-align: center;
-    max-width: 90%;
+    max-width: 100%;
 }

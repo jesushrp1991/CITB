@@ -15,7 +15,7 @@ const divHelp = () => {
 const imgHelp = () => {
     const divHelpBox = document.createElement("img");
     divHelpBox.setAttribute("id", "box");
-    // divHelpBox.setAttribute('class', 'container');   
+    divHelpBox.setAttribute('class', 'box');   
     return divHelpBox;
   };
 const showHelp = (help_div,divHelpBox,button) =>{  
