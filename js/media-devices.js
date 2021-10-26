@@ -27,10 +27,8 @@ import {
 } from './managers/videoManager/webcam.js'
 
 import {
-  recordAudioScreen,
-  recordAudioWebCam,
-  stopRecording
-} from './managers/recManager/recCITB.js'
+  recordScreem
+} from './managers/recManager/recManager.js'
 
 
 function monkeyPatchMediaDevices() {
@@ -98,9 +96,7 @@ function monkeyPatchMediaDevices() {
 
     const recCallBackFunction = async () => {
       console.log('comienza modo rec');
-      
-      //recordAudioScreen();
-      //recordAudioWebCam();
+      recordScreem();
      
     };
     const camCallBackFunction = async () => {
