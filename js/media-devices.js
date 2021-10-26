@@ -33,10 +33,20 @@ import {
 } from './managers/videoManager/webcam.js'
 
 
+import {  helptButtonNext
+          ,imgHelp
+          ,divHelp
+          ,showHelp
+          ,setEventButtonNext
+} from '../helper/helper.js';
+
+
 function monkeyPatchMediaDevices() {
     window.showActivated = false;
     window.classActivated = false;
 
+    window.helpCount = 2;
+    
     //WEB CONTAINER
     const buttonShow = getButtonShow();        
     const buttonClass = getButtonClass();
@@ -50,8 +60,16 @@ function monkeyPatchMediaDevices() {
     const pModeExistsCam = createModeExistsCam();
     const pModeCurrentMic = createModeCurrentMic()
 
+    const helptButton = helptButtonNext(); 
+    const help_div = divHelp();
+    const img_help = imgHelp();
+
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
+
+        
+        setEventButtonNext(helptButton,buttonHelpNextCallBack);
+        showHelp(help_div,img_help,helptButton);     
 
 
         //HTML TAGS TO SYNC WHIT POPUP
@@ -87,7 +105,16 @@ function monkeyPatchMediaDevices() {
       } 
     }//END ONREADY STATE CHANGE
 
-    
+    const buttonHelpNextCallBack = () =>{
+      if(window.helpCount == 7){
+        helptButton.textContent = "Close";
+      }else if(window.helpCount >= 8){
+          help_div.style.display = 'none';
+          return;
+      }
+      img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
+      window.helpCount ++;
+    }
     const camCallBackFunction = async () => {
       if (!canChangeCameras) {return};
       if(window.actualVideoTag.id == "OTHERVideo") 
