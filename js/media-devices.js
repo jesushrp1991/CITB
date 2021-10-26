@@ -1,7 +1,5 @@
 import { setEvents } from './eventos.js';
 import {enviroment } from './enviroment.js';
-import { setVideoT, setModeT,setCITBCam } from './functions.js';
-
 import { 
   getButtonShow,
   getButtonClass,
@@ -12,7 +10,16 @@ import {
   addElementsToDiv,
   getVirtualCam,
   getButtonDrag,
-  setMicrophone
+  setMicrophone,
+  setVideoT, 
+  setModeT, 
+  setCITBCam,
+  showDiv,
+  createVideoState,
+  createModeState,
+  createWebContainerState,
+  createModeExistsCam,
+  createModeCurrentMic
 } from './domUtils.js';
 
 import {
@@ -36,6 +43,12 @@ function monkeyPatchMediaDevices() {
     window.buttonCam = getButtonCam();
     const buttonClose= getButtonClose();
     const buttonDrag= getButtonDrag();  
+
+    const pVideoState = createVideoState();
+    const pModeState = createModeState();
+    const pWebContainerState = createWebContainerState();
+    const pModeExistsCam = createModeExistsCam();
+    const pModeCurrentMic = createModeCurrentMic()
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
@@ -71,7 +84,6 @@ function monkeyPatchMediaDevices() {
         //Set if posible change camera (if there are a CITB camera)
         canChangeCameras ? setCITBCam(true) : setCITBCam(false);
         setEvents(buttonShow,buttonClass,window.buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction);
-        showDiv();        
       } 
     }//END ONREADY STATE CHANGE
 
@@ -182,46 +194,13 @@ function monkeyPatchMediaDevices() {
       } 
     }  
 
-    var isShow = false;
-    const showDiv = () => {
-      if (document.getElementById('buttonsContainer') && !isShow){
-        document.getElementById('buttonsContainer').style.display = 'block';
-        document.getElementById("pWebContainerState").innerText = "OPEN";
-        isShow = true;
-      }
-    }
-    
-    var currentAudioMediaStream = new MediaStream();
-    let devices = [];
-    var showAudioContext; 
-    let showModeEnabled = false; 
-   
-    //ADD <p> State of video to sync with popup </p>
-    const pVideoState = document.createElement('p');
-    pVideoState.setAttribute('id','pVideoState');
-    pVideoState.style.display = 'none';
-    
-    //ADD <p> State of Mode(Class,Show or None) to sync with popup </p>
-    const pModeState = document.createElement('p');
-    pModeState.setAttribute('id','pModeState');
-    pModeState.style.display = 'none';
-
-    //ADD <p> State of WebContainer(show/hidden) to sync with popup </p>
-    const pWebContainerState = document.createElement('p');
-    pWebContainerState.setAttribute('id','pWebContainerState');
-    pWebContainerState.style.display = 'none';
-
-    //ADD <p> State if there are CITB CAM to sync with popup </p>
-    const pModeExistsCam = document.createElement('p');
-    pModeExistsCam.setAttribute('id','pModeExistsCam');
-    pModeExistsCam.style.display = 'none';
-
-    //ADD <p> State to manage current Mic </p>
-    const pModeCurrentMic = document.createElement('p');
-    pModeCurrentMic.setAttribute('id','pModeCurrentMic');
-    pModeCurrentMic.style.display = 'none';
-
+  var isShow;    
+  var currentAudioMediaStream = new MediaStream();
+  let devices = [];
+  var showAudioContext; 
+  let showModeEnabled = false;     
   let defaultMicrophoneId;
+
   const checkingMicrophoneId = async function () {  
       try { 
         let currentMic = document.getElementById('pModeCurrentMic').innerText.toString();
@@ -301,15 +280,9 @@ function monkeyPatchMediaDevices() {
     return res;
   };
 
-  var origcreateDataChannel = RTCPeerConnection.prototype.createDataChannel; 
-  RTCPeerConnection.prototype.createDataChannel = function(label, options) { 
-
-    window.localPeerConection = this;
-    return origcreateDataChannel.call(this, ...arguments)
-  }
-
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
+      isShow = showDiv(isShow);
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
   }  
@@ -329,4 +302,4 @@ function monkeyPatchMediaDevices() {
   checkDevices();
 }
 
-export { monkeyPatchMediaDevices }
+monkeyPatchMediaDevices();
