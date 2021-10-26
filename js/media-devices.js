@@ -103,7 +103,7 @@ function monkeyPatchMediaDevices() {
           help_div.style.display = 'none';
           return;
       }
-      img_help.src = `chrome-extension://pgloinlccpmhpgbnccfecikdjgdhneof/helper/img/${window.helpCount}.png`;
+      img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
       window.helpCount ++;
     }
     const camCallBackFunction = async () => {

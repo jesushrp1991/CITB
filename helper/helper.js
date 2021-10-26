@@ -1,3 +1,5 @@
+import {enviroment } from '../js/enviroment.js';
+
 const helptButtonNext = () => {
     const helptButtonNext = document.createElement("button");
     helptButtonNext.setAttribute("id", "helptButtonNext1");
@@ -21,7 +23,7 @@ const imgHelp = () => {
 const showHelp = (help_div,divHelpBox,button) =>{  
     setEventButtonNext(button);
     help_div.appendChild(divHelpBox);
-    divHelpBox.src = "chrome-extension://pgloinlccpmhpgbnccfecikdjgdhneof/helper/img/1.png";
+    divHelpBox.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/1.png`;
     help_div.appendChild(button);  
     document.body.appendChild(help_div);
 }
