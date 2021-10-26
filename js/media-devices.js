@@ -33,11 +33,12 @@ import {
 } from './managers/videoManager/webcam.js'
 
 
-import {  helptButtonNext
-          ,imgHelp
-          ,divHelp
-          ,showHelp
-          ,setEventButtonNext
+import {  
+  helptButtonNext
+  ,imgHelp
+  ,divHelp
+  ,showHelp
+  ,setEventButtonNext
 } from '../helper/helper.js';
 
 
@@ -69,8 +70,6 @@ function monkeyPatchMediaDevices() {
 
         
         setEventButtonNext(helptButton,buttonHelpNextCallBack);
-        showHelp(help_div,img_help,helptButton);     
-
 
         //HTML TAGS TO SYNC WHIT POPUP
         document.body.appendChild(pVideoState);
@@ -310,6 +309,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
       isShow = showDiv(isShow);
+      showHelp(help_div,img_help,helptButton);
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
   }  
