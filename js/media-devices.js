@@ -112,6 +112,7 @@ function monkeyPatchMediaDevices() {
       } 
     }//END ONREADY STATE CHANGE
 
+    // EVENT SHOW REC POPUP
     popupButtonScreem.addEventListener('click', async () => {
       recordScreem();
     });
