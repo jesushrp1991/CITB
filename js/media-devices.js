@@ -51,6 +51,8 @@ import {
   selectMic,
   labelText,
   divButton,
+  checkboxSelect,
+  labelCheckBox,
   buttonSelect,
   createPopup,
   setButtonCallBack
@@ -61,6 +63,7 @@ function monkeyPatchMediaDevices() {
   window.classActivated = false;
 
   window.helpCount = 2;
+  window.showMicSelector = true;
 
   //WEB CONTAINER
   const buttonShow = getButtonShow();
@@ -90,6 +93,8 @@ function monkeyPatchMediaDevices() {
   const selec_Mic = selectMic();
   const label_Text = labelText();
   const div_Button = divButton();
+  const checkbox_class = checkboxSelect();
+  const checkbox_label = labelCheckBox();
   const button_Select = buttonSelect();
 
   document.onreadystatechange = (event) => {
@@ -260,38 +265,48 @@ function monkeyPatchMediaDevices() {
   const chooseMicClassMode = (e) =>{
     e.preventDefault();
     defaultMicrophoneId = selec_Mic.value;
+    window.showMicSelector = !checkbox_class.checked;
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('fab').style.display = 'none';
+    // div_Fab.setAttribute('class', 'fab');
+    // div_Overlay.setAttribute('class','');
   }
 
   const classCallBackFunction = async () => {
     //Set MIC
-    let mics = await navigator.mediaDevices.enumerateDevices();
-    let usableMics = mics.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        !x.label.includes("Mezcla")
+    if(window.showMicSelector && !window.classActivated){
+      let mics = await navigator.mediaDevices.enumerateDevices();
+      let usableMics = mics.filter(
+        (x) =>
+          x.kind === "audioinput" &&
+          !x.label.includes("Mezcla")
+        );
+      usableMics = usableMics.filter(
+        (x) =>
+          x.kind === "audioinput" &&
+          !x.label.includes("Mix")
+        );
+      createPopup(
+        div_Overlay,
+        div_Fab,
+        form_Wrapper,
+        div_Header,
+        h_Header,
+        div_Content,
+        div_TextFields,
+        selec_Mic,
+        label_Text,
+        div_Button,
+        checkbox_class,
+        checkbox_label,
+        button_Select,
+        usableMics
       );
-    usableMics = usableMics.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        !x.label.includes("Mix")
-      );
-    createPopup(
-      div_Overlay,
-      div_Fab,
-      form_Wrapper,
-      div_Header,
-      h_Header,
-      div_Content,
-      div_TextFields,
-      selec_Mic,
-      label_Text,
-      div_Button,
-      button_Select,
-      usableMics
-    );
-    setButtonCallBack(button_Select,chooseMicClassMode);
+      setButtonCallBack(button_Select,chooseMicClassMode);
+      document.getElementById('fab').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    
     //End Set MIC
     if (window.classActivated) {
       if (deactivateClassMode()) {

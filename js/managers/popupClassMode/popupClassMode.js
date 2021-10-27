@@ -62,6 +62,22 @@ const divButton = () => {
     buttonDiv.setAttribute("class", "btn-wrapper");
     return buttonDiv;
 };
+const checkboxSelect = () => {
+    const buttonDiv = document.createElement("input");
+    buttonDiv.setAttribute("id", "checkbox");
+    buttonDiv.setAttribute("type", "checkbox");
+    buttonDiv.setAttribute("class", "mdl-checkbox__input");
+    return buttonDiv;
+};
+
+const labelCheckBox = () => {
+    const textLabel = document.createElement("label");
+    textLabel.setAttribute("for", "checkbox");
+    textLabel.setAttribute("class", "mdl-selectfield__label");
+    textLabel.innerText = "Don't show again.";
+    return textLabel;
+};
+
 const buttonSelect = () => {
     const buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submit");
@@ -71,6 +87,9 @@ const buttonSelect = () => {
 };
 
 const addOptionsToSelect = (select,usableMics) =>{
+    while (select.options.length > 0) {                
+        select.remove(0);
+    }  
     usableMics.forEach(element => {
         var option = document.createElement("option");
         option.setAttribute('class','mdl-menu__item');
@@ -93,9 +112,12 @@ const createPopup = (
     select_Mic,
     labelText,
     divButton,
+    checkboxSelect,
+    labelCheckBox,
     buttonSelect,
     usableMics
   ) => {
+    const br = document.createElement("br")
     addOptionsToSelect(select_Mic,usableMics);
     divFab.setAttribute('class', 'fab active');
     divOverlay.setAttribute('class','dark-overlay');
@@ -108,6 +130,9 @@ const createPopup = (
     divContent.appendChild(divTextFields);
     divTextFields.appendChild(select_Mic);
     divTextFields.appendChild(labelText);
+    divTextFields.appendChild(br);
+    divTextFields.appendChild(checkboxSelect);
+    divTextFields.appendChild(labelCheckBox);
     divContent.appendChild(divButton);
     divButton.appendChild(buttonSelect);
 };
@@ -128,6 +153,8 @@ export {
     selectMic,
     labelText,
     divButton,
+    checkboxSelect,
+    labelCheckBox,
     buttonSelect,
     createPopup,
     setButtonCallBack
