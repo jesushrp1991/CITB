@@ -29,7 +29,18 @@ import {
 import {
   recordScreem,
   recordVirtualCam
-} from './managers/recManager/recmanager.js'
+} from './managers/recManager/recManager.js'
+
+
+import {
+  generatePopupWrapper,
+  generatePopupBox,
+  generatePopupTitle,
+  generatePopupText,
+  generatePopupClose,
+  createRecPopup
+
+} from './managers/recManager/recPopupManager.js'
 
 
 function monkeyPatchMediaDevices() {
@@ -43,6 +54,15 @@ function monkeyPatchMediaDevices() {
     window.buttonCam = getButtonCam();
     const buttonClose= getButtonClose();
     const buttonDrag= getButtonDrag();  
+
+    //POPUP REC MODE
+    
+    const popupWrapper = generatePopupWrapper();
+    const popupBox = generatePopupBox();
+    const popupTitle = generatePopupTitle();
+    const popupText = generatePopupText();
+    const popupClose = generatePopupClose();
+   
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
@@ -97,7 +117,14 @@ function monkeyPatchMediaDevices() {
 
     const recCallBackFunction = async () => {
       console.log('comienza modo rec');
-      recordScreem();
+      //recordScreem();
+      createRecPopup(
+         popupWrapper,
+         popupBox,
+         popupWrapper,
+         popupText,
+         popupClose
+      );
      
     };
     const camCallBackFunction = async () => {
