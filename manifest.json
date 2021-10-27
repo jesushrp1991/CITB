@@ -39,7 +39,7 @@
       "js": [
         "js/inject.js"
       ],
-      "css": ["css/floatinbuttons.css"],
+      "css": ["css/floatinbuttons.css", "css/popuprec.css"],
       "run_at": "document_start",
       "all_frames": true
     } 
