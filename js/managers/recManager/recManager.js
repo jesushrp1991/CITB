@@ -22,16 +22,10 @@ async function captureScreen() {
     return screenStream
 }
 
-//return audio record
-async function captureMediaDevices(mediaConstraints) {
-  const stream = await navigator.mediaDevices.getUserMedia(mediaConstraints)
-  
-  return stream
-}
 
 //return external audio
-async function captureExternalAudio(){
-  const externalAudio = await chrome.tabCapture.capture({
+function captureExternalAudio(){
+  chrome.tabCapture.capture({
     video: false,
     audio: true,
     audioConstraints:
@@ -41,21 +35,23 @@ async function captureExternalAudio(){
             chromeMediaSource: 'tab'
         }
     }
+  }, function(stream){
+    return stream;
   });
 
-  return externalAudio;
+  
 }
 
 //return citb audio
 async function captureCITBAudio(){
   const listDevices = await navigator.mediaDevices.enumerateDevices();
-  let citbAudio = listDevices.filter(x => (x.kind === 'audioinput' && !x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+  let audiosDevices = listDevices.filter(x => (x.kind === 'audioinput' && x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
 
-  if(citbAudio){
+  if(audiosDevices){
     const stream = await navigator.mediaDevices.getUserMedia({
       video: false,
       audio: {
-        deviceId: citbAudio[0].deviceId
+        deviceId: audiosDevices[0].deviceId
       }
     });
     return stream;
@@ -64,6 +60,25 @@ async function captureCITBAudio(){
   }
 
 
+}
+
+//return virtual cam
+async function captureVirtualCam(){
+  const listDevices = await navigator.mediaDevices.enumerateDevices();
+  let camsDevices = listDevices.filter(x => (x.kind === 'videoinput' && 
+  x.label.includes(enviroment.MYAUDIODEVICELABEL))); 
+
+  if(camsDevices.length > 0){
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: camsDevices[0].deviceId
+      },
+      audio: false
+    });
+    return stream;
+  } else {
+    throw "Virtual Webcam CITB not found";
+  }
 }
 
 // merge citb and external audio
@@ -88,7 +103,37 @@ async function mergeFullAudio(){
 }
 
 async function recordVirtualCam(){
+  const virtualCamStream = await captureVirtualCam();
+  const audioStream = mergeFullAudio();
 
+  const stream = new MediaStream([...virtualCamStream.getTracks(), ...audioStream.getTracks()]);
+
+  recorder = new MediaRecorder(stream)
+  let chunks = []
+
+  recorder.ondataavailable = event => {
+    if (event.data.size > 0) {
+      chunks.push(event.data)
+    }
+  }
+  
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, {
+      type: 'video/webm'
+    })
+    
+    chunks = []
+    const blobUrl = URL.createObjectURL(blob)
+
+    console.log(blobUrl);
+    
+    stream.getTracks().forEach((track) => {
+          track.stop();
+    });
+
+   }
+  
+  recorder.start(200);
 }
 
 async function recordScreem(){
@@ -128,5 +173,6 @@ async function recordScreem(){
 
 
   export {
-    recordScreem
+    recordScreem,
+    recordVirtualCam
 }

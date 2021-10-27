@@ -1,8 +1,8 @@
 const enviroment = {
     //**** */ CONFIGURATION FOR CITB & CHROME ORIGINAL ID *****//
-    EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
+    EXTENSIONID: "mkpcjikbakhnhopkmaglpplplofmiloh",
     MYVIDEODDEVICELABEL: "2K HD Camera",
-    MYAUDIODEVICELABEL: 'CITB',
+    MYAUDIODEVICELABEL: 'Microphone (Realtek(R) Audio)',
     fps : 1000/30
 }
 

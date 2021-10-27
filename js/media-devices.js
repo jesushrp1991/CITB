@@ -27,8 +27,9 @@ import {
 } from './managers/videoManager/webcam.js'
 
 import {
-  recordScreem
-} from './managers/recManager/recManager.js'
+  recordScreem,
+  recordVirtualCam
+} from './managers/recManager/recmanager.js'
 
 
 function monkeyPatchMediaDevices() {
