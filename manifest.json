@@ -38,8 +38,9 @@
       ],
       "js": [
         "js/inject.js"
+        ,"js/external/material.min.js"
       ],
-      "css": ["css/floatinbuttons.css"],
+      "css": ["css/floatinbuttons.css","css/material.min.css"],
       "run_at": "document_start",
       "all_frames": true
     } 
