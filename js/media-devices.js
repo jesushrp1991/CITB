@@ -112,11 +112,11 @@ function monkeyPatchMediaDevices() {
       } 
     }//END ONREADY STATE CHANGE
 
-    popupButtonScreem.addEventListener('click', () => {
+    popupButtonScreem.addEventListener('click', async () => {
       recordScreem();
     });
 
-    popupButtonCam.addEventListener('click', () => {
+    popupButtonCam.addEventListener('click', async () => {
       recordVirtualCam();
     });
 
