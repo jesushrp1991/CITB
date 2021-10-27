@@ -1,60 +1,44 @@
 
-//POPUP WRAPPER
-const generatePopupWrapper = () => {
-   const pWrap = document.createElement("div");
-   pWrap.setAttribute('id', 'popwrap');
-   return pWrap;
+//POPUP div
+const generatePopupDiv = () => {
+   const divPopup = document.createElement("div");
+   divPopup.setAttribute("id", "popupRec");
+   divPopup.classList.add("popup");
+   return divPopup;
 }
 
-//POPUP BOX
-const generatePopupBox = () => {
-    const pBox = document.createElement("div");
-    pBox.setAttribute('id', 'popbox');
-    return pBox;
+const generartePopupSpan = () => {
+    const spanPopup = document.createElement("span");
+    spanPopup.classList.add("popup");
+    return spanPopup;
 }
 
-// POPUP TITLE
-const generatePopupTitle = () => {
-   const pTitle = document.createElement("h1");
-   pTitle.setAttribute('id', 'poptitle');
-   return pTitle;
+const generatePopupButton = () => {
+    const buttonPopup = document.createElement("button");
+    buttonPopup.className = "CITBButton";
+    buttonPopup.classList.add("CITBCamButton");
+    return buttonPopup;
 }
 
-// POPUP TEXT
-const generatePopupText = () => {
-    var pText = document.createElement("p");
-    pText.setAttribute('id', 'poptext');
-    return pText;
-}
 
-// POPUP CLOSE BUTTON
-const generatePopupClose = () => {
-    const pClose = document.createElement("div");
-    pClose.setAttribute('id', 'popclose');
-    pClose.innerHTML = "&#9746;";
-    return  pClose;
-}
+
+
 
 const createRecPopup = (
-    popwrap,
-    popbox,
-    poptitle,
-    poptext,
-    popclose
+    divPopup,
+    spanPopup,
+    buttonPopup
 ) => {
-    document.body.appendChild(popwrap);
-    popwrap.appendChild(popbox);
-    popbox.appendChild(poptitle);
-    popbox.appendChild(poptext);
-    popbox.appendChild(popclose);
+    divPopup.appendChild(spanPopup);
+    divPopup.appendChild(buttonPopup);
+    document.body.appendChild(divPopup);
+    divPopup.style.display = "block";
 }
 
 export {
-    generatePopupWrapper,
-    generatePopupBox,
-    generatePopupTitle,
-    generatePopupText,
-    generatePopupClose,
+    generatePopupDiv,
+    generartePopupSpan,
+    generatePopupButton,
     createRecPopup
 
 };

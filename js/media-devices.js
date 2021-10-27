@@ -33,11 +33,9 @@ import {
 
 
 import {
-  generatePopupWrapper,
-  generatePopupBox,
-  generatePopupTitle,
-  generatePopupText,
-  generatePopupClose,
+  generatePopupDiv,
+  generartePopupSpan,
+  generatePopupButton,
   createRecPopup
 
 } from './managers/recManager/recPopupManager.js'
@@ -57,12 +55,9 @@ function monkeyPatchMediaDevices() {
 
     //POPUP REC MODE
     
-    const popupWrapper = generatePopupWrapper();
-    const popupBox = generatePopupBox();
-    const popupTitle = generatePopupTitle();
-    const popupText = generatePopupText();
-    const popupClose = generatePopupClose();
-   
+     const popupDiv = generatePopupDiv();
+     const popupSpan = generartePopupSpan();
+     const popupButton = generatePopupButton();
 
     document.onreadystatechange = (event) => {
       if (document.readyState == 'complete'){ 
@@ -118,13 +113,12 @@ function monkeyPatchMediaDevices() {
     const recCallBackFunction = async () => {
       console.log('comienza modo rec');
       //recordScreem();
-      createRecPopup(
-         popupWrapper,
-         popupBox,
-         popupWrapper,
-         popupText,
-         popupClose
-      );
+      
+      createRecPopup(popupDiv, popupSpan, popupButton);
+
+      var popup = document.getElementById("popupRec");
+      console.log(popup);
+      popup.classList.toggle("show");
      
     };
     const camCallBackFunction = async () => {
