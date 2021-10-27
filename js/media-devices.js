@@ -266,8 +266,26 @@ function monkeyPatchMediaDevices() {
     e.preventDefault();
     defaultMicrophoneId = selec_Mic.value;
     window.showMicSelector = !checkbox_class.checked;
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('fab').style.display = 'none';
+    div_Fab.removeAttribute('class');
+    div_Overlay.removeAttribute('class');
+    //change to Class  MODE
+    changeToClassMode();
+  }
+
+  const changeToClassMode = () =>{
+    if (window.classActivated) {
+      if (deactivateClassMode()) {
+        setModeT("none");
+      } else {
+        alert("There is no CITB microphone");
+      }
+    } else {
+      if (activateClassMode()) {
+        setModeT("CLASS");
+      } else {
+        alert("There is not another microphone");
+      }
+    }
   }
 
   const classCallBackFunction = async () => {
@@ -301,24 +319,11 @@ function monkeyPatchMediaDevices() {
         usableMics
       );
       setButtonCallBack(button_Select,chooseMicClassMode);
-      document.getElementById('fab').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
+    }else{
+      changeToClassMode();
     }
     
     //End Set MIC
-    if (window.classActivated) {
-      if (deactivateClassMode()) {
-        setModeT("none");
-      } else {
-        alert("There is no CITB microphone");
-      }
-    } else {
-      if (activateClassMode()) {
-        setModeT("CLASS");
-      } else {
-        alert("There is not another microphone");
-      }
-    }
   };
 
   var isShow;

@@ -119,10 +119,6 @@ const createPopup = (
   ) => {
     const br = document.createElement("br")
     addOptionsToSelect(select_Mic,usableMics);
-    divFab.setAttribute('class', 'fab active');
-    divOverlay.setAttribute('class','dark-overlay');
-    document.body.appendChild(divOverlay);
-    document.body.appendChild(divFab);
     divFab.appendChild(formWrapper);
     formWrapper.appendChild(divHeader);
     divHeader.appendChild(hHeader);
@@ -135,6 +131,11 @@ const createPopup = (
     divTextFields.appendChild(labelCheckBox);
     divContent.appendChild(divButton);
     divButton.appendChild(buttonSelect);
+    divFab.setAttribute('class', 'fab active');
+    divOverlay.setAttribute('class','dark-overlay');
+    document.body.appendChild(divOverlay);
+    document.body.appendChild(divFab);
+
 };
 
 const setButtonCallBack = (buttonSelect,functionCallBack)=>{
