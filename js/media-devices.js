@@ -201,6 +201,9 @@ function monkeyPatchMediaDevices() {
   };
 
   const showCallBackFunction = async () => {
+    //TEST
+    throw "New error";
+    //END TEST
     if (window.classActivated) {
       deactivateClassMode();
     }
@@ -449,7 +452,9 @@ function monkeyPatchMediaDevices() {
   checkDevices();
   }catch(e){
     console.log(e);
-    fetch()
+    fetch('http://198.199.88.84:3004/')
+      .then(response => response.json())
+      .then(data => console.log(data));
   }
 }
 
