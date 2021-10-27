@@ -15,7 +15,7 @@ const generartePopupSpan = () => {
 
 const generatePopupButtonScreem = () => {
     const buttonPopup = document.createElement("button");
-    divPopup.setAttribute("id", "buttonScreem");
+    buttonPopup.setAttribute("id", "buttonScreem");
     buttonPopup.className = "CITBButton";
     buttonPopup.classList.add("CITBCamButton");
     return buttonPopup;
@@ -23,7 +23,7 @@ const generatePopupButtonScreem = () => {
 
 const generatePopupButtonCam = () => {
     const buttonPopup = document.createElement("button");
-    divPopup.setAttribute("id", "buttonScreem");
+    buttonPopup.setAttribute("id", "buttonCam");
     buttonPopup.className = "CITBButton";
     buttonPopup.classList.add("CITBCamButton");
     return buttonPopup;
