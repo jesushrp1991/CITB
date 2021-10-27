@@ -51,7 +51,7 @@ const getContainerButton = () => {
   const div = document.createElement("div");
   div.setAttribute("id", "buttonsContainer");
   div.style.position = "absolute";
-  div.style.zIndex = 999;
+  div.style.zIndex = 980;
   div.style.width = "40px";
   div.style.height = "210px";
   div.style.top = "60px";

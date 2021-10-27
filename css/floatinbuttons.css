@@ -102,3 +102,98 @@
     text-align: center;
     max-width: 100%;
 }
+
+/* Popup choose mic Class Mode */
+.dark-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 998;
+    -webkit-transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+    transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+  }
+  
+  .fab {
+    z-index: 999;
+    cursor: pointer;
+    border-radius: 50%;
+    position: fixed;
+    right: 400px;
+    top: 100px;
+    color: #fff;
+    background: #d35400;
+    height: 56px;
+    width: 56px;
+    box-shadow: 0 5px 5px rgba(126, 111, 111, 0.39);
+    -webkit-transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+    transition: all 600ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+  }
+  
+  .fab.active {
+    cursor: default;
+    background: #FFF;
+    border-radius: .125em;
+    width: 450px;
+    height: 350px;
+    box-shadow: 0 25px 35px 0 rgba(0, 0, 0, 0.35);
+    top: 10%;
+    right: calc(50% - 250px);
+  }
+  
+  .fab-icon {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-12px, -12px);
+    -ms-transform: translate(-12px, -12px);
+    transform: translate(-12px, -12px);
+    line-height: 24px;
+    width: 24px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  .active .fab-icon {
+    display: none;
+  }
+  
+  .active .protect {
+    background: none;
+  }
+  
+  .cntt-wrapper {
+    display: none;
+  }
+  
+  .active .cntt-wrapper {
+    display: block;
+  }
+  
+  #fab-hdr {
+    position: absolute;
+    width: 100%;
+    background: #f4c312;
+  }
+  
+  #fab-hdr h3 {
+    padding-left: 30px;
+  }
+  
+  .cntt {
+    padding: 100px 35px 0 35px;
+    color: #757575;
+  }
+  
+  .btn-wrapper {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin-bottom: 8px;
+    padding: 6px 16px;
+  }
+/* END Popup choose mic Class Mode */
