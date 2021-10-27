@@ -11,8 +11,7 @@ const enviroment = {
     // MYAUDIODEVICELABEL: 'Auriculares con micrófono (Redmi AirDots_R Hands-Free) (Bluetooth)',
     /* general */
     fps : 1000/30,
-    textHeaderSelectMicClassMode: 'Select Mic for Class Mode',
-    textLabelMicSelect:'select microphone'
+    textHeaderSelectMicClassMode: 'Select Mic for Class Mode'
 
 }
 

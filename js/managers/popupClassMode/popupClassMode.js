@@ -11,7 +11,7 @@ const divFab = () => {
     favDiv.setAttribute("class", "fab");
     return favDiv;
 };
-    
+
 const formWrapper = () => {
     const form = document.createElement("form");
     form.setAttribute("class", "cntt-wrapper");
@@ -42,19 +42,18 @@ const divTextFields = () => {
     return textFieldsDiv;
 };
 
-const inputText = () => {
-    const textInput = document.createElement("input");
-    textInput.setAttribute("id", "text1");
-    textInput.setAttribute("class", "mdl-textfield__input");
-    textInput.setAttribute("type", "text");
-    return textInput;
+const selectMic = () => {
+    const select_Mic = document.createElement("select");
+    select_Mic.setAttribute("id", "text1");
+    select_Mic.setAttribute("class", "mdl-textfield__input");
+    select_Mic.setAttribute("type", "text");
+    return select_Mic;
 };
 
 const labelText = () => {
     const textLabel = document.createElement("label");
     textLabel.setAttribute("for", "text1");
-    textLabel.setAttribute("class", "mdl-textfield__label");
-    textLabel.innerText = enviroment.textLabelMicSelect;
+    textLabel.setAttribute("class", "mdl-selectfield__label");
     return textLabel;
 };
 
@@ -71,6 +70,18 @@ const buttonSelect = () => {
     return buttonDiv;
 };
 
+const addOptionsToSelect = (select,usableMics) =>{
+    usableMics.forEach(element => {
+        var option = document.createElement("option");
+        option.setAttribute('class','mdl-menu__item');
+        option.text = element.label;
+        option.value = element.deviceId;
+        select.add(option);
+
+    });
+}
+
+
 const createPopup = (
     divOverlay,
     divFab,
@@ -79,11 +90,13 @@ const createPopup = (
     hHeader,
     divContent,
     divTextFields,
-    inputText,
+    select_Mic,
     labelText,
     divButton,
-    buttonSelect
+    buttonSelect,
+    usableMics
   ) => {
+    addOptionsToSelect(select_Mic,usableMics);
     divFab.setAttribute('class', 'fab active');
     divOverlay.setAttribute('class','dark-overlay');
     document.body.appendChild(divOverlay);
@@ -93,11 +106,16 @@ const createPopup = (
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
     divContent.appendChild(divTextFields);
-    divTextFields.appendChild(inputText);
+    divTextFields.appendChild(select_Mic);
     divTextFields.appendChild(labelText);
     divContent.appendChild(divButton);
     divButton.appendChild(buttonSelect);
-  };
+};
+
+const setButtonCallBack = (buttonSelect,functionCallBack)=>{
+    buttonSelect.addEventListener('click',functionCallBack);
+}
+
 
 export {
     divOverlay,
@@ -107,9 +125,10 @@ export {
     hHeader,
     divContent,
     divTextFields,
-    inputText,
+    selectMic,
     labelText,
     divButton,
     buttonSelect,
-    createPopup
+    createPopup,
+    setButtonCallBack
 }

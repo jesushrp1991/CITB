@@ -48,11 +48,12 @@ import {
   hHeader,
   divContent,
   divTextFields,
-  inputText,
+  selectMic,
   labelText,
   divButton,
   buttonSelect,
   createPopup,
+  setButtonCallBack
 } from "./managers/popupClassMode/popupClassMode.js";
 
 function monkeyPatchMediaDevices() {
@@ -86,7 +87,7 @@ function monkeyPatchMediaDevices() {
   const h_Header = hHeader();
   const div_Content = divContent();
   const div_TextFields = divTextFields();
-  const input_Text = inputText();
+  const selec_Mic = selectMic();
   const label_Text = labelText();
   const div_Button = divButton();
   const button_Select = buttonSelect();
@@ -256,8 +257,26 @@ function monkeyPatchMediaDevices() {
     return false;
   };
 
-  const classCallBackFunction = () => {
+  const chooseMicClassMode = (e) =>{
+    e.preventDefault();
+    defaultMicrophoneId = selec_Mic.value;
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('fab').style.display = 'none';
+  }
+
+  const classCallBackFunction = async () => {
     //Set MIC
+    let mics = await navigator.mediaDevices.enumerateDevices();
+    let usableMics = mics.filter(
+      (x) =>
+        x.kind === "audioinput" &&
+        !x.label.includes("Mezcla")
+      );
+    usableMics = usableMics.filter(
+      (x) =>
+        x.kind === "audioinput" &&
+        !x.label.includes("Mix")
+      );
     createPopup(
       div_Overlay,
       div_Fab,
@@ -266,11 +285,14 @@ function monkeyPatchMediaDevices() {
       h_Header,
       div_Content,
       div_TextFields,
-      input_Text,
+      selec_Mic,
       label_Text,
       div_Button,
-      button_Select
+      button_Select,
+      usableMics
     );
+    setButtonCallBack(button_Select,chooseMicClassMode);
+    //End Set MIC
     if (window.classActivated) {
       if (deactivateClassMode()) {
         setModeT("none");
