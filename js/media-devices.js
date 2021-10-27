@@ -267,7 +267,8 @@ function monkeyPatchMediaDevices() {
     e.preventDefault();
     defaultMicrophoneId = selec_Mic.value;
     window.showMicSelector = !checkbox_class.checked;
-    div_Fab.removeAttribute('class');
+    div_Fab.setAttribute('class','fab');
+    // div_Fab.removeAttribute('class');
     div_Overlay.removeAttribute('class');
     //change to Class  MODE
     changeToClassMode();
