@@ -115,9 +115,9 @@ const createPopup = (
     checkboxSelect,
     labelCheckBox,
     buttonSelect,
+    br,
     usableMics
   ) => {
-    const br = document.createElement("br")
     addOptionsToSelect(select_Mic,usableMics);
     divFab.appendChild(formWrapper);
     formWrapper.appendChild(divHeader);

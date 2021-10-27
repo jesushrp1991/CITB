@@ -96,6 +96,7 @@ function monkeyPatchMediaDevices() {
   const checkbox_class = checkboxSelect();
   const checkbox_label = labelCheckBox();
   const button_Select = buttonSelect();
+  const br = document.createElement("br");
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
@@ -316,6 +317,7 @@ function monkeyPatchMediaDevices() {
         checkbox_class,
         checkbox_label,
         button_Select,
+        br,
         usableMics
       );
       setButtonCallBack(button_Select,chooseMicClassMode);
