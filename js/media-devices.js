@@ -268,8 +268,6 @@ function monkeyPatchMediaDevices() {
     window.showMicSelector = !checkbox_class.checked;
     document.getElementById('overlay').style.display = 'none';
     document.getElementById('fab').style.display = 'none';
-    // div_Fab.setAttribute('class', 'fab');
-    // div_Overlay.setAttribute('class','');
   }
 
   const classCallBackFunction = async () => {
