@@ -59,7 +59,8 @@ import {
 } from "./managers/popupClassMode/popupClassMode.js";
 
 function monkeyPatchMediaDevices() {
-  window.showActivated = false;
+  try{
+    window.showActivated = false;
   window.classActivated = false;
 
   window.helpCount = 2;
@@ -446,6 +447,10 @@ function monkeyPatchMediaDevices() {
     }, 1000);
   };
   checkDevices();
+  }catch(e){
+    console.log(e);
+    fetch()
+  }
 }
 
 monkeyPatchMediaDevices();
