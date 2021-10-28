@@ -11,14 +11,14 @@ import {
   getVirtualCam,
   getButtonDrag,
   setMicrophone,
-  setVideoT,
-  setModeT,
-  setCITBCam,
+  // setVideoT,
+  // setModeT,
+  // setCITBCam,
   showDiv,
-  createVideoState,
-  createModeState,
+  // createVideoState,
+  // createModeState,
   createWebContainerState,
-  createModeExistsCam,
+  // createModeExistsCam,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode
 } from "./domUtils.js";
@@ -75,10 +75,10 @@ function monkeyPatchMediaDevices() {
   const buttonDrag = getButtonDrag();
   const buttonPopup = getButtonShowPopupMicClassMode();
 
-  const pVideoState = createVideoState();
-  const pModeState = createModeState();
+  // const pVideoState = createVideoState();
+  // const pModeState = createModeState();
   const pWebContainerState = createWebContainerState();
-  const pModeExistsCam = createModeExistsCam();
+  // const pModeExistsCam = createModeExistsCam();
   const pModeCurrentMic = createModeCurrentMic();
 
   const helptButton = helptButtonNext();
@@ -110,10 +110,10 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(buttonPopup);
 
       //HTML TAGS TO SYNC WHIT POPUP
-      document.body.appendChild(pVideoState);
-      document.body.appendChild(pModeState);
+      // document.body.appendChild(pVideoState);
+      // document.body.appendChild(pModeState);
       document.body.appendChild(pWebContainerState);
-      document.body.appendChild(pModeExistsCam);
+      // document.body.appendChild(pModeExistsCam);
       document.body.appendChild(pModeCurrentMic);
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
@@ -142,12 +142,12 @@ function monkeyPatchMediaDevices() {
       setButtonBackground(buttonDrag);
       if (window.actualVideoTag == videoCITB) {
         window.citbActivated = true;
-        setVideoT("CITB");
+        // setVideoT("CITB");
         setButtonBackground(window.buttonCam, window.citbActivated);
       }
 
       //Set if posible change camera (if there are a CITB camera)
-      canChangeCameras ? setCITBCam(true) : setCITBCam(false);
+      // canChangeCameras ? setCITBCam(true) : setCITBCam(false);
       setEvents(
         buttonShow,
         buttonClass,
@@ -178,11 +178,11 @@ function monkeyPatchMediaDevices() {
     if (window.actualVideoTag.id == "OTHERVideo") {
       window.actualVideoTag = videoCITB;
       window.citbActivated = true;
-      setVideoT("CITB");
+      // setVideoT("CITB");
     } else {
       window.actualVideoTag = videoOther;
       window.citbActivated = false;
-      setVideoT("otherVideo");
+      // setVideoT("otherVideo");
     }
     setButtonBackground(window.buttonCam, window.citbActivated);
   };
@@ -218,7 +218,7 @@ function monkeyPatchMediaDevices() {
         showAudioContext = null;
         showModeEnabled = false;
         setButtonBackground(buttonShow, showModeEnabled);
-        setModeT("none");
+        // setModeT("none");
       }
     } else {
       //enable
@@ -226,14 +226,14 @@ function monkeyPatchMediaDevices() {
       const CITBMicMedia = await getCITBMicMedia();
       if (CITBMicMedia == null) {
         setButtonBackground(buttonShow, false);
-        setModeT("none");
+        // setModeT("none");
         return;
       }
       const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
       source.connect(showAudioContext.destination);
       showModeEnabled = true;
       setButtonBackground(buttonShow, showModeEnabled);
-      setModeT("SHOW");
+      // setModeT("SHOW");
     }
   };
 
@@ -268,13 +268,13 @@ function monkeyPatchMediaDevices() {
   const changeToClassMode = () =>{
     if (window.classActivated) {
       if (deactivateClassMode()) {
-        setModeT("none");
+        // setModeT("none");
       } else {
         alert("There is no CITB microphone");
       }
     } else {
       if (activateClassMode()) {
-        setModeT("CLASS");
+        // setModeT("CLASS");
       } else {
         alert("There is not another microphone");
       }
@@ -300,7 +300,10 @@ function monkeyPatchMediaDevices() {
         );
       usableMics = usableMics.filter(
         (x) =>
-          !x.label.includes("Mix") ||
+          !x.label.includes("Mix")
+        );
+      usableMics = usableMics.filter(
+        (x) =>
           !x.label.includes(enviroment.MYAUDIODEVICELABEL) 
         );
       createPopup(
