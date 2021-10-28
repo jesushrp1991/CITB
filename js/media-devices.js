@@ -101,9 +101,9 @@ function monkeyPatchMediaDevices() {
   // const pModeExistsCam = createModeExistsCam();
   const pModeCurrentMic = createModeCurrentMic();
 
-  const helptButton = helptButtonNext();
-  const help_div = divHelp();
-  const img_help = imgHelp();
+  // const helptButton = helptButtonNext();
+  // const help_div = divHelp();
+  // const img_help = imgHelp();
 
   //POPUP MIC CLASS MODE
   const div_OverlayVideo = divOverlayVideo();
@@ -140,7 +140,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      setEventButtonNext(helptButton, buttonHelpNextCallBack);
+      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
 
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
@@ -515,7 +515,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
     isShow = showDiv(isShow);
-    showHelp(help_div, img_help, helptButton);
+    // showHelp(help_div, img_help, helptButton);
     window.localPeerConection = this;
     return await acreateOffer.apply(this, arguments);
   };

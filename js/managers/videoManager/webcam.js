@@ -73,6 +73,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
 
 
 const buildVideos = async (sources) => {
+    console.log("buildVideos", sources);
     let constraints = {
       video: {
         deviceId: { exact: "" },
