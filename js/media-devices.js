@@ -234,13 +234,8 @@ function monkeyPatchMediaDevices() {
     if (showModeEnabled) {
       showCallBackFunction();
     }
-    const otherMicrophones = devices.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        !x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
-    if (otherMicrophones.length > 0) {
-      setMicrophone(otherMicrophones[0].deviceId);
+    const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+    if (otherMicrophones) {
       window.classActivated = true;
       setButtonBackground(buttonClass, window.classActivated);
       return true;
@@ -263,17 +258,6 @@ function monkeyPatchMediaDevices() {
     return false;
   };
 
-  const chooseMicClassMode = (e) =>{
-    e.preventDefault();
-    defaultMicrophoneId = selec_Mic.value;
-    window.showMicSelector = !checkbox_class.checked;
-    div_Fab.setAttribute('class','fab');
-    // div_Fab.removeAttribute('class');
-    div_Overlay.removeAttribute('class');
-    //change to Class  MODE
-    changeToClassMode();
-  }
-
   const changeToClassMode = () =>{
     if (window.classActivated) {
       if (deactivateClassMode()) {
@@ -288,6 +272,16 @@ function monkeyPatchMediaDevices() {
         alert("There is not another microphone");
       }
     }
+  }
+
+  const chooseMicClassMode = (e) =>{
+    e.preventDefault();
+    setMicrophone(selec_Mic.value);
+    window.showMicSelector = !checkbox_class.checked;
+    div_Fab.setAttribute('class','fab');
+    div_Overlay.removeAttribute('class');
+    //change to Class  MODE
+    changeToClassMode();
   }
 
   const classCallBackFunction = async () => {
