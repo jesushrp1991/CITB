@@ -1,7 +1,7 @@
 {
   "name": "ClassInTheBox",
   "description": "Sistema profesional de video conferencia: simple, rápido, con cancelación de ruido avanzada y portable",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "manifest_version": 3,
   "minimum_chrome_version": "88.0",
   "permissions": [
