@@ -20,6 +20,7 @@ import {
   createWebContainerState,
   createModeExistsCam,
   createModeCurrentMic,
+  getButtonShowPopupMicClassMode
 } from "./domUtils.js";
 
 import {
@@ -71,6 +72,7 @@ function monkeyPatchMediaDevices() {
   window.buttonCam = getButtonCam();
   const buttonClose = getButtonClose();
   const buttonDrag = getButtonDrag();
+  const buttonPopup = getButtonShowPopupMicClassMode();
 
   const pVideoState = createVideoState();
   const pModeState = createModeState();
@@ -101,6 +103,9 @@ function monkeyPatchMediaDevices() {
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
       setEventButtonNext(helptButton, buttonHelpNextCallBack);
+
+      buttonPopup.addEventListener('click',showPopupMic);
+      document.body.appendChild(buttonPopup);
 
       //HTML TAGS TO SYNC WHIT POPUP
       document.body.appendChild(pVideoState);
@@ -284,10 +289,8 @@ function monkeyPatchMediaDevices() {
     changeToClassMode();
   }
 
-  const classCallBackFunction = async () => {
-    //Set MIC
-    if(window.showMicSelector && !window.classActivated){
-      let mics = await navigator.mediaDevices.enumerateDevices();
+  const showPopupMic = async() =>{
+    let mics = await navigator.mediaDevices.enumerateDevices();
       let usableMics = mics.filter(
         (x) =>
           x.kind === "audioinput" &&
@@ -316,6 +319,11 @@ function monkeyPatchMediaDevices() {
         usableMics
       );
       setButtonCallBack(button_Select,chooseMicClassMode);
+  }
+
+  const classCallBackFunction = async (isFromPopup) => {
+    if(window.showMicSelector && !window.classActivated){
+      showPopupMic();
     }else{
       changeToClassMode();
     }
