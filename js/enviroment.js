@@ -11,7 +11,8 @@ const enviroment = {
     MYAUDIODEVICELABEL: 'Redmi',
     /* general */
     fps : 1000/30,
-    textHeaderSelectMicClassMode: 'Classroom mode Mic'
+    textHeaderSelectMicClassMode: 'Classroom mode Mic',
+    textHeaderSelectVideo: 'Choose Camera',
 
 }
 

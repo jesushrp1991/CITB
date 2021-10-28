@@ -20,7 +20,8 @@ import {
   createWebContainerState,
   // createModeExistsCam,
   createModeCurrentMic,
-  getButtonShowPopupMicClassMode
+  getButtonShowPopupMicClassMode,
+  getButtonShowPopupVideo
 } from "./domUtils.js";
 
 import {
@@ -60,6 +61,24 @@ import {
   setButtonCallBack
 } from "./managers/popupClassMode/popupClassMode.js";
 
+import {
+    divOverlayVideo,
+    divFabVideo,
+    formWrapperVideo,
+    divHeaderVideo,
+    hHeaderVideo,
+    divContentVideo,
+    classIconVideo,
+    divTextFieldsVideo,
+    selectMicVideo,
+    labelTextVideo,
+    divButtonVideo,
+    labelCheckBoxVideo,
+    buttonSelectVideo,
+    createPopupVideo,
+    setButtonCallBackVideo
+} from "./managers/popupVideoMode/popupVideoMode.js";
+
 function monkeyPatchMediaDevices() {
   window.showActivated = false;
   window.classActivated = false;
@@ -74,6 +93,7 @@ function monkeyPatchMediaDevices() {
   const buttonClose = getButtonClose();
   const buttonDrag = getButtonDrag();
   const buttonPopup = getButtonShowPopupMicClassMode();
+  const buttonVideoPopup = getButtonShowPopupVideo();
 
   // const pVideoState = createVideoState();
   // const pModeState = createModeState();
@@ -86,6 +106,22 @@ function monkeyPatchMediaDevices() {
   const img_help = imgHelp();
 
   //POPUP MIC CLASS MODE
+  const div_OverlayVideo = divOverlayVideo();
+  const div_FabVideo= divFabVideo();
+  const form_WrapperVideo = formWrapperVideo();
+  const div_HeaderVideo = divHeaderVideo();
+  const h_HeaderVideo = hHeaderVideo();
+  const div_ContentVideo = divContentVideo();
+  const div_ButtonIconVideo = classIconVideo();
+  const div_TextFieldsVideo = divTextFieldsVideo();
+  const selec_MicVideo = selectMicVideo();
+  const label_TextVideo = labelTextVideo();
+  const div_ButtonVideo = divButtonVideo();
+  const checkbox_labelVideo = labelCheckBoxVideo();
+  const button_SelectVideo = buttonSelectVideo();
+  const brVideo = document.createElement("br");
+
+  //POPUP MIC MODE
   const div_Overlay = divOverlay();
   const div_Fab = divFab();
   const form_Wrapper = formWrapper();
@@ -108,6 +144,9 @@ function monkeyPatchMediaDevices() {
 
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
+      
+      buttonVideoPopup.addEventListener('click',showPopupVideo);
+      document.body.appendChild(buttonVideoPopup);
 
       //HTML TAGS TO SYNC WHIT POPUP
       // document.body.appendChild(pVideoState);
@@ -325,6 +364,41 @@ function monkeyPatchMediaDevices() {
         usableMics
       );
       setButtonCallBack(button_Select,chooseMicClassMode);
+  }
+  const chooseVideo = async(e) =>{
+    e.preventDefault();
+    await builVideosFromDevices(selec_MicVideo.value);
+    await buildVideoContainersAndCanvas();
+    await drawFrameOnVirtualCamera();
+    div_FabVideo.setAttribute('class','fab');
+    div_OverlayVideo.removeAttribute('class');
+  }
+  const showPopupVideo = async() =>{
+      let mics = await navigator.mediaDevices.enumerateDevices();
+      let usableVideo = mics.filter(
+        (x) =>
+          x.kind === "videoinput" &&
+          !x.label.includes(enviroment.MYAUDIODEVICELABEL) 
+        );
+      usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
+      createPopupVideo(
+        div_OverlayVideo,
+        div_FabVideo,
+        form_WrapperVideo,
+        div_HeaderVideo,
+        h_HeaderVideo,
+        div_ContentVideo,
+        div_ButtonIconVideo,
+        div_TextFieldsVideo,
+        selec_MicVideo,
+        label_TextVideo,
+        div_ButtonVideo,
+        checkbox_labelVideo,
+        button_SelectVideo,
+        brVideo,
+        usableVideo
+      );
+      setButtonCallBackVideo(button_SelectVideo,chooseVideo);
   }
 
   const classCallBackFunction = async (isFromPopup) => {

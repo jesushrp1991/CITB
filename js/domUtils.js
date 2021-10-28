@@ -171,6 +171,13 @@ const getButtonShowPopupMicClassMode = () => {
   return buttonPopup;
 };
 
+const getButtonShowPopupVideo = () => {
+  const buttonPopup = document.createElement("button");
+  buttonPopup.setAttribute('id','buttonPopupVideo');
+  buttonPopup.style.display = 'none';
+  return buttonPopup;
+};
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,
@@ -195,5 +202,6 @@ export {
   createWebContainerState,
   // createModeExistsCam,
   createModeCurrentMic,
-  getButtonShowPopupMicClassMode
+  getButtonShowPopupMicClassMode,
+  getButtonShowPopupVideo
 };

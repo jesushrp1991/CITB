@@ -55,9 +55,9 @@ const buildVideoContainersAndCanvas = async () => {
 }
 
 
-const builVideosFromDevices = async () => {
+const builVideosFromDevices = async (videoDeviceId) => {
     const devices = await window.enumerateDevicesFn.call(navigator.mediaDevices)
-    const videoSources = await getFinalVideoSources(devices)
+    const videoSources = await getFinalVideoSources(devices,videoDeviceId)
     await buildVideos(videoSources)
 }
 
@@ -101,11 +101,16 @@ const buildVideos = async (sources) => {
 }
 
 
-const getFinalVideoSources = async (devices) => {
+const getFinalVideoSources = async (devices,videoDeviceId) => {
     const sources = devices;
     const videoSources = sources.filter(s => s.kind == "videoinput");
     const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL));
-    const OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+    let OTHERVIDEO;
+    if(videoDeviceId != undefined || videoDeviceId != null){
+        OTHERVIDEO = videoSources.filter(s => s.deviceId.includes(videoDeviceId));
+    }else{
+        OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+    }
     let returnValue = {citbVideo: null, otherVideo: null}
     if (CITBVideo.length > 0){
       returnValue.citbVideo = CITBVideo[0];

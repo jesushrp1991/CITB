@@ -1,7 +1,7 @@
 // Initialize select with default mode 
 // let buttonCam = document.getElementById('button1');
 // let buttonShow = document.getElementById('button2');
-// let buttonClass = document.getElementById('button3');
+let buttonChooseVideo = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras;
@@ -206,6 +206,18 @@ buttonChooseMic.addEventListener("click", async () => {
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: choose_Mic,
+    args: [true],
+  });
+});
+
+const choose_Video = () =>{
+  document.getElementById("buttonPopupVideo").click(); 
+}
+buttonChooseVideo.addEventListener("click", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: choose_Video,
     args: [true],
   });
 });

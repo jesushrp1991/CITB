@@ -156,9 +156,24 @@
   
   #fab-hdr {
     position: absolute;
+    display: flex;              
+    flex-direction: column;     
+    justify-content: center;    
+    align-items: center; 
     border-radius: 25px 25px 0 0;
     width: 100%;
     background: #F4C312;
+  }
+
+  #fab-hdr-video {
+    position: absolute;
+    display: flex;              
+    flex-direction: column;     
+    justify-content: center;    
+    align-items: center; 
+    border-radius: 25px 25px 0 0;
+    width: 100%;
+    background: #DC3336;
   }
   
   #fab-hdr h3 {
@@ -185,6 +200,12 @@
   #submit {
     border-radius: 5px;
     background-color: #F4C312;
+    color:#fff
+  }
+
+  #submitVideo {
+    border-radius: 5px;
+    background-color: #DC3336;
     color:#fff
   }
 
