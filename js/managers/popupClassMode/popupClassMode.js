@@ -44,6 +44,7 @@ const classIcon = () => {
 };
 const classDescriptionText = () => {
     const classDescriptionText = document.createElement("p");
+    classDescriptionText.setAttribute("id", "DescriptionText");
     classDescriptionText.setAttribute("class", "classDescriptionText");
     classDescriptionText.innerText = 'El microfono '
     return classDescriptionText;
@@ -178,21 +179,23 @@ const createPopup = (
     divContent.appendChild(classIcon);
     divContent.appendChild(divTextFields);
 
-    let pTag = classDescriptionText();
-    let CITB_c = CITBc();
-    let CITB_i = CITBi();
-    let CITB_t = CITBt();
-    let CITB_b = CITBb();
-    let pTag1 = classDescriptionText1();
-    let pTag2 = classDescriptionText2();
-    divTextFields.appendChild(pTag);
-    divTextFields.appendChild(CITB_c);
-    divTextFields.appendChild(CITB_i);
-    divTextFields.appendChild(CITB_t);
-    divTextFields.appendChild(CITB_b);
-    divTextFields.appendChild(pTag1);
-    divTextFields.appendChild(pTag2);
-
+    let exitsDescriptionText = document.getElementById('DescriptionText');
+    if(exitsDescriptionText == null || exitsDescriptionText == undefined){
+        let pTag = classDescriptionText();
+        let CITB_c = CITBc();
+        let CITB_i = CITBi();
+        let CITB_t = CITBt();
+        let CITB_b = CITBb();
+        let pTag1 = classDescriptionText1();
+        let pTag2 = classDescriptionText2();
+        divTextFields.appendChild(pTag);
+        divTextFields.appendChild(CITB_c);
+        divTextFields.appendChild(CITB_i);
+        divTextFields.appendChild(CITB_t);
+        divTextFields.appendChild(CITB_b);
+        divTextFields.appendChild(pTag1);
+        divTextFields.appendChild(pTag2);
+    }
     divTextFields.appendChild(select_Mic);
     divTextFields.appendChild(labelText);
     divTextFields.appendChild(br);
