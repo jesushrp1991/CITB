@@ -377,8 +377,10 @@ function monkeyPatchMediaDevices() {
       let mics = await navigator.mediaDevices.enumerateDevices();
       let usableVideo = mics.filter(
         (x) =>
-          x.kind === "videoinput" &&
-          !x.label.includes(enviroment.MYAUDIODEVICELABEL) 
+          x.kind === "videoinput" 
+          && !x.label.includes(enviroment.MYVIDEODDEVICELABEL) 
+          && !x.label.includes("Virtual Class In The Box") 
+
         );
       usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
       createPopupVideo(
