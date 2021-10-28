@@ -298,8 +298,8 @@ function monkeyPatchMediaDevices() {
         );
       usableMics = usableMics.filter(
         (x) =>
-          x.kind === "audioinput" &&
-          !x.label.includes("Mix")
+          !x.label.includes("Mix") ||
+          !x.label.includes(enviroment.MYAUDIODEVICELABEL) 
         );
       createPopup(
         div_Overlay,
