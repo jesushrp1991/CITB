@@ -36,9 +36,60 @@ const divContent = () => {
     return contentDiv;
 };
 
+const classIcon = () => {
+    const classIcon = document.createElement("button");
+    classIcon.setAttribute("id", "classModalIcon");
+    classIcon.setAttribute("class", "CITBClassButton active");
+    return classIcon;
+};
+const classDescriptionText = () => {
+    const classDescriptionText = document.createElement("p");
+    classDescriptionText.setAttribute("class", "classDescriptionText");
+    classDescriptionText.innerText = 'El microfono '
+    return classDescriptionText;
+};
+
+const CITBc = () => {
+    const classDescriptionText = document.createElement("mark");
+    classDescriptionText.setAttribute("class", "mark blue");
+    classDescriptionText.innerText = 'C'
+    return classDescriptionText;
+};
+const CITBi = () => {
+    const classDescriptionText = document.createElement("mark");
+    classDescriptionText.setAttribute("class", "mark red");
+    classDescriptionText.innerText = 'I'
+    return classDescriptionText;
+};
+const CITBt = () => {
+    const classDescriptionText = document.createElement("mark");
+    classDescriptionText.setAttribute("class", "mark yellow");
+    classDescriptionText.innerText = 'T'
+    return classDescriptionText;
+};
+const CITBb = () => {
+    const classDescriptionText = document.createElement("mark");
+    classDescriptionText.setAttribute("class", "mark green");
+    classDescriptionText.innerText = 'B'
+    return classDescriptionText;
+};
+
+const classDescriptionText1 = () => {
+    const classDescriptionText = document.createElement("p");
+    classDescriptionText.setAttribute("class", "classDescriptionText");
+    classDescriptionText.innerText = ' esta silenciado.'
+    return classDescriptionText;
+};
+const classDescriptionText2 = () => {
+    const classDescriptionText = document.createElement("p");
+    // classDescriptionText.setAttribute("class", "classDescriptionText2");
+    classDescriptionText.innerText = 'Ahora, selecciona el microfono por el que quieres que hablen todos.'
+    return classDescriptionText;
+};
+
 const divTextFields = () => {
     const textFieldsDiv = document.createElement("div");
-    textFieldsDiv.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label");
+    textFieldsDiv.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label textFields");
     return textFieldsDiv;
 };
 
@@ -82,7 +133,7 @@ const buttonSelect = () => {
     const buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submit");
     buttonDiv.setAttribute("class", "mdl-button mdl-js-button mdl-button--primary");
-    buttonDiv.innerText = "Select";
+    buttonDiv.innerText = "Seleccionar";
     return buttonDiv;
 };
 
@@ -108,6 +159,7 @@ const createPopup = (
     divHeader,
     hHeader,
     divContent,
+    classIcon,
     divTextFields,
     select_Mic,
     labelText,
@@ -123,7 +175,24 @@ const createPopup = (
     formWrapper.appendChild(divHeader);
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
+    divContent.appendChild(classIcon);
     divContent.appendChild(divTextFields);
+
+    let pTag = classDescriptionText();
+    let CITB_c = CITBc();
+    let CITB_i = CITBi();
+    let CITB_t = CITBt();
+    let CITB_b = CITBb();
+    let pTag1 = classDescriptionText1();
+    let pTag2 = classDescriptionText2();
+    divTextFields.appendChild(pTag);
+    divTextFields.appendChild(CITB_c);
+    divTextFields.appendChild(CITB_i);
+    divTextFields.appendChild(CITB_t);
+    divTextFields.appendChild(CITB_b);
+    divTextFields.appendChild(pTag1);
+    divTextFields.appendChild(pTag2);
+
     divTextFields.appendChild(select_Mic);
     divTextFields.appendChild(labelText);
     divTextFields.appendChild(br);
@@ -150,6 +219,7 @@ export {
     divHeader,
     hHeader,
     divContent,
+    classIcon,
     divTextFields,
     selectMic,
     labelText,

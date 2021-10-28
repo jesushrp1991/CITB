@@ -137,40 +137,15 @@
   .fab.active {
     cursor: default;
     background: #FFF;
-    border-radius: .125em;
-    width: 450px;
-    height: 350px;
+    border-radius: 25px;
+    width: 380px;
+    height: 450px;
     box-shadow: 0 25px 35px 0 rgba(0, 0, 0, 0.35);
     top: 10%;
     right: calc(50% - 250px);
     display: block;
   }
-/*   
-  .fab-icon {
-    position: absolute;
-    display: block;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-12px, -12px);
-    -ms-transform: translate(-12px, -12px);
-    transform: translate(-12px, -12px);
-    line-height: 24px;
-    width: 24px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-  
-  .active .fab-icon {
-    display: none;
-  }
-  
-  .active .protect {
-    background: none;
-  } */
-  
+
   .cntt-wrapper {
     display: none;
   }
@@ -181,8 +156,9 @@
   
   #fab-hdr {
     position: absolute;
+    border-radius: 25px 25px 0 0;
     width: 100%;
-    background: #f4c312;
+    background: #F4C312;
   }
   
   #fab-hdr h3 {
@@ -190,6 +166,10 @@
   }
   
   .cntt {
+    display: flex;              
+    flex-direction: column;     
+    justify-content: center;    
+    align-items: center;   
     padding: 100px 35px 0 35px;
     color: #757575;
   }
@@ -200,5 +180,59 @@
     bottom: 0;
     margin-bottom: 8px;
     padding: 6px 16px;
+  }
+
+  #submit {
+    border-radius: 5px;
+    background-color: #F4C312;
+    color:#fff
+  }
+
+  #classModalIcon{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+    border:none;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .classDescriptionText{
+    /* align-items: center !important; */
+    display:inline
+  }
+
+  /* .classDescriptionText2{
+    text-align: justify;
+  } */
+
+  mark{
+    display:inline;
+  }
+
+  mark.blue {
+    color: blue;
+    background: none;
+  }
+  mark.red {
+    color:#ff0000;
+    background: none;
+  }
+  mark.yellow {
+    color: yellow;
+    background: none;
+  }
+  mark.green {
+    color: green;
+    background: none;
+  }
+  .divDescription{
+    display: flex;              
+    flex-direction: column;     
+    justify-content: center;    
+    align-items: center; 
   }
 /* END Popup choose mic Class Mode */

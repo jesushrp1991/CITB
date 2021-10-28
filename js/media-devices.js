@@ -48,6 +48,7 @@ import {
   divHeader,
   hHeader,
   divContent,
+  classIcon,
   divTextFields,
   selectMic,
   labelText,
@@ -91,6 +92,7 @@ function monkeyPatchMediaDevices() {
   const div_Header = divHeader();
   const h_Header = hHeader();
   const div_Content = divContent();
+  const div_ButtonIcon = classIcon();
   const div_TextFields = divTextFields();
   const selec_Mic = selectMic();
   const label_Text = labelText();
@@ -308,6 +310,7 @@ function monkeyPatchMediaDevices() {
         div_Header,
         h_Header,
         div_Content,
+        div_ButtonIcon,
         div_TextFields,
         selec_Mic,
         label_Text,
