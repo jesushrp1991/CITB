@@ -413,6 +413,7 @@ function monkeyPatchMediaDevices() {
       let currentMic = document
         .getElementById("pModeCurrentMic")
         .innerText.toString();
+      console.log("currentMic",currentMic);
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },
