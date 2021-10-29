@@ -42,6 +42,7 @@ import {
   divFab,
   formWrapper,
   divHeader,
+  headerClose,
   hHeader,
   divContent,
   classIcon,
@@ -61,6 +62,7 @@ import {
     divFabVideo,
     formWrapperVideo,
     divHeaderVideo,
+    headerCloseVideo,
     hHeaderVideo,
     buttonCloseVideo,
     divContentVideo,
@@ -105,6 +107,7 @@ function monkeyPatchMediaDevices() {
   const div_FabVideo= divFabVideo();
   const form_WrapperVideo = formWrapperVideo();
   const div_HeaderVideo = divHeaderVideo();
+  const close_headerVideo = headerCloseVideo();
   const h_HeaderVideo = hHeaderVideo();
   const h_buttonCloseVideo = buttonCloseVideo();
 
@@ -122,6 +125,7 @@ function monkeyPatchMediaDevices() {
   const div_Fab = divFab();
   const form_Wrapper = formWrapper();
   const div_Header = divHeader();
+  const header_close = headerClose();
   const h_Header = hHeader();
   const div_Content = divContent();
   const div_ButtonIcon = classIcon();
@@ -349,6 +353,7 @@ function monkeyPatchMediaDevices() {
         div_Fab,
         form_Wrapper,
         div_Header,
+        header_close,
         h_Header,
         div_Content,
         div_ButtonIcon,
@@ -362,7 +367,7 @@ function monkeyPatchMediaDevices() {
         br,
         usableMics
       );
-      setButtonCallBack(button_Select,chooseMicClassMode);
+      setButtonCallBack(button_Select,header_close,chooseMicClassMode);
   }
   const chooseVideo = async(e) =>{
     e.preventDefault();
@@ -387,6 +392,7 @@ function monkeyPatchMediaDevices() {
         div_FabVideo,
         form_WrapperVideo,
         div_HeaderVideo,
+        close_headerVideo,
         h_HeaderVideo,
         div_ContentVideo,
         div_ButtonIconVideo,
@@ -398,9 +404,7 @@ function monkeyPatchMediaDevices() {
         brVideo,
         usableVideo
       );
-      setButtonCallBackVideo(button_SelectVideo,chooseVideo);
-      // setButtonCallBackVideo(h_buttonCloseVideo,chooseVideo);
-
+      setButtonCallBackVideo(button_SelectVideo,close_headerVideo,chooseVideo);
   }
 
   var isShow;

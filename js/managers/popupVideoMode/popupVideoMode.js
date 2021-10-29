@@ -24,6 +24,12 @@ const divHeaderVideo = () => {
     // divHeader.appendChild(buttonCloseVideo());
     return divHeader;
 };
+const headerCloseVideo = () => {
+    const headerClose = document.createElement("span");
+    headerClose.setAttribute("class", "close-button topright");
+    headerClose.innerText = "x";
+    return headerClose;
+};
 
 const hHeaderVideo = () => {
     const h3Header = document.createElement("h3");
@@ -106,6 +112,7 @@ const createPopupVideo = (
     divFab,
     formWrapper,
     divHeader,
+    headerCloseVideo,
     hHeader,
     divContent,
     classIcon,
@@ -120,6 +127,7 @@ const createPopupVideo = (
     addOptionsToSelectVideo(select_Mic,usableMics);
     divFab.appendChild(formWrapper);
     formWrapper.appendChild(divHeader);
+    divHeader.appendChild(headerCloseVideo);
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
     divContent.appendChild(classIcon);
@@ -136,10 +144,9 @@ const createPopupVideo = (
 
 };
 
-const setButtonCallBackVideo = (buttonSelect,functionCallBack)=>{
-    console.log("CALLBACK", buttonSelect, functionCallBack);
+const setButtonCallBackVideo = (buttonSelect,headerCloseVideo,functionCallBack)=>{
     buttonSelect.addEventListener('click',functionCallBack);
-    console.log("AFTer");
+    headerCloseVideo.addEventListener('click',functionCallBack);
 }
 
 
@@ -148,6 +155,7 @@ export {
     divFabVideo,
     formWrapperVideo,
     divHeaderVideo,
+    headerCloseVideo,
     hHeaderVideo,
     divContentVideo,
     classIconVideo,

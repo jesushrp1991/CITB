@@ -24,6 +24,13 @@ const divHeader = () => {
     return divHeader;
 };
 
+const headerClose = () => {
+    const headerClose = document.createElement("span");
+    headerClose.setAttribute("class", "close-button topright");
+    headerClose.innerText = "x";
+    return headerClose;
+};
+
 const hHeader = () => {
     const h3Header = document.createElement("h3");
     h3Header.textContent = enviroment.textHeaderSelectMicClassMode;
@@ -158,6 +165,7 @@ const createPopup = (
     divFab,
     formWrapper,
     divHeader,
+    headerClose,
     hHeader,
     divContent,
     classIcon,
@@ -174,6 +182,7 @@ const createPopup = (
     addOptionsToSelect(select_Mic,usableMics);
     divFab.appendChild(formWrapper);
     formWrapper.appendChild(divHeader);
+    divHeader.appendChild(headerClose);
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
     divContent.appendChild(classIcon);
@@ -210,8 +219,9 @@ const createPopup = (
 
 };
 
-const setButtonCallBack = (buttonSelect,functionCallBack)=>{
+const setButtonCallBack = (buttonSelect,headerClose,functionCallBack)=>{
     buttonSelect.addEventListener('click',functionCallBack);
+    headerClose.addEventListener('click',functionCallBack);
 }
 
 
@@ -220,6 +230,7 @@ export {
     divFab,
     formWrapper,
     divHeader,
+    headerClose,
     hHeader,
     divContent,
     classIcon,
