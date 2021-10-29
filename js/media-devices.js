@@ -26,15 +26,16 @@ import {
   videoCITB,
   videoOther,
   canChangeCameras,
+  fadeInFadeOut
 } from "./managers/videoManager/webcam.js";
 
-import {
-  helptButtonNext,
-  imgHelp,
-  divHelp,
-  showHelp,
-  setEventButtonNext,
-} from "../helper/helper.js";
+// import {
+//   helptButtonNext,
+//   imgHelp,
+//   divHelp,
+//   showHelp,
+//   setEventButtonNext,
+// } from "../helper/helper.js";
 
 import {
   divOverlay,
@@ -61,6 +62,7 @@ import {
     formWrapperVideo,
     divHeaderVideo,
     hHeaderVideo,
+    buttonCloseVideo,
     divContentVideo,
     classIconVideo,
     divTextFieldsVideo,
@@ -71,6 +73,9 @@ import {
     createPopupVideo,
     setButtonCallBackVideo
 } from "./managers/popupVideoMode/popupVideoMode.js";
+
+import {speachCommands} from "./managers/voiceManager/voice.js"
+
 
 function monkeyPatchMediaDevices() {
   window.showActivated = false;
@@ -90,9 +95,9 @@ function monkeyPatchMediaDevices() {
   const pWebContainerState = createWebContainerState();
   const pModeCurrentMic = createModeCurrentMic();
 
-  const helptButton = helptButtonNext();
-  const help_div = divHelp();
-  const img_help = imgHelp();
+  // const helptButton = helptButtonNext();
+  // const help_div = divHelp();
+  // const img_help = imgHelp();
 
   //POPUP MIC CLASS MODE
   const div_OverlayVideo = divOverlayVideo();
@@ -100,6 +105,8 @@ function monkeyPatchMediaDevices() {
   const form_WrapperVideo = formWrapperVideo();
   const div_HeaderVideo = divHeaderVideo();
   const h_HeaderVideo = hHeaderVideo();
+  const h_buttonCloseVideo = buttonCloseVideo();
+
   const div_ContentVideo = divContentVideo();
   const div_ButtonIconVideo = classIconVideo();
   const div_TextFieldsVideo = divTextFieldsVideo();
@@ -128,7 +135,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      setEventButtonNext(helptButton, buttonHelpNextCallBack);
+      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
@@ -190,15 +197,19 @@ function monkeyPatchMediaDevices() {
   const camCallBackFunction = async () => {
     console.log("canChange",canChangeCameras)
     if (!canChangeCameras) {
-      alert('Please choose Virtual CITB Cam');
+      alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
       return;
     }
     if (window.actualVideoTag.id == "OTHERVideo") {
+      await fadeInFadeOut();
       window.actualVideoTag = videoCITB;
       window.citbActivated = true;
+      await fadeInFadeOut();
     } else {
+      await fadeInFadeOut();
       window.actualVideoTag = videoOther;
       window.citbActivated = false;
+      await fadeInFadeOut();
     }
     setButtonBackground(window.buttonCam, window.citbActivated);
   };
@@ -335,6 +346,7 @@ function monkeyPatchMediaDevices() {
       setButtonCallBack(button_Select,chooseMicClassMode);
   }
   const chooseVideo = async(e) =>{
+    console.log("CHOOSE VIDEO")
     e.preventDefault();
     await builVideosFromDevices(selec_MicVideo.value);
     await buildVideoContainersAndCanvas();
@@ -369,6 +381,8 @@ function monkeyPatchMediaDevices() {
         usableVideo
       );
       setButtonCallBackVideo(button_SelectVideo,chooseVideo);
+      // setButtonCallBackVideo(h_buttonCloseVideo,chooseVideo);
+
   }
 
   const classCallBackFunction = async (isFromPopup) => {
@@ -445,6 +459,7 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices();
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera();
+        speachCommands();
         successCallBack(virtualWebCamMediaStream);
       }
     }
@@ -471,6 +486,7 @@ function monkeyPatchMediaDevices() {
         await builVideosFromDevices();
         await buildVideoContainersAndCanvas();
         await drawFrameOnVirtualCamera();
+        speachCommands();
         return virtualWebCamMediaStream;
       } else {
         return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
@@ -483,7 +499,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
     isShow = showDiv(isShow);
-    showHelp(help_div, img_help, helptButton);
+    // showHelp(help_div, img_help, helptButton);
     window.localPeerConection = this;
     return await acreateOffer.apply(this, arguments);
   };

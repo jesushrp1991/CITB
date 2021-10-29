@@ -177,7 +177,22 @@
   }
   
   #fab-hdr h3 {
-    padding-left: 30px;
+    font-size: 25px;
+  }
+
+  #fab-hdr-video h3 {
+    font-size: 25px;
+  }
+
+  #fab-hdr-video-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    font-weight: 100;
+    position: absolute;
+    top: 15px;
+    right: 15px;
   }
   
   .cntt {

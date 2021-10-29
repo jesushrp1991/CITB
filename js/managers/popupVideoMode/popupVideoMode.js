@@ -21,6 +21,7 @@ const formWrapperVideo = () => {
 const divHeaderVideo = () => {
     const divHeader = document.createElement("div");
     divHeader.setAttribute("id", "fab-hdr-video");
+    // divHeader.appendChild(buttonCloseVideo());
     return divHeader;
 };
 
@@ -29,6 +30,13 @@ const hHeaderVideo = () => {
     h3Header.textContent = enviroment.textHeaderSelectVideo;
     return h3Header;
 };
+
+const buttonCloseVideo = () => {
+    const button = document.createElement("button");
+    button.setAttribute("id", "fab-hdr-video-button");
+    button.textContent = "X";
+    return button;
+}
 
 const divContentVideo = () => {
     const contentDiv = document.createElement("div");
@@ -129,7 +137,9 @@ const createPopupVideo = (
 };
 
 const setButtonCallBackVideo = (buttonSelect,functionCallBack)=>{
+    console.log("CALLBACK", buttonSelect, functionCallBack);
     buttonSelect.addEventListener('click',functionCallBack);
+    console.log("AFTer");
 }
 
 
@@ -145,6 +155,7 @@ export {
     selectMicVideo,
     labelTextVideo,
     divButtonVideo,
+    buttonCloseVideo,
     buttonSelectVideo,
     createPopupVideo,
     setButtonCallBackVideo
