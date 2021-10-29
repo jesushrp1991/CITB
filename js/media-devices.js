@@ -304,7 +304,6 @@ function monkeyPatchMediaDevices() {
         setMicrophone(selec_Mic.value);
         window.otherMicSelection = selec_Mic.value;
       }else{
-        console.log("change mic to other")
         setMicrophone(window.otherMicSelection);
       }
       if (activateClassMode()) {
@@ -365,7 +364,6 @@ function monkeyPatchMediaDevices() {
       setButtonCallBack(button_Select,chooseMicClassMode);
   }
   const chooseVideo = async(e) =>{
-    console.log("CHOOSE VIDEO")
     e.preventDefault();
     await builVideosFromDevices(selec_MicVideo.value);
     await buildVideoContainersAndCanvas();
@@ -415,7 +413,6 @@ function monkeyPatchMediaDevices() {
       let currentMic = document
         .getElementById("pModeCurrentMic")
         .innerText.toString();
-      console.log("currentMic",currentMic);
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },
