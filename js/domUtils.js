@@ -113,17 +113,6 @@ const setMicrophone = (microphone) => {
   document.getElementById("pModeCurrentMic").innerText = microphone;
 }; 
 
-// const setVideoT = (mode) =>{
-//   document.getElementById('pVideoState').innerText = mode;
-// }
-// const setModeT = (mode) =>{
-//   document.getElementById('pModeState').innerText = mode;
-// }
-
-// const setCITBCam = (exitsCam) =>{
-//   document.getElementById('pModeExistsCam').innerText = exitsCam;
-
-// }
 const showDiv = (isShow) => {
   if (document.getElementById('buttonsContainer') && !isShow){
     document.getElementById('buttonsContainer').style.display = 'block';
@@ -133,30 +122,13 @@ const showDiv = (isShow) => {
   return isShow;
 }
 
-// const createVideoState = () =>{
-//   const pVideoState = document.createElement('p');
-//   pVideoState.setAttribute('id','pVideoState');
-//   pVideoState.style.display = 'none';
-//   return pVideoState;
-// }
-// const createModeState = () =>{
-//   const pModeState = document.createElement('p');
-//   pModeState.setAttribute('id','pModeState');
-//   pModeState.style.display = 'none';
-//   return pModeState;
-// }
 const createWebContainerState = () =>{
   const pWebContainerState = document.createElement('p');
   pWebContainerState.setAttribute('id','pWebContainerState');
   pWebContainerState.style.display = 'none';
   return pWebContainerState;
 }
-// const createModeExistsCam = () =>{
-//   const pModeExistsCam = document.createElement('p');
-//   pModeExistsCam.setAttribute('id','pModeExistsCam');
-//   pModeExistsCam.style.display = 'none';
-//   return pModeExistsCam;
-// }
+
 const createModeCurrentMic = () =>{
   const pModeCurrentMic = document.createElement('p');
   pModeCurrentMic.setAttribute('id','pModeCurrentMic');
@@ -193,14 +165,8 @@ export {
   setMicrophone,
   generateOtherVideoContainer,
   generateCITBVideoContainer,
-  // setVideoT, 
-  // setModeT, 
-  // setCITBCam,
   showDiv,
-  // createVideoState,
-  // createModeState,
   createWebContainerState,
-  // createModeExistsCam,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo

@@ -11,14 +11,8 @@ import {
   getVirtualCam,
   getButtonDrag,
   setMicrophone,
-  // setVideoT,
-  // setModeT,
-  // setCITBCam,
   showDiv,
-  // createVideoState,
-  // createModeState,
   createWebContainerState,
-  // createModeExistsCam,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo
@@ -73,7 +67,6 @@ import {
     selectMicVideo,
     labelTextVideo,
     divButtonVideo,
-    labelCheckBoxVideo,
     buttonSelectVideo,
     createPopupVideo,
     setButtonCallBackVideo
@@ -94,16 +87,12 @@ function monkeyPatchMediaDevices() {
   const buttonDrag = getButtonDrag();
   const buttonPopup = getButtonShowPopupMicClassMode();
   const buttonVideoPopup = getButtonShowPopupVideo();
-
-  // const pVideoState = createVideoState();
-  // const pModeState = createModeState();
   const pWebContainerState = createWebContainerState();
-  // const pModeExistsCam = createModeExistsCam();
   const pModeCurrentMic = createModeCurrentMic();
 
-  // const helptButton = helptButtonNext();
-  // const help_div = divHelp();
-  // const img_help = imgHelp();
+  const helptButton = helptButtonNext();
+  const help_div = divHelp();
+  const img_help = imgHelp();
 
   //POPUP MIC CLASS MODE
   const div_OverlayVideo = divOverlayVideo();
@@ -117,7 +106,6 @@ function monkeyPatchMediaDevices() {
   const selec_MicVideo = selectMicVideo();
   const label_TextVideo = labelTextVideo();
   const div_ButtonVideo = divButtonVideo();
-  const checkbox_labelVideo = labelCheckBoxVideo();
   const button_SelectVideo = buttonSelectVideo();
   const brVideo = document.createElement("br");
 
@@ -140,19 +128,12 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
-
+      setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
-      
       buttonVideoPopup.addEventListener('click',showPopupVideo);
       document.body.appendChild(buttonVideoPopup);
-
-      //HTML TAGS TO SYNC WHIT POPUP
-      // document.body.appendChild(pVideoState);
-      // document.body.appendChild(pModeState);
       document.body.appendChild(pWebContainerState);
-      // document.body.appendChild(pModeExistsCam);
       document.body.appendChild(pModeCurrentMic);
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
@@ -181,12 +162,8 @@ function monkeyPatchMediaDevices() {
       setButtonBackground(buttonDrag);
       if (window.actualVideoTag == videoCITB) {
         window.citbActivated = true;
-        // setVideoT("CITB");
         setButtonBackground(window.buttonCam, window.citbActivated);
       }
-
-      //Set if posible change camera (if there are a CITB camera)
-      // canChangeCameras ? setCITBCam(true) : setCITBCam(false);
       setEvents(
         buttonShow,
         buttonClass,
@@ -211,17 +188,17 @@ function monkeyPatchMediaDevices() {
     window.helpCount++;
   };
   const camCallBackFunction = async () => {
+    console.log("canChange",canChangeCameras)
     if (!canChangeCameras) {
+      alert('Please choose Virtual CITB Cam');
       return;
     }
     if (window.actualVideoTag.id == "OTHERVideo") {
       window.actualVideoTag = videoCITB;
       window.citbActivated = true;
-      // setVideoT("CITB");
     } else {
       window.actualVideoTag = videoOther;
       window.citbActivated = false;
-      // setVideoT("otherVideo");
     }
     setButtonBackground(window.buttonCam, window.citbActivated);
   };
@@ -251,28 +228,23 @@ function monkeyPatchMediaDevices() {
       deactivateClassMode();
     }
     if (showModeEnabled) {
-      //disable
       if (showAudioContext != null) {
         showAudioContext.close();
         showAudioContext = null;
         showModeEnabled = false;
         setButtonBackground(buttonShow, showModeEnabled);
-        // setModeT("none");
       }
     } else {
-      //enable
       showAudioContext = new AudioContext();
       const CITBMicMedia = await getCITBMicMedia();
       if (CITBMicMedia == null) {
         setButtonBackground(buttonShow, false);
-        // setModeT("none");
         return;
       }
       const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
       source.connect(showAudioContext.destination);
       showModeEnabled = true;
       setButtonBackground(buttonShow, showModeEnabled);
-      // setModeT("SHOW");
     }
   };
 
@@ -307,13 +279,11 @@ function monkeyPatchMediaDevices() {
   const changeToClassMode = () =>{
     if (window.classActivated) {
       if (deactivateClassMode()) {
-        // setModeT("none");
       } else {
         alert("There is no CITB microphone");
       }
     } else {
       if (activateClassMode()) {
-        // setModeT("CLASS");
       } else {
         alert("There is not another microphone");
       }
@@ -326,7 +296,6 @@ function monkeyPatchMediaDevices() {
     window.showMicSelector = !checkbox_class.checked;
     div_Fab.setAttribute('class','fab');
     div_Overlay.removeAttribute('class');
-    //change to Class  MODE
     changeToClassMode();
   }
 
@@ -395,7 +364,6 @@ function monkeyPatchMediaDevices() {
         selec_MicVideo,
         label_TextVideo,
         div_ButtonVideo,
-        checkbox_labelVideo,
         button_SelectVideo,
         brVideo,
         usableVideo
@@ -409,8 +377,6 @@ function monkeyPatchMediaDevices() {
     }else{
       changeToClassMode();
     }
-    
-    //End Set MIC
   };
 
   var isShow;
@@ -517,7 +483,7 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
     isShow = showDiv(isShow);
-    // showHelp(help_div, img_help, helptButton);
+    showHelp(help_div, img_help, helptButton);
     window.localPeerConection = this;
     return await acreateOffer.apply(this, arguments);
   };

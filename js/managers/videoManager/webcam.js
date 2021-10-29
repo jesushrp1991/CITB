@@ -12,7 +12,7 @@ import {
     , generateOtherVideoContainer
 } from '../../domUtils.js'
 
-var canChangeCameras = true;
+var canChangeCameras = false;
 var virtualWebCamMediaStream = new MediaStream();
 const virtualWebCamCanvasVideoContainer = generateVirtualWebCamCanvas();
 const videoCITB = generateCITBVideoContainer();
@@ -73,7 +73,6 @@ const setStreamToVideoTag = async (constraints ,video) => {
 
 
 const buildVideos = async (sources) => {
-    console.log("buildVideos", sources);
     let constraints = {
       video: {
         deviceId: { exact: "" },

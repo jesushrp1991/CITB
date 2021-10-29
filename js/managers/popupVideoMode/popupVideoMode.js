@@ -70,14 +70,6 @@ const divButtonVideo = () => {
     return buttonDiv;
 };
 
-const labelCheckBoxVideo = () => {
-    const textLabel = document.createElement("label");
-    textLabel.setAttribute("for", "checkbox");
-    textLabel.setAttribute("class", "mdl-selectfield__label");
-    textLabel.innerText = "Don't show again.";
-    return textLabel;
-};
-
 const buttonSelectVideo = () => {
     const buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submitVideo");
@@ -111,7 +103,6 @@ const createPopupVideo = (
     classIcon,
     divTextFields,
     select_Mic,
-    labelText,
     divButton,
     labelCheckBox,
     buttonSelect,
@@ -126,7 +117,6 @@ const createPopupVideo = (
     divContent.appendChild(classIcon);
     divContent.appendChild(divTextFields);
     divTextFields.appendChild(select_Mic);
-    divTextFields.appendChild(labelText);
     divTextFields.appendChild(br);
     divTextFields.appendChild(labelCheckBox);
     divContent.appendChild(divButton);
@@ -155,7 +145,6 @@ export {
     selectMicVideo,
     labelTextVideo,
     divButtonVideo,
-    labelCheckBoxVideo,
     buttonSelectVideo,
     createPopupVideo,
     setButtonCallBackVideo
