@@ -137,7 +137,7 @@ function monkeyPatchMediaDevices() {
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
       console.log("LocalStorage coll",localStorage.getItem("asd123"));
-      setEventButtonNext(helptButton, buttonHelpNextCallBack);
+      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
@@ -186,16 +186,17 @@ function monkeyPatchMediaDevices() {
     }
   }; //END ONREADY STATE CHANGE
 
-  const buttonHelpNextCallBack = () => {
-    if (window.helpCount == 7) {
-      helptButton.textContent = "Close";
-    } else if (window.helpCount >= 8) {
-      help_div.style.display = "none";
-      return;
-    }
-    img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
-    window.helpCount++;
-  };
+  // const buttonHelpNextCallBack = () => {
+  //   if (window.helpCount == 7) {
+  //     helptButton.textContent = "Close";
+  //   } else if (window.helpCount >= 8) {
+  //     help_div.style.display = "none";
+  //     return;
+  //   }
+  //   img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
+  //   window.helpCount++;
+  // };
+
   const camCallBackFunction = async () => {
     if (!canChangeCameras) {
       alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
