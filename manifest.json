@@ -50,7 +50,7 @@
     "open_in_tab": false
   },
   "web_accessible_resources": [{
-    "resources": ["js/*","helper/*"],
+    "resources": ["js/*","helper/*", "css/font/*"],
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {

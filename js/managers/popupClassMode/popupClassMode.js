@@ -53,7 +53,7 @@ const classDescriptionText = () => {
     const classDescriptionText = document.createElement("p");
     classDescriptionText.setAttribute("id", "DescriptionText");
     classDescriptionText.setAttribute("class", "classDescriptionText");
-    classDescriptionText.innerText = 'El microfono '
+    classDescriptionText.innerText = 'The '
     return classDescriptionText;
 };
 
@@ -85,13 +85,13 @@ const CITBb = () => {
 const classDescriptionText1 = () => {
     const classDescriptionText = document.createElement("p");
     classDescriptionText.setAttribute("class", "classDescriptionText");
-    classDescriptionText.innerText = ' esta silenciado.'
+    classDescriptionText.innerText = ' microphone is muted.'
     return classDescriptionText;
 };
 const classDescriptionText2 = () => {
     const classDescriptionText = document.createElement("p");
     // classDescriptionText.setAttribute("class", "classDescriptionText2");
-    classDescriptionText.innerText = 'Ahora, selecciona el microfono por el que quieres que hablen todos.'
+    classDescriptionText.innerText = ' Now select the microphone you want everybody to talk through'
     return classDescriptionText;
 };
 

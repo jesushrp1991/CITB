@@ -1,6 +1,6 @@
 @font-face {
   font-family: myFont;
-  src: url(./font/AntartidaRounded-Bold.otf);
+  src: url('chrome-extension://cmipmijaddfhnallmpjbfdibgiggooem/css/font/AntartidaRounded-Bold.otf');
 }
 .CITBButton {
     width: 40px;
@@ -266,22 +266,22 @@
   }
 
   mark.blue {
-    color: blue;
+    color: #547DBF;
     background: none;
     font-family: myFont;
   }
   mark.red {
-    color:#ff0000;
+    color:#dc3336;
     background: none;
     font-family: myFont;
   }
   mark.yellow {
-    color: yellow;
+    color: #F5C116;
     background: none;
     font-family: myFont;
   }
   mark.green {
-    color: green;
+    color: #4CB057;
     background: none;
     font-family: myFont;
   }
@@ -310,7 +310,10 @@
   
   .topright {
     position: absolute;
-    right: 0;
-    top: 0;
+    top: 10px;
+    right: 10px;
+    font-size: 22px;
+    font-family: 'Roboto';
+    font-weight: 100;
   }
 /* END Popup choose mic Class Mode */
