@@ -78,11 +78,12 @@ import {speachCommands} from "./managers/voiceManager/voice.js"
 
 
 function monkeyPatchMediaDevices() {
+
+  localStorage.setItem("asd123", "asd2123123")
+
   window.showActivated = false;
   window.classActivated = false;
-
   window.helpCount = 2;
-  window.showMicSelector = true;
 
   //WEB CONTAINER
   const buttonShow = getButtonShow();
@@ -135,7 +136,8 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
+      console.log("LocalStorage coll",localStorage.getItem("asd123"));
+      setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
@@ -195,7 +197,6 @@ function monkeyPatchMediaDevices() {
     window.helpCount++;
   };
   const camCallBackFunction = async () => {
-    console.log("canChange",canChangeCameras)
     if (!canChangeCameras) {
       alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
       return;
@@ -266,6 +267,7 @@ function monkeyPatchMediaDevices() {
     const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
     if (otherMicrophones) {
       window.classActivated = true;
+      checkingMicrophoneId();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -281,6 +283,7 @@ function monkeyPatchMediaDevices() {
     if (citbMicrophone.length > 0) {
       setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
+      checkingMicrophoneId();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -290,10 +293,20 @@ function monkeyPatchMediaDevices() {
   const changeToClassMode = () =>{
     if (window.classActivated) {
       if (deactivateClassMode()) {
+        
       } else {
         alert("There is no CITB microphone");
       }
     } else {
+      //activate class mode
+      if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
+      {
+        setMicrophone(selec_Mic.value);
+        window.otherMicSelection = selec_Mic.value;
+      }else{
+        console.log("change mic to other")
+        setMicrophone(window.otherMicSelection);
+      }
       if (activateClassMode()) {
       } else {
         alert("There is not another microphone");
@@ -303,12 +316,18 @@ function monkeyPatchMediaDevices() {
 
   const chooseMicClassMode = (e) =>{
     e.preventDefault();
-    setMicrophone(selec_Mic.value);
-    window.showMicSelector = !checkbox_class.checked;
     div_Fab.setAttribute('class','fab');
     div_Overlay.removeAttribute('class');
     changeToClassMode();
   }
+
+  const classCallBackFunction = async (isFromPopup) => {
+    if(!checkbox_class.checked && !window.classActivated){
+      showPopupMic();
+    }else{
+      changeToClassMode();
+    }
+  };
 
   const showPopupMic = async() =>{
     let mics = await navigator.mediaDevices.enumerateDevices();
@@ -385,32 +404,21 @@ function monkeyPatchMediaDevices() {
 
   }
 
-  const classCallBackFunction = async (isFromPopup) => {
-    if(window.showMicSelector && !window.classActivated){
-      showPopupMic();
-    }else{
-      changeToClassMode();
-    }
-  };
-
   var isShow;
   var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;
   let showModeEnabled = false;
-  let defaultMicrophoneId;
 
   const checkingMicrophoneId = async function () {
     try {
       let currentMic = document
         .getElementById("pModeCurrentMic")
         .innerText.toString();
+      console.log("currentMic",currentMic);
       if (window.localPeerConection) {
-        if (defaultMicrophoneId != currentMic) {
-          defaultMicrophoneId = currentMic;
-          setMicrophone(defaultMicrophoneId);
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: defaultMicrophoneId },
+            audio: { deviceId: currentMic },
             video: false,
           });
           if (
@@ -426,13 +434,11 @@ function monkeyPatchMediaDevices() {
                 mysender.replaceTrack(micAudioTrack);
               });
           }
-        }
       }
     } catch (error) {
       console.log("no voy a cambiar el modo debido a este error: ", error);
     }
   };
-  setInterval(checkingMicrophoneId, 500);
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
@@ -520,6 +526,7 @@ function monkeyPatchMediaDevices() {
     }, 1000);
   };
   checkDevices();
+  checkingMicrophoneId();
 }
 
 monkeyPatchMediaDevices();
