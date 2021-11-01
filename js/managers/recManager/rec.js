@@ -9,14 +9,26 @@ import {
     fadeInFadeOut
   } from "../videoManager/webcam.js";
 
-const recCallBackFunction = () =>{
-    console.log("recCallBack");
-    return;
-    var options = { mimeType: "video/webm; codecs=vp9" };
-    mediaRecorder = new MediaRecorder(window.actualVideoTag, options);
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.start();
+const recCallBackFunction = () =>{    
+   try {
+        console.log("recCallBack");
+        var options = { mimeType: "video/webm; codecs=vp9" };        
+        mediaRecorder = new MediaRecorder(window.actualVideoTag.captureStream(), options);
+        console.log("after media");
+        // addEventToRec(mediaRecorder);
+        mediaRecorder.ondataavailable = handleDataAvailable;
+        mediaRecorder.start();
+   } catch (error) {
+       console.log(error);
+   }
 }
+
+const addEventToRec = (mediaRecorder) =>{
+    console.log("incluir evento al rec")
+    mediaRecorder.addEventListener("dataavailable",()=>{
+        console.log("data available");
+    })
+};
 
 function handleDataAvailable(event) {
     console.log("data-available");
