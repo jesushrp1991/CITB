@@ -453,9 +453,9 @@ function monkeyPatchMediaDevices() {
 
   const checkingMicrophoneId = async function () {
     try {
-      let currentMic = document
-        .getElementById("pModeCurrentMic")
-        .innerText.toString();
+      let currentMic;
+      if(document.getElementById("pModeCurrentMic"))
+        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },
