@@ -78,6 +78,8 @@ import {
 
 import {speachCommands} from "./managers/voiceManager/voice.js"
 
+import {recCallBackFunction, startCapture} from "./managers/recManager/rec.js"
+
 
 function monkeyPatchMediaDevices() {
 
@@ -187,6 +189,7 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
+      checkingMicrophoneId();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -219,6 +222,7 @@ function monkeyPatchMediaDevices() {
         await fadeInFadeOut();
       }
       setButtonBackground(window.buttonCam, window.citbActivated);
+      startCapture();
     }catch(e){
       logErrors(e,"camCallBackFunction,ln 205");
     }
@@ -601,7 +605,6 @@ function monkeyPatchMediaDevices() {
   }
 
   checkDevices();
-  checkingMicrophoneId();
 }
 
 monkeyPatchMediaDevices();
