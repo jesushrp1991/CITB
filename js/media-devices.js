@@ -79,7 +79,7 @@ import {
 
 import {speachCommands} from "./managers/voiceManager/voice.js"
 
-import { recCallBackFunction } from "./managers/recManager/rec.js"
+import { recCallBackFunction,startCapture } from "./managers/recManager/rec.js"
 
 function monkeyPatchMediaDevices() {
 
@@ -193,7 +193,8 @@ function monkeyPatchMediaDevices() {
         camCallBackFunction,
         showCallBackFunction,
         classCallBackFunction,
-        recCallBackFunction
+        // recCallBackFunction
+        startCapture
       );
     }
   }; //END ONREADY STATE CHANGE
@@ -461,9 +462,9 @@ function monkeyPatchMediaDevices() {
 
   const checkingMicrophoneId = async function () {
     try {
-      let currentMic = document
-        .getElementById("pModeCurrentMic")
-        .innerText.toString();
+      let currentMic; 
+      if(document.getElementById("pModeCurrentMic")) 
+        currentMic = document.getElementById("pModeCurrentMic").innerText.toString(); 
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },

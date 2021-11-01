@@ -159,7 +159,7 @@ const getButtonRec = () => {
   const buttonRec = document.createElement("button");
   buttonRec.setAttribute("id", "buttonRec");
   buttonRec.className = "CITBButton";
-  buttonRec.classList.add("CITBShowButton");
+  buttonRec.classList.add("CITBCamButton");
   return buttonRec;
 };
 
