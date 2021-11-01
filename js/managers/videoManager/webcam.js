@@ -77,13 +77,32 @@ const drawFrameOnVirtualCamera = async () => {
         virtualWebCamCanvasVideoContainer.width = width;
         virtualWebCamCanvasVideoContainer.height = height;
         const context = virtualWebCamCanvasVideoContainer.getContext('2d');
-        context.drawImage(
-            window.actualVideoTag
-            , 0
-            , 0
-            , virtualWebCamCanvasVideoContainer.width
-            , virtualWebCamCanvasVideoContainer.height
-        );
+        if (window.presentationMode) {
+            context.drawImage(
+                videoCITB
+                , 0
+                , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+                , (virtualWebCamCanvasVideoContainer.width / 2)
+                , (virtualWebCamCanvasVideoContainer.height / 2)
+            );
+
+            context.drawImage(
+                videoOther
+                , virtualWebCamCanvasVideoContainer.width / 2
+                , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+                , virtualWebCamCanvasVideoContainer.width / 2
+                , virtualWebCamCanvasVideoContainer.height / 2
+            );
+        }else {
+            context.drawImage(
+                window.actualVideoTag
+                , 0
+                , 0
+                , virtualWebCamCanvasVideoContainer.width
+                , virtualWebCamCanvasVideoContainer.height
+            );
+        }
+       
         context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`;
         context.fillRect(0,0, width, height);
         timeFromLastFrame = performance.now(); 
@@ -117,6 +136,7 @@ const buildVideos = async (sources) => {
     let constraints = {
       video: {
         deviceId: { exact: "" },
+        aspectRatio: 1.7777777778
       },
       audio: false,
     };

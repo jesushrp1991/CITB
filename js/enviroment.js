@@ -5,7 +5,7 @@ const enviroment = {
     MYAUDIODEVICELABEL: 'CITB',
 
     //**** */ COLLADO *****//
-    EXTENSIONID: "cmipmijaddfhnallmpjbfdibgiggooem",
+    EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
     // MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340)",
     // // MYAUDIODEVICELABEL: 'Varios micrófonos (Realtek High Definition Audio)',
     // MYAUDIODEVICELABEL: 'Redmi',

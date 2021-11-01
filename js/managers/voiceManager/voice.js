@@ -61,7 +61,32 @@ try{
     'CITV class': () => {
       document.getElementsByClassName("CITBClassButton")[0].click(); 
     }
-};
+  }
+  var estudioCommands1 = {
+    'CITB duplo': () => {
+      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+    }
+  }
+
+  var estudioCommands3 = {
+    'CITV duplo': () => {
+      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+    }
+  }
+
+  var estudioCommands2 = {
+    '*w the box duplo': () => {
+      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+    }
+  }
+  //   var estudioCommands1 = {
+  //     'regexp: /(.*)?(citb|w* in the box) (duplo)/': () => {
+  //       document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+  //     }
+  // };
+ 
+ 
+
 
       // Add our commands to annyang
       annyang.addCommands(cameraCommands);
@@ -78,6 +103,12 @@ try{
       annyang.addCommands(classCommands);    
       annyang.addCommands(classCommands1);    
       annyang.addCommands(classCommands2);    
+
+      annyang.addCommands(estudioCommands1); 
+      annyang.addCommands(estudioCommands2); 
+      annyang.addCommands(estudioCommands3); 
+
+      
 
       // Start listening. You can call this here, or attach this call to an event, button, etc.
       annyang.debug(true);

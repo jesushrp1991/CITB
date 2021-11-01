@@ -35,6 +35,14 @@ const getButtonClass = () => {
   return buttonClass;
 };
 
+
+const getButtonPresentation = () => {
+  const buttonClass = document.createElement("button");
+  buttonClass.className = "CITBButton";
+  buttonClass.classList.add("CITBPresentationButton");
+  return buttonClass;
+};
+
 const getButtonCam = () => {
   const buttonCam = document.createElement("button");
   buttonCam.className = "CITBButton";
@@ -53,7 +61,7 @@ const getContainerButton = () => {
   div.style.position = "absolute";
   div.style.zIndex = 980;
   div.style.width = "40px";
-  div.style.height = "210px";
+  div.style.height = "250px";
   div.style.top = "60px";
   div.style.right = "16px";
   div.style.background = "rgb(240, 243, 250)";
@@ -72,28 +80,13 @@ const setButtonBackground = (button, activated) => {
     : button.classList.remove("active");
 };
 
-const addElementsToDiv = (
-  div,
-  buttonClose,
-  br0,
-  buttonCam,
-  br,
-  buttonShow,
-  br1,
-  buttonClass,
-  br2,
-  buttonDrag
-) => {
-  div.appendChild(buttonClose);
-  div.appendChild(buttonCam);
-  div.appendChild(br);
-  div.appendChild(buttonShow);
-  div.appendChild(br1);
-  div.appendChild(buttonClass);
-  div.appendChild(br2);
-  div.appendChild(buttonDrag);
+const addElementsToDiv = (div, array) => {
+  array.forEach(element => {
+    div.appendChild(element);
+  })
   document.body.appendChild(div);
   div.style.display = "none";
+  
 };
 
 const getVirtualCam = () => {
@@ -169,5 +162,6 @@ export {
   createWebContainerState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
+  getButtonPresentation,
   getButtonShowPopupVideo
 };

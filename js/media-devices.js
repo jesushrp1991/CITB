@@ -15,7 +15,8 @@ import {
   createWebContainerState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
-  getButtonShowPopupVideo
+  getButtonShowPopupVideo,
+  getButtonPresentation
 } from "./domUtils.js";
 
 import {
@@ -90,6 +91,15 @@ function monkeyPatchMediaDevices() {
   //WEB CONTAINER
   const buttonShow = getButtonShow();
   const buttonClass = getButtonClass();
+  const buttonPresentation = getButtonPresentation();
+  window.presentationMode = false;
+  buttonPresentation.addEventListener('click', async () => {
+    await fadeInFadeOut();
+    window.presentationMode = !window.presentationMode
+    setButtonBackground(buttonPresentation, window.presentationMode);
+    await fadeInFadeOut();
+  });
+
   window.buttonCam = getButtonCam();
   const buttonClose = getButtonClose();
   const buttonDrag = getButtonDrag();
@@ -152,21 +162,17 @@ function monkeyPatchMediaDevices() {
 
       //WEB CONTAINER
       const buttonsContainerDiv = getContainerButton();
-      const br = document.createElement("br");
-      const br0 = document.createElement("br");
-      const br1 = document.createElement("br");
-      const br2 = document.createElement("br");
+     
       addElementsToDiv(
         buttonsContainerDiv,
-        buttonClose,
-        br0,
-        window.buttonCam,
-        br,
-        buttonShow,
-        br1,
-        buttonClass,
-        br2,
-        buttonDrag
+        [
+          buttonClose,
+          window.buttonCam,
+          buttonShow,
+          buttonClass,
+          buttonPresentation,
+          buttonDrag,
+        ]
       );
 
       setButtonBackground(window.buttonCam, window.citbActivated);

@@ -96,7 +96,6 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
       const handleMouseLeaveEvent = () =>{
         document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
         document.getElementById('buttonsContainer').style.boxShadow = 'none'
-        document.getElementById('buttonClose').style.display = 'none';
       };
     
       function closeDragElement() {
