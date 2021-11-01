@@ -1,11 +1,10 @@
 const enviroment = {
     //**** */ CONFIGURATION FOR CITB & CHROME ORIGINAL ID *****//
-    // EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
-    // MYVIDEODDEVICELABEL: "2K HD Camera",
-    // MYAUDIODEVICELABEL: 'CITB',
+    EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
+    MYVIDEODDEVICELABEL: "2K HD Camera",
+    MYAUDIODEVICELABEL: 'CITB',
 
     //**** */ COLLADO *****//
-    EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
     // MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340)",
     // // MYAUDIODEVICELABEL: 'Varios micrófonos (Realtek High Definition Audio)',
     // MYAUDIODEVICELABEL: 'Redmi',

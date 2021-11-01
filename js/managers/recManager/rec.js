@@ -1,27 +1,58 @@
 var recordedChunks = [];
 var mediaRecorder;
-const recCallBackFunction = (captureStream) =>{    
-   try {
-        console.log("recCallBack");
-        var options = { mimeType: "video/webm; codecs=vp9" };        
-        let media = window.actualVideoTag;
-        // mediaRecorder = new MediaRecorder(media.captureStream(), options);
-        mediaRecorder = new MediaRecorder(captureStream, options);
-        mediaRecorder.ondataavailable = handleDataAvailable;
-        mediaRecorder.start();
+const recCallBackFunction = async (captureStream) =>{    
+  try {
+    console.log("recCallBack");
+    var options = { mimeType: "audio/webm" };        
+    let tracks = window.localPeerConection.getReceivers().filter( x => x.track.kind == "audio" && x.track.muted == false).map(t => t.track)
+    const ac = new AudioContext();
+    const sources = tracks.map(t => ac.createMediaStreamSource(new MediaStream([t])));
+    const dest = ac.createMediaStreamDestination();
+    sources.forEach(s => s.connect(dest));
+    let stream = new MediaStream();
+    let videoTracks = captureStream.getTracks()[0];
+    console.log(dest, dest.stream, dest.stream.getTracks())
+    let audioTracks = dest.stream.getTracks()[0];
+    stream.addTrack(videoTracks);
+    stream.addTrack(audioTracks);
+    mediaRecorder = new MediaRecorder(stream, options);
+    // mediaRecorder = new MediaRecorder(media.captureStream(), options);
+    // mediaRecorder = new MediaRecorder(captureStream, options);
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.start();
 
-        setTimeout(event => {
-            console.log("stopping");
-            mediaRecorder.stop();
-        }, 15000);
+    setTimeout(event => {
+        console.log("stopping");
+        mediaRecorder.stop();
+    }, 15000);
 
-   } catch (error) {
-       console.log(error);
-   }
+} catch (error) {
+   console.log(error);
+}
+
+  //  try {
+  //       console.log("recCallBack", captureStream, captureStream.getTracks(), captureStream.getAudioTracks());
+  //       var options = { mimeType: "video/webm; codecs=vp9" };        
+  //       let media = window.actualVideoTag;
+  //       // mediaRecorder = new MediaRecorder(media.captureStream(), options);
+
+  //       mediaRecorder = new MediaRecorder(captureStream, options);
+  //       mediaRecorder.ondataavailable = handleDataAvailable;
+  //       mediaRecorder.start();
+
+  //       setTimeout(event => {
+  //           console.log("stopping");
+  //           mediaRecorder.stop();
+  //       }, 15000);
+
+  //  } catch (error) {
+  //      console.log(error);
+  //  }
 }
 
 const startCapture = async ()=> {
     let captureStream = null;
+    
     let currentMic; 
     if(document.getElementById("pModeCurrentMic")) 
         currentMic = document.getElementById("pModeCurrentMic").innerText.toString(); 
@@ -30,24 +61,19 @@ const startCapture = async ()=> {
         video: {
             cursor: "always"
           },
-          audio: {
-            deviceId: currentMic,
-            echoCancellation: true,
-            noiseSuppression: true,
-            sampleRate: 44100
-          }
+          audio: true
     }
   
     try {
       captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-      recCallBackFunction(captureStream);
+      await recCallBackFunction(captureStream);
     } catch(err) {
       console.error("Error: " + err);
     }
   }
 
 function handleDataAvailable(event) {
-    console.log("data-available");
+    console.log("data-available", event);
     if (event.data.size > 0) {
       recordedChunks.push(event.data);
       console.log(recordedChunks);
@@ -58,7 +84,7 @@ function handleDataAvailable(event) {
   }
   function download() {
     var blob = new Blob(recordedChunks, {
-      type: "video/webm"
+      type: recordedChunks[0].type
     });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
