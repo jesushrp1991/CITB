@@ -81,7 +81,7 @@ import {speachCommands} from "./managers/voiceManager/voice.js"
 
 function monkeyPatchMediaDevices() {
 
-  localStorage.setItem("asd123", "asd2123123")
+  // localStorage.setItem("asd123", "asd2123123")
 
   window.showActivated = false;
   window.classActivated = false;
@@ -140,7 +140,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      console.log("LocalStorage coll",localStorage.getItem("asd123"));
+      // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       document.body.appendChild(buttonPopup);
@@ -202,84 +202,103 @@ function monkeyPatchMediaDevices() {
   // };
 
   const camCallBackFunction = async () => {
-    if (!canChangeCameras) {
-      alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
-      return;
+    try{
+      if (!canChangeCameras) {
+        alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
+        return;
+      }
+      if (window.actualVideoTag.id == "OTHERVideo") {
+        await fadeInFadeOut();
+        window.actualVideoTag = videoCITB;
+        window.citbActivated = true;
+        await fadeInFadeOut();
+      } else {
+        await fadeInFadeOut();
+        window.actualVideoTag = videoOther;
+        window.citbActivated = false;
+        await fadeInFadeOut();
+      }
+      setButtonBackground(window.buttonCam, window.citbActivated);
+    }catch(e){
+      logErrors(e,"camCallBackFunction,ln 205");
     }
-    if (window.actualVideoTag.id == "OTHERVideo") {
-      await fadeInFadeOut();
-      window.actualVideoTag = videoCITB;
-      window.citbActivated = true;
-      await fadeInFadeOut();
-    } else {
-      await fadeInFadeOut();
-      window.actualVideoTag = videoOther;
-      window.citbActivated = false;
-      await fadeInFadeOut();
-    }
-    setButtonBackground(window.buttonCam, window.citbActivated);
   };
 
   const getCITBMicMedia = async () => {
-    const citbMicrophone = devices.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
-    if (citbMicrophone.length > 0) {
-      let constraints = {
-        video: false,
-        audio: {
-          deviceId: { exact: citbMicrophone[0].deviceId },
-        },
-      };
-      let result = await navigator.mediaDevices.getUserMedia(constraints);
-      return result;
-    } else {
-      return null;
+    try {
+      const citbMicrophone = devices.filter(
+        (x) =>
+          x.kind === "audioinput" &&
+          x.label.includes(enviroment.MYAUDIODEVICELABEL)
+      );
+      if (citbMicrophone.length > 0) {
+        let constraints = {
+          video: false,
+          audio: {
+            deviceId: { exact: citbMicrophone[0].deviceId },
+          },
+        };
+        let result = await navigator.mediaDevices.getUserMedia(constraints);
+        return result;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      logErrors(error,"getCTBMicMedia ln. 227");
     }
   };
 
   const showCallBackFunction = async () => {
-    if (window.classActivated) {
-      deactivateClassMode();
-    }
-    if (showModeEnabled) {
-      if (showAudioContext != null) {
-        showAudioContext.close();
-        showAudioContext = null;
-        showModeEnabled = false;
+    try {
+      if (window.classActivated) {
+        deactivateClassMode();
+      }
+      if (showModeEnabled) {
+        if (showAudioContext != null) {
+          showAudioContext.close();
+          showAudioContext = null;
+          showModeEnabled = false;
+          setButtonBackground(buttonShow, showModeEnabled);
+        }
+      } else {
+        showAudioContext = new AudioContext();
+        const CITBMicMedia = await getCITBMicMedia();
+        if (CITBMicMedia == null) {
+          setButtonBackground(buttonShow, false);
+          return;
+        }
+        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+        source.connect(showAudioContext.destination);
+        showModeEnabled = true;
         setButtonBackground(buttonShow, showModeEnabled);
+        //Testing LogErrors in back
+        throw "New error in showCallBackFunction Activate"; 
       }
-    } else {
-      showAudioContext = new AudioContext();
-      const CITBMicMedia = await getCITBMicMedia();
-      if (CITBMicMedia == null) {
-        setButtonBackground(buttonShow, false);
-        return;
-      }
-      const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
-      source.connect(showAudioContext.destination);
-      showModeEnabled = true;
-      setButtonBackground(buttonShow, showModeEnabled);
+    } catch (error) {
+      logErrors(error,"showCallBackFunction ln. 251")
     }
   };
 
   const activateClassMode = () => {
-    if (showModeEnabled) {
-      showCallBackFunction();
+    try {
+      if (showModeEnabled) {
+        showCallBackFunction();
+      }
+      const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+      if (otherMicrophones) {
+        window.classActivated = true;
+        checkingMicrophoneId();
+        setButtonBackground(buttonClass, window.classActivated);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      logErrors(error,"activateClassMode ln 280")
     }
-    const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
-    if (otherMicrophones) {
-      window.classActivated = true;
-      checkingMicrophoneId();
-      setButtonBackground(buttonClass, window.classActivated);
-      return true;
-    }
-    return false;
   };
 
   const deactivateClassMode = () => {
+   try {
     const citbMicrophone = devices.filter(
       (x) =>
         x.kind === "audioinput" &&
@@ -293,28 +312,35 @@ function monkeyPatchMediaDevices() {
       return true;
     }
     return false;
+   } catch (error) {
+     logErrors(error,"deactivateClassMode ln 298")
+   }
   };
 
   const changeToClassMode = () =>{
-    if (window.classActivated) {
-      if (deactivateClassMode()) {
-        
+    try {
+      if (window.classActivated) {
+        if (deactivateClassMode()) {
+          
+        } else {
+          alert("There is no CITB microphone");
+        }
       } else {
-        alert("There is no CITB microphone");
+        //activate class mode
+        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
+        {
+          setMicrophone(selec_Mic.value);
+          window.otherMicSelection = selec_Mic.value;
+        }else{
+          setMicrophone(window.otherMicSelection);
+        }
+        if (activateClassMode()) {
+        } else {
+          alert("There is not another microphone");
+        }
       }
-    } else {
-      //activate class mode
-      if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
-      {
-        setMicrophone(selec_Mic.value);
-        window.otherMicSelection = selec_Mic.value;
-      }else{
-        setMicrophone(window.otherMicSelection);
-      }
-      if (activateClassMode()) {
-      } else {
-        alert("There is not another microphone");
-      }
+    } catch (error) {
+      logErrors(error,"changeToClassMode ln 318")
     }
   }
 
@@ -326,15 +352,20 @@ function monkeyPatchMediaDevices() {
   }
 
   const classCallBackFunction = async (isFromPopup) => {
-    if(!checkbox_class.checked && !window.classActivated){
-      showPopupMic();
-    }else{
-      changeToClassMode();
+    try {
+      if(!checkbox_class.checked && !window.classActivated){
+        showPopupMic();
+      }else{
+        changeToClassMode();
+      }
+    } catch (error) {
+      logErrors(error,"classCallBackFunction ln 352")
     }
   };
 
   const showPopupMic = async() =>{
-    let mics = await navigator.mediaDevices.enumerateDevices();
+    try {
+      let mics = await navigator.mediaDevices.enumerateDevices();
       let usableMics = mics.filter(
         (x) =>
           x.kind === "audioinput" &&
@@ -368,6 +399,9 @@ function monkeyPatchMediaDevices() {
         usableMics
       );
       setButtonCallBack(button_Select,header_close,chooseMicClassMode);
+    } catch (error) {
+      logErrors(error,"showPopupMic ln 364")
+    }
   }
   const chooseVideo = async(e) =>{
     e.preventDefault();
@@ -378,33 +412,37 @@ function monkeyPatchMediaDevices() {
     div_OverlayVideo.removeAttribute('class');
   }
   const showPopupVideo = async() =>{
-      let mics = await navigator.mediaDevices.enumerateDevices();
-      let usableVideo = mics.filter(
-        (x) =>
-          x.kind === "videoinput" 
-          && !x.label.includes(enviroment.MYVIDEODDEVICELABEL) 
-          && !x.label.includes("Virtual Class In The Box") 
+      try {
+        let mics = await navigator.mediaDevices.enumerateDevices();
+        let usableVideo = mics.filter(
+          (x) =>
+            x.kind === "videoinput" 
+            && !x.label.includes(enviroment.MYVIDEODDEVICELABEL) 
+            && !x.label.includes("Virtual Class In The Box") 
 
+          );
+        usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
+        createPopupVideo(
+          div_OverlayVideo,
+          div_FabVideo,
+          form_WrapperVideo,
+          div_HeaderVideo,
+          close_headerVideo,
+          h_HeaderVideo,
+          div_ContentVideo,
+          div_ButtonIconVideo,
+          div_TextFieldsVideo,
+          selec_MicVideo,
+          label_TextVideo,
+          div_ButtonVideo,
+          button_SelectVideo,
+          brVideo,
+          usableVideo
         );
-      usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
-      createPopupVideo(
-        div_OverlayVideo,
-        div_FabVideo,
-        form_WrapperVideo,
-        div_HeaderVideo,
-        close_headerVideo,
-        h_HeaderVideo,
-        div_ContentVideo,
-        div_ButtonIconVideo,
-        div_TextFieldsVideo,
-        selec_MicVideo,
-        label_TextVideo,
-        div_ButtonVideo,
-        button_SelectVideo,
-        brVideo,
-        usableVideo
-      );
-      setButtonCallBackVideo(button_SelectVideo,close_headerVideo,chooseVideo);
+        setButtonCallBackVideo(button_SelectVideo,close_headerVideo,chooseVideo);
+      } catch (error) {
+        logErrors(error,"showPopupVideo ln 412")
+      }
   }
 
   var isShow;
@@ -418,7 +456,6 @@ function monkeyPatchMediaDevices() {
       let currentMic = document
         .getElementById("pModeCurrentMic")
         .innerText.toString();
-      console.log("currentMic",currentMic);
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },
@@ -439,17 +476,21 @@ function monkeyPatchMediaDevices() {
           }
       }
     } catch (error) {
-      console.log("no voy a cambiar el modo debido a este error: ", error);
+      logErrors(error,"checkingMichrophoneId ln 452")
     }
   };
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
   MediaDevices.prototype.enumerateDevices = async function () {
+   try {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
     res.push(getVirtualCam());
     return res;
+   } catch (error) {
+     logErrors(error,"prototype enumerateDevices ln 484")
+   }
   };
 
   // MICROSOFT's TEAMS USE THIS
@@ -460,57 +501,68 @@ function monkeyPatchMediaDevices() {
     successCallBack,
     failureCallBack
   ) {
-    if (constrains.video && constrains.video.mandatory.sourceId) {
-      if (
-        constrains.video.mandatory.sourceId === "virtual" ||
-        constrains.video.mandatory.sourceId.exact === "virtual"
-      ) {
-        await builVideosFromDevices();
-        await buildVideoContainersAndCanvas();
-        await drawFrameOnVirtualCamera();
-        speachCommands();
-        successCallBack(virtualWebCamMediaStream);
+    try {
+      if (constrains.video && constrains.video.mandatory.sourceId) {
+        if (
+          constrains.video.mandatory.sourceId === "virtual" ||
+          constrains.video.mandatory.sourceId.exact === "virtual"
+        ) {
+          await builVideosFromDevices();
+          await buildVideoContainersAndCanvas();
+          await drawFrameOnVirtualCamera();
+          speachCommands();
+          successCallBack(virtualWebCamMediaStream);
+        }
       }
+      const res = await webKitGUM.call(
+        this,
+        constrains,
+        successCallBack,
+        failureCallBack
+      );
+      return res;
+    } catch (error) {
+      logErrors(error,"prototype webkitGetUserMedia ln 498")
     }
-    const res = await webKitGUM.call(
-      this,
-      constrains,
-      successCallBack,
-      failureCallBack
-    );
-    return res;
   };
 
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
 
   MediaDevices.prototype.getUserMedia = async function () {
-    const args = arguments;
-
-    if (args.length && args[0].video && args[0].video.deviceId) {
-      if (
-        args[0].video.deviceId === "virtual" ||
-        args[0].video.deviceId.exact === "virtual"
-      ) {
-        await builVideosFromDevices();
-        await buildVideoContainersAndCanvas();
-        await drawFrameOnVirtualCamera();
-        speachCommands();
-        return virtualWebCamMediaStream;
-      } else {
-        return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+    try {
+      const args = arguments;
+      if (args.length && args[0].video && args[0].video.deviceId) {
+        if (
+          args[0].video.deviceId === "virtual" ||
+          args[0].video.deviceId.exact === "virtual"
+        ) {
+          await builVideosFromDevices();
+          await buildVideoContainersAndCanvas();
+          await drawFrameOnVirtualCamera();
+          speachCommands();
+          return virtualWebCamMediaStream;
+        } else {
+          return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+        }
       }
-    }
-    const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+      const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
     return res;
+    } catch (error) {
+      logErrors(error,"prototype getUserMedia ln 531")
+    }
   };
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
-    isShow = showDiv(isShow);
-    // showHelp(help_div, img_help, helptButton);
-    window.localPeerConection = this;
-    return await acreateOffer.apply(this, arguments);
+    try {
+      isShow = showDiv(isShow);
+      // showHelp(help_div, img_help, helptButton);
+      window.localPeerConection = this;
+      return await acreateOffer.apply(this, arguments);
+    } catch (error) {
+      logErrors(error,"prototype createOffer ln 555")
+    }
   };
 
   navigator.mediaDevices.addEventListener(
@@ -528,6 +580,26 @@ function monkeyPatchMediaDevices() {
       checkDevices();
     }, 1000);
   };
+
+  const logErrors = (e,source) => {
+   let bugInformation = {
+      createdDate: Date.now(),
+      error: e.toString() + "source:" + source,
+      header: navigator.userAgent
+    }
+
+    fetch(enviroment.backendLogURL, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bugInformation)
+    })
+    .then(response => response.json())
+    .then(data => console.log(data));
+  }
+
   checkDevices();
   checkingMicrophoneId();
 }
