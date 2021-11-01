@@ -1,8 +1,8 @@
 const enviroment = {
     //**** */ CONFIGURATION FOR CITB & CHROME ORIGINAL ID *****//
     // EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
-    MYVIDEODDEVICELABEL: "2K HD Camera",
-    MYAUDIODEVICELABEL: 'CITB',
+    // MYVIDEODDEVICELABEL: "2K HD Camera",
+    // MYAUDIODEVICELABEL: 'CITB',
 
     //**** */ COLLADO *****//
     EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
@@ -13,6 +13,7 @@ const enviroment = {
     fps : 1000/30,
     textHeaderSelectMicClassMode: 'Classroom mode Mic',
     textHeaderSelectVideo: 'Choose Camera',
+    backendLogURL: 'https://apicitb.tk/api/log/savelog',
 
 }
 
