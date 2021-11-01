@@ -53,7 +53,8 @@ const getContainerButton = () => {
   div.style.position = "absolute";
   div.style.zIndex = 980;
   div.style.width = "40px";
-  div.style.height = "210px";
+  // div.style.height = "210px";
+  div.style.height = "255px";
   div.style.top = "60px";
   div.style.right = "16px";
   div.style.background = "rgb(240, 243, 250)";
@@ -81,6 +82,8 @@ const addElementsToDiv = (
   buttonShow,
   br1,
   buttonClass,
+  br3,
+  buttonRec,
   br2,
   buttonDrag
 ) => {
@@ -90,6 +93,8 @@ const addElementsToDiv = (
   div.appendChild(buttonShow);
   div.appendChild(br1);
   div.appendChild(buttonClass);
+  div.appendChild(br3);
+  div.appendChild(buttonRec);
   div.appendChild(br2);
   div.appendChild(buttonDrag);
   document.body.appendChild(div);
@@ -150,6 +155,14 @@ const getButtonShowPopupVideo = () => {
   return buttonPopup;
 };
 
+const getButtonRec = () => {
+  const buttonRec = document.createElement("button");
+  buttonRec.setAttribute("id", "buttonRec");
+  buttonRec.className = "CITBButton";
+  buttonRec.classList.add("CITBShowButton");
+  return buttonRec;
+};
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,
@@ -169,5 +182,6 @@ export {
   createWebContainerState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
-  getButtonShowPopupVideo
+  getButtonShowPopupVideo,
+  getButtonRec
 };

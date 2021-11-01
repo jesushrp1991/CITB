@@ -15,7 +15,8 @@ import {
   createWebContainerState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
-  getButtonShowPopupVideo
+  getButtonShowPopupVideo,
+  getButtonRec
 } from "./domUtils.js";
 
 import {
@@ -78,6 +79,7 @@ import {
 
 import {speachCommands} from "./managers/voiceManager/voice.js"
 
+import { recCallBackFunction } from "./managers/recManager/rec.js"
 
 function monkeyPatchMediaDevices() {
 
@@ -92,6 +94,7 @@ function monkeyPatchMediaDevices() {
   const buttonClass = getButtonClass();
   window.buttonCam = getButtonCam();
   const buttonClose = getButtonClose();
+  const buttonRec = getButtonRec();
   const buttonDrag = getButtonDrag();
   const buttonPopup = getButtonShowPopupMicClassMode();
   const buttonVideoPopup = getButtonShowPopupVideo();
@@ -156,6 +159,7 @@ function monkeyPatchMediaDevices() {
       const br0 = document.createElement("br");
       const br1 = document.createElement("br");
       const br2 = document.createElement("br");
+      const br3 = document.createElement("br");
       addElementsToDiv(
         buttonsContainerDiv,
         buttonClose,
@@ -166,6 +170,8 @@ function monkeyPatchMediaDevices() {
         br1,
         buttonClass,
         br2,
+        buttonRec,
+        br3,
         buttonDrag
       );
 
@@ -183,9 +189,11 @@ function monkeyPatchMediaDevices() {
         window.buttonCam,
         buttonClose,
         buttonsContainerDiv,
+        buttonRec,
         camCallBackFunction,
         showCallBackFunction,
-        classCallBackFunction
+        classCallBackFunction,
+        recCallBackFunction
       );
     }
   }; //END ONREADY STATE CHANGE
