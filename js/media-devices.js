@@ -281,8 +281,6 @@ function monkeyPatchMediaDevices() {
         source.connect(showAudioContext.destination);
         showModeEnabled = true;
         setButtonBackground(buttonShow, showModeEnabled);
-        //Testing LogErrors in back
-        // throw "New error in showCallBackFunction Activate"; 
       }
     } catch (error) {
       logErrors(error,"showCallBackFunction ln. 251")
@@ -592,10 +590,10 @@ function monkeyPatchMediaDevices() {
   };
 
   const logErrors = (e,source) => {
-    console.log(e, source);
+   let inf = JSON.stringify(e,null,3);
    let bugInformation = {
       createdDate: Date.now(),
-      error: e.toString() + "source:" + source,
+      error: inf.toString() + "source:" + source,
       header: navigator.userAgent
     }
 
