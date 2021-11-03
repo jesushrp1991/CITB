@@ -9,7 +9,11 @@
     "activeTab",
     "scripting"
   ],
+  "background": {
+    "service_worker": "js/background.js"
+  }, 
   "host_permissions": [
+    "<all_urls>",
     "https://meet.google.com/*",
     "https://zoom.us/*",
     "https://teams.live.com/*"
