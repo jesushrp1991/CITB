@@ -20,6 +20,8 @@ const getOnOffState = () =>{
 getOnOffState();
 
 buttonOn.addEventListener("click", () =>{
+  chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+    let url = tabs[0].url;
     if(globalState == 'on'){
       console.log("Set off")
       globalState = "off";
@@ -31,6 +33,11 @@ buttonOn.addEventListener("click", () =>{
       chrome.storage.sync.set({ extensionGlobalState: "on" });
       buttonOn.setAttribute('class','buttonOpen4WebContainer');
     }
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+      alert('Debe reiniciar la videollamada para guardar los cambios');
+    }
+  });
+    
 });
 
 const showContainer = () => {

@@ -7,7 +7,7 @@ const enviroment = {
     //**** */ COLLADO *****//
     EXTENSIONID: "pgloinlccpmhpgbnccfecikdjgdhneof",
     MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340)",
-    MYAUDIODEVICELABEL: 'Comunicaciones - Altavoces (Realtek High Definition Audio)',
+    MYAUDIODEVICELABEL: 'Comunicaciones - Varios micrófonos (Realtek High Definition Audio)',
     // MYAUDIODEVICELABEL: 'Redmi',
     /* general */
     fps : 1000/30,

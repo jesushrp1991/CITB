@@ -116,7 +116,7 @@ const buildVideoContainersAndCanvas = async () => {
 
 
 const builVideosFromDevices = async (videoDeviceId) => {
-    const devices = await window.enumerateDevicesFn.call(navigator.mediaDevices)
+    const devices = window.devices;
     const videoSources = await getFinalVideoSources(devices,videoDeviceId)
     await buildVideos(videoSources)
 }
