@@ -22,17 +22,28 @@ getOnOffState();
 const alertPopup = () =>{
   document.getElementById("buttonSimplePopup").click(); 
 }
+const insertPopup = () =>{
+  let button = window.simpleButtonPopup;
+  console.log(window.simpleButtonPopup)
+  console.log(button)
+  document.body.appendChild(button);
+}
 
 buttonOn.addEventListener("click", async() =>{
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
-    console.log("URL",url);
-    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+    if((url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com'))&& globalState == "off"){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: alertPopup,
       });
+    }else{
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: insertPopup,
+      });
+      // modalChangeGlobalState();
     }
     if(globalState == 'on'){
       console.log("Set off")
