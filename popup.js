@@ -11,9 +11,9 @@ const getOnOffState = () =>{
       console.log(data.extensionGlobalState);
       globalState = data.extensionGlobalState;
       if(globalState == "on"){
-          buttonOn.setAttribute('class','buttonOpen4WebContainer');
+          buttonOn.setAttribute('class','buttonOnOff');
       }else{
-        buttonOn.setAttribute('class','button4WebContainer');
+        buttonOn.setAttribute('class','buttonOnOffDeactivate');
       }
   });
 }
@@ -22,39 +22,27 @@ getOnOffState();
 const alertPopup = () =>{
   document.getElementById("buttonSimplePopup").click(); 
 }
-const insertPopup = () =>{
-  let button = window.simpleButtonPopup;
-  console.log(window.simpleButtonPopup)
-  console.log(button)
-  document.body.appendChild(button);
-}
 
 buttonOn.addEventListener("click", async() =>{
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
-    if((url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com'))&& globalState == "off"){
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: alertPopup,
       });
-    }else{
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        function: insertPopup,
-      });
-      // modalChangeGlobalState();
     }
     if(globalState == 'on'){
       console.log("Set off")
       globalState = "off";
       chrome.storage.sync.set({ extensionGlobalState: "off" });
-      buttonOn.setAttribute('class','button4WebContainer');
+      buttonOn.setAttribute('class','buttonOnOffDeactivate');
     }else{
       console.log("Set on")
       globalState = "on";
       chrome.storage.sync.set({ extensionGlobalState: "on" });
-      buttonOn.setAttribute('class','buttonOpen4WebContainer');
+      buttonOn.setAttribute('class','buttonOnOff');
     }   
   });
     

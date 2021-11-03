@@ -8,7 +8,7 @@ const divOverlayPopup= () =>{
 const divFabPopup= () => {
     const favDiv = document.createElement("div");
     favDiv.setAttribute("id", "fab");
-    favDiv.setAttribute("class", "fab");
+    favDiv.setAttribute("class", "fabsimple");
     return favDiv;
 };
 
@@ -98,13 +98,13 @@ const createPopupPopup= (
     divHeader.appendChild(headerClosePopup);
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
-    divContent.appendChild(classIcon);
+    // divContent.appendChild(classIcon);
     divContent.appendChild(divTextFields);
     divTextFields.appendChild(br);
     divTextFields.appendChild(label_TextPopup);
     divContent.appendChild(divButton);
     divButton.appendChild(buttonSelect);
-    divFab.setAttribute('class', 'fab active');
+    divFab.setAttribute('class', 'fabsimple active');
     divOverlay.setAttribute('class','dark-overlay');
     document.body.appendChild(divOverlay);
     document.body.appendChild(divFab);

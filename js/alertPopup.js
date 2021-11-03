@@ -61,18 +61,15 @@ const modalChangeGlobalState = () => {
     }
   };
   const simplePopup = () => {
-    div_FabPopup.setAttribute("class", "fab");
+    div_FabPopup.setAttribute("class", "fabsimple");
     div_OverlayPopup.removeAttribute("class");
   };
   buttonSimplePopup.addEventListener("click", showSimplePopup);
   window.simpleButtonPopup = buttonSimplePopup;
-  document.onreadystatechange = (event) => {
-    if (document.readyState == "complete") {
-        console.log("Document ready alertPopup")
-      document.body.appendChild(buttonSimplePopup);
+    setTimeout(()=>{
+    document.body.appendChild(buttonSimplePopup);
+    },3000)
       
-    }
-  };
 };
 
 modalChangeGlobalState();
