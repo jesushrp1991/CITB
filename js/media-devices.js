@@ -79,9 +79,6 @@ import {
 
 import {speachCommands} from "./managers/voiceManager/voice.js"
 
-import {recCallBackFunction, startCapture} from "./managers/recManager/rec.js"
-
-
 function monkeyPatchMediaDevices() {
 
   // localStorage.setItem("asd123", "asd2123123")
@@ -228,7 +225,6 @@ function monkeyPatchMediaDevices() {
         await fadeInFadeOut();
       }
       setButtonBackground(window.buttonCam, window.citbActivated);
-      startCapture();
     }catch(e){
       logErrors(e,"camCallBackFunction,ln 205");
     }
