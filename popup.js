@@ -19,9 +19,21 @@ const getOnOffState = () =>{
 }
 getOnOffState();
 
-buttonOn.addEventListener("click", () =>{
+const alertPopup = () =>{
+  document.getElementById("buttonSimplePopup").click(); 
+}
+
+buttonOn.addEventListener("click", async() =>{
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
+    console.log("URL",url);
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: alertPopup,
+      });
+    }
     if(globalState == 'on'){
       console.log("Set off")
       globalState = "off";
@@ -32,10 +44,7 @@ buttonOn.addEventListener("click", () =>{
       globalState = "on";
       chrome.storage.sync.set({ extensionGlobalState: "on" });
       buttonOn.setAttribute('class','buttonOpen4WebContainer');
-    }
-    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
-      alert('Debe reiniciar la videollamada para guardar los cambios');
-    }
+    }   
   });
     
 });

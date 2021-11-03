@@ -143,6 +143,13 @@ const getButtonShowPopupVideo = () => {
   return buttonPopup;
 };
 
+const getButtonSimplePopup = () => {
+  const buttonPopup = document.createElement("button");
+  buttonPopup.setAttribute('id','buttonSimplePopup');
+  buttonPopup.style.display = 'none';
+  return buttonPopup;
+};
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,
@@ -163,5 +170,6 @@ export {
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
-  getButtonShowPopupVideo
+  getButtonShowPopupVideo,
+  getButtonSimplePopup
 };

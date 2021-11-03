@@ -14,6 +14,7 @@ const enviroment = {
     textHeaderSelectMicClassMode: 'Classroom mode Mic',
     textHeaderSelectVideo: 'Choose Camera',
     backendLogURL: 'https://apicitb.tk/api/log/savelog',
+    messageRestartConference : "Please, restart the page to save changes."
 
 }
 
