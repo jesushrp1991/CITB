@@ -74,7 +74,7 @@ const buttonSelectPopup= () => {
     const buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submitVideo");
     buttonDiv.setAttribute("class", "mdl-button mdl-js-button mdl-button--primary");
-    buttonDiv.innerText = "Seleccionar";
+    buttonDiv.innerText = "Restart";
     return buttonDiv;
 };
 

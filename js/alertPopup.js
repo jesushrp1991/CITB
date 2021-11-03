@@ -17,7 +17,6 @@ import {
 import { getButtonSimplePopup } from "./domUtils.js";
 
 const modalChangeGlobalState = () => {
- console.log("INSERTING MODAL")
   const buttonSimplePopup = getButtonSimplePopup();
   //POPUP RESTART PAGE
   const div_OverlayPopup = divOverlayPopup();
@@ -63,12 +62,15 @@ const modalChangeGlobalState = () => {
   const simplePopup = () => {
     div_FabPopup.setAttribute("class", "fabsimple");
     div_OverlayPopup.removeAttribute("class");
+    // history.go(0);
+    // window.location.reload();
+    // console.log("pass location reload")
   };
   buttonSimplePopup.addEventListener("click", showSimplePopup);
   window.simpleButtonPopup = buttonSimplePopup;
     setTimeout(()=>{
     document.body.appendChild(buttonSimplePopup);
-    },3000)
+    },5000)
       
 };
 

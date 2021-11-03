@@ -7,7 +7,7 @@ const divOverlay = () =>{
 
 const divFab = () => {
     const favDiv = document.createElement("div");
-    favDiv.setAttribute("id", "fab");
+    favDiv.setAttribute("id", "fabClass");
     favDiv.setAttribute("class", "fab");
     return favDiv;
 };

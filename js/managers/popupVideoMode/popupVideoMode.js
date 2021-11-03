@@ -7,7 +7,7 @@ const divOverlayVideo = () =>{
 
 const divFabVideo = () => {
     const favDiv = document.createElement("div");
-    favDiv.setAttribute("id", "fab");
+    favDiv.setAttribute("id", "fabVideo");
     favDiv.setAttribute("class", "fab");
     return favDiv;
 };
