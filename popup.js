@@ -3,7 +3,7 @@ let buttonOn = document.getElementById('button1');
 let buttonChooseVideo = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
-let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState;
+let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState, citbMicrophonePlugged;
 
 
 const getOnOffState = () =>{
@@ -17,6 +17,14 @@ const getOnOffState = () =>{
       }
   });
 }
+
+const getCitbMicrophoneState = () =>{
+  chrome.storage.sync.get('citbMicrophonePlugged', (data) =>{
+      console.log(data.citbMicrophonePlugged);
+      citbMicrophonePlugged = data.citbMicrophonePlugged;      
+  });
+}
+
 getOnOffState();
 
 const alertPopup = () =>{
@@ -39,10 +47,13 @@ buttonOn.addEventListener("click", async() =>{
       chrome.storage.sync.set({ extensionGlobalState: "off" });
       buttonOn.setAttribute('class','buttonOnOffDeactivate');
     }else{
-      console.log("Set on")
-      globalState = "on";
-      chrome.storage.sync.set({ extensionGlobalState: "on" });
-      buttonOn.setAttribute('class','buttonOnOff');
+      getCitbMicrophoneState();
+      if (citbMicrophonePlugged) {
+        console.log("Set on")
+        globalState = "on";
+        chrome.storage.sync.set({ extensionGlobalState: "on" });
+        buttonOn.setAttribute('class','buttonOnOff');
+      }      
     }   
   });
     
