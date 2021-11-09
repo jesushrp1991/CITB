@@ -16,7 +16,10 @@ import {
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo,
-  getButtonPresentation
+  getButtonPresentation,
+  showTooltip,
+  classTooltip,
+  presentationTooltip,
 } from "./domUtils.js";
 
 import {
@@ -29,14 +32,6 @@ import {
   canChangeCameras,
   fadeInFadeOut
 } from "./managers/videoManager/webcam.js";
-
-// import {
-//   helptButtonNext,
-//   imgHelp,
-//   divHelp,
-//   showHelp,
-//   setEventButtonNext,
-// } from "../helper/helper.js";
 
 import {
   divOverlay,
@@ -81,7 +76,6 @@ import {speachCommands} from "./managers/voiceManager/voice.js"
 
 function monkeyPatchMediaDevices() {
 
-  // localStorage.setItem("asd123", "asd2123123")
 
   window.showActivated = false;
   window.classActivated = false;
@@ -89,8 +83,11 @@ function monkeyPatchMediaDevices() {
 
   //WEB CONTAINER
   const buttonShow = getButtonShow();
+  const showTip = showTooltip();
   const buttonClass = getButtonClass();
+  const classTip = classTooltip();
   const buttonPresentation = getButtonPresentation();
+  const presentationTip = presentationTooltip();
   window.presentationMode = false;
   buttonPresentation.addEventListener('click', async () => {
     await fadeInFadeOut();
@@ -107,19 +104,14 @@ function monkeyPatchMediaDevices() {
   const pWebContainerState = createWebContainerState();
   const pModeCurrentMic = createModeCurrentMic();
 
-  // const helptButton = helptButtonNext();
-  // const help_div = divHelp();
-  // const img_help = imgHelp();
-
-  //POPUP MIC CLASS MODE
   const div_OverlayVideo = divOverlayVideo();
   const div_FabVideo= divFabVideo();
   const form_WrapperVideo = formWrapperVideo();
   const div_HeaderVideo = divHeaderVideo();
   const close_headerVideo = headerCloseVideo();
   const h_HeaderVideo = hHeaderVideo();
-  const h_buttonCloseVideo = buttonCloseVideo();
 
+  
   const div_ContentVideo = divContentVideo();
   const div_ButtonIconVideo = classIconVideo();
   const div_TextFieldsVideo = divTextFieldsVideo();
@@ -168,8 +160,11 @@ function monkeyPatchMediaDevices() {
           buttonClose,
           window.buttonCam,
           buttonShow,
+          showTip,
           buttonClass,
+          classTip,
           buttonPresentation,
+          presentationTip,
           buttonDrag,
         ]
       );
@@ -196,16 +191,6 @@ function monkeyPatchMediaDevices() {
     }
   }; //END ONREADY STATE CHANGE
 
-  // const buttonHelpNextCallBack = () => {
-  //   if (window.helpCount == 7) {
-  //     helptButton.textContent = "Close";
-  //   } else if (window.helpCount >= 8) {
-  //     help_div.style.display = "none";
-  //     return;
-  //   }
-  //   img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
-  //   window.helpCount++;
-  // };
 
   const camCallBackFunction = async () => {
     try{
@@ -355,6 +340,11 @@ function monkeyPatchMediaDevices() {
     changeToClassMode();
   }
 
+  const closeModalClassMode = (e) => {
+    e.preventDefault();
+    div_Fab.setAttribute('class','fab');
+    div_Overlay.removeAttribute('class');
+  }
   const classCallBackFunction = async (isFromPopup) => {
     try {
       if(!checkbox_class.checked && !window.classActivated){
@@ -402,7 +392,8 @@ function monkeyPatchMediaDevices() {
         br,
         usableMics
       );
-      setButtonCallBack(button_Select,header_close,chooseMicClassMode);
+      setButtonCallBack(button_Select,chooseMicClassMode);
+      setButtonCallBack(header_close,closeModalClassMode);
     } catch (error) {
       logErrors(error,"showPopupMic ln 364")
     }
@@ -412,6 +403,12 @@ function monkeyPatchMediaDevices() {
     await builVideosFromDevices(selec_MicVideo.value);
     await buildVideoContainersAndCanvas();
     await drawFrameOnVirtualCamera();
+    div_FabVideo.setAttribute('class','fab');
+    div_OverlayVideo.removeAttribute('class');
+  }
+
+  const closeVideo = (e) => {
+    e.preventDefault();
     div_FabVideo.setAttribute('class','fab');
     div_OverlayVideo.removeAttribute('class');
   }
@@ -443,7 +440,8 @@ function monkeyPatchMediaDevices() {
           brVideo,
           usableVideo
         );
-        setButtonCallBackVideo(button_SelectVideo,close_headerVideo,chooseVideo);
+        setButtonCallBackVideo(button_SelectVideo,chooseVideo);
+        setButtonCallBackVideo(close_headerVideo,closeVideo);
       } catch (error) {
         logErrors(error,"showPopupVideo ln 412")
       }
@@ -586,6 +584,7 @@ function monkeyPatchMediaDevices() {
   };
 
   const logErrors = (e,source) => {
+    console.log(e)
    let inf = JSON.stringify(e,null,3);
    let bugInformation = {
       createdDate: Date.now(),
@@ -607,5 +606,8 @@ function monkeyPatchMediaDevices() {
 
   checkDevices();
 }
+
+
+
 
 monkeyPatchMediaDevices();

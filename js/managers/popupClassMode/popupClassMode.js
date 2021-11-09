@@ -219,9 +219,8 @@ const createPopup = (
 
 };
 
-const setButtonCallBack = (buttonSelect,headerClose,functionCallBack)=>{
+const setButtonCallBack = (buttonSelect,functionCallBack)=>{
     buttonSelect.addEventListener('click',functionCallBack);
-    headerClose.addEventListener('click',functionCallBack);
 }
 
 

@@ -144,9 +144,8 @@ const createPopupVideo = (
 
 };
 
-const setButtonCallBackVideo = (buttonSelect,headerCloseVideo,functionCallBack)=>{
+const setButtonCallBackVideo = (buttonSelect,functionCallBack)=>{
     buttonSelect.addEventListener('click',functionCallBack);
-    headerCloseVideo.addEventListener('click',functionCallBack);
 }
 
 

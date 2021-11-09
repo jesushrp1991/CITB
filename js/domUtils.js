@@ -23,25 +23,56 @@ const generateOtherVideoContainer = () => {
 
 const getButtonShow = () => {
   const buttonShow = document.createElement("button");
+  buttonShow.id="buttonShow"; 
   buttonShow.className = "CITBButton";
   buttonShow.classList.add("CITBShowButton");
   return buttonShow;
 };
 
+const showTooltip = () => {
+  const showTooltip = document.createElement("div");
+  showTooltip.id="showTooltip"; 
+  showTooltip.className = "mdl-tooltip";
+  showTooltip.setAttribute("data-mdl-for", "buttonShow")
+  showTooltip.textContent = "Show Mode";
+  return showTooltip;
+}
+
 const getButtonClass = () => {
   const buttonClass = document.createElement("button");
+  buttonClass.id="buttonClass"; 
+
   buttonClass.className = "CITBButton";
   buttonClass.classList.add("CITBClassButton");
   return buttonClass;
 };
 
+const classTooltip = () => {
+  const classTooltip = document.createElement("div");
+  classTooltip.id="classTooltip"; 
+  classTooltip.className = "mdl-tooltip";
+  classTooltip.setAttribute("data-mdl-for", "buttonClass")
+  classTooltip.textContent = "Classroom mode";
+  return classTooltip;
+}
+
 
 const getButtonPresentation = () => {
-  const buttonClass = document.createElement("button");
-  buttonClass.className = "CITBButton";
-  buttonClass.classList.add("CITBPresentationButton");
-  return buttonClass;
+  const buttonPresentation = document.createElement("button");
+  buttonPresentation.id="presentationTooltip"; 
+  buttonPresentation.className = "CITBButton";
+  buttonPresentation.classList.add("CITBPresentationButton");
+  return buttonPresentation;
 };
+
+const presentationTooltip = () => {
+  const presentationTooltip = document.createElement("div");
+  presentationTooltip.id="classTooltip"; 
+  presentationTooltip.className = "mdl-tooltip";
+  presentationTooltip.setAttribute("data-mdl-for", "presentationTooltip")
+  presentationTooltip.textContent = "Duplo mode";
+  return presentationTooltip;
+}
 
 const getButtonCam = () => {
   const buttonCam = document.createElement("button");
@@ -163,5 +194,8 @@ export {
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
-  getButtonShowPopupVideo
+  getButtonShowPopupVideo,
+  showTooltip,
+  classTooltip,
+  presentationTooltip
 };
