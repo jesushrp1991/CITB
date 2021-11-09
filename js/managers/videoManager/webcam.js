@@ -111,6 +111,7 @@ const drawFrameOnVirtualCamera = async () => {
 
 
 const buildVideoContainersAndCanvas = async () => {
+    virtualWebCamCanvasVideoContainer.getContext('2d');
     virtualWebCamMediaStream = virtualWebCamCanvasVideoContainer.captureStream();
 }
 
