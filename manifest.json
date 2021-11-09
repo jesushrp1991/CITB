@@ -2,12 +2,11 @@
   "name": "ClassInTheBox",
   "description": "Sistema profesional de video conferencia: simple, rápido, con cancelación de ruido avanzada y portable",
   "version": "1.0.6",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "minimum_chrome_version": "88.0",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "https://meet.google.com/*",
@@ -49,10 +48,7 @@
     "page": "options.html",
     "open_in_tab": false
   },
-  "web_accessible_resources": [{
-    "resources": ["js/*","helper/*", "css/font/*"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": ["js/*","helper/*", "css/font/*"],
   "externally_connectable": {
     "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
     "matches": ["https://meet.google.com/*","https://zoom.us/*","https://teams.live.com/*","https://teams.microsoft.com/*"],
