@@ -476,6 +476,7 @@ function monkeyPatchMediaDevices() {
         audio: { deviceId: {exact: currentMic} },  
         video: false,  
       }); 
+      window.currentAudioMediaStream = currentAudioMediaStream1;
       let mediaStreamSource = audioContext.createMediaStreamSource(currentAudioMediaStream1);
       var filter = audioContext.createGain();
       var peer = audioContext.createMediaStreamDestination();
@@ -568,22 +569,28 @@ function monkeyPatchMediaDevices() {
       if (error.name != "NotReadableError") throw error;
       console.log("Prototype getUserMedia error ",error );
 
-      const senders = window.localPeerConection.getSenders();
-      console.log("Prototype getUserMedia senders ",senders );
+      // const senders = window.localPeerConection.getSenders();
+      // console.log("Prototype getUserMedia senders ",senders );
 
-      senders.filter((x) => 
-            x.track != null &&
-            x.track.kind === "audio"
-          ).forEach((mysender) => {  
-            // console.log("Prototype getUserMedia Mysenders ",mysender );
-            mysender.track.stop();  
-          });
-      console.log("Prototype getUserMedia arguments ",arguments[0] );
-      console.log("Prototype getUserMedia",currentAudioMediaStream );
+      // senders.filter((x) => 
+      //       x.track != null &&
+      //       x.track.kind === "audio"
+      //     ).forEach((mysender) => {  
+      //       // console.log("Prototype getUserMedia Mysenders ",mysender );
+      //       mysender.track.stop();  
+      //     });
+      // console.log("Prototype getUserMedia arguments ",arguments[0] );
+      // console.log("Prototype getUserMedia",currentAudioMediaStream );
 
-      let newMediaStream = await navigator.mediaDevices.getUserMedia(arguments[0]);
-      console.log("new MediaStream",newMediaStream); 
-      // return newMediaStream;
+      //Approach #2
+      const senders = window.localPeerConection.getReceivers()
+      console.log("currentAudio",senders)
+      console.log("currentAudio",window.currentAudioMediaStream)
+      const tracks = window.currentAudioMediaStream.getTracks();
+      tracks.forEach(track => { track.stop()});
+      //This is ok
+      let newMediaStream = await navigator.mediaDevices.getUserMedia(arguments[0]);      
+      return newMediaStream;
       logErrors(error,"prototype getUserMedia ln 531")
     }
   };
