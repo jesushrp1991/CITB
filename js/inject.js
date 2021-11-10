@@ -9,6 +9,12 @@ let globalState;
 const MYAUDIODEVICELABEL = "Comunicaciones - Micrófono (Realtek High Definition Audio)"
 //const MYAUDIODEVICELABEL = "Micrófono (DroidCam Virtual Audio)"
 
+const alertPopup = () =>{  
+    const test = document.getElementById("buttonSimplePopup"); 
+    test.click() 
+}
+
+
 const getExtensionGlobalState = () => { 
     chrome.storage.sync.get('extensionGlobalState', (data) => {
       globalState = data.extensionGlobalState;   
@@ -35,14 +41,16 @@ const checkMediaDevice = async () => {
         console.log('globalState ',globalState);
         if (lastCitbMicStatus !== isCitbMicrophonePlugged) {
           if (isCitbMicrophonePlugged ){
-            alert("A CITB microphone has been connected. To start using the CITB extension ")
+            alert(`The CITB microphone has been connected.
+            To start using CITB, click on the extension ON/OFF icon`)
           }else {
             if (globalState == 'on') {
                 chrome.storage.sync.set({ extensionGlobalState: "off" })
-                alert("A CITB microphone has been disconected. The page will be restarted to apply changes");
+                alert(`The CITB microphone has been disconnected.
+                The page will be reloaded to apply changes`);
                 window.location.reload();
               }else 
-                alert("A CITB microphone has been disconnected")
+                alert("The CITB microphone has been disconnected")
           }        
         }        
       }

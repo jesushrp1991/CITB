@@ -55,7 +55,7 @@ const alertPopup = () =>{
     document.getElementById("buttonSimplePopup").click();  
 }
 
-buttonOn.addEventListener("click", async() =>{
+buttonOn.addEventListener("click", async() =>{  
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
