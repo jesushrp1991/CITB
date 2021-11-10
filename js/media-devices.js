@@ -149,12 +149,6 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
       document.body.appendChild(pModeCurrentMic);
-      const citbMicrophoneID = devices.filter(
-        (x) =>
-          x.kind === "audioinput" &&
-          x.label.includes(enviroment.MYAUDIODEVICELABEL)
-      );
-      setMicrophone(citbMicrophoneID);
 
       //WEB CONTAINER
       const buttonsContainerDiv = getContainerButton();
@@ -466,26 +460,54 @@ function monkeyPatchMediaDevices() {
       let currentMic;  
       if(document.getElementById("pModeCurrentMic")){
         currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
-      }  
-      console.log("current Mic",currentMic)
-      currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({  
+        if(currentMic == ""){
+          const citbMicrophoneID = await navigator.mediaDevices.enumerateDevices()   
+           currentMic = citbMicrophoneID.filter(
+             (x) =>
+               x.kind === "audioinput" &&
+               x.label.includes(enviroment.MYAUDIODEVICELABEL)
+           )[0].deviceId;
+           setMicrophone(currentMic);
+        }
+      } 
+      console.log("Initial Mic",currentMic)
+      let currentAudioMediaStream1 = await navigator.mediaDevices.getUserMedia({  
         audio: { deviceId: {exact: currentMic} },  
         video: false,  
       }); 
-      let microphone = audioContext.createMediaStreamSource(currentAudioMediaStream);
+      console.log("Termino con WebAudio API ",currentAudioMediaStream1)
+
+      let mediaStreamSource = audioContext.createMediaStreamSource(currentAudioMediaStream1);
+      console.log("Termino con WebAudio API 1")
+
       var filter = audioContext.createGain();
+      console.log("Termino con WebAudio API2")
+
       var peer = audioContext.createMediaStreamDestination();
+      console.log("Termino con WebAudio API3")
+
       // microphone.connect(peer);
-      microphone.connect(filter);
+      mediaStreamSource.connect(filter);
+      console.log("Termino con WebAudio API4")
+
       filter.connect(peer);
-      window.currentAudioStream = peer.stream;
-      // window.localPeerConection.addStream(peer.stream);
-      peer.stream.getTracks().forEach((tracks)=>{
-        window.localPeerConection.addTrack(tracks,peer.stream);
-      })
-      // window.localPeerConection.addTrack()
+      console.log("Termino con WebAudio API5")
+
+      //SEND!!!
+      const micAudioTrack = peer.stream.getAudioTracks()[0];
+      console.log("micAudioTrack",micAudioTrack);
+      const senders = window.localPeerConection.getSenders();
+      console.log("senders",senders);
+
+      senders
+        .filter((x) => x.track != null && x.track.kind === "audio")
+        .forEach((mysender) => {
+          mysender.replaceTrack(micAudioTrack);
+        });
+          
     } catch (error) {  
-      logErrors(error,"checkingMichrophoneId ln 452")  
+      console.log(error);
+      // logErrors(error,"checkingMichrophoneId ln 452")  
     }  
   };  
 
@@ -567,10 +589,13 @@ function monkeyPatchMediaDevices() {
       //     ).forEach((mysender) => {  
       //       mysender.stop();  
       //     });
+      console.log("Prototype getUserMedia",currentAudioMediaStream + "=>" + error);
+      console.log("Prototype audioTracksBefore",currentAudioMediaStream.getAudioTracks());
 
       currentAudioMediaStream.getAudioTracks().forEach((audioTrack)=>{
         audioTrack.stop();
       })
+      console.log("Prototype audioTracks",currentAudioMediaStream.getAudioTracks());
 
       // console.log("original senders",senders); 
       // console.log("new senders",window.currentAudioStream.getAudioTracks()); 
