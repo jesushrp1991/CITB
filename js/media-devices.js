@@ -72,7 +72,7 @@ import {
     setButtonCallBackVideo
 } from "./managers/popupVideoMode/popupVideoMode.js";
 
-import {speachCommands} from "./managers/voiceManager/voice.js"
+// import {speachCommands} from "./managers/voiceManager/voice.js"
 
 function monkeyPatchMediaDevices() {
 
@@ -187,7 +187,8 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
-      checkingMicrophoneId();
+      // checkingMicrophoneId();
+      setFirstMic();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -252,6 +253,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, showModeEnabled);
         }
       } else {
+        closeMicTracks();
         showAudioContext = new AudioContext();
         const CITBMicMedia = await getCITBMicMedia();
         if (CITBMicMedia == null) {
@@ -359,8 +361,8 @@ function monkeyPatchMediaDevices() {
 
   const showPopupMic = async() =>{
     try {
-      let mics = await navigator.mediaDevices.enumerateDevices();
-      let usableMics = mics.filter(
+      // let mics = await navigator.mediaDevices.enumerateDevices();
+      let usableMics = devices.filter(
         (x) =>
           x.kind === "audioinput" &&
           !x.label.includes("Mezcla")
@@ -453,34 +455,84 @@ function monkeyPatchMediaDevices() {
   var showAudioContext;
   let showModeEnabled = false;
 
-  const checkingMicrophoneId = async function () {
-    try {
-      let currentMic;
-      if(document.getElementById("pModeCurrentMic"))
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (window.localPeerConection) {
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: currentMic },
-            video: false,
-          });
-          if (
-            currentAudioMediaStream &&
-            currentAudioMediaStream.getAudioTracks().length > 0
-          ) {
-            const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            const senders = window.localPeerConection.getSenders();
-            const sendersWithTracks = senders.filter((s) => s.track != null);
-            sendersWithTracks
-              .filter((x) => x.track.kind === "audio")
-              .forEach((mysender) => {
-                mysender.replaceTrack(micAudioTrack);
-              });
-          }
-      }
-    } catch (error) {
-      logErrors(error,"checkingMichrophoneId ln 452")
+  const setFirstMic = async() =>{
+      let mics = await navigator.mediaDevices.enumerateDevices();      
+      console.log("first mics",mics)
+      const citbMicrophone = mics.filter(
+        (x) =>
+          x.kind === "audioinput" &&
+          x.label.includes(enviroment.MYAUDIODEVICELABEL)
+      );
+      console.log("first mics",citbMicrophone)
+      if (citbMicrophone.length > 0) {
+        let constraints = {
+          video: false,
+          audio: {
+            deviceId: { exact: citbMicrophone[0].deviceId },
+          },
+        };
+        currentAudioMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        console.log("first currentAudioMediaStream",currentAudioMediaStream)
+      } 
+      if ( 
+        currentAudioMediaStream && 
+        currentAudioMediaStream.getAudioTracks().length > 0 
+      ) { 
+        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
+        console.log(" first micAudioTrack",micAudioTrack)
+        const senders = window.localPeerConection.getSenders(); 
+        const sendersWithTracks = senders.filter((s) => s.track != null); 
+        sendersWithTracks 
+          .filter((x) => x.track.kind === "audio") 
+          .forEach((mysender) => { 
+            mysender.replaceTrack(micAudioTrack); 
+          }); 
+      } 
+  }
+
+  const closeMicTracks = () =>{
+    console.log("Close mic tracks")    
+    const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];   
+    if(micAudioTrack != null && micAudioTrack != undefined){
+      micAudioTrack.stop();
+      return true;
+    }else{
+      return false;
     }
-  };
+    
+  }
+
+  const checkingMicrophoneId = async function () { 
+    try { 
+      let currentMic; 
+      if(document.getElementById("pModeCurrentMic")) 
+        currentMic = document.getElementById("pModeCurrentMic").innerText.toString(); 
+      if (window.localPeerConection) { 
+        let areTracksClosed = closeMicTracks();
+        console.log("areTracksClosed",areTracksClosed)
+        if(areTracksClosed){
+          console.log("Entro al media")
+          console.log("CurrentMic",currentMic)
+          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ 
+            audio: { deviceId: {exact: currentMic} }, 
+            video: false, 
+          }); 
+        }
+        console.log("currentMediaString",currentAudioMediaStream);
+        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
+        console.log("replacing tracks",micAudioTrack);
+        const senders = window.localPeerConection.getSenders(); 
+        // const sendersWithTracks = senders.filter((s) => s.track != null); 
+        senders 
+          .filter((x) => x.track.kind === "audio") 
+          .forEach((mysender) => { 
+            mysender.replaceTrack(micAudioTrack); 
+          }); 
+      } 
+    } catch (error) { 
+      logErrors(error,"checkingMichrophoneId ln 452") 
+    } 
+  }; 
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
@@ -488,6 +540,7 @@ function monkeyPatchMediaDevices() {
    try {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
+    // console.log(devices);
     res.push(getVirtualCam());
     return res;
    } catch (error) {
@@ -512,7 +565,7 @@ function monkeyPatchMediaDevices() {
           await builVideosFromDevices();
           await buildVideoContainersAndCanvas();
           await drawFrameOnVirtualCamera();
-          speachCommands();
+          // speachCommands();
           successCallBack(virtualWebCamMediaStream);
         }
       }
@@ -534,6 +587,7 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
+      console.log("arguments",arguments)
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -542,15 +596,19 @@ function monkeyPatchMediaDevices() {
           await builVideosFromDevices();
           await buildVideoContainersAndCanvas();
           await drawFrameOnVirtualCamera();
-          speachCommands();
+          // speachCommands();
           return virtualWebCamMediaStream;
         } else {
           return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
         }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-    return res;
+      return res;
     } catch (error) {
+      if (error.name != "NotReadableError") throw error;
+      currentAudioMediaStream.getAudioTracks()[0].stop();
+      console.log("argumenst en 0",arguments[0]) 
+      return await navigator.mediaDevices.getUserMedia(arguments[0]);
       logErrors(error,"prototype getUserMedia ln 531")
     }
   };
