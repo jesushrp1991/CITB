@@ -461,7 +461,8 @@ function monkeyPatchMediaDevices() {
       if(document.getElementById("pModeCurrentMic")){
         currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
         if(currentMic == ""){
-          const citbMicrophoneID = await navigator.mediaDevices.enumerateDevices()   
+          const citbMicrophoneID = await navigator.mediaDevices.enumerateDevices();
+          console.log("citbMicrophoneID",citbMicrophoneID)  
            currentMic = citbMicrophoneID.filter(
              (x) =>
                x.kind === "audioinput" &&
@@ -475,30 +476,13 @@ function monkeyPatchMediaDevices() {
         audio: { deviceId: {exact: currentMic} },  
         video: false,  
       }); 
-      console.log("Termino con WebAudio API ",currentAudioMediaStream1)
-
       let mediaStreamSource = audioContext.createMediaStreamSource(currentAudioMediaStream1);
-      console.log("Termino con WebAudio API 1")
-
       var filter = audioContext.createGain();
-      console.log("Termino con WebAudio API2")
-
       var peer = audioContext.createMediaStreamDestination();
-      console.log("Termino con WebAudio API3")
-
-      // microphone.connect(peer);
       mediaStreamSource.connect(filter);
-      console.log("Termino con WebAudio API4")
-
       filter.connect(peer);
-      console.log("Termino con WebAudio API5")
-
-      //SEND!!!
       const micAudioTrack = peer.stream.getAudioTracks()[0];
-      console.log("micAudioTrack",micAudioTrack);
       const senders = window.localPeerConection.getSenders();
-      console.log("senders",senders);
-
       senders
         .filter((x) => x.track != null && x.track.kind === "audio")
         .forEach((mysender) => {
@@ -582,28 +566,24 @@ function monkeyPatchMediaDevices() {
       return res;
     } catch (error) {
       if (error.name != "NotReadableError") throw error;
-      // const senders = window.localPeerConection.getSenders();
-      // senders.filter((x) => 
-      //       x.track != null &&
-      //       x.track.kind === "audio"
-      //     ).forEach((mysender) => {  
-      //       mysender.stop();  
-      //     });
-      console.log("Prototype getUserMedia",currentAudioMediaStream + "=>" + error);
-      console.log("Prototype audioTracksBefore",currentAudioMediaStream.getAudioTracks());
+      console.log("Prototype getUserMedia error ",error );
 
-      currentAudioMediaStream.getAudioTracks().forEach((audioTrack)=>{
-        audioTrack.stop();
-      })
-      console.log("Prototype audioTracks",currentAudioMediaStream.getAudioTracks());
+      const senders = window.localPeerConection.getSenders();
+      console.log("Prototype getUserMedia senders ",senders );
 
-      // console.log("original senders",senders); 
-      // console.log("new senders",window.currentAudioStream.getAudioTracks()); 
-      // console.log("new constraints",arguments[0]); 
+      senders.filter((x) => 
+            x.track != null &&
+            x.track.kind === "audio"
+          ).forEach((mysender) => {  
+            // console.log("Prototype getUserMedia Mysenders ",mysender );
+            mysender.track.stop();  
+          });
+      console.log("Prototype getUserMedia arguments ",arguments[0] );
+      console.log("Prototype getUserMedia",currentAudioMediaStream );
 
       let newMediaStream = await navigator.mediaDevices.getUserMedia(arguments[0]);
       console.log("new MediaStream",newMediaStream); 
-      return newMediaStream;
+      // return newMediaStream;
       logErrors(error,"prototype getUserMedia ln 531")
     }
   };
