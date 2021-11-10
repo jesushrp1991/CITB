@@ -149,7 +149,12 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
       document.body.appendChild(pModeCurrentMic);
-      setMicrophone(enviroment.MYAUDIODEVICELABEL);
+      const citbMicrophoneID = devices.filter(
+        (x) =>
+          x.kind === "audioinput" &&
+          x.label.includes(enviroment.MYAUDIODEVICELABEL)
+      );
+      setMicrophone(citbMicrophoneID);
 
       //WEB CONTAINER
       const buttonsContainerDiv = getContainerButton();
@@ -455,83 +460,30 @@ function monkeyPatchMediaDevices() {
   var showAudioContext;
   let showModeEnabled = false;
 
-  const setFirstMic = async() =>{
-      let mics = await navigator.mediaDevices.enumerateDevices();      
-      console.log("first mics",mics)
-      const citbMicrophone = mics.filter(
-        (x) =>
-          x.kind === "audioinput" &&
-          x.label.includes(enviroment.MYAUDIODEVICELABEL)
-      );
-      console.log("first mics",citbMicrophone)
-      if (citbMicrophone.length > 0) {
-        let constraints = {
-          video: false,
-          audio: {
-            deviceId: { exact: citbMicrophone[0].deviceId },
-          },
-        };
-        currentAudioMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-        console.log("first currentAudioMediaStream",currentAudioMediaStream)
-      } 
-      if ( 
-        currentAudioMediaStream && 
-        currentAudioMediaStream.getAudioTracks().length > 0 
-      ) { 
-        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
-        console.log(" first micAudioTrack",micAudioTrack)
-        const senders = window.localPeerConection.getSenders(); 
-        const sendersWithTracks = senders.filter((s) => s.track != null); 
-        sendersWithTracks 
-          .filter((x) => x.track.kind === "audio") 
-          .forEach((mysender) => { 
-            mysender.replaceTrack(micAudioTrack); 
-          }); 
-      } 
-  }
-
-  const closeMicTracks = () =>{
-    console.log("Close mic tracks")    
-    const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];   
-    if(micAudioTrack != null && micAudioTrack != undefined){
-      micAudioTrack.stop();
-      return true;
-    }else{
-      return false;
-    }
-    
-  }
-
   const checkingMicrophoneId = async function () {  
     try {  
+      let audioContext = new AudioContext();
       let currentMic;  
-      if(document.getElementById("pModeCurrentMic"))  
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();  
-      if (window.localPeerConection) {  
-        // let areTracksClosed = closeMicTracks(); 
-        // console.log("areTracksClosed",areTracksClosed) 
-        // if(areTracksClosed){ 
-          // console.log("Entro al media") 
-          // console.log("CurrentMic",currentMic) 
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({  
-            audio: { deviceId: {exact: currentMic} },  
-            video: false,  
-          });  
-        // }         
-        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];  
-        const senders = window.localPeerConection.getSenders();  
-        // const sendersWithTracks = senders.filter((s) => s.track != null);  
-        senders  
-          .filter((x) => 
-            x.track != null &&
-            x.track.kind === "audio"
-          )  
-          // .forEach((mysender) => {  
-          //   mysender.replaceTrack(micAudioTrack);  
-          // });
-        console.log("replacing tracks",senders); 
-        senders[0].replaceTrack(micAudioTrack);  
+      if(document.getElementById("pModeCurrentMic")){
+        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
       }  
+      console.log("current Mic",currentMic)
+      currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({  
+        audio: { deviceId: {exact: currentMic} },  
+        video: false,  
+      }); 
+      let microphone = audioContext.createMediaStreamSource(currentAudioMediaStream);
+      var filter = audioContext.createGain();
+      var peer = audioContext.createMediaStreamDestination();
+      // microphone.connect(peer);
+      microphone.connect(filter);
+      filter.connect(peer);
+      window.currentAudioStream = peer.stream;
+      // window.localPeerConection.addStream(peer.stream);
+      peer.stream.getTracks().forEach((tracks)=>{
+        window.localPeerConection.addTrack(tracks,peer.stream);
+      })
+      // window.localPeerConection.addTrack()
     } catch (error) {  
       logErrors(error,"checkingMichrophoneId ln 452")  
     }  
@@ -590,7 +542,6 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
-      console.log("arguments",arguments)
       if (args.length && args[0].video && args[0].video.deviceId) {
         if (
           args[0].video.deviceId === "virtual" ||
@@ -609,11 +560,25 @@ function monkeyPatchMediaDevices() {
       return res;
     } catch (error) {
       if (error.name != "NotReadableError") throw error;
-      const senders = window.localPeerConection.getSenders();  
+      // const senders = window.localPeerConection.getSenders();
+      // senders.filter((x) => 
+      //       x.track != null &&
+      //       x.track.kind === "audio"
+      //     ).forEach((mysender) => {  
+      //       mysender.stop();  
+      //     });
 
-      currentAudioMediaStream.getAudioTracks()[0].stop();
-      console.log("original senders",senders); 
-      return await navigator.mediaDevices.getUserMedia(arguments[0]);
+      currentAudioMediaStream.getAudioTracks().forEach((audioTrack)=>{
+        audioTrack.stop();
+      })
+
+      // console.log("original senders",senders); 
+      // console.log("new senders",window.currentAudioStream.getAudioTracks()); 
+      // console.log("new constraints",arguments[0]); 
+
+      let newMediaStream = await navigator.mediaDevices.getUserMedia(arguments[0]);
+      console.log("new MediaStream",newMediaStream); 
+      return newMediaStream;
       logErrors(error,"prototype getUserMedia ln 531")
     }
   };
@@ -647,7 +612,7 @@ function monkeyPatchMediaDevices() {
   };
 
   const logErrors = (e,source) => {
-    console.log(e)
+    console.log(e + "source:" + source)
    let inf = JSON.stringify(e,null,3);
    let bugInformation = {
       createdDate: Date.now(),

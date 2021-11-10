@@ -11,10 +11,10 @@ const enviroment = {
     // MYAUDIODEVICELABEL: 'Redmi',
 
     //******** Collado FIREFOX *********//
-    EXTENSIONID: "8339862a-a64c-4f5c-8671-d9ebe9052918",
+    EXTENSIONID: "53f9b519-4826-4c0b-966d-88214dd91399",
     // MYVIDEODDEVICELABEL: "DroidCam Source 3",
     MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera",
-    // MYAUDIODEVICELABEL: 'Comunicaciones - Altavoces (Realtek High Definition Audio)',
+    // MYAUDIODEVICELABEL: 'yzYHNIM4FM97ZF17vA3ECLbRaU4D+jJHeZPyljcLesQ=',
     MYAUDIODEVICELABEL: 'Redmi',
 
     /****** general *****/
