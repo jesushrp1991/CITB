@@ -187,8 +187,8 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
-      // checkingMicrophoneId();
-      setFirstMic();
+      checkingMicrophoneId();
+      // setFirstMic();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -253,7 +253,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, showModeEnabled);
         }
       } else {
-        closeMicTracks();
+        // closeMicTracks();
         showAudioContext = new AudioContext();
         const CITBMicMedia = await getCITBMicMedia();
         if (CITBMicMedia == null) {
@@ -502,37 +502,40 @@ function monkeyPatchMediaDevices() {
     
   }
 
-  const checkingMicrophoneId = async function () { 
-    try { 
-      let currentMic; 
-      if(document.getElementById("pModeCurrentMic")) 
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString(); 
-      if (window.localPeerConection) { 
-        let areTracksClosed = closeMicTracks();
-        console.log("areTracksClosed",areTracksClosed)
-        if(areTracksClosed){
-          console.log("Entro al media")
-          console.log("CurrentMic",currentMic)
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({ 
-            audio: { deviceId: {exact: currentMic} }, 
-            video: false, 
-          }); 
-        }
-        console.log("currentMediaString",currentAudioMediaStream);
-        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0]; 
-        console.log("replacing tracks",micAudioTrack);
-        const senders = window.localPeerConection.getSenders(); 
-        // const sendersWithTracks = senders.filter((s) => s.track != null); 
-        senders 
-          .filter((x) => x.track.kind === "audio") 
-          .forEach((mysender) => { 
-            mysender.replaceTrack(micAudioTrack); 
-          }); 
-      } 
-    } catch (error) { 
-      logErrors(error,"checkingMichrophoneId ln 452") 
-    } 
-  }; 
+  const checkingMicrophoneId = async function () {  
+    try {  
+      let currentMic;  
+      if(document.getElementById("pModeCurrentMic"))  
+        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();  
+      if (window.localPeerConection) {  
+        // let areTracksClosed = closeMicTracks(); 
+        // console.log("areTracksClosed",areTracksClosed) 
+        // if(areTracksClosed){ 
+          // console.log("Entro al media") 
+          // console.log("CurrentMic",currentMic) 
+          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({  
+            audio: { deviceId: {exact: currentMic} },  
+            video: false,  
+          });  
+        // }         
+        const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];  
+        const senders = window.localPeerConection.getSenders();  
+        // const sendersWithTracks = senders.filter((s) => s.track != null);  
+        senders  
+          .filter((x) => 
+            x.track != null &&
+            x.track.kind === "audio"
+          )  
+          // .forEach((mysender) => {  
+          //   mysender.replaceTrack(micAudioTrack);  
+          // });
+        console.log("replacing tracks",senders); 
+        senders[0].replaceTrack(micAudioTrack);  
+      }  
+    } catch (error) {  
+      logErrors(error,"checkingMichrophoneId ln 452")  
+    }  
+  };  
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
@@ -606,8 +609,10 @@ function monkeyPatchMediaDevices() {
       return res;
     } catch (error) {
       if (error.name != "NotReadableError") throw error;
+      const senders = window.localPeerConection.getSenders();  
+
       currentAudioMediaStream.getAudioTracks()[0].stop();
-      console.log("argumenst en 0",arguments[0]) 
+      console.log("original senders",senders); 
       return await navigator.mediaDevices.getUserMedia(arguments[0]);
       logErrors(error,"prototype getUserMedia ln 531")
     }
@@ -650,16 +655,16 @@ function monkeyPatchMediaDevices() {
       header: navigator.userAgent
     }
 
-    fetch(enviroment.backendLogURL, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bugInformation)
-    })
-    .then(response => response.json())
-    .then(data => console.log(data));
+    // fetch(enviroment.backendLogURL, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(bugInformation)
+    // })
+    // .then(response => response.json())
+    // .then(data => console.log(data));
   }
 
   checkDevices();
