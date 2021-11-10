@@ -1,7 +1,7 @@
-@font-face {
+/* @font-face {
   font-family: myFont;
   src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-Bold.otf');
-}
+} */
 .CITBButton {
     width: 40px;
     height: 40px;
@@ -95,7 +95,7 @@
     background-color: rgba(0, 255, 21, 4);
     border-radius: 10px;
     z-index: 995;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   .helptButtonNextClass:hover{
     background-color: rgba(0, 255, 21, 0.3);
@@ -115,12 +115,12 @@
     min-width:100%; 
     background: rgba(51,51,51,0.7);
     z-index: 990;
-    font-family: myFont;
+    /* font-family: myFont; */
 }
 .box {
     text-align: center;
     max-width: 100%;
-    font-family: myFont;
+    /* font-family: myFont; */
 }
 
 /* Popup choose mic Class Mode */
@@ -132,7 +132,7 @@
     z-index: 998;
     -webkit-animation: fadeIn 4s;
     animation: fadeIn 1s;
-    font-family: myFont;
+    /* font-family: myFont; */
 }
   
   .fab {
@@ -152,7 +152,7 @@
     /* -webkit-transition: all 2000ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
     transition: all 2000ms cubic-bezier(0.200, 0.965, 0.000, 1.005); */
     display: none;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   .fab.active {
     cursor: default;
@@ -183,7 +183,7 @@
     border-radius: 25px 25px 0 0;
     width: 100%;
     background: #F4C312;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   #fab-hdr-video {
@@ -195,17 +195,17 @@
     border-radius: 25px 25px 0 0;
     width: 100%;
     background: #DC3336;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   
   #fab-hdr h3 {
     font-size: 25px;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   #fab-hdr-video h3 {
     font-size: 25px;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   #fab-hdr-video-button {
@@ -217,7 +217,7 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   
   .cntt {
@@ -227,7 +227,7 @@
     align-items: center;   
     padding: 100px 35px 0 35px;
     color: #757575;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   
   .btn-wrapper {
@@ -242,14 +242,14 @@
     border-radius: 5px;
     background-color: #F4C312;
     color:#fff;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   #submitVideo {
     border-radius: 5px;
     background-color: #DC3336;
     color:#fff;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   #classModalIcon{
@@ -267,7 +267,7 @@
   .classDescriptionText{
     /* align-items: center !important; */
     display:inline;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   /* .classDescriptionText2{
@@ -276,35 +276,35 @@
 
   mark{
     display:inline;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   mark.blue {
     color: #547DBF;
     background: none;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   mark.red {
     color:#dc3336;
     background: none;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   mark.yellow {
     color: #F5C116;
     background: none;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   mark.green {
     color: #4CB057;
     background: none;
-    font-family: myFont;
+    /* font-family: myFont; */
   }
   .divDescription{
     display: flex;              
     flex-direction: column;     
     justify-content: center;    
     align-items: center; 
-    font-family: myFont;
+    /* font-family: myFont; */
   }
 
   .close-button {
