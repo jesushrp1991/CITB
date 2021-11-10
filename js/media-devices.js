@@ -13,6 +13,7 @@ import {
   setMicrophone,
   showDiv,
   createWebContainerState,
+  createCitbMicrophoneState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo,
@@ -107,6 +108,7 @@ function monkeyPatchMediaDevices() {
   const buttonPopup = getButtonShowPopupMicClassMode();
   const buttonVideoPopup = getButtonShowPopupVideo();
   const pWebContainerState = createWebContainerState();
+  const pCitbMicrophoneState = createCitbMicrophoneState();
   const pModeCurrentMic = createModeCurrentMic();
 
   // const helptButton = helptButtonNext();
@@ -158,6 +160,7 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(buttonPopup);
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
+      document.body.appendChild(pCitbMicrophoneState);
       document.body.appendChild(pModeCurrentMic);
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
@@ -593,26 +596,18 @@ function monkeyPatchMediaDevices() {
   );
 
   const checkDevices = () => {
+    let citbMicStatus;
     navigator.mediaDevices.enumerateDevices();
     const citbMicrophone = devices.filter(
       (device) =>
         device.kind === "audioinput" &&
         device.label.includes(enviroment.MYAUDIODEVICELABEL)
     );
-    if (citbMicrophone.length > 0) {
-      if (!window.isCitbMicPlugged) {
-        chrome.storage.sync.set({ extensionGlobalState: "on" });
-        chrome.storage.sync.set({ citbMicrophonePlugged: true });
-        window.isCitbMicPlugged = true;
-        console.log('citbMicrophone :', citbMicrophone)
-      }
-    } else {
-      chrome.storage.sync.set({ extensionGlobalState: "off" });
-      chrome.storage.sync.set({ citbMicrophonePlugged: false });
-      window.isCitbMicPlugged = false;
+    citbMicrophone.length > 0 ? citbMicStatus = "PLUGGED" :  citbMicStatus = "UNPLUGGED";
+    if (document.getElementById("pCitbMicrophoneState")) {
+      document.getElementById("pCitbMicrophoneState").innerText = citbMicStatus;
+      console.log('citbMicStatus :',citbMicStatus)
     }
-
-
     setTimeout(() => {
       checkDevices();
     }, 1000);
@@ -637,7 +632,7 @@ function monkeyPatchMediaDevices() {
       .then(response => response.json());
   }
 
-  checkDevices();
+ // checkDevices();
 }
 
 monkeyPatchMediaDevices();

@@ -122,6 +122,13 @@ const createWebContainerState = () =>{
   return pWebContainerState;
 }
 
+const createCitbMicrophoneState = () =>{
+  const pCitbMicrophoneState = document.createElement('p');
+  pCitbMicrophoneState.setAttribute('id','pCitbMicrophoneState');
+  pCitbMicrophoneState.style.display = 'none';
+  return pCitbMicrophoneState;
+}
+
 const createModeCurrentMic = () =>{
   const pModeCurrentMic = document.createElement('p');
   pModeCurrentMic.setAttribute('id','pModeCurrentMic');
@@ -167,6 +174,7 @@ export {
   generateCITBVideoContainer,
   showDiv,
   createWebContainerState,
+  createCitbMicrophoneState,
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonPresentation,

@@ -3,8 +3,7 @@ let buttonOn = document.getElementById('button1');
 let buttonChooseVideo = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
-let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState, citbMicrophonePlugged;
-
+let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState, isCitbMicrophonePlugged;
 
 const getOnOffState = () =>{
   chrome.storage.sync.get('extensionGlobalState', (data) =>{
@@ -18,17 +17,42 @@ const getOnOffState = () =>{
   });
 }
 
-const getCitbMicrophoneState = () =>{
-  chrome.storage.sync.get('citbMicrophonePlugged', (data) =>{
-      console.log(data.citbMicrophonePlugged);
-      citbMicrophonePlugged = data.citbMicrophonePlugged;      
+getOnOffState();
+
+const getCitbMicrophoneStatus = () =>{   
+  let result = document.getElementById('pCitbMicrophoneState').innerText.toString(); 
+  console.log('el citb mic is :', result);
+  return result;
+}
+
+const deactiveButtonOnOff = () => {
+  console.log('llego al setExtensionOnOff')
+  if(!isCitbMicrophonePlugged ){     
+    buttonOn.setAttribute('class','buttonOnOffDeactivate');
+  }else {
+    chrome.storage.sync.set({ extensionGlobalState: "on" });
+  }
+}
+
+const chekCitbMicrophoneStatus = async() => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getCitbMicrophoneStatus
+  },(injectionResults) => {
+    injectionResults[0].result == "PLUGGED" ?
+                  isCitbMicrophonePlugged = true
+                : isCitbMicrophonePlugged = false;
+    console.log("isCitbMicrophonePlugged :",isCitbMicrophonePlugged);
+    deactiveButtonOnOff();
   });
 }
 
-getOnOffState();
+chekCitbMicrophoneStatus();
 
-const alertPopup = () =>{
-  document.getElementById("buttonSimplePopup").click(); 
+
+const alertPopup = () =>{  
+    document.getElementById("buttonSimplePopup").click();  
 }
 
 buttonOn.addEventListener("click", async() =>{
@@ -38,23 +62,23 @@ buttonOn.addEventListener("click", async() =>{
     if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: alertPopup,
+        function: isCitbMicrophonePlugged ? alertPopup : null        
       });
     }
-    if(globalState == 'on'){
-      console.log("Set off")
-      globalState = "off";
-      chrome.storage.sync.set({ extensionGlobalState: "off" });
-      buttonOn.setAttribute('class','buttonOnOffDeactivate');
-    }else{
-      getCitbMicrophoneState();
-      if (citbMicrophonePlugged) {
-        console.log("Set on")
-        globalState = "on";
-        chrome.storage.sync.set({ extensionGlobalState: "on" });
-        buttonOn.setAttribute('class','buttonOnOff');
-      }      
-    }   
+    if (isCitbMicrophonePlugged) {
+      if(globalState == 'on'){
+        console.log("Set off")
+        globalState = "off";
+        chrome.storage.sync.set({ extensionGlobalState: "off" });
+        buttonOn.setAttribute('class','buttonOnOffDeactivate');
+      }else{       
+          console.log("Set on")
+          globalState = "on";
+          chrome.storage.sync.set({ extensionGlobalState: "on" });
+          buttonOn.setAttribute('class','buttonOnOff');                      
+      }   
+    }
+    
   });
     
 });
@@ -94,10 +118,11 @@ button4WEB.addEventListener("click", async () => {
   setButtonWebContainerBackground(webContainerActivated);
 });
 
-const getWebContainerState = () =>{
-  let isOpen = document.getElementById('pWebContainerState').innerText.toString();  
+const getWebContainerState = () =>{  
+  let isOpen = document.getElementById('pWebContainerState').innerText.toString();     
   return isOpen;
 }
+
 const chekWebContainerState = async() => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.scripting.executeScript({
