@@ -186,7 +186,6 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
-      checkingMicrophoneId();
       // setFirstMic();
     }
   }; //END ONREADY STATE CHANGE
@@ -215,30 +214,6 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const getCITBMicMedia = async () => {
-    try {
-      const citbMicrophone = devices.filter(
-        (x) =>
-          x.kind === "audioinput" &&
-          x.label.includes(enviroment.MYAUDIODEVICELABEL)
-      );
-      if (citbMicrophone.length > 0) {
-        let constraints = {
-          video: false,
-          audio: {
-            deviceId: { exact: citbMicrophone[0].deviceId },
-          },
-        };
-        let result = await navigator.mediaDevices.getUserMedia(constraints);
-        return result;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      logErrors(error,"getCTBMicMedia ln. 227");
-    }
-  };
-
   const showCallBackFunction = async () => {
     try {
       if (window.classActivated) {
@@ -252,14 +227,8 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, showModeEnabled);
         }
       } else {
-        // closeMicTracks();
         showAudioContext = new AudioContext();
-        const CITBMicMedia = await getCITBMicMedia();
-        if (CITBMicMedia == null) {
-          setButtonBackground(buttonShow, false);
-          return;
-        }
-        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+        const source = showAudioContext.createMediaStreamSource(window.currentAudioMediaStream);
         source.connect(showAudioContext.destination);
         showModeEnabled = true;
         setButtonBackground(buttonShow, showModeEnabled);
@@ -277,7 +246,7 @@ function monkeyPatchMediaDevices() {
       const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
       if (otherMicrophones) {
         window.classActivated = true;
-        checkingMicrophoneId();
+        changeMicrophone();
         setButtonBackground(buttonClass, window.classActivated);
         return true;
       }
@@ -297,7 +266,7 @@ function monkeyPatchMediaDevices() {
     if (citbMicrophone.length > 0) {
       setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
-      checkingMicrophoneId();
+      changeMicrophone();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -449,23 +418,23 @@ function monkeyPatchMediaDevices() {
   }
 
   var isShow;
-  var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;
   let showModeEnabled = false;
 
-  const checkingMicrophoneId = async function () {  
+  const changeMicrophone = async function () {  
     // try {  
       let currentMic;
       if(window.currentAudioMediaStream){
         window.currentAudioMediaStream.getAudioTracks().forEach(t => {t.stop()});
-      }          
-      if(document.getElementById("pModeCurrentMic")){
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
+      }
+      const micDomElement = document.getElementById("pModeCurrentMic")
+      if(micDomElement){
+        currentMic = micDomElement.innerText.toString();
         if(currentMic == ""){
-          const citbMicrophoneID = await navigator.mediaDevices.enumerateDevices();
-          console.log("citbMicrophoneID",citbMicrophoneID)  
-           currentMic = citbMicrophoneID.filter(
+          const allDevices = await navigator.mediaDevices.enumerateDevices();
+          console.log("allDevices",allDevices)  
+           currentMic = allDevices.filter(
              (x) =>
                x.kind === "audioinput" &&
                x.label.includes(enviroment.MYAUDIODEVICELABEL)
@@ -473,8 +442,8 @@ function monkeyPatchMediaDevices() {
            setMicrophone(currentMic);
         }
       } 
-      // console.log("Initial Mic",currentMic)
-      window.currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({  
+
+      window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, {  
         audio: { deviceId: {exact: currentMic} },  
         video: false,  
       });       
@@ -543,11 +512,19 @@ function monkeyPatchMediaDevices() {
   let mediaStreamSource;
   let mediaStreamDestination;
 
+
+  const userMediaArgsIsVideo = (args) => {
+    return args.length && args[0].video && args[0].video.deviceId
+  }
+
+  const userMediaArgsIsAudio = (args) => {
+    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null
+  }
+
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
-      // console.log(args);
-      if (args.length && args[0].video && args[0].video.deviceId) {
+      if (userMediaArgsIsVideo(args)) {
         if (
           args[0].video.deviceId === "virtual" ||
           args[0].video.deviceId.exact === "virtual"
@@ -557,35 +534,28 @@ function monkeyPatchMediaDevices() {
           await drawFrameOnVirtualCamera();
           // speachCommands();
           return virtualWebCamMediaStream;
-        } else if(args[0].audio != false){
-          console.log("GetAudio")
-          if(isCreatedAudioContext){   
-            mediaStreamDestination.stream.getAudioTracks().forEach(t => {t.stop()});
-            return mediaStreamDestination.stream; 
-          }else{
-            mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
-            mediaStreamDestination = audioContext.createMediaStreamDestination();
-            mediaStreamSource.connect(mediaStreamDestination);    
-            isCreatedAudioContext = true;  
-            return mediaStreamDestination.stream;
-          }
-          
         }
+      }
+
+      if(userMediaArgsIsAudio(args)){
+        if (window.currentAudioMediaStream != undefined && window.currentAudioMediaStream != null) {
+          const tracks = window.currentAudioMediaStream.getTracks();
+          tracks.forEach( t => {
+            t.stop();
+          })
+        }
+        
+        window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+        mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
+        mediaStreamDestination = audioContext.createMediaStreamDestination();
+        mediaStreamSource.connect(mediaStreamDestination);    
+        isCreatedAudioContext = true;  
+        return mediaStreamDestination.stream;
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
       return res;
     } catch (error) {
-      // if (error.name != "NotReadableError") throw error;
-      // console.log("Prototype getUserMedia error ",error );
-      // //Approach #2
-      // console.log("currentAudio",window.currentAudioMediaStream)
-      // const tracks = window.currentAudioMediaStream.getTracks();
-      // console.log("tracks",tracks)
-      // tracks.forEach(track => { track.stop()});
-      // //This is ok
-      // return await navigator.mediaDevices.getUserMedia(arguments[0]);
       console.log(error);
-      // logErrors(error,"prototype getUserMedia ln 531")
     }
   };
 
