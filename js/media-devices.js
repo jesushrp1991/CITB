@@ -227,7 +227,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, showModeEnabled);
         }
       } else {
-        showAudioContext = new AudioContext();
+        showAudioContext = new AudioContext({sampleRate: 48000});
         const source = showAudioContext.createMediaStreamSource(window.currentAudioMediaStream);
         source.connect(showAudioContext.destination);
         showModeEnabled = true;
@@ -444,7 +444,8 @@ function monkeyPatchMediaDevices() {
       } 
 
       window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, {  
-        audio: { deviceId: {exact: currentMic} },  
+        audio: { deviceId: {exact: currentMic} }, 
+        sampleRate: {exact: 48000},
         video: false,  
       });       
       mediaStreamSource.disconnect(mediaStreamDestination);
@@ -508,7 +509,7 @@ function monkeyPatchMediaDevices() {
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
   
   let isCreatedAudioContext = false;
-  let audioContext = new AudioContext();
+  let audioContext = new AudioContext({sampleRate: 48000});
   let mediaStreamSource;
   let mediaStreamDestination;
 
@@ -544,12 +545,23 @@ function monkeyPatchMediaDevices() {
             t.stop();
           })
         }
-        
+        var gainNode = audioContext.createGain();
+        const splitter = audioContext.createChannelSplitter(2);
+        const merger = audioContext.createChannelMerger(2);
+
+        gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+        splitter.connect(gainNode, 0);
+
         window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
         mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
         mediaStreamDestination = audioContext.createMediaStreamDestination();
-        mediaStreamSource.connect(mediaStreamDestination);    
+        mediaStreamSource.connect(splitter);
+        gainNode.connect(merger, 0, 1);
+        splitter.connect(merger, 1, 0);
+        merger.connect(mediaStreamDestination);    
+        // gainNode.connect(mediaStreamDestination)
         isCreatedAudioContext = true;  
+        window.webAudioStream = mediaStreamDestination;
         return mediaStreamDestination.stream;
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
