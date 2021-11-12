@@ -448,9 +448,9 @@ function monkeyPatchMediaDevices() {
         sampleRate: {exact: 48000},
         video: false,  
       });       
-      mediaStreamSource.disconnect(mediaStreamDestination);
+      mediaStreamSource.disconnect(splitter);
       mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
-      mediaStreamSource.connect(mediaStreamDestination);
+      mediaStreamSource.connect(splitter);
           
     // } catch (error) {  
     //   console.log(error);
@@ -512,6 +512,9 @@ function monkeyPatchMediaDevices() {
   let audioContext = new AudioContext({sampleRate: 48000});
   let mediaStreamSource;
   let mediaStreamDestination;
+  const gainNode = audioContext.createGain();
+  const splitter = audioContext.createChannelSplitter(2);
+  const merger = audioContext.createChannelMerger(2);
 
 
   const userMediaArgsIsVideo = (args) => {
@@ -545,11 +548,8 @@ function monkeyPatchMediaDevices() {
             t.stop();
           })
         }
-        var gainNode = audioContext.createGain();
-        const splitter = audioContext.createChannelSplitter(2);
-        const merger = audioContext.createChannelMerger(2);
-
-        gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(2, audioContext.currentTime);
         splitter.connect(gainNode, 0);
 
         window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
