@@ -57,11 +57,11 @@ const divTextFieldsMic= () => {
     return textFieldsDiv;
 };
 
-const labelTextMic= () => {
+const labelTextMic= (text) => {
     const textLabel = document.createElement("p");
     textLabel.setAttribute("for", "text1");
     textLabel.setAttribute("class", "mdl-selectfield__label");
-    textLabel.innerText = enviroment.messageCitbMicUnplugged
+    textLabel.innerText = text
     return textLabel;
 };
 

@@ -1,3 +1,4 @@
+import { enviroment } from "./enviroment.js";
 import {
   divOverlayMic,
   divFabMic,
@@ -16,9 +17,9 @@ import {
 
 import { getButtonMicAlertPopup } from "./domUtils.js";
 
-const modalAlertCitbMicState = () => {
+const modalAlertCitbMicState = (status, text) => {
   console.log('Inyecto el boton')
-  const buttonMicAlertPopup = getButtonMicAlertPopup();
+  const buttonMicAlertPopup = getButtonMicAlertPopup(status);
 
   //POPUP SHOW ALERT CITB MIC PLUGGED/UNPLUGGED
   const div_OverlayMic = divOverlayMic();
@@ -31,7 +32,7 @@ const modalAlertCitbMicState = () => {
   const div_ContentMic = divContentMic(); 
   const div_ButtonIconMic = classIconMic();
   const div_TextFieldsMic = divTextFieldsMic();
-  const label_TextMic = labelTextMic();
+  const label_TextMic = labelTextMic(text);
   const div_ButtonMic = divButtonMic();  
   const brMic = document.createElement("br");
   const showMicAlertPopup = () => {
@@ -73,7 +74,8 @@ const modalAlertCitbMicState = () => {
       
 };
 
-modalAlertCitbMicState();
+modalAlertCitbMicState("UNPLUGGED",enviroment.messageCitbMicUnplugged);
+modalAlertCitbMicState("PLUGGED",enviroment.messageCitbMicPlugged);
 
 export{
   modalAlertCitbMicState

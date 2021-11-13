@@ -215,9 +215,11 @@ function monkeyPatchMediaDevices() {
   //   window.helpCount++;
   // };
 
-  const alertMicPopup = () => {
+  const alertMicPopup = (status) => {
     console.log('Llego al alert mic')
-    document.getElementById("buttonMicAlertPopup").click();
+    status == "UNPLUGGED" ?
+    document.getElementById("buttonMicAlertPopupUnplugged").click() :
+    document.getElementById("buttonMicAlertPopupPlugged").click()
   }
 
   const closeContainer = () => {
@@ -700,20 +702,15 @@ function monkeyPatchMediaDevices() {
     } else {
       console.log('Not firstTime')
       if (lastCitbMicStatus !== citbMicStatus) {
-        if (citbMicStatus == "PLUGGED") {
-          alert("A CITB microphone has been connected")
-        } else {
-          //showModalCitbMicPluggedUnplugged()
-          alertMicPopup();
-          //showPopupMicOnOff()
-          //alert("A CITB microphone has been disconnected")          
-          // alertPopup();
+        if (citbMicStatus == "PLUGGED") {          
+          alertMicPopup(citbMicStatus);
+        } else {          
+          alertMicPopup(citbMicStatus);          
           camCallBackFunction();
           //activateClassMode();         
           offPresentationMode();
           offShowMode();
           closeContainer();
-
         }
       }
     }

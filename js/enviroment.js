@@ -19,7 +19,7 @@ const enviroment = {
     backendLogURL: 'https://apicitb.tk/api/log/savelog',
     messageRestartConference : "Please, restart the page to apply changes.",
     messageCitbMicUnplugged: "The CITB microphone has been disconnected",
-    messageCitbMicPlugged: "The CITB microphone has been Connected",
+    messageCitbMicPlugged: "The CITB microphone has been connected",
 }
 
 export { 

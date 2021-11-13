@@ -158,9 +158,11 @@ const getButtonSimplePopup = () => {
   return buttonPopup;
 };
 
-const getButtonMicAlertPopup = () => {
+const getButtonMicAlertPopup = (status) => {
   const buttonPopup = document.createElement("button");
-  buttonPopup.setAttribute('id','buttonMicAlertPopup');
+  status == "PLUGGED" ?
+  buttonPopup.setAttribute('id','buttonMicAlertPopupPlugged') :
+  buttonPopup.setAttribute('id','buttonMicAlertPopupUnplugged')
   buttonPopup.style.display = 'none';
   return buttonPopup;
 };

@@ -9,12 +9,6 @@ let globalState;
 //const MYAUDIODEVICELABEL = "Comunicaciones - Micrófono (Realtek High Definition Audio)"
 const MYAUDIODEVICELABEL = "Micrófono (DroidCam Virtual Audio)"
 
-const alertPopup = () =>{  
-    const test = document.getElementById("buttonSimplePopup"); 
-    test.click() 
-}
-
-
 const getExtensionGlobalState = () => { 
     chrome.storage.sync.get('extensionGlobalState', (data) => {
       globalState = data.extensionGlobalState;   
@@ -77,11 +71,11 @@ const injection = () => {
         const headAlertMic = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
         headAlertMic.insertBefore(scriptAlertMic, headAlertMic.firstChild);
 
-        /*const scriptCheckMedia = document.createElement('script');
+        const scriptCheckMedia = document.createElement('script');
         scriptCheckMedia.setAttribute("type", "module");
         scriptCheckMedia.setAttribute("src", chrome.runtime.getURL('js/standby-check-media-devices.js'));
         const headCheckMedia = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-        headCheckMedia.insertBefore(scriptCheckMedia, headCheckMedia.firstChild);*/
+        headCheckMedia.insertBefore(scriptCheckMedia, headCheckMedia.firstChild);
 
         console.log('extensionGlobalState :', data.extensionGlobalState);
 
