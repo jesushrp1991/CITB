@@ -6,8 +6,8 @@ let lastCitbMicStatus;
 let globalState;
 
 //const MYAUDIODEVICELABEL ="CITB"
-const MYAUDIODEVICELABEL = "Comunicaciones - Micrófono (Realtek High Definition Audio)"
-//const MYAUDIODEVICELABEL = "Micrófono (DroidCam Virtual Audio)"
+//const MYAUDIODEVICELABEL = "Comunicaciones - Micrófono (Realtek High Definition Audio)"
+const MYAUDIODEVICELABEL = "Micrófono (DroidCam Virtual Audio)"
 
 const alertPopup = () =>{  
     const test = document.getElementById("buttonSimplePopup"); 
@@ -32,7 +32,7 @@ const checkMediaDevice = async () => {
     );
     result.length > 0 ? isCitbMicrophonePlugged = true : isCitbMicrophonePlugged = false
     console.log('isCitbMicrophonePlugged :', isCitbMicrophonePlugged);
-    if (firstTime) {        
+    /*if (firstTime) {        
         firstTime = false;   
         console.log('firstTime ');
       }else {
@@ -54,7 +54,7 @@ const checkMediaDevice = async () => {
           }        
         }        
       }
-      lastCitbMicStatus = isCitbMicrophonePlugged; 
+      lastCitbMicStatus = isCitbMicrophonePlugged; */
       setTimeout(() => {
         checkMediaDevice();
       }, 1000);
@@ -71,11 +71,17 @@ const injection = () => {
         const headpopup = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
         headpopup.insertBefore(scriptpopup, headpopup.firstChild);
 
-        const scriptCheckMedia = document.createElement('script');
+        const scriptAlertMic = document.createElement('script');
+        scriptAlertMic.setAttribute("type", "module");
+        scriptAlertMic.setAttribute("src", chrome.runtime.getURL('js/alertPopupMic.js'));
+        const headAlertMic = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+        headAlertMic.insertBefore(scriptAlertMic, headAlertMic.firstChild);
+
+        /*const scriptCheckMedia = document.createElement('script');
         scriptCheckMedia.setAttribute("type", "module");
         scriptCheckMedia.setAttribute("src", chrome.runtime.getURL('js/standby-check-media-devices.js'));
         const headCheckMedia = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-        headCheckMedia.insertBefore(scriptCheckMedia, headCheckMedia.firstChild);
+        headCheckMedia.insertBefore(scriptCheckMedia, headCheckMedia.firstChild);*/
 
         console.log('extensionGlobalState :', data.extensionGlobalState);
 

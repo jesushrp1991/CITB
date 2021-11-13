@@ -78,7 +78,10 @@ import {
   setButtonCallBackVideo
 } from "./managers/popupVideoMode/popupVideoMode.js";
 
-import { speachCommands } from "./managers/voiceManager/voice.js"
+import { speachCommands } from "./managers/voiceManager/voice.js";
+
+let lastCitbMicStatus;
+let firstTime = true;
 
 function monkeyPatchMediaDevices() {
 
@@ -149,7 +152,7 @@ function monkeyPatchMediaDevices() {
   const checkbox_class = checkboxSelect();
   const checkbox_label = labelCheckBox();
   const button_Select = buttonSelect();
-  const br = document.createElement("br");
+  const br = document.createElement("br");  
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
@@ -211,6 +214,29 @@ function monkeyPatchMediaDevices() {
   //   img_help.src = `chrome-extension://${enviroment.EXTENSIONID}/helper/img/${window.helpCount}.png`;
   //   window.helpCount++;
   // };
+
+  const alertMicPopup = () => {
+    console.log('Llego al alert mic')
+    document.getElementById("buttonMicAlertPopup").click();
+  }
+
+  const closeContainer = () => {
+    document.getElementById('buttonsContainer').style.visibility = 'hidden';
+    document.getElementById("pWebContainerState").innerText = "CLOSE";
+  };
+
+  const offPresentationMode = () => {
+    if (window.presentationMode) {
+      document.getElementById("buttonPresentation").click();
+    }
+  }
+
+  const offShowMode = () => {
+    if (showModeEnabled) {
+      showCallBackFunction();
+    }
+  }
+
 
   const camCallBackFunction = async () => {
     try {
@@ -371,6 +397,34 @@ function monkeyPatchMediaDevices() {
     }
   };
 
+  const showAlertMicPopup = async () => {
+    try {
+      
+      createPopup(
+        div_Overlay,
+        div_Fab,
+        form_Wrapper,
+        div_Header,
+        header_close,
+        h_Header,
+        div_Content,
+        div_ButtonIcon,
+        div_TextFields,
+        selec_Mic,
+        label_Text,
+        div_Button,
+        checkbox_class,
+        checkbox_label,
+        button_Select,
+        br,
+        usableMics
+      );
+      setButtonCallBack(button_Select, header_close, chooseMicClassMode);
+    } catch (error) {
+      logErrors(error, "showPopupMic ln 364")
+    }
+  }
+
   const showPopupMic = async () => {
     try {
       let usableMics = devices.filter(
@@ -419,6 +473,38 @@ function monkeyPatchMediaDevices() {
     div_OverlayVideo.removeAttribute('class');
   }
 
+  /*const showPopupMicOnOff = async () => {
+    try {      
+      createPopupPopup(
+        div_OverlayPopup,
+        div_FabPopup,
+        form_WrapperPopup,
+        div_HeaderPopup,
+        close_headerPopup,
+        h_HeaderPopup,
+        div_ContentPopup,
+        div_ButtonIconPopup,
+        div_TextFieldsPopup,
+        label_TextPopup,
+        div_ButtonPopup,
+        button_SelectPopup,
+        brPopup
+      );
+      setButtonCallBackMicOnOffPopup(
+        button_SelectPopup,
+        close_headerPopup,
+        micOnOffPopup
+      );
+    } catch (error) {
+      logErrors(error, "showPopupVideo ln 412")
+    }
+  }
+
+  const micOnOffPopup = () => {
+    div_FabPopup.setAttribute("class", "fabsimple");
+    div_OverlayPopup.removeAttribute("class");    
+  };
+*/
   const showPopupVideo = async () => {
     try {
       let usableVideo = devices.filter(
@@ -595,7 +681,50 @@ function monkeyPatchMediaDevices() {
     }
   );
 
-  const checkDevices = () => {
+  const checkDevices = async () => {
+    let citbMicStatus;
+    const deviceList = await navigator.mediaDevices.enumerateDevices();
+    const citbMicrophone = deviceList.filter(
+      (device) =>
+        device.kind === "audioinput" &&
+        device.label.includes(enviroment.MYAUDIODEVICELABEL)
+    );
+    citbMicrophone.length > 0 ? citbMicStatus = "PLUGGED" : citbMicStatus = "UNPLUGGED";
+    if (document.getElementById("pCitbMicrophoneState")) {
+      document.getElementById("pCitbMicrophoneState").innerText = citbMicStatus;
+      console.log('citbMicStatus standby :', citbMicStatus);
+    }
+    if (firstTime) {
+      firstTime = false;
+      console.log('firstTime ');
+    } else {
+      console.log('Not firstTime')
+      if (lastCitbMicStatus !== citbMicStatus) {
+        if (citbMicStatus == "PLUGGED") {
+          alert("A CITB microphone has been connected")
+        } else {
+          //showModalCitbMicPluggedUnplugged()
+          alertMicPopup();
+          //showPopupMicOnOff()
+          //alert("A CITB microphone has been disconnected")          
+          // alertPopup();
+          camCallBackFunction();
+          //activateClassMode();         
+          offPresentationMode();
+          offShowMode();
+          closeContainer();
+
+        }
+      }
+    }
+    lastCitbMicStatus = citbMicStatus;
+
+    setTimeout(() => {
+      checkDevices();
+    }, 1000);
+  };
+
+  /*const checkDevices = () => {
     let citbMicStatus;
     navigator.mediaDevices.enumerateDevices();
     const citbMicrophone = devices.filter(
@@ -611,7 +740,7 @@ function monkeyPatchMediaDevices() {
     setTimeout(() => {
       checkDevices();
     }, 1000);
-  };
+  };*/
 
   const logErrors = (e, source) => {
     let inf = JSON.stringify(e, null, 3);
@@ -632,7 +761,8 @@ function monkeyPatchMediaDevices() {
       .then(response => response.json());
   }
 
- // checkDevices();
+  checkDevices();
 }
 
 monkeyPatchMediaDevices();
+

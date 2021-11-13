@@ -52,7 +52,7 @@ chekCitbMicrophoneStatus();
 
 
 const alertPopup = () =>{  
-    document.getElementById("buttonSimplePopup").click();  
+    document.getElementById("buttonSimplePopup").click();        
 }
 
 buttonOn.addEventListener("click", async() =>{  

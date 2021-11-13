@@ -39,6 +39,7 @@ const getButtonClass = () => {
 const getButtonPresentation = () => {
   const buttonClass = document.createElement("button");
   buttonClass.className = "CITBButton";
+  buttonClass.setAttribute("id", "buttonPresentation");
   buttonClass.classList.add("CITBPresentationButton");
   return buttonClass;
 };
@@ -157,6 +158,13 @@ const getButtonSimplePopup = () => {
   return buttonPopup;
 };
 
+const getButtonMicAlertPopup = () => {
+  const buttonPopup = document.createElement("button");
+  buttonPopup.setAttribute('id','buttonMicAlertPopup');
+  buttonPopup.style.display = 'none';
+  return buttonPopup;
+};
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,
@@ -179,5 +187,6 @@ export {
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
   getButtonShowPopupVideo,
-  getButtonSimplePopup
+  getButtonSimplePopup,
+  getButtonMicAlertPopup
 };
