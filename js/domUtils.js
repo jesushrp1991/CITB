@@ -184,7 +184,7 @@ export {
   generateCITBVideoContainer,
   showDiv,
   createWebContainerState,
-  createCitbMicrophoneState,
+  createCitbMicrophoneState, 
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonPresentation,

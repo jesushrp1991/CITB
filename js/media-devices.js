@@ -13,7 +13,7 @@ import {
   setMicrophone,
   showDiv,
   createWebContainerState,
-  createCitbMicrophoneState,
+  createCitbMicrophoneState, 
   createModeCurrentMic,
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo,
@@ -111,7 +111,7 @@ function monkeyPatchMediaDevices() {
   const buttonPopup = getButtonShowPopupMicClassMode();
   const buttonVideoPopup = getButtonShowPopupVideo();
   const pWebContainerState = createWebContainerState();
-  const pCitbMicrophoneState = createCitbMicrophoneState();
+  const pCitbMicrophoneState = createCitbMicrophoneState();  
   const pModeCurrentMic = createModeCurrentMic();
 
   // const helptButton = helptButtonNext();
@@ -152,7 +152,9 @@ function monkeyPatchMediaDevices() {
   const checkbox_class = checkboxSelect();
   const checkbox_label = labelCheckBox();
   const button_Select = buttonSelect();
-  const br = document.createElement("br");  
+  const br = document.createElement("br");
+
+  
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
@@ -163,7 +165,7 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(buttonPopup);
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
-      document.body.appendChild(pCitbMicrophoneState);
+      document.body.appendChild(pCitbMicrophoneState);      
       document.body.appendChild(pModeCurrentMic);
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
@@ -215,16 +217,17 @@ function monkeyPatchMediaDevices() {
   //   window.helpCount++;
   // };
 
+
   const alertMicPopup = (status) => {
     console.log('Llego al alert mic')
     status == "UNPLUGGED" ?
-    document.getElementById("buttonMicAlertPopupUnplugged").click() :
-    document.getElementById("buttonMicAlertPopupPlugged").click()
+      document.getElementById("buttonMicAlertPopupUnplugged").click() :
+      document.getElementById("buttonMicAlertPopupPlugged").click()
   }
 
-  const closeContainer = () => {
-    document.getElementById('buttonsContainer').style.visibility = 'hidden';
-    document.getElementById("pWebContainerState").innerText = "CLOSE";
+  const magnageContainer = (visibility, status) => {
+    document.getElementById('buttonsContainer').style.visibility = visibility;
+    document.getElementById("pWebContainerState").innerText = status;
   };
 
   const offPresentationMode = () => {
@@ -233,12 +236,12 @@ function monkeyPatchMediaDevices() {
     }
   }
 
+
   const offShowMode = () => {
     if (showModeEnabled) {
       showCallBackFunction();
     }
   }
-
 
   const camCallBackFunction = async () => {
     try {
@@ -399,34 +402,6 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const showAlertMicPopup = async () => {
-    try {
-      
-      createPopup(
-        div_Overlay,
-        div_Fab,
-        form_Wrapper,
-        div_Header,
-        header_close,
-        h_Header,
-        div_Content,
-        div_ButtonIcon,
-        div_TextFields,
-        selec_Mic,
-        label_Text,
-        div_Button,
-        checkbox_class,
-        checkbox_label,
-        button_Select,
-        br,
-        usableMics
-      );
-      setButtonCallBack(button_Select, header_close, chooseMicClassMode);
-    } catch (error) {
-      logErrors(error, "showPopupMic ln 364")
-    }
-  }
-
   const showPopupMic = async () => {
     try {
       let usableMics = devices.filter(
@@ -475,38 +450,6 @@ function monkeyPatchMediaDevices() {
     div_OverlayVideo.removeAttribute('class');
   }
 
-  /*const showPopupMicOnOff = async () => {
-    try {      
-      createPopupPopup(
-        div_OverlayPopup,
-        div_FabPopup,
-        form_WrapperPopup,
-        div_HeaderPopup,
-        close_headerPopup,
-        h_HeaderPopup,
-        div_ContentPopup,
-        div_ButtonIconPopup,
-        div_TextFieldsPopup,
-        label_TextPopup,
-        div_ButtonPopup,
-        button_SelectPopup,
-        brPopup
-      );
-      setButtonCallBackMicOnOffPopup(
-        button_SelectPopup,
-        close_headerPopup,
-        micOnOffPopup
-      );
-    } catch (error) {
-      logErrors(error, "showPopupVideo ln 412")
-    }
-  }
-
-  const micOnOffPopup = () => {
-    div_FabPopup.setAttribute("class", "fabsimple");
-    div_OverlayPopup.removeAttribute("class");    
-  };
-*/
   const showPopupVideo = async () => {
     try {
       let usableVideo = devices.filter(
@@ -683,7 +626,7 @@ function monkeyPatchMediaDevices() {
     }
   );
 
-  const checkDevices = async () => {
+  const checkDevices = async () => {    
     let citbMicStatus;
     const deviceList = await navigator.mediaDevices.enumerateDevices();
     const citbMicrophone = deviceList.filter(
@@ -694,23 +637,21 @@ function monkeyPatchMediaDevices() {
     citbMicrophone.length > 0 ? citbMicStatus = "PLUGGED" : citbMicStatus = "UNPLUGGED";
     if (document.getElementById("pCitbMicrophoneState")) {
       document.getElementById("pCitbMicrophoneState").innerText = citbMicStatus;
-      console.log('citbMicStatus standby :', citbMicStatus);
+      console.log('citbMicStatus :', citbMicStatus);
     }
     if (firstTime) {
       firstTime = false;
-      console.log('firstTime ');
     } else {
-      console.log('Not firstTime')
       if (lastCitbMicStatus !== citbMicStatus) {
-        if (citbMicStatus == "PLUGGED") {          
+        if (citbMicStatus == "PLUGGED") {
           alertMicPopup(citbMicStatus);
-        } else {          
-          alertMicPopup(citbMicStatus);          
+          magnageContainer("visible", "OPEN");
+        } else {
+          alertMicPopup(citbMicStatus);
           camCallBackFunction();
-          //activateClassMode();         
           offPresentationMode();
           offShowMode();
-          closeContainer();
+          magnageContainer("hidden", "CLOSE");
         }
       }
     }
@@ -720,24 +661,6 @@ function monkeyPatchMediaDevices() {
       checkDevices();
     }, 1000);
   };
-
-  /*const checkDevices = () => {
-    let citbMicStatus;
-    navigator.mediaDevices.enumerateDevices();
-    const citbMicrophone = devices.filter(
-      (device) =>
-        device.kind === "audioinput" &&
-        device.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
-    citbMicrophone.length > 0 ? citbMicStatus = "PLUGGED" :  citbMicStatus = "UNPLUGGED";
-    if (document.getElementById("pCitbMicrophoneState")) {
-      document.getElementById("pCitbMicrophoneState").innerText = citbMicStatus;
-      console.log('citbMicStatus :',citbMicStatus)
-    }
-    setTimeout(() => {
-      checkDevices();
-    }, 1000);
-  };*/
 
   const logErrors = (e, source) => {
     let inf = JSON.stringify(e, null, 3);
@@ -758,7 +681,7 @@ function monkeyPatchMediaDevices() {
       .then(response => response.json());
   }
 
-  checkDevices();
+  checkDevices();  
 }
 
 monkeyPatchMediaDevices();

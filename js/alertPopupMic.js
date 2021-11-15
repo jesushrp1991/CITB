@@ -51,14 +51,15 @@ const modalAlertCitbMicState = (status, text) => {
         div_ButtonMic,        
         brMic
       );
-      setButtonCallBackMic(               
+      setButtonCallBackMic(             
         close_headerMic,
         micAlertPopup
-      );
+      );      
+      
     } catch (error) {
     //   logErrors(error, "showSimplePopup ln 458");
     }
-  };
+  };  
   const micAlertPopup = () => {
     div_FabMic.setAttribute("class", "fabsimple");
     div_OverlayMic.removeAttribute("class");
@@ -66,6 +67,7 @@ const modalAlertCitbMicState = (status, text) => {
     // window.location.reload();
     // console.log("pass location reload")
   };
+
   buttonMicAlertPopup.addEventListener("click", showMicAlertPopup);
   window.showMicAlertPopup = buttonMicAlertPopup;
     setTimeout(()=>{

@@ -25,7 +25,7 @@ const divHeader = () => {
 };
 
 const headerClose = () => {
-    const headerClose = document.createElement("span");
+    const headerClose = document.createElement("span");    
     headerClose.setAttribute("class", "close-button topright");
     headerClose.innerText = "x";
     return headerClose;

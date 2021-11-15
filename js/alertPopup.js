@@ -53,19 +53,23 @@ const modalChangeGlobalState = () => {
       setButtonCallBackSimplePopup(
         button_SelectPopup,
         close_headerPopup,
-        simplePopup
+        restartExtension,
+        closePopup
       );
     } catch (error) {
     //   logErrors(error, "showSimplePopup ln 458");
     }
   };
-  const simplePopup = () => {
+  const closePopup = () => {
     div_FabPopup.setAttribute("class", "fabsimple");
-    div_OverlayPopup.removeAttribute("class");
-    // history.go(0);
-    // window.location.reload();
-    // console.log("pass location reload")
+    div_OverlayPopup.removeAttribute("class");    
   };
+
+  const restartExtension = () => {
+    div_FabPopup.setAttribute("class", "fabsimple");
+    div_OverlayPopup.removeAttribute("class");    
+  };
+  
   buttonSimplePopup.addEventListener("click", showSimplePopup);
   window.simpleButtonPopup = buttonSimplePopup;
     setTimeout(()=>{

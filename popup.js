@@ -20,8 +20,7 @@ const getOnOffState = () =>{
 getOnOffState();
 
 const getCitbMicrophoneStatus = () =>{   
-  let result = document.getElementById('pCitbMicrophoneState').innerText.toString(); 
-  console.log('el citb mic is :', result);
+  let result = document.getElementById('pCitbMicrophoneState').innerText.toString();  
   return result;
 }
 
@@ -50,9 +49,25 @@ const chekCitbMicrophoneStatus = async() => {
 
 chekCitbMicrophoneStatus();
 
-
 const alertPopup = () =>{  
     document.getElementById("buttonSimplePopup").click();        
+}
+
+const changeExtensionGlobalState = () => {
+  if (isCitbMicrophonePlugged) {
+    if(globalState == 'on'){
+      console.log("Set off")
+      globalState = "off";
+      chrome.storage.sync.set({ extensionGlobalState: "off" });
+      buttonOn.setAttribute('class','buttonOnOffDeactivate');
+      document.getElementById('pCitbExtensionState').innerText = "OFF";
+    }else{       
+        console.log("Set on")
+        globalState = "on";
+        chrome.storage.sync.set({ extensionGlobalState: "on" });
+        buttonOn.setAttribute('class','buttonOnOff');                      
+    }   
+  }
 }
 
 buttonOn.addEventListener("click", async() =>{  
@@ -65,20 +80,7 @@ buttonOn.addEventListener("click", async() =>{
         function: isCitbMicrophonePlugged ? alertPopup : null        
       });
     }
-    if (isCitbMicrophonePlugged) {
-      if(globalState == 'on'){
-        console.log("Set off")
-        globalState = "off";
-        chrome.storage.sync.set({ extensionGlobalState: "off" });
-        buttonOn.setAttribute('class','buttonOnOffDeactivate');
-      }else{       
-          console.log("Set on")
-          globalState = "on";
-          chrome.storage.sync.set({ extensionGlobalState: "on" });
-          buttonOn.setAttribute('class','buttonOnOff');                      
-      }   
-    }
-    
+    changeExtensionGlobalState();    
   });
     
 });
@@ -102,7 +104,8 @@ const setButtonWebContainerBackground = (isOpen) => {
 
 button4WEB.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if(webContainerActivated)
+  if (isCitbMicrophonePlugged) {
+    if(webContainerActivated)
     {
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
@@ -116,6 +119,8 @@ button4WEB.addEventListener("click", async () => {
     }
   webContainerActivated = !webContainerActivated;
   setButtonWebContainerBackground(webContainerActivated);
+  }
+  
 });
 
 const getWebContainerState = () =>{  
