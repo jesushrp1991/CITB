@@ -47,7 +47,6 @@ const fadeInFadeOut = () => {
                         up = false
                         done = true
                         return resolve();
-                        return
                 }
                 if (currentAlphaValue <= 0 ) {
                     currentAlphaValue = 0;

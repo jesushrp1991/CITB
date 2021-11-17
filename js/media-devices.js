@@ -550,14 +550,27 @@ function monkeyPatchMediaDevices() {
         }
         
         gainNode.gain.setValueAtTime(2, audioContext.currentTime);
-        splitter.connect(gainNode, 0);
+        splitter.connect(gainNode);
 
         window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
         mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
         mediaStreamDestination = audioContext.createMediaStreamDestination();
+
+        let channelCount = 1;
+        let track = window.currentAudioMediaStream.getAudioTracks()[0]
+        if (track != undefined && track != null) {
+          channelCount = track.getSettings.channelCount;
+        }
+        if (channelCount == 1) {
+
+        }
+
         mediaStreamSource.connect(splitter);
         gainNode.connect(merger, 0, 1);
+        gainNode.connect(merger, 0, 0);
         splitter.connect(merger, 1, 0);
+        splitter.connect(merger, 0, 0);
+
         merger.connect(mediaStreamDestination);    
         // gainNode.connect(mediaStreamDestination)
         isCreatedAudioContext = true;  
