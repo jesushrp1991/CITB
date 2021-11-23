@@ -227,7 +227,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(buttonShow, showModeEnabled);
         }
       } else {
-        showAudioContext = new AudioContext({sampleRate: 48000});
+        showAudioContext = new AudioContext();
         const source = showAudioContext.createMediaStreamSource(window.currentAudioMediaStream);
         source.connect(showAudioContext.destination);
         showModeEnabled = true;
@@ -444,9 +444,8 @@ function monkeyPatchMediaDevices() {
       } 
 
       window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, {  
-        audio: { deviceId: {exact: currentMic} }, 
-        sampleRate: {exact: 48000},
-        video: false,  
+        audio: { deviceId: {exact: currentMic} },
+        video: false
       });       
       mediaStreamSource.disconnect(splitter);
       mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
@@ -509,7 +508,7 @@ function monkeyPatchMediaDevices() {
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
   
   let isCreatedAudioContext = false;
-  let audioContext = new AudioContext({sampleRate: 48000});
+  let audioContext = new AudioContext();
   let mediaStreamSource;
   let mediaStreamDestination;
   const gainNode = audioContext.createGain();
