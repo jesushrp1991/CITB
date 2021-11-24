@@ -9,6 +9,7 @@ let globalState;
 //const MYAUDIODEVICELABEL = "Comunicaciones - Micrófono (Realtek High Definition Audio)"
 const MYAUDIODEVICELABEL = "Micrófono (DroidCam Virtual Audio)"
 
+//Borrar. Solo para la puesta a punto
 const getExtensionGlobalState = () => { 
     chrome.storage.sync.get('extensionGlobalState', (data) => {
       globalState = data.extensionGlobalState;   
@@ -26,29 +27,7 @@ const checkMediaDevice = async () => {
     );
     result.length > 0 ? isCitbMicrophonePlugged = true : isCitbMicrophonePlugged = false
     console.log('isCitbMicrophonePlugged :', isCitbMicrophonePlugged);
-    /*if (firstTime) {        
-        firstTime = false;   
-        console.log('firstTime ');
-      }else {
-        console.log('Not firstTime')
-        getExtensionGlobalState();
-        console.log('globalState ',globalState);
-        if (lastCitbMicStatus !== isCitbMicrophonePlugged) {
-          if (isCitbMicrophonePlugged ){
-            alert(`The CITB microphone has been connected.
-            To start using CITB, click on the extension ON/OFF icon`)
-          }else {
-            if (globalState == 'on') {
-                chrome.storage.sync.set({ extensionGlobalState: "off" })
-                alert(`The CITB microphone has been disconnected.
-                The page will be reloaded to apply changes`);
-                window.location.reload();
-              }else 
-                alert("The CITB microphone has been disconnected")
-          }        
-        }        
-      }
-      lastCitbMicStatus = isCitbMicrophonePlugged; */
+    
       setTimeout(() => {
         checkMediaDevice();
       }, 1000);
