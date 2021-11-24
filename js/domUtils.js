@@ -202,5 +202,8 @@ export {
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
   getButtonShowPopupVideo,
-  getButtonSimplePopup
+  getButtonSimplePopup,
+  showTooltip,
+  classTooltip,
+  presentationTooltip
 };
