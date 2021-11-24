@@ -498,6 +498,7 @@ function monkeyPatchMediaDevices() {
    try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       if(window.isExtentionActive){
+        console.log("EnumerateDevice");
         devices = res;
         window.devices = res;
         let micCITB = devices.filter(
@@ -516,6 +517,7 @@ function monkeyPatchMediaDevices() {
           result.push(micCITB[0]);
         
         let finalResult = [...result,...outputDevices]
+        console.log(finalResult);
         return finalResult;
       }
       return res;
@@ -566,6 +568,7 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
+        console.log("getUserMedia");
         if (args.length && args[0].video && args[0].video.deviceId) {
           if (
             args[0].video.deviceId === "virtual" ||
