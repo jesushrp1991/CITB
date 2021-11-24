@@ -100,12 +100,6 @@ function monkeyPatchMediaDevices() {
   const buttonPresentation = getButtonPresentation();
   const presentationTip = presentationTooltip();
   window.presentationMode = false;
-  buttonPresentation.addEventListener('click', async () => {
-    await fadeInFadeOut();
-    window.presentationMode = !window.presentationMode
-    setButtonBackground(buttonPresentation, window.presentationMode);
-    await fadeInFadeOut();
-  });
 
   window.buttonCam = getButtonCam();
   const buttonClose = getButtonClose();
@@ -200,20 +194,24 @@ function monkeyPatchMediaDevices() {
         classCallBackFunction
       );
      checkingMicrophoneId();
-
-      MediaDevices.ondevicechange = deviceChangeHandler;
-        const deviceChangeHandler = () => {
-        console.log("Device Changed")
-      }
     }
   }; //END ONREADY STATE CHANGE
 
-
+  const presentacionCallBackFunction = async () =>{
+      await fadeInFadeOut();
+      window.presentationMode = !window.presentationMode
+      setButtonBackground(buttonPresentation, window.presentationMode);
+      await fadeInFadeOut();
+  }
+  buttonPresentation.addEventListener('click',presentacionCallBackFunction);
   const camCallBackFunction = async () => {
     try{
       if (!canChangeCameras) {
         alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
         return;
+      }
+      if(window.presentationMode){
+        presentacionCallBackFunction();
       }
       if (window.actualVideoTag.id == "OTHERVideo") {
         await fadeInFadeOut();
