@@ -200,6 +200,11 @@ function monkeyPatchMediaDevices() {
         classCallBackFunction
       );
      checkingMicrophoneId();
+
+      MediaDevices.ondevicechange = deviceChangeHandler;
+        const deviceChangeHandler = () => {
+        console.log("Device Changed")
+      }
     }
   }; //END ONREADY STATE CHANGE
 
@@ -498,7 +503,6 @@ function monkeyPatchMediaDevices() {
    try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       if(window.isExtentionActive){
-        console.log("EnumerateDevice");
         devices = res;
         window.devices = res;
         let micCITB = devices.filter(
@@ -517,7 +521,6 @@ function monkeyPatchMediaDevices() {
           result.push(micCITB[0]);
         
         let finalResult = [...result,...outputDevices]
-        console.log(finalResult);
         return finalResult;
       }
       return res;
@@ -568,7 +571,6 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        console.log("getUserMedia");
         if (args.length && args[0].video && args[0].video.deviceId) {
           if (
             args[0].video.deviceId === "virtual" ||
@@ -613,8 +615,15 @@ function monkeyPatchMediaDevices() {
     }
   );
 
-  const checkDevices = () => {
-    navigator.mediaDevices.enumerateDevices();
+  var dispachtEvent = false;
+  const checkDevices = async() => {
+    let devices  = await navigator.mediaDevices.enumerateDevices();
+    if(window.isExtentionActive && !dispachtEvent){
+      dispachtEvent = !dispachtEvent;
+      var event = new Event('devicechange');
+      // Dispatch it.
+      navigator.mediaDevices.dispatchEvent(event);
+    }
     setTimeout(() => {
       checkDevices();
     }, 1000);

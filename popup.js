@@ -4,7 +4,19 @@ let buttonChooseVideo = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = "off";
-
+ 
+const getOnOffState = () =>{ 
+  chrome.storage.sync.get('extensionGlobalState', (data) =>{ 
+      console.log(data.extensionGlobalState); 
+      globalState = data.extensionGlobalState; 
+      if(globalState == "on"){ 
+          buttonOn.setAttribute('class','buttonOnOff'); 
+      }else{ 
+        buttonOn.setAttribute('class','buttonOnOffDeactivate'); 
+      } 
+  }); 
+} 
+getOnOffState(); 
 
 const alertPopup = () =>{
   document.getElementById("buttonSimplePopup").click(); 
@@ -22,11 +34,11 @@ buttonOn.addEventListener("click", async() =>{
     }
     if(globalState == 'on'){
       globalState = "off";      
-      // chrome.storage.sync.set({ extensionGlobalState: "off" }); 
+      chrome.storage.sync.set({ extensionGlobalState: "off" }); 
       buttonOn.setAttribute('class','buttonOnOffDeactivate');
     }else{
       globalState = "on";
-      // chrome.storage.sync.set({ extensionGlobalState: "on" }); 
+      chrome.storage.sync.set({ extensionGlobalState: "on" }); 
       buttonOn.setAttribute('class','buttonOnOff');
     }   
   });
