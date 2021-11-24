@@ -63,51 +63,92 @@ const fadeInFadeOut = () => {
     
 }
 
-
+function audioTimerLoop(callback, frequency) {
+    var freq = frequency / 1000;      // AudioContext time parameters are in seconds
+    var aCtx = new AudioContext();
+    // Chrome needs our oscillator node to be attached to the destination
+    // So we create a silent Gain Node
+    var silence = aCtx.createGain();
+    silence.gain.value = 0;
+    silence.connect(aCtx.destination);
+  
+    onOSCend();
+  
+    var stopped = false;       // A flag to know when we'll stop the loop
+    function onOSCend() {
+      var osc = aCtx.createOscillator();
+      osc.onended = onOSCend; // so we can loop
+      osc.connect(silence);
+      osc.start(0); // start it now
+      osc.stop(aCtx.currentTime + freq); // stop it next frame
+      callback(aCtx.currentTime); // one frame is done
+      if (stopped) {  // user broke the loop
+        osc.onended = function() {
+          aCtx.close(); // clear the audioContext
+          return;
+        };
+      }
+    };
+    // return a function to stop our loop
+    return function() {
+      stopped = true;
+    };
+  }
+  
 const drawFrameOnVirtualCamera = async () => { 
-    const timeCurrent = performance.now(); 
-    requestAnimationFrame(drawFrameOnVirtualCamera);
-    if (timeCurrent - timeFromLastFrame >= fps) { 
-        if (window.actualVideoTag == undefined) { 
-            timeFromLastFrame = performance.now(); 
-            return; 
-        }
-        const width = window.actualVideoTag.videoWidth; 
-        const height = window.actualVideoTag.videoHeight; 
-        virtualWebCamCanvasVideoContainer.width = width;
-        virtualWebCamCanvasVideoContainer.height = height;
-        const context = virtualWebCamCanvasVideoContainer.getContext('2d');
-        if (window.presentationMode) {
-            context.drawImage(
-                videoCITB
-                , 0
-                , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
-                , (virtualWebCamCanvasVideoContainer.width / 2)
-                , (virtualWebCamCanvasVideoContainer.height / 2)
-            );
+    if (window.actualVideoTag == undefined) { 
+        return; 
+    }
+    const width = window.actualVideoTag.videoWidth; 
+    const height = window.actualVideoTag.videoHeight; 
+    virtualWebCamCanvasVideoContainer.width = width;
+    virtualWebCamCanvasVideoContainer.height = height;
+    const context = virtualWebCamCanvasVideoContainer.getContext('2d');
+    context.clearRect(0,0,virtualWebCamCanvasVideoContainer.width, virtualWebCamCanvasVideoContainer.height);
 
-            context.drawImage(
-                videoOther
-                , virtualWebCamCanvasVideoContainer.width / 2
-                , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
-                , virtualWebCamCanvasVideoContainer.width / 2
-                , virtualWebCamCanvasVideoContainer.height / 2
-            );
-        }else {
-            context.drawImage(
-                window.actualVideoTag
-                , 0
-                , 0
-                , virtualWebCamCanvasVideoContainer.width
-                , virtualWebCamCanvasVideoContainer.height
-            );
-        }
-       
-        context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`;
-        context.fillRect(0,0, width, height);
-        timeFromLastFrame = performance.now(); 
-    } 
+    if (window.presentationMode) {
+        context.drawImage(
+            videoCITB
+            , 0
+            , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+            , (virtualWebCamCanvasVideoContainer.width / 2)
+            , (virtualWebCamCanvasVideoContainer.height / 2)
+        );
+
+        context.drawImage(
+            videoOther
+            , virtualWebCamCanvasVideoContainer.width / 2
+            , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+            , virtualWebCamCanvasVideoContainer.width / 2
+            , virtualWebCamCanvasVideoContainer.height / 2
+        );
+    }else {
+        context.drawImage(
+            window.actualVideoTag
+            , 0
+            , 0
+            , virtualWebCamCanvasVideoContainer.width
+            , virtualWebCamCanvasVideoContainer.height
+        );
+    }
+
+    context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`;
+    context.fillRect(0,0, width, height);
 }
+
+
+// if the ok button is clicked, result will be true (boolean)
+setTimeout(function() {
+    var result = confirm( "Do you want to use CITB virtual camera?" );
+
+    if ( result ) {
+        // the user clicked ok
+        audioTimerLoop(drawFrameOnVirtualCamera, 1000/30)
+    
+    } else {
+        // the user clicked cancel or closed the confirm dialog.
+    }
+}, 5000)
 
 
 const buildVideoContainersAndCanvas = async () => {
