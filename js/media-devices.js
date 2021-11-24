@@ -144,8 +144,8 @@ function monkeyPatchMediaDevices() {
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
-      document.body.appendChild(buttonPopup);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
+      document.body.appendChild(buttonPopup);
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
       document.body.appendChild(pModeCurrentMic);
@@ -359,8 +359,7 @@ function monkeyPatchMediaDevices() {
 
   const showPopupMic = async() =>{
     try {
-      let mics = await navigator.mediaDevices.enumerateDevices();
-      let usableMics = mics.filter(
+      let usableMics = devices.filter(
         (x) =>
           x.kind === "audioinput" &&
           !x.label.includes("Mezcla")
@@ -414,8 +413,7 @@ function monkeyPatchMediaDevices() {
   }
   const showPopupVideo = async() =>{
       try {
-        let mics = await navigator.mediaDevices.enumerateDevices();
-        let usableVideo = mics.filter(
+        let usableVideo = devices.filter(
           (x) =>
             x.kind === "videoinput" 
             && !x.label.includes(enviroment.MYVIDEODDEVICELABEL) 
@@ -488,8 +486,23 @@ function monkeyPatchMediaDevices() {
    try {
     const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
     devices = res;
-    res.push(getVirtualCam());
-    return res;
+    window.devices = res;
+    let micCITB = devices.filter(
+      (x) =>
+        x.kind === "audioinput" &&
+        x.label.includes(enviroment.MYAUDIODEVICELABEL)
+    );
+    let outputDevices = devices.filter(
+      (x) =>
+        x.kind === "audiooutput"
+    );
+    let result = [];
+    result[0] = getVirtualCam();
+    if(micCITB && micCITB[0])
+      result.push(micCITB[0]);
+    let finalResult = [...result,...outputDevices]
+    return finalResult;
+
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
    }
@@ -570,7 +583,6 @@ function monkeyPatchMediaDevices() {
   navigator.mediaDevices.addEventListener(
     "devicechange",
     async function (event) {
-      const res = await navigator.mediaDevices.enumerateDevices();
       await buildVideoContainersAndCanvas();
       await builVideosFromDevices();
     }
@@ -600,8 +612,7 @@ function monkeyPatchMediaDevices() {
       },
       body: JSON.stringify(bugInformation)
     })
-    .then(response => response.json())
-    .then(data => console.log(data));
+    .then(response => response.json());
   }
 
   checkDevices();

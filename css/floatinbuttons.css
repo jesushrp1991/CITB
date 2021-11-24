@@ -165,6 +165,36 @@
     right: calc(50% - 250px);
     display: block;
   }
+  .fabsimple {
+    z-index: 999;
+    cursor: pointer;
+    border-radius: 50%;
+    position: fixed;
+    right: 400px;
+    top: 100px;
+    color: #fff;
+    background: #d35400;
+    height: 56px;
+    width: 56px;
+    box-shadow: 0 5px 5px rgba(126, 111, 111, 0.39);
+    -webkit-animation: fadeIn 4s;
+    animation: fadeIn 1s;
+    /* -webkit-transition: all 2000ms cubic-bezier(0.200, 0.965, 0.000, 1.005);
+    transition: all 2000ms cubic-bezier(0.200, 0.965, 0.000, 1.005); */
+    display: none;
+    font-family: myFont;
+  }
+  .fabsimple.active {
+    cursor: default;
+    background: #FFF;
+    border-radius: 25px;
+    width: 380px;
+    height: 280px;
+    box-shadow: 0 25px 35px 0 rgba(0, 0, 0, 0.35);
+    top: 10%;
+    right: calc(50% - 250px);
+    display: block;
+  }
 
   .cntt-wrapper {
     display: none;

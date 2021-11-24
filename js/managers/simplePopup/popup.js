@@ -1,169 +1,136 @@
 import { enviroment } from "../../enviroment.js";
-const divOverlayVideo = () =>{
+const divOverlayPopup= () =>{
     const overlayDiv = document.createElement("div");
     overlayDiv.setAttribute("id", "overlay");
     return overlayDiv;
 }
 
-const divFabVideo = () => {
+const divFabPopup= () => {
     const favDiv = document.createElement("div");
-    favDiv.setAttribute("id", "fabVideo");
-    favDiv.setAttribute("class", "fab");
+    favDiv.setAttribute("id", "fab");
+    favDiv.setAttribute("class", "fabsimple");
     return favDiv;
 };
 
-const formWrapperVideo = () => {
+const formWrapperPopup= () => {
     const form = document.createElement("form");
     form.setAttribute("class", "cntt-wrapper");
     return form;
 };
 
-const divHeaderVideo = () => {
+const divHeaderPopup= () => {
     const divHeader = document.createElement("div");
     divHeader.setAttribute("id", "fab-hdr-video");
     // divHeader.appendChild(buttonCloseVideo());
     return divHeader;
 };
-const headerCloseVideo = () => {
+const headerClosePopup= () => {
     const headerClose = document.createElement("span");
     headerClose.setAttribute("class", "close-button topright");
     headerClose.innerText = "x";
     return headerClose;
 };
 
-const hHeaderVideo = () => {
+const hHeaderPopup= () => {
     const h3Header = document.createElement("h3");
-    h3Header.textContent = enviroment.textHeaderSelectVideo;
+    h3Header.textContent = "Alert!";
     return h3Header;
 };
 
-const buttonCloseVideo = () => {
-    const button = document.createElement("button");
-    button.setAttribute("id", "fab-hdr-video-button");
-    button.textContent = "X";
-    return button;
-}
-
-const divContentVideo = () => {
+const divContentPopup= () => {
     const contentDiv = document.createElement("div");
     contentDiv.setAttribute("class", "cntt");
     return contentDiv;
 };
 
-const classIconVideo = () => {
+const classIconPopup= () => {
     const classIcon = document.createElement("button");
     classIcon.setAttribute("id", "classModalIcon");
     classIcon.setAttribute("class", "CITBCamButton active");
     return classIcon;
 };
 
-const divTextFieldsVideo = () => {
+const divTextFieldsPopup= () => {
     const textFieldsDiv = document.createElement("div");
     textFieldsDiv.setAttribute("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label textFields");
     return textFieldsDiv;
 };
 
-const selectMicVideo = () => {
-    const select_Mic = document.createElement("select");
-    select_Mic.setAttribute("id", "text1");
-    select_Mic.setAttribute("class", "mdl-textfield__input");
-    select_Mic.setAttribute("type", "text");
-    return select_Mic;
-};
-
-const labelTextVideo = () => {
-    const textLabel = document.createElement("label");
+const labelTextPopup= () => {
+    const textLabel = document.createElement("p");
     textLabel.setAttribute("for", "text1");
     textLabel.setAttribute("class", "mdl-selectfield__label");
+    textLabel.innerText = enviroment.messageRestartConference
     return textLabel;
 };
 
-const divButtonVideo = () => {
+const divButtonPopup= () => {
     const buttonDiv = document.createElement("div");
     buttonDiv.setAttribute("class", "btn-wrapper");
     return buttonDiv;
 };
 
-const buttonSelectVideo = () => {
+const buttonSelectPopup= () => {
     const buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submitVideo");
     buttonDiv.setAttribute("class", "mdl-button mdl-js-button mdl-button--primary");
-    buttonDiv.innerText = "Seleccionar";
+    buttonDiv.innerText = "Restart";
     return buttonDiv;
 };
 
-const addOptionsToSelectVideo = (select,usableMics) =>{
-    while (select.options.length > 0) {                
-        select.remove(0);
-    }  
-    usableMics.forEach(element => {
-        var option = document.createElement("option");
-        option.setAttribute('class','mdl-menu__item');
-        option.text = element.label;
-        option.value = element.deviceId;
-        select.add(option);
-
-    });
-}
-
-
-const createPopupVideo = (
+const createPopupPopup= (
     divOverlay,
     divFab,
     formWrapper,
     divHeader,
-    headerCloseVideo,
+    headerClosePopup,
     hHeader,
     divContent,
     classIcon,
     divTextFields,
-    select_Mic,
+    label_TextPopup,
     divButton,
-    labelCheckBox,
     buttonSelect,
-    br,
-    usableMics
+    br
   ) => {
-    addOptionsToSelectVideo(select_Mic,usableMics);
     divFab.appendChild(formWrapper);
     formWrapper.appendChild(divHeader);
-    divHeader.appendChild(headerCloseVideo);
+    divHeader.appendChild(headerClosePopup);
     divHeader.appendChild(hHeader);
     formWrapper.appendChild(divContent);
-    divContent.appendChild(classIcon);
+    // divContent.appendChild(classIcon);
     divContent.appendChild(divTextFields);
-    divTextFields.appendChild(select_Mic);
     divTextFields.appendChild(br);
-    divTextFields.appendChild(labelCheckBox);
+    divTextFields.appendChild(label_TextPopup);
     divContent.appendChild(divButton);
     divButton.appendChild(buttonSelect);
-    divFab.setAttribute('class', 'fab active');
+    divFab.setAttribute('class', 'fabsimple active');
     divOverlay.setAttribute('class','dark-overlay');
     document.body.appendChild(divOverlay);
     document.body.appendChild(divFab);
 
 };
 
-const setButtonCallBackVideo = (buttonSelect,functionCallBack)=>{
+const setButtonCallBackSimplePopup= (buttonSelect,headerClosePopup,functionCallBack)=>{
     buttonSelect.addEventListener('click',functionCallBack);
+    headerClosePopup.addEventListener('click',functionCallBack);
 }
 
 
 export {
-    divOverlayVideo,
-    divFabVideo,
-    formWrapperVideo,
-    divHeaderVideo,
-    headerCloseVideo,
-    hHeaderVideo,
-    divContentVideo,
-    classIconVideo,
-    divTextFieldsVideo,
-    selectMicVideo,
-    labelTextVideo,
-    divButtonVideo,
-    buttonCloseVideo,
-    buttonSelectVideo,
-    createPopupVideo,
-    setButtonCallBackVideo
+    divOverlayPopup,
+    divFabPopup,
+    formWrapperPopup,
+    divHeaderPopup,
+    headerClosePopup,
+    hHeaderPopup,
+    divContentPopup,
+    classIconPopup,
+    divTextFieldsPopup,
+    // selectMicPopup,
+    labelTextPopup,
+    divButtonPopup,
+    buttonSelectPopup,
+    createPopupPopup,
+    setButtonCallBackSimplePopup
 }
