@@ -181,6 +181,7 @@ const getButtonSimplePopup = () => {
   return buttonPopup;
 };
 
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,

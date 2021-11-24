@@ -2,13 +2,13 @@
 
 chrome.storage.sync.get('extensionGlobalState', (data) =>{
     
-    const scriptpopup = document.createElement('script');
-    scriptpopup.setAttribute("type", "module");
-    scriptpopup.setAttribute("src", chrome.runtime.getURL('js/alertPopup.js'));
-    const headpopup = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-    headpopup.insertBefore(scriptpopup, headpopup.firstChild);
+    // const scriptpopup = document.createElement('script');
+    // scriptpopup.setAttribute("type", "module");
+    // scriptpopup.setAttribute("src", chrome.runtime.getURL('js/alertPopup.js'));
+    // const headpopup = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+    // headpopup.insertBefore(scriptpopup, headpopup.firstChild);
 
-    if(data.extensionGlobalState == "on"){
+    // if(data.extensionGlobalState == "on"){
         if (window.location.host === 'meet.google.com' || window.location.host.includes('zoom.us') || window.location.host == 'teams.microsoft.com' || window.location.host == 'teams.live.com') {
     
             // const help = document.createElement('script');
@@ -29,5 +29,5 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
             const annyangScriptHead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             head.insertBefore(annyangScript, annyangScriptHead.firstChild);
         }
-    }
+    // }
 });

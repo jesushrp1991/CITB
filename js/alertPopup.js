@@ -1,3 +1,6 @@
+// import{
+//   audioTimerLoop
+// } from "./managers/videoManager/webcam.js"
 import {
   divOverlayPopup,
   divFabPopup,
@@ -59,12 +62,11 @@ const modalChangeGlobalState = () => {
     //   logErrors(error, "showSimplePopup ln 458");
     }
   };
-  const simplePopup = () => {
+  const simplePopup = (event) => {
+    // event.preventDefault();
     div_FabPopup.setAttribute("class", "fabsimple");
     div_OverlayPopup.removeAttribute("class");
-    // history.go(0);
-    // window.location.reload();
-    // console.log("pass location reload")
+    // audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
   };
   buttonSimplePopup.addEventListener("click", showSimplePopup);
   window.simpleButtonPopup = buttonSimplePopup;

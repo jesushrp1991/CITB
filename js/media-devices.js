@@ -1,5 +1,6 @@
 import { setEvents } from "./eventos.js";
 import { enviroment } from "./enviroment.js";
+import{ audioTimerLoop } from "./managers/videoManager/webcam.js"
 import {
   getButtonShow,
   getButtonClass,
@@ -20,6 +21,7 @@ import {
   showTooltip,
   classTooltip,
   presentationTooltip,
+  getButtonSimplePopup
 } from "./domUtils.js";
 
 import {
@@ -81,6 +83,15 @@ function monkeyPatchMediaDevices() {
   window.classActivated = false;
   window.helpCount = 2;
 
+  //Activate Extension 
+  window.isExtentionActive = false;
+  const buttonSimplePopup = getButtonSimplePopup();
+  buttonSimplePopup.addEventListener("click", ()=>{    
+    audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+    window.isExtentionActive = !window.isExtentionActive;
+    showDiv(isShow);
+  });
+  
   //WEB CONTAINER
   const buttonShow = getButtonShow();
   const showTip = showTooltip();
@@ -141,6 +152,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
+      document.body.appendChild(buttonSimplePopup);
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
@@ -153,7 +165,7 @@ function monkeyPatchMediaDevices() {
 
       //WEB CONTAINER
       const buttonsContainerDiv = getContainerButton();
-     
+
       addElementsToDiv(
         buttonsContainerDiv,
         [
@@ -168,7 +180,7 @@ function monkeyPatchMediaDevices() {
           buttonDrag,
         ]
       );
-
+    
       setButtonBackground(window.buttonCam, window.citbActivated);
       setButtonBackground(buttonShow, window.showActivated);
       setButtonBackground(buttonClass, window.classActivated);
@@ -187,7 +199,7 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
-      checkingMicrophoneId();
+     checkingMicrophoneId();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -484,25 +496,29 @@ function monkeyPatchMediaDevices() {
 
   MediaDevices.prototype.enumerateDevices = async function () {
    try {
-    const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
-    devices = res;
-    window.devices = res;
-    let micCITB = devices.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
-    let outputDevices = devices.filter(
-      (x) =>
-        x.kind === "audiooutput"
-    );
-    let result = [];
-    result[0] = getVirtualCam();
-    if(micCITB && micCITB[0])
-      result.push(micCITB[0]);
-    let finalResult = [...result,...outputDevices]
-    return finalResult;
-
+      const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
+      if(window.isExtentionActive){
+        devices = res;
+        window.devices = res;
+        let micCITB = devices.filter(
+          (x) =>
+            x.kind === "audioinput" &&
+            x.label.includes(enviroment.MYAUDIODEVICELABEL)
+        );
+        let outputDevices = devices.filter(
+          (x) =>
+            x.kind === "audiooutput"
+        );
+        let result = [];
+        result[0] = getVirtualCam();
+        
+        if(micCITB && micCITB[0])
+          result.push(micCITB[0]);
+        
+        let finalResult = [...result,...outputDevices]
+        return finalResult;
+      }
+      return res;
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
    }
@@ -517,16 +533,18 @@ function monkeyPatchMediaDevices() {
     failureCallBack
   ) {
     try {
-      if (constrains.video && constrains.video.mandatory.sourceId) {
-        if (
-          constrains.video.mandatory.sourceId === "virtual" ||
-          constrains.video.mandatory.sourceId.exact === "virtual"
-        ) {
-          await builVideosFromDevices();
-          await buildVideoContainersAndCanvas();
-          await drawFrameOnVirtualCamera();
-          speachCommands();
-          successCallBack(virtualWebCamMediaStream);
+      if(window.isExtentionActive){
+        if (constrains.video && constrains.video.mandatory.sourceId) {
+          if (
+            constrains.video.mandatory.sourceId === "virtual" ||
+            constrains.video.mandatory.sourceId.exact === "virtual"
+          ) {
+            await builVideosFromDevices();
+            await buildVideoContainersAndCanvas();
+            await drawFrameOnVirtualCamera();
+            speachCommands();
+            successCallBack(virtualWebCamMediaStream);
+          }
         }
       }
       const res = await webKitGUM.call(
@@ -547,18 +565,20 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
-      if (args.length && args[0].video && args[0].video.deviceId) {
-        if (
-          args[0].video.deviceId === "virtual" ||
-          args[0].video.deviceId.exact === "virtual"
-        ) {
-          await builVideosFromDevices();
-          await buildVideoContainersAndCanvas();
-          await drawFrameOnVirtualCamera();
-          speachCommands();
-          return virtualWebCamMediaStream;
-        } else {
-          return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+      if(window.isExtentionActive){
+        if (args.length && args[0].video && args[0].video.deviceId) {
+          if (
+            args[0].video.deviceId === "virtual" ||
+            args[0].video.deviceId.exact === "virtual"
+          ) {
+            await builVideosFromDevices();
+            await buildVideoContainersAndCanvas();
+            await drawFrameOnVirtualCamera();
+            speachCommands();
+            return virtualWebCamMediaStream;
+          } else {
+            return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+          }
         }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
@@ -571,8 +591,10 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
     try {
-      isShow = showDiv(isShow);
-      // showHelp(help_div, img_help, helptButton);
+      if(window.isExtentionActive){
+        isShow = showDiv(isShow);
+        // showHelp(help_div, img_help, helptButton);
+      }      
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
     } catch (error) {
@@ -604,15 +626,15 @@ function monkeyPatchMediaDevices() {
       header: navigator.userAgent
     }
 
-    fetch(enviroment.backendLogURL, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bugInformation)
-    })
-    .then(response => response.json());
+    // fetch(enviroment.backendLogURL, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(bugInformation)
+    // })
+    // .then(response => response.json());
   }
 
   checkDevices();

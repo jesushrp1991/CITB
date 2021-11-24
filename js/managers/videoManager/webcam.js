@@ -64,6 +64,7 @@ const fadeInFadeOut = () => {
 }
 
 function audioTimerLoop(callback, frequency) {
+    console.log("click audioTimerLoop");
     var freq = frequency / 1000;      // AudioContext time parameters are in seconds
     var aCtx = new AudioContext();
     // Chrome needs our oscillator node to be attached to the destination
@@ -135,20 +136,6 @@ const drawFrameOnVirtualCamera = async () => {
     context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`;
     context.fillRect(0,0, width, height);
 }
-
-
-// if the ok button is clicked, result will be true (boolean)
-setTimeout(function() {
-    var result = confirm( "Do you want to use CITB virtual camera?" );
-
-    if ( result ) {
-        // the user clicked ok
-        audioTimerLoop(drawFrameOnVirtualCamera, 1000/30)
-    
-    } else {
-        // the user clicked cancel or closed the confirm dialog.
-    }
-}, 5000)
 
 
 const buildVideoContainersAndCanvas = async () => {
@@ -233,4 +220,5 @@ export {
     , videoOther
     , canChangeCameras
     , fadeInFadeOut
+    , audioTimerLoop
 }
