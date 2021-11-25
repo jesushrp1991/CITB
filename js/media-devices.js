@@ -204,6 +204,7 @@ function monkeyPatchMediaDevices() {
         classCallBackFunction
       );
      checkingMicrophoneId();
+     speachCommands();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -564,7 +565,6 @@ function monkeyPatchMediaDevices() {
             await builVideosFromDevices();
             await buildVideoContainersAndCanvas();
             await drawFrameOnVirtualCamera();
-            speachCommands();
             successCallBack(virtualWebCamMediaStream);
           }
         }
@@ -694,7 +694,7 @@ function monkeyPatchMediaDevices() {
           },100);
         
   }
-  
+
   const checkDevices = async() => {
     await navigator.mediaDevices.enumerateDevices();
 
