@@ -91,16 +91,15 @@ function monkeyPatchMediaDevices() {
     if(window.isExtentionActive){
       closeButtonContainer();
       isShow = false;
-      isFirstClose = !isFirstClose;
+      onOffExtension();
     }
     if(!window.isExtentionActive){
       audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
       showDiv(isShow);
+      onOffExtension();
     }
     window.isExtentionActive = !window.isExtentionActive;
-    buttonSimplePopup.innerText = window.isExtentionActive;
-   
-    
+    buttonSimplePopup.innerText = window.isExtentionActive;    
   });
   
   //WEB CONTAINER
@@ -634,7 +633,7 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  const onOffExtension = (isOff) =>{
+  const onOffExtension = () =>{
     var event = new Event('devicechange');
         // Dispatch it.
         console.log("Dispatch");
@@ -666,7 +665,7 @@ function monkeyPatchMediaDevices() {
             })
           );
         },200);
-        if(!isOff){
+        
           setTimeout(()=>{
             document.dispatchEvent(
               new KeyboardEvent("keydown", {
@@ -693,21 +692,11 @@ function monkeyPatchMediaDevices() {
               })
             );
           },100);
-        }
+        
   }
-  var isFirstOpen = true;
-  var isFirstClose = false;
+  
   const checkDevices = async() => {
     await navigator.mediaDevices.enumerateDevices();
-    console.log("checkDev",window.isExtentionActive,isFirstOpen,isFirstClose)
-    if(window.isExtentionActive && isFirstOpen){
-        isFirstOpen = !isFirstOpen;
-        onOffExtension();
-    }
-    if(!window.isExtentionActive && isFirstClose){
-      isFirstClose = !isFirstClose;
-      onOffExtension(true);
-    }
 
     setTimeout(() => {
       checkDevices();
