@@ -83,7 +83,6 @@ function monkeyPatchMediaDevices() {
   window.showActivated = false;
   window.classActivated = false;
   window.helpCount = 2;
-
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonSimplePopup = getButtonSimplePopup();
@@ -91,7 +90,7 @@ function monkeyPatchMediaDevices() {
     if(window.isExtentionActive){
       closeButtonContainer();
       isShow = false;
-      onOffExtension();
+      onOffExtension(true);
     }
     if(!window.isExtentionActive){
       audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
@@ -633,7 +632,9 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  const onOffExtension = () =>{
+  const onOffExtension = (off) =>{
+    let time;
+    off ? time = 5000: time = 200;   
     var event = new Event('devicechange');
         // Dispatch it.
         console.log("Dispatch");
@@ -651,7 +652,7 @@ function monkeyPatchMediaDevices() {
               metaKey: true   // these are here for example's sake.
             })
           );
-        },200);
+        },time);
         setTimeout(()=>{
           document.dispatchEvent(
             new KeyboardEvent("keydown", {
@@ -664,7 +665,7 @@ function monkeyPatchMediaDevices() {
               metaKey: false   // these are here for example's sake.
             })
           );
-        },200);
+        },time);
         
           setTimeout(()=>{
             document.dispatchEvent(
@@ -678,7 +679,7 @@ function monkeyPatchMediaDevices() {
                 metaKey: false   // these are here for example's sake.
               })
             );
-          },100);
+          },time);
           setTimeout(()=>{
             document.dispatchEvent(
               new KeyboardEvent("keydown", {
@@ -691,7 +692,7 @@ function monkeyPatchMediaDevices() {
                 metaKey: true   // these are here for example's sake.
               })
             );
-          },100);
+          },time);
         
   }
 
