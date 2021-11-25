@@ -6,6 +6,7 @@ const enviroment = {
 
     //**** */ COLLADO *****//
     EXTENSIONID: "pgloinlccpmhpgbnccfecikdjgdhneof",
+    // MYVIDEODDEVICELABEL: ["Sirius USB2.0 Camera (0ac8:3340)","DroidCam Source 2"],
     MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340)",
     MYAUDIODEVICELABEL: 'Comunicaciones - Micrófono (Dispositivo de High Definition Audio)',
     // MYAUDIODEVICELABEL: 'Redmi',

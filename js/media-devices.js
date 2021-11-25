@@ -637,37 +637,54 @@ function monkeyPatchMediaDevices() {
           document.dispatchEvent(
             new KeyboardEvent("keydown", {
               key: "d",
-              keyCode: 69, // example values.
+              // keyCode: 69, // example values.
               code: "KeyD", // put everything you need in this object.
-              which: 69,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: true,  // if you aren't going to use them.
-              metaKey: false   // these are here for example's sake.
-            })
-          );
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "e",
-              keyCode: 69, // example values.
-              code: "KeyE", // put everything you need in this object.
-              which: 69,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: true,  // if you aren't going to use them.
-              metaKey: false   // these are here for example's sake.
-            })
-          );
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "Meta",
-              keyCode: 69, // example values.
-              code: "MetaLeft", // put everything you need in this object.
-              which: 69,
+              // which: 69,
               shiftKey: false, // you don't need to include values
               ctrlKey: true,  // if you aren't going to use them.
               metaKey: false   // these are here for example's sake.
             })
           );
         },8000);
+        setTimeout(()=>{
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "e",
+              // keyCode: 70, // example values.
+              code: "KeyE", // put everything you need in this object.
+              // which: 70,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: true,  // if you aren't going to use them.
+              metaKey: false   // these are here for example's sake.
+            })
+          );
+        },9000);
+        setTimeout(()=>{
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "d",
+              // keyCode: 69, // example values.
+              code: "KeyD", // put everything you need in this object.
+              // which: 69,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: false,  // if you aren't going to use them.
+              metaKey: true   // these are here for example's sake.
+            })
+          );
+        },8000);
+        setTimeout(()=>{
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "e",
+              // keyCode: 70, // example values.
+              code: "KeyE", // put everything you need in this object.
+              // which: 70,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: false,  // if you aren't going to use them.
+              metaKey: true   // these are here for example's sake.
+            })
+          );
+        },9000);
           
     }
     setTimeout(() => {
