@@ -222,7 +222,8 @@ function monkeyPatchMediaDevices() {
         return;
       }
       if(window.presentationMode){
-        presentacionCallBackFunction();
+        window.presentationMode = !window.presentationMode 
+        setButtonBackground(buttonPresentation, window.presentationMode); 
       }
       if (window.actualVideoTag.id == "OTHERVideo") {
         await fadeInFadeOut();
