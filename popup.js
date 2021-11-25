@@ -3,17 +3,31 @@ let buttonOn = document.getElementById('button1');
 let buttonChooseVideo = document.getElementById('button3');
 let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
-let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = "off";
+let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = false;
  
-const getOnOffState = () =>{ 
-  chrome.storage.sync.get('extensionGlobalState', (data) =>{ 
-      console.log(data.extensionGlobalState); 
-      globalState = data.extensionGlobalState; 
-      if(globalState == "on"){ 
-          buttonOn.setAttribute('class','buttonOnOff'); 
-      }else{ 
-        buttonOn.setAttribute('class','buttonOnOffDeactivate'); 
-      } 
+const getExtensionState = () =>{
+  let isOpen = document.getElementById('buttonSimplePopup').innerText.toString();  
+  return isOpen;
+}
+const getOnOffState = async() =>{ 
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+    let url = tabs[0].url;
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: getExtensionState
+      },(injectionResults) => {
+        injectionResults[0].result == "true" ?
+                    globalState = true
+                    : globalState = false;
+        if(globalState){ 
+            buttonOn.setAttribute('class','buttonOnOff'); 
+        }else{ 
+          buttonOn.setAttribute('class','buttonOnOffDeactivate'); 
+        } 
+      });      
+    }
   }); 
 } 
 getOnOffState(); 

@@ -90,6 +90,7 @@ function monkeyPatchMediaDevices() {
     audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
     window.isExtentionActive = !window.isExtentionActive;
     showDiv(isShow);
+    buttonSimplePopup.innerText = window.isExtentionActive;
   });
   
   //WEB CONTAINER
