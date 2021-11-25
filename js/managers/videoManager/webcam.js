@@ -64,7 +64,6 @@ const fadeInFadeOut = () => {
 }
 
 function audioTimerLoop(callback, frequency) {
-    console.log("click audioTimerLoop");
     var freq = frequency / 1000;      // AudioContext time parameters are in seconds
     var aCtx = new AudioContext();
     // Chrome needs our oscillator node to be attached to the destination
@@ -194,11 +193,18 @@ const getFinalVideoSources = async (devices,videoDeviceId) => {
     const sources = devices;
     const videoSources = sources.filter(s => s.kind == "videoinput");
     const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+    // var CITBVideo;
+    // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
+    //     CITBVideo = CITBVideo.filter((device)=> device.label == element);
+    //   });
     let OTHERVIDEO;
     if(videoDeviceId != undefined || videoDeviceId != null){
         OTHERVIDEO = videoSources.filter(s => s.deviceId.includes(videoDeviceId));
     }else{
         OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+        // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
+        //     OTHERVIDEO = videoSources.filter((device)=> device.label != element);
+        //   });
     }
     let returnValue = {citbVideo: null, otherVideo: null}
     if (CITBVideo.length > 0){

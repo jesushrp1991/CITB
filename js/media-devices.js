@@ -86,11 +86,12 @@ function monkeyPatchMediaDevices() {
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonSimplePopup = getButtonSimplePopup();
-  buttonSimplePopup.addEventListener("click", ()=>{    
-    audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+  buttonSimplePopup.addEventListener("click", async ()=>{  
     window.isExtentionActive = !window.isExtentionActive;
-    showDiv(isShow);
     buttonSimplePopup.innerText = window.isExtentionActive;
+    audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+    showDiv(isShow);
+    
   });
   
   //WEB CONTAINER
@@ -436,6 +437,9 @@ function monkeyPatchMediaDevices() {
             && !x.label.includes("Virtual Class In The Box") 
 
           );
+        // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
+        //   usableVideo = usableVideo.filter((device)=> device.label != element);
+        // });
         usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
         createPopupVideo(
           div_OverlayVideo,
@@ -501,13 +505,15 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.enumerateDevices = async function () {
    try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
-      if(window.isExtentionActive){
-        devices = res;
-        window.devices = res;
+      devices = res;
+      window.devices = res;
+      if(window.isExtentionActive){ 
+        console.log("Dispatch enumerateDevices")
+
         let micCITB = devices.filter(
           (x) =>
-            x.kind === "audioinput" &&
-            x.label.includes(enviroment.MYAUDIODEVICELABEL)
+            x.kind === "audioinput" 
+            // && x.label.includes(enviroment.MYAUDIODEVICELABEL)
         );
         let outputDevices = devices.filter(
           (x) =>
@@ -538,6 +544,8 @@ function monkeyPatchMediaDevices() {
   ) {
     try {
       if(window.isExtentionActive){
+        console.log("Dispatch webKitgetUserMedia")
+
         if (constrains.video && constrains.video.mandatory.sourceId) {
           if (
             constrains.video.mandatory.sourceId === "virtual" ||
@@ -570,6 +578,7 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
+        console.log("Dispatch getUserMedia")
         if (args.length && args[0].video && args[0].video.deviceId) {
           if (
             args[0].video.deviceId === "virtual" ||
@@ -595,10 +604,10 @@ function monkeyPatchMediaDevices() {
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
     try {
-      if(window.isExtentionActive){
-        isShow = showDiv(isShow);
+      // if(window.isExtentionActive){
+        //isShow = showDiv(isShow);
         // showHelp(help_div, img_help, helptButton);
-      }      
+      // }      
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
     } catch (error) {
@@ -616,12 +625,50 @@ function monkeyPatchMediaDevices() {
 
   var dispachtEvent = false;
   const checkDevices = async() => {
-    let devices  = await navigator.mediaDevices.enumerateDevices();
+    await navigator.mediaDevices.enumerateDevices();
     if(window.isExtentionActive && !dispachtEvent){
-      dispachtEvent = !dispachtEvent;
-      var event = new Event('devicechange');
-      // Dispatch it.
-      navigator.mediaDevices.dispatchEvent(event);
+        dispachtEvent = !dispachtEvent;
+        var event = new Event('devicechange');
+        // Dispatch it.
+        console.log("Dispatch");
+        navigator.mediaDevices.dispatchEvent(event);
+
+        setTimeout(()=>{
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "d",
+              keyCode: 69, // example values.
+              code: "KeyD", // put everything you need in this object.
+              which: 69,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: true,  // if you aren't going to use them.
+              metaKey: false   // these are here for example's sake.
+            })
+          );
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "e",
+              keyCode: 69, // example values.
+              code: "KeyE", // put everything you need in this object.
+              which: 69,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: true,  // if you aren't going to use them.
+              metaKey: false   // these are here for example's sake.
+            })
+          );
+          document.dispatchEvent(
+            new KeyboardEvent("keydown", {
+              key: "Meta",
+              keyCode: 69, // example values.
+              code: "MetaLeft", // put everything you need in this object.
+              which: 69,
+              shiftKey: false, // you don't need to include values
+              ctrlKey: true,  // if you aren't going to use them.
+              metaKey: false   // these are here for example's sake.
+            })
+          );
+        },8000);
+          
     }
     setTimeout(() => {
       checkDevices();
