@@ -495,13 +495,16 @@ function monkeyPatchMediaDevices() {
             currentAudioMediaStream.getAudioTracks().length > 0
           ) {
             const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            const senders = window.localPeerConection.getSenders();
-            const sendersWithTracks = senders.filter((s) => s.track != null);
-            sendersWithTracks
-              .filter((x) => x.track.kind === "audio")
-              .forEach((mysender) => {
-                mysender.replaceTrack(micAudioTrack);
-              });
+            // const senders = window.localPeerConection.getSenders();
+            // const sendersWithTracks = senders.filter((s) => s.track != null);
+            // sendersWithTracks
+            //   .filter((x) => x.track.kind === "audio")
+            //   .forEach((mysender) => {
+            //     mysender.replaceTrack(micAudioTrack);
+            //   });
+            trackProcessor = new MediaStreamTrackProccesor({micAudioTrack});
+            trackGenerator = new MediaStreamTrackGenerator({kind: 'audio'});
+            await trackProcessor.redeable.pipeTo(trackGenerator.writeable);
           }
       }
     } catch (error) {
