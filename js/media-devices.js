@@ -641,16 +641,16 @@ function monkeyPatchMediaDevices() {
         setTimeout(()=>{
           document.dispatchEvent(
             new KeyboardEvent("keydown", {
-              key: "d",
-              // keyCode: 69, // example values.
-              code: "KeyD", // put everything you need in this object.
-              // which: 69,
+              key: "e",
+              // keyCode: 70, // example values.
+              code: "KeyE", // put everything you need in this object.
+              // which: 70,
               shiftKey: false, // you don't need to include values
-              ctrlKey: true,  // if you aren't going to use them.
-              metaKey: false   // these are here for example's sake.
+              ctrlKey: false,  // if you aren't going to use them.
+              metaKey: true   // these are here for example's sake.
             })
           );
-        },8000);
+        },9000);
         setTimeout(()=>{
           document.dispatchEvent(
             new KeyboardEvent("keydown", {
@@ -664,7 +664,20 @@ function monkeyPatchMediaDevices() {
             })
           );
         },9000);
-        if(isOff){
+        if(!isOff){
+          setTimeout(()=>{
+            document.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: "d",
+                // keyCode: 69, // example values.
+                code: "KeyD", // put everything you need in this object.
+                // which: 69,
+                shiftKey: false, // you don't need to include values
+                ctrlKey: true,  // if you aren't going to use them.
+                metaKey: false   // these are here for example's sake.
+              })
+            );
+          },8000);
           setTimeout(()=>{
             document.dispatchEvent(
               new KeyboardEvent("keydown", {
@@ -678,19 +691,6 @@ function monkeyPatchMediaDevices() {
               })
             );
           },8000);
-          setTimeout(()=>{
-            document.dispatchEvent(
-              new KeyboardEvent("keydown", {
-                key: "e",
-                // keyCode: 70, // example values.
-                code: "KeyE", // put everything you need in this object.
-                // which: 70,
-                shiftKey: false, // you don't need to include values
-                ctrlKey: false,  // if you aren't going to use them.
-                metaKey: true   // these are here for example's sake.
-              })
-            );
-          },9000);
         }
   }
   var isFirstOpen = true;
