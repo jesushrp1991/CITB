@@ -537,6 +537,7 @@ function monkeyPatchMediaDevices() {
         let finalResult = [...result,...outputDevices]
         return finalResult;
       }
+      res.push(getVirtualCam());
       return res;
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
@@ -650,7 +651,7 @@ function monkeyPatchMediaDevices() {
               metaKey: true   // these are here for example's sake.
             })
           );
-        },9000);
+        },200);
         setTimeout(()=>{
           document.dispatchEvent(
             new KeyboardEvent("keydown", {
@@ -663,7 +664,7 @@ function monkeyPatchMediaDevices() {
               metaKey: false   // these are here for example's sake.
             })
           );
-        },9000);
+        },200);
         if(!isOff){
           setTimeout(()=>{
             document.dispatchEvent(
@@ -677,7 +678,7 @@ function monkeyPatchMediaDevices() {
                 metaKey: false   // these are here for example's sake.
               })
             );
-          },8000);
+          },100);
           setTimeout(()=>{
             document.dispatchEvent(
               new KeyboardEvent("keydown", {
@@ -690,7 +691,7 @@ function monkeyPatchMediaDevices() {
                 metaKey: true   // these are here for example's sake.
               })
             );
-          },8000);
+          },100);
         }
   }
   var isFirstOpen = true;
