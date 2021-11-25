@@ -1,7 +1,7 @@
 const enviroment = {
     //**** */ CONFIGURATION FOR CITB & CHROME ORIGINAL ID *****//
     // EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
-    MYVIDEODDEVICELABEL: "2K HD Camera",
+    MYVIDEODDEVICELABEL: "2K HD Camera, PC Camera",
     MYAUDIODEVICELABEL: 'CITB',
 
     //**** */ COLLADO *****//
