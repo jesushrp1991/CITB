@@ -21,7 +21,8 @@ import {
   showTooltip,
   classTooltip,
   presentationTooltip,
-  getButtonSimplePopup
+  getButtonSimplePopup,
+  closeButtonContainer
 } from "./domUtils.js";
 
 import {
@@ -86,11 +87,19 @@ function monkeyPatchMediaDevices() {
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonSimplePopup = getButtonSimplePopup();
-  buttonSimplePopup.addEventListener("click", async ()=>{  
+  buttonSimplePopup.addEventListener("click", ()=>{  
+    if(window.isExtentionActive){
+      closeButtonContainer();
+      isShow = false;
+      isFirstClose = !isFirstClose;
+    }
+    if(!window.isExtentionActive){
+      audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+      showDiv(isShow);
+    }
     window.isExtentionActive = !window.isExtentionActive;
     buttonSimplePopup.innerText = window.isExtentionActive;
-    audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
-    showDiv(isShow);
+   
     
   });
   
@@ -622,13 +631,9 @@ function monkeyPatchMediaDevices() {
       await builVideosFromDevices();
     }
   );
-
-  var dispachtEvent = false;
-  const checkDevices = async() => {
-    await navigator.mediaDevices.enumerateDevices();
-    if(window.isExtentionActive && !dispachtEvent){
-        dispachtEvent = !dispachtEvent;
-        var event = new Event('devicechange');
+  
+  const onOffExtension = (isOff) =>{
+    var event = new Event('devicechange');
         // Dispatch it.
         console.log("Dispatch");
         navigator.mediaDevices.dispatchEvent(event);
@@ -659,34 +664,49 @@ function monkeyPatchMediaDevices() {
             })
           );
         },9000);
-        setTimeout(()=>{
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "d",
-              // keyCode: 69, // example values.
-              code: "KeyD", // put everything you need in this object.
-              // which: 69,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: false,  // if you aren't going to use them.
-              metaKey: true   // these are here for example's sake.
-            })
-          );
-        },8000);
-        setTimeout(()=>{
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "e",
-              // keyCode: 70, // example values.
-              code: "KeyE", // put everything you need in this object.
-              // which: 70,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: false,  // if you aren't going to use them.
-              metaKey: true   // these are here for example's sake.
-            })
-          );
-        },9000);
-          
+        if(isOff){
+          setTimeout(()=>{
+            document.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: "d",
+                // keyCode: 69, // example values.
+                code: "KeyD", // put everything you need in this object.
+                // which: 69,
+                shiftKey: false, // you don't need to include values
+                ctrlKey: false,  // if you aren't going to use them.
+                metaKey: true   // these are here for example's sake.
+              })
+            );
+          },8000);
+          setTimeout(()=>{
+            document.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: "e",
+                // keyCode: 70, // example values.
+                code: "KeyE", // put everything you need in this object.
+                // which: 70,
+                shiftKey: false, // you don't need to include values
+                ctrlKey: false,  // if you aren't going to use them.
+                metaKey: true   // these are here for example's sake.
+              })
+            );
+          },9000);
+        }
+  }
+  var isFirstOpen = true;
+  var isFirstClose = false;
+  const checkDevices = async() => {
+    await navigator.mediaDevices.enumerateDevices();
+    console.log("checkDev",window.isExtentionActive,isFirstOpen,isFirstClose)
+    if(window.isExtentionActive && isFirstOpen){
+        isFirstOpen = !isFirstOpen;
+        onOffExtension();
     }
+    if(!window.isExtentionActive && isFirstClose){
+      isFirstClose = !isFirstClose;
+      onOffExtension(true);
+    }
+
     setTimeout(() => {
       checkDevices();
     }, 1000);
