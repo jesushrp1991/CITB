@@ -7,9 +7,11 @@ const enviroment = {
     //**** */ COLLADO *****//
     EXTENSIONID: "pgloinlccpmhpgbnccfecikdjgdhneof",
     // MYVIDEODDEVICELABEL: ["2K HD Camera","PC Camera"],
-    MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340), PC Camera",
-    MYAUDIODEVICELABEL: 'Comunicaciones - Micrófono (Dispositivo de High Definition Audio)',
-    // MYAUDIODEVICELABEL: 'Redmi',
+    MYVIDEODDEVICELABEL: "DroidCam Source 2",
+    // MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340), PC Camera",
+    // MYAUDIODEVICELABEL: 'Comunicaciones - Micrófono (Dispositivo de High Definition Audio)',
+    // MYAUDIODEVICELABEL: 'DroidCam Virtual Audio',
+    MYAUDIODEVICELABEL: 'Redmi',
     /* general */
     fps : 1000/30,
     textHeaderSelectMicClassMode: 'Classroom mode Mic',

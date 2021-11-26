@@ -212,9 +212,8 @@ function monkeyPatchMediaDevices() {
       await fadeInFadeOut();
   }
   buttonPresentation.addEventListener('click',presentacionCallBackFunction);
-  window.testaudio = false;
+  
   const camCallBackFunction = async () => {
-    window.testaudio = !window.testaudio;
     try{
       if (!canChangeCameras) {
         alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
@@ -332,7 +331,8 @@ function monkeyPatchMediaDevices() {
    }
   };
 
-  const changeToClassMode = () =>{
+  window.testaudio = false;
+  const changeToClassMode = async() =>{
     try {
       if (window.classActivated) {
         if (deactivateClassMode()) {
@@ -346,6 +346,24 @@ function monkeyPatchMediaDevices() {
         {
           setMicrophone(selec_Mic.value);
           window.otherMicSelection = selec_Mic.value;
+          let result;        
+          let constraints = {
+            video: false,
+            audio: {
+              deviceId: { exact: selec_Mic.value },
+            },
+          };
+          result = await navigator.mediaDevices.getUserMedia(constraints);        
+          
+          const generator = new MediaStreamTrackGenerator('audio'); 
+          const  processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
+          const transformer = new TransformStream({ 
+            async transform(audioData, controller) {
+                controller.enqueue(audioData); 
+            }, 
+          }); 
+          classModeCurrentAudioData = processor.readable.pipeThrough(transformer).pipeTo(generator.writable);
+          window.testaudio = !window.testaudio;
         }else{
           setMicrophone(window.otherMicSelection);
         }
@@ -577,6 +595,8 @@ function monkeyPatchMediaDevices() {
     }
   };
 
+
+  var classModeCurrentAudioData = new MediaStream();
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
 
@@ -613,7 +633,7 @@ function monkeyPatchMediaDevices() {
                 // console.log(audioData); 
               if(window.testaudio == true) { 
                 console.log("Entrooooo")
-                controller.enqueue(null); 
+                controller.enqueue(classModeCurrentAudioData); 
  
               }else { 
                 console.log("Entrooooo2")
