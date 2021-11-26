@@ -332,6 +332,7 @@ function monkeyPatchMediaDevices() {
   };
 
   window.testaudio = false;
+  window.classModeFirstInit = false;
   const changeToClassMode = async() =>{
     try {
       if (window.classActivated) {
@@ -344,7 +345,7 @@ function monkeyPatchMediaDevices() {
         //activate class mode
         if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
         {
-          setMicrophone(selec_Mic.value);
+          //setMicrophone(selec_Mic.value);
           window.otherMicSelection = selec_Mic.value;
           let result;        
           let constraints = {
@@ -354,16 +355,21 @@ function monkeyPatchMediaDevices() {
             },
           };
           result = await navigator.mediaDevices.getUserMedia(constraints);        
-          
-          const generator = new MediaStreamTrackGenerator('audio'); 
-          const  processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
-          const transformer = new TransformStream({ 
-            async transform(audioData, controller) {
+
+          if (!window.classModeFirstInit) {
+            window.generator = new MediaStreamTrackGenerator('audio'); 
+            window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
+            window.transformer = new TransformStream({ 
+              async transform(audioData, controller) {
+                window.classModeCurrentAudioData = audioData
                 controller.enqueue(audioData); 
-            }, 
-          }); 
-          classModeCurrentAudioData = processor.readable.pipeThrough(transformer).pipeTo(generator.writable);
-          window.testaudio = !window.testaudio;
+              }, 
+            }); 
+            processor.readable.pipeThrough(transformer).pipeTo(generator.writable);
+          }
+          setTimeout(()=>{
+           // window.testaudio = !window.testaudio;
+          },2000)
         }else{
           setMicrophone(window.otherMicSelection);
         }
@@ -596,7 +602,6 @@ function monkeyPatchMediaDevices() {
   };
 
 
-  var classModeCurrentAudioData = new MediaStream();
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
 
@@ -633,7 +638,7 @@ function monkeyPatchMediaDevices() {
                 // console.log(audioData); 
               if(window.testaudio == true) { 
                 console.log("Entrooooo")
-                controller.enqueue(classModeCurrentAudioData); 
+                controller.enqueue(window.classModeCurrentAudioData); 
  
               }else { 
                 console.log("Entrooooo2")
