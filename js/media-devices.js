@@ -187,6 +187,7 @@ function monkeyPatchMediaDevices() {
       setButtonBackground(buttonShow, window.showActivated);
       setButtonBackground(buttonClass, window.classActivated);
       setButtonBackground(buttonDrag);
+
       if (window.actualVideoTag == videoCITB) {
         window.citbActivated = true;
         setButtonBackground(window.buttonCam, window.citbActivated);
@@ -198,7 +199,7 @@ function monkeyPatchMediaDevices() {
         buttonClose,
         buttonsContainerDiv,
         camCallBackFunction,
-        showCallBackFunction,
+        () => {},
         classCallBackFunction
       );
     //  checkingMicrophoneId();
@@ -240,185 +241,183 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const getCITBMicMedia = async () => {
-    try {
-      const citbMicrophone = devices.filter(
-        (x) =>
-          x.kind === "audioinput" &&
-          x.label.includes(enviroment.MYAUDIODEVICELABEL)
-      );
-      if (citbMicrophone.length > 0) {
-        let constraints = {
-          video: false,
-          audio: {
-            deviceId: { exact: citbMicrophone[0].deviceId },
-          },
-        };
-        let result = await navigator.mediaDevices.getUserMedia(constraints);
-        return result;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      logErrors(error,"getCTBMicMedia ln. 227");
-    }
-  };
+  // const getCITBMicMedia = async () => {
+  //   try {
+  //     const citbMicrophone = devices.filter(
+  //       (x) =>
+  //         x.kind === "audioinput" &&
+  //         x.label.includes(enviroment.MYAUDIODEVICELABEL)
+  //     );
+  //     if (citbMicrophone.length > 0) {
+  //       let constraints = {
+  //         video: false,
+  //         audio: {
+  //           deviceId: { exact: citbMicrophone[0].deviceId },
+  //         },
+  //       };
+  //       let result = await navigator.mediaDevices.getUserMedia(constraints);
+  //       return result;
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     logErrors(error,"getCTBMicMedia ln. 227");
+  //   }
+  // };
 
-  const showCallBackFunction = async () => {
-    try {
-      if (window.classActivated) {
-        deactivateClassMode();
-      }
-      if (showModeEnabled) {
-        if (showAudioContext != null) {
-          showAudioContext.close();
-          showAudioContext = null;
-          showModeEnabled = false;
-          setButtonBackground(buttonShow, showModeEnabled);
-        }
-      } else {
-        showAudioContext = new AudioContext();
-        const CITBMicMedia = await getCITBMicMedia();
-        if (CITBMicMedia == null) {
-          setButtonBackground(buttonShow, false);
-          return;
-        }
-        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
-        source.connect(showAudioContext.destination);
-        showModeEnabled = true;
-        setButtonBackground(buttonShow, showModeEnabled);
-      }
-    } catch (error) {
-      logErrors(error,"showCallBackFunction ln. 251")
-    }
-  };
+  // const showCallBackFunction = async () => {
+  //   try {
+  //     if (window.classActivated) {
+  //       deactivateClassMode();
+  //     }
+  //     if (showModeEnabled) {
+  //       if (showAudioContext != null) {
+  //         showAudioContext.close();
+  //         showAudioContext = null;
+  //         showModeEnabled = false;
+  //         setButtonBackground(buttonShow, showModeEnabled);
+  //       }
+  //     } else {
+  //       showAudioContext = new AudioContext();
+  //       const CITBMicMedia = await getCITBMicMedia();
+  //       if (CITBMicMedia == null) {
+  //         setButtonBackground(buttonShow, false);
+  //         return;
+  //       }
+  //       const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+  //       source.connect(showAudioContext.destination);
+  //       showModeEnabled = true;
+  //       setButtonBackground(buttonShow, showModeEnabled);
+  //     }
+  //   } catch (error) {
+  //     logErrors(error,"showCallBackFunction ln. 251")
+  //   }
+  // };
 
-  const activateClassMode = () => {
-    try {
-      if (showModeEnabled) {
-        showCallBackFunction();
-      }
-      const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (otherMicrophones) {
-        window.classActivated = true;
-        checkingMicrophoneId();
-        setButtonBackground(buttonClass, window.classActivated);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      logErrors(error,"activateClassMode ln 280")
-    }
-  };
+  // const activateClassMode = () => {
+  //   try {
+  //     if (showModeEnabled) {
+  //       // showCallBackFunction();
+  //     }
+  //     const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+  //     if (otherMicrophones) {
+  //       window.classActivated = true;
+  //       setButtonBackground(buttonClass, window.classActivated);
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     logErrors(error,"activateClassMode ln 280")
+  //   }
+  // };
 
-  const deactivateClassMode = () => {
-   try {
-    const citbMicrophone = devices.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
-    if (citbMicrophone.length > 0) {
-      setMicrophone(citbMicrophone[0].deviceId);
-      window.classActivated = false;
-      checkingMicrophoneId();
-      setButtonBackground(buttonClass, window.classActivated);
-      return true;
-    }
-    return false;
-   } catch (error) {
-     logErrors(error,"deactivateClassMode ln 298")
-   }
-  };
+  // const deactivateClassMode = () => {
+  //  try {
+  //   const citbMicrophone = devices.filter(
+  //     (x) =>
+  //       x.kind === "audioinput" &&
+  //       x.label.includes(enviroment.MYAUDIODEVICELABEL)
+  //   );
+  //   if (citbMicrophone.length > 0) {
+  //     setMicrophone(citbMicrophone[0].deviceId);
+  //     window.classActivated = false;
+  //     setButtonBackground(buttonClass, window.classActivated);
+  //     return true;
+  //   }
+  //   return false;
+  //  } catch (error) {
+  //    logErrors(error,"deactivateClassMode ln 298")
+  //  }
+  // };
 
   window.testaudio = false;
   window.classModeFirstInit = false;
-  const changeToClassMode = async() =>{
-    try {
-      if (window.classActivated) {
-        if (deactivateClassMode()) {
+  // const changeToClassMode = async() =>{
+  //   try {
+  //     if (window.classActivated) {
+  //       if (deactivateClassMode()) {
           
-        } else {
-          alert("There is no CITB microphone");
-        }
-      } else {
-        //activate class mode
-        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
-        {
-          //setMicrophone(selec_Mic.value);
-          window.otherMicSelection = selec_Mic.value;
-          let result;        
-          let constraints = {
-            video: false,
-            audio: {
-              deviceId: { exact: selec_Mic.value },
-            },
-          };
-          result = await navigator.mediaDevices.getUserMedia(constraints);        
+  //       } else {
+  //         alert("There is no CITB microphone");
+  //       }
+  //     } else {
+  //       //activate class mode
+  //       if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
+  //       {
+  //         //setMicrophone(selec_Mic.value);
+  //         window.otherMicSelection = selec_Mic.value;
+  //         let result;        
+  //         let constraints = {
+  //           video: false,
+  //           audio: {
+  //             deviceId: { exact: selec_Mic.value },
+  //           },
+  //         };
+  //         result = await navigator.mediaDevices.getUserMedia(constraints);        
 
-          if (!window.classModeFirstInit) {
-            window.generator = new MediaStreamTrackGenerator('audio'); 
-            window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
+  //         if (!window.classModeFirstInit) {
+  //           window.generator = new MediaStreamTrackGenerator('audio'); 
+  //           window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
 
-            window.micClassRoomSourceReadable = processor.readable; 
+  //           window.micClassRoomSourceReadable = processor.readable; 
   
-            window.micClassRoomReader = window.micClassRoomSourceReadable.getReader();
-            window.citbProcessFrame = function ({done, value}) {
-              console.log("INSIDE")
-              if(done) {
-                console.log("Stream is done");
-                return;
-              }
-              if (window.testaudio) {
-                console.log("WRITTING", value);
-                window.micWriter.write(value);
-              }
-              window.micClassRoomReader.read().then(window.citbProcessFrame)
+  //           window.micClassRoomReader = window.micClassRoomSourceReadable.getReader();
+  //           window.citbProcessFrame = function ({done, value}) {
+  //             console.log("INSIDE")
+  //             if(done) {
+  //               console.log("Stream is done");
+  //               return;
+  //             }
+  //             if (window.testaudio) {
+  //               console.log("WRITTING", value);
+  //               window.micWriter.write(value);
+  //             }
+  //             window.micClassRoomReader.read().then(window.citbProcessFrame)
 
-            }
-            console.log("BEFORE INIT WRITTER");
-            window.micClassRoomReader.read().then(window.citbProcessFrame)
+  //           }
+  //           console.log("BEFORE INIT WRITTER");
+  //           window.micClassRoomReader.read().then(window.citbProcessFrame)
           
           
-          }
-          setTimeout(()=>{
-           window.testaudio = !window.testaudio;
-          },100)
-        }else{
-          setMicrophone(window.otherMicSelection);
-        }
-        if (activateClassMode()) {
-        } else {
-          alert("There is not another microphone");
-        }
-      }
-    } catch (error) {
-      logErrors(error,"changeToClassMode ln 318")
-    }
-  }
+  //         }
+  //         setTimeout(()=>{
+  //          window.testaudio = !window.testaudio;
+  //         },100)
+  //       }else{
+  //         setMicrophone(window.otherMicSelection);
+  //       }
+  //       if (activateClassMode()) {
+  //       } else {
+  //         alert("There is not another microphone");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     logErrors(error,"changeToClassMode ln 318")
+  //   }
+  // }
 
-  const chooseMicClassMode = (e) =>{
-    e.preventDefault();
-    div_Fab.setAttribute('class','fab');
-    div_Overlay.removeAttribute('class');
-    changeToClassMode();
-  }
+  // const chooseMicClassMode = (e) =>{
+  //   e.preventDefault();
+  //   div_Fab.setAttribute('class','fab');
+  //   div_Overlay.removeAttribute('class');
+  //   changeToClassMode();
+  // }
 
-  const closeModalClassMode = (e) => {
-    e.preventDefault();
-    div_Fab.setAttribute('class','fab');
-    div_Overlay.removeAttribute('class');
-  }
+  // const closeModalClassMode = (e) => {
+  //   e.preventDefault();
+  //   div_Fab.setAttribute('class','fab');
+  //   div_Overlay.removeAttribute('class');
+  // }
   const classCallBackFunction = async (isFromPopup) => {
-    try {
-      if(!checkbox_class.checked && !window.classActivated){
-        showPopupMic();
-      }else{
-        changeToClassMode();
-      }
-    } catch (error) {
-      logErrors(error,"classCallBackFunction ln 352")
-    }
+    // try {
+    //   if(!checkbox_class.checked && !window.classActivated){
+    //     showPopupMic();
+    //   }else{
+    //     changeToClassMode();
+    //   }
+    // } catch (error) {
+    //   logErrors(error,"classCallBackFunction ln 352")
+    // }
   };
 
   const showPopupMic = async() =>{
@@ -517,34 +516,7 @@ function monkeyPatchMediaDevices() {
   var showAudioContext;
   let showModeEnabled = false;
 
-  const checkingMicrophoneId = async function () {
-    try {
-      let currentMic;
-      if(document.getElementById("pModeCurrentMic"))
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (window.localPeerConection) {
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: currentMic },
-            video: false,
-          });
-          if (
-            currentAudioMediaStream &&
-            currentAudioMediaStream.getAudioTracks().length > 0
-          ) {
-            const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            const senders = window.localPeerConection.getSenders();
-            const sendersWithTracks = senders.filter((s) => s.track != null);
-            sendersWithTracks
-              .filter((x) => x.track.kind === "audio")
-              .forEach((mysender) => {
-                mysender.replaceTrack(micAudioTrack);
-              });
-          }
-      }
-    } catch (error) {
-      logErrors(error,"checkingMichrophoneId ln 452")
-    }
-  };
+
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
@@ -623,48 +595,48 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        if (args.length && args[0].video && args[0].video.deviceId) {
-          if (
-            args[0].video.deviceId === "virtual" ||
-            args[0].video.deviceId.exact === "virtual"
-          ) {
-            await builVideosFromDevices();
-            await buildVideoContainersAndCanvas();
-            await drawFrameOnVirtualCamera();
-            speachCommands();
-            return virtualWebCamMediaStream;
-          } else {
-            return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-          }
-        }
-        else if (args.length && args[0].audio ) { 
-          console.log("INSIDE"); 
-          const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
-          console.log("res",res)
-          const generator = new MediaStreamTrackGenerator('audio'); 
-          const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]); 
+        // if (args.length && args[0].video && args[0].video.deviceId) {
+        //   if (
+        //     args[0].video.deviceId === "virtual" ||
+        //     args[0].video.deviceId.exact === "virtual"
+        //   ) {
+        //     await builVideosFromDevices();
+        //     await buildVideoContainersAndCanvas();
+        //     await drawFrameOnVirtualCamera();
+        //     speachCommands();
+        //     return virtualWebCamMediaStream;
+        //   } else {
+        //     return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+        //   }
+        // }
+        // else if (args.length && args[0].audio ) { 
+        //   console.log("INSIDE", args); 
+        //   const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
+        //   console.log("res",res)
+        //   const generator = new MediaStreamTrackGenerator('audio'); 
+        //   const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]); 
  
-          window.micSourceReadable = processor.readable; 
-          window.micDestinationWritable = generator.writable; 
+        //   window.micSourceReadable = processor.readable; 
+        //   window.micDestinationWritable = generator.writable; 
 
-          window.micReader = window.micSourceReadable.getReader();
-          window.micWriter = window.micDestinationWritable.getWriter();
-          window.processFrame = function ({done, value}) {
-            if(done) {
-              console.log("Stream is done");
-              return;
-            }
-            if (!window.testaudio) {
-              window.micWriter.write(value);
-            }
-            //window.processFrame({done,value})
-            window.micReader.read().then(window.processFrame);
-          }
-          window.micReader.read().then(window.processFrame)
+        //   window.micReader = window.micSourceReadable.getReader();
+        //   window.micWriter = window.micDestinationWritable.getWriter();
+        //   window.processFrame = function ({done, value}) {
+        //     if(done) {
+        //       console.log("Stream is done");
+        //       return;
+        //     }
+        //     if (!window.testaudio) {
+        //       window.micWriter.write(value);
+        //     }
+        //     //window.processFrame({done,value})
+        //     window.micReader.read().then(window.processFrame);
+        //   }
+        //   window.micReader.read().then(window.processFrame)
         
          
-          return new MediaStream([generator]); 
-        } 
+        //   return new MediaStream([generator]); 
+        // } 
         console.log(args)  
       } 
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
@@ -674,15 +646,7 @@ function monkeyPatchMediaDevices() {
     } 
   };
 
-  var acreateOffer = RTCPeerConnection.prototype.createOffer;
-  RTCPeerConnection.prototype.createOffer = async function (options) {
-    try {     
-      window.localPeerConection = this;
-      return await acreateOffer.apply(this, arguments);
-    } catch (error) {
-      logErrors(error,"prototype createOffer ln 555")
-    }
-  };
+  
 
   navigator.mediaDevices.addEventListener(
     "devicechange",
@@ -755,11 +719,11 @@ function monkeyPatchMediaDevices() {
   }
 
   const checkDevices = async() => {
-    await navigator.mediaDevices.enumerateDevices();
+    // await navigator.mediaDevices.enumerateDevices();
 
-    setTimeout(() => {
-      checkDevices();
-    }, 1000);
+    // setTimeout(() => {
+    //   checkDevices();
+    // }, 1000);
   };
 
   const logErrors = (e,source) => {
