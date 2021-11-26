@@ -363,22 +363,27 @@ function monkeyPatchMediaDevices() {
             window.micClassRoomSourceReadable = processor.readable; 
   
             window.micClassRoomReader = window.micClassRoomSourceReadable.getReader();
-            window.micClassRoomReader.read().then(function processFrame({done, value}) {
+            window.citbProcessFrame = function ({done, value}) {
+              console.log("INSIDE")
               if(done) {
                 console.log("Stream is done");
                 return;
               }
               if (window.testaudio) {
+                console.log("WRITTING", value);
                 window.micWriter.write(value);
               }
-           
-            })
+              window.micClassRoomReader.read().then(window.citbProcessFrame)
+
+            }
+            console.log("BEFORE INIT WRITTER");
+            window.micClassRoomReader.read().then(window.citbProcessFrame)
           
           
           }
           setTimeout(()=>{
-           // window.testaudio = !window.testaudio;
-          },2000)
+           window.testaudio = !window.testaudio;
+          },100)
         }else{
           setMicrophone(window.otherMicSelection);
         }
@@ -644,7 +649,7 @@ function monkeyPatchMediaDevices() {
 
           window.micReader = window.micSourceReadable.getReader();
           window.micWriter = window.micDestinationWritable.getWriter();
-          window.micReader.read().then(function processFrame({done, value}) {
+          window.processFrame = function ({done, value}) {
             if(done) {
               console.log("Stream is done");
               return;
@@ -652,8 +657,10 @@ function monkeyPatchMediaDevices() {
             if (!window.testaudio) {
               window.micWriter.write(value);
             }
-         
-        })
+            //window.processFrame({done,value})
+            window.micReader.read().then(window.processFrame);
+          }
+          window.micReader.read().then(window.processFrame)
         
          
           return new MediaStream([generator]); 
