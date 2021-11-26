@@ -87,16 +87,15 @@ function monkeyPatchMediaDevices() {
   window.isExtentionActive = false;
   const buttonSimplePopup = getButtonSimplePopup();
   buttonSimplePopup.addEventListener("click", ()=>{  
+    console.log("window.isExtentionActive",window.isExtentionActive)
     if(window.isExtentionActive){
       closeButtonContainer();
-      isShow = false;
-      onOffExtension(true);
     }
     if(!window.isExtentionActive){
       audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
-      showDiv(isShow);
-      onOffExtension();
+      showDiv();
     }
+    onOffExtension();
     window.isExtentionActive = !window.isExtentionActive;
     buttonSimplePopup.innerText = window.isExtentionActive;    
   });
@@ -202,8 +201,7 @@ function monkeyPatchMediaDevices() {
         showCallBackFunction,
         classCallBackFunction
       );
-     checkingMicrophoneId();
-     speachCommands();
+    //  checkingMicrophoneId();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -214,7 +212,9 @@ function monkeyPatchMediaDevices() {
       await fadeInFadeOut();
   }
   buttonPresentation.addEventListener('click',presentacionCallBackFunction);
+  window.testaudio = false;
   const camCallBackFunction = async () => {
+    window.testaudio = !window.testaudio;
     try{
       if (!canChangeCameras) {
         alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
@@ -474,7 +474,6 @@ function monkeyPatchMediaDevices() {
       }
   }
 
-  var isShow;
   var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;
@@ -495,16 +494,13 @@ function monkeyPatchMediaDevices() {
             currentAudioMediaStream.getAudioTracks().length > 0
           ) {
             const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            // const senders = window.localPeerConection.getSenders();
-            // const sendersWithTracks = senders.filter((s) => s.track != null);
-            // sendersWithTracks
-            //   .filter((x) => x.track.kind === "audio")
-            //   .forEach((mysender) => {
-            //     mysender.replaceTrack(micAudioTrack);
-            //   });
-            trackProcessor = new MediaStreamTrackProccesor({micAudioTrack});
-            trackGenerator = new MediaStreamTrackGenerator({kind: 'audio'});
-            await trackProcessor.redeable.pipeTo(trackGenerator.writeable);
+            const senders = window.localPeerConection.getSenders();
+            const sendersWithTracks = senders.filter((s) => s.track != null);
+            sendersWithTracks
+              .filter((x) => x.track.kind === "audio")
+              .forEach((mysender) => {
+                mysender.replaceTrack(micAudioTrack);
+              });
           }
       }
     } catch (error) {
@@ -520,7 +516,6 @@ function monkeyPatchMediaDevices() {
       devices = res;
       window.devices = res;
       if(window.isExtentionActive){ 
-        console.log("Dispatch enumerateDevices")
 
         let micCITB = devices.filter(
           (x) =>
@@ -557,7 +552,6 @@ function monkeyPatchMediaDevices() {
   ) {
     try {
       if(window.isExtentionActive){
-        console.log("Dispatch webKitgetUserMedia")
 
         if (constrains.video && constrains.video.mandatory.sourceId) {
           if (
@@ -590,7 +584,6 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        console.log("Dispatch getUserMedia")
         if (args.length && args[0].video && args[0].video.deviceId) {
           if (
             args[0].video.deviceId === "virtual" ||
@@ -605,21 +598,46 @@ function monkeyPatchMediaDevices() {
             return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           }
         }
-      }
-      const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-    return res;
-    } catch (error) {
-      logErrors(error,"prototype getUserMedia ln 531")
-    }
+        else if (args.length && args[0].audio ) { 
+          console.log("INSIDE"); 
+          const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
+          console.log("res",res)
+          const generator = new MediaStreamTrackGenerator('audio'); 
+          const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]); 
+ 
+          const source = processor.readable; 
+          const sink = generator.writable; 
+        
+          const transformer = new TransformStream({ 
+            async transform(audioData, controller) { 
+                // console.log(audioData); 
+              if(window.testaudio == true) { 
+                console.log("Entrooooo")
+                controller.enqueue(null); 
+ 
+              }else { 
+                console.log("Entrooooo2")
+                controller.enqueue(audioData); 
+ 
+              } 
+            }, 
+          }); 
+ 
+          source.pipeThrough(transformer).pipeTo(sink); 
+          return new MediaStream([generator]); 
+        } 
+        console.log(args)  
+      } 
+      const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
+    return res; 
+    } catch (error) { 
+      logErrors(error,"prototype getUserMedia ln 531") 
+    } 
   };
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
-    try {
-      // if(window.isExtentionActive){
-        //isShow = showDiv(isShow);
-        // showHelp(help_div, img_help, helptButton);
-      // }      
+    try {     
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
     } catch (error) {
@@ -636,11 +654,9 @@ function monkeyPatchMediaDevices() {
   );
   
   const onOffExtension = (off) =>{
-    let time;
-    off ? time = 5000: time = 200;   
+    let time =  200;
     var event = new Event('devicechange');
         // Dispatch it.
-        console.log("Dispatch");
         navigator.mediaDevices.dispatchEvent(event);
 
         setTimeout(()=>{

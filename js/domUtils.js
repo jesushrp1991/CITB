@@ -130,20 +130,17 @@ const getVirtualCam = () => {
 };
 
 const closeButtonContainer = () => {
-  document.getElementById("buttonsContainer").style.visibility = "hidden";
+  document.getElementById("buttonsContainer").style.display = "none";
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setMicrophone = (microphone) => { 
   document.getElementById("pModeCurrentMic").innerText = microphone;
 }; 
 
-const showDiv = (isShow) => {
-  if (document.getElementById('buttonsContainer') && !isShow){
-    document.getElementById('buttonsContainer').style.display = 'block';
-    document.getElementById("pWebContainerState").innerText = "OPEN";
-    isShow = true;
-  }
-  return isShow;
+const showDiv = () => {
+  document.getElementById('buttonsContainer').style.display = 'block';
+  document.getElementById("pWebContainerState").innerText = "OPEN";
+
 }
 
 const createWebContainerState = () =>{
