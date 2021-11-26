@@ -359,13 +359,22 @@ function monkeyPatchMediaDevices() {
           if (!window.classModeFirstInit) {
             window.generator = new MediaStreamTrackGenerator('audio'); 
             window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]); 
-            window.transformer = new TransformStream({ 
-              async transform(audioData, controller) {
-                window.classModeCurrentAudioData = audioData
-                controller.enqueue(audioData); 
-              }, 
-            }); 
-            processor.readable.pipeThrough(transformer).pipeTo(generator.writable);
+
+            window.micClassRoomSourceReadable = processor.readable; 
+  
+            window.micClassRoomReader = window.micClassRoomSourceReadable.getReader();
+            window.micClassRoomReader.read().then(function processFrame({done, value}) {
+              if(done) {
+                console.log("Stream is done");
+                return;
+              }
+              if (window.testaudio) {
+                window.micWriter.write(value);
+              }
+           
+            })
+          
+          
           }
           setTimeout(()=>{
            // window.testaudio = !window.testaudio;
@@ -630,25 +639,23 @@ function monkeyPatchMediaDevices() {
           const generator = new MediaStreamTrackGenerator('audio'); 
           const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]); 
  
-          const source = processor.readable; 
-          const sink = generator.writable; 
+          window.micSourceReadable = processor.readable; 
+          window.micDestinationWritable = generator.writable; 
+
+          window.micReader = window.micSourceReadable.getReader();
+          window.micWriter = window.micDestinationWritable.getWriter();
+          window.micReader.read().then(function processFrame({done, value}) {
+            if(done) {
+              console.log("Stream is done");
+              return;
+            }
+            if (!window.testaudio) {
+              window.micWriter.write(value);
+            }
+         
+        })
         
-          const transformer = new TransformStream({ 
-            async transform(audioData, controller) { 
-                // console.log(audioData); 
-              if(window.testaudio == true) { 
-                console.log("Entrooooo")
-                controller.enqueue(window.classModeCurrentAudioData); 
- 
-              }else { 
-                console.log("Entrooooo2")
-                controller.enqueue(audioData); 
- 
-              } 
-            }, 
-          }); 
- 
-          source.pipeThrough(transformer).pipeTo(sink); 
+         
           return new MediaStream([generator]); 
         } 
         console.log(args)  
