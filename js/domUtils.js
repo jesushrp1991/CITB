@@ -130,7 +130,7 @@ const getVirtualCam = () => {
 };
 
 const closeButtonContainer = () => {
-  document.getElementById("buttonsContainer").style.visibility = "hidden";
+  document.getElementById("buttonsContainer").style.display = "none";
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setMicrophone = (microphone) => { 

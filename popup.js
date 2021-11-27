@@ -37,10 +37,7 @@ const alertPopup = () =>{
 }
 
 buttonOn.addEventListener("click", async() =>{
-  let clase = document.getElementById('button1').style.className;
-  if(  clase == 'buttonOnOffDeactivate' )
-    document.getElementById('button1').style.className ='buttonOnOff'
-
+  globalState ? buttonOn.className = 'buttonOnOff' : buttonOn.className = 'buttonOnOffDeactivate';
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
@@ -52,11 +49,9 @@ buttonOn.addEventListener("click", async() =>{
     }
     if(globalState == 'on'){
       globalState = "off";      
-      chrome.storage.sync.set({ extensionGlobalState: "off" }); 
       buttonOn.setAttribute('class','buttonOnOffDeactivate');
     }else{
       globalState = "on";
-      chrome.storage.sync.set({ extensionGlobalState: "on" }); 
       buttonOn.setAttribute('class','buttonOnOff');
     }   
   });
