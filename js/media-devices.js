@@ -89,16 +89,15 @@ function monkeyPatchMediaDevices() {
   buttonSimplePopup.addEventListener("click", ()=>{  
     if(window.isExtentionActive){
       closeButtonContainer();
-      isShow = false;
-      onOffExtension(true);
+      isShow = false;     
     }
     if(!window.isExtentionActive){
       audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
       showDiv(isShow);
-      onOffExtension();
     }
     window.isExtentionActive = !window.isExtentionActive;
     buttonSimplePopup.innerText = window.isExtentionActive;    
+    onOffExtension();
   });
   
   //WEB CONTAINER
@@ -632,9 +631,8 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  const onOffExtension = (off) =>{
-    let time;
-    off ? time = 5000: time = 200;   
+  const onOffExtension = () =>{
+    let time = 200;   
     var event = new Event('devicechange');
         // Dispatch it.
         console.log("Dispatch");
