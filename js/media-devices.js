@@ -21,7 +21,7 @@ import {
   showTooltip,
   classTooltip,
   presentationTooltip,
-  getButtonSimplePopup,
+  getButtonOnOffExtension,
   closeButtonContainer
 } from "./domUtils.js";
 
@@ -85,8 +85,8 @@ function monkeyPatchMediaDevices() {
   window.helpCount = 2;
   //Activate Extension 
   window.isExtentionActive = false;
-  const buttonSimplePopup = getButtonSimplePopup();
-  buttonSimplePopup.addEventListener("click", ()=>{  
+  const buttonOnOffExtension = getButtonOnOffExtension();
+  buttonOnOffExtension.addEventListener("click", ()=>{  
     if(window.isExtentionActive){
       closeButtonContainer();
       isShow = false;     
@@ -96,7 +96,7 @@ function monkeyPatchMediaDevices() {
       showDiv(isShow);
     }
     window.isExtentionActive = !window.isExtentionActive;
-    buttonSimplePopup.innerText = window.isExtentionActive;    
+    buttonOnOffExtension.innerText = window.isExtentionActive;    
     onOffExtension();
   });
   
@@ -154,7 +154,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      document.body.appendChild(buttonSimplePopup);
+      document.body.appendChild(buttonOnOffExtension);
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);

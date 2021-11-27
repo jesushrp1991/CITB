@@ -174,7 +174,7 @@ const getButtonShowPopupVideo = () => {
   return buttonPopup;
 };
 
-const getButtonSimplePopup = () => {
+const getButtonOnOffExtension = () => {
   const buttonPopup = document.createElement("button");
   buttonPopup.setAttribute('id','buttonSimplePopup');
   buttonPopup.style.display = 'none';
@@ -203,7 +203,7 @@ export {
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
   getButtonShowPopupVideo,
-  getButtonSimplePopup,
+  getButtonOnOffExtension,
   showTooltip,
   classTooltip,
   presentationTooltip

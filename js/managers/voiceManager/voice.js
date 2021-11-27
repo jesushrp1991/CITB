@@ -151,7 +151,7 @@ try{
       
 
       // Start listening. You can call this here, or attach this call to an event, button, etc.
-      annyang.debug(true);
+      // annyang.debug(true);
       annyang.start({ autoRestart: true, continuous: true });
       
 }catch(e){
