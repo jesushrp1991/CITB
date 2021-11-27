@@ -89,11 +89,10 @@ function monkeyPatchMediaDevices() {
   buttonOnOffExtension.addEventListener("click", ()=>{  
     if(window.isExtentionActive){
       closeButtonContainer();
-      isShow = false;     
     }
     if(!window.isExtentionActive){
       audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
-      showDiv(isShow);
+      showDiv();
     }
     window.isExtentionActive = !window.isExtentionActive;
     buttonOnOffExtension.innerText = window.isExtentionActive;    
@@ -473,7 +472,6 @@ function monkeyPatchMediaDevices() {
       }
   }
 
-  var isShow;
   var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;

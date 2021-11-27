@@ -137,13 +137,11 @@ const setMicrophone = (microphone) => {
   document.getElementById("pModeCurrentMic").innerText = microphone;
 }; 
 
-const showDiv = (isShow) => {
-  if (document.getElementById('buttonsContainer') && !isShow){
+const showDiv = () => {
+  if (document.getElementById('buttonsContainer')){
     document.getElementById('buttonsContainer').style.display = 'block';
     document.getElementById("pWebContainerState").innerText = "OPEN";
-    isShow = true;
   }
-  return isShow;
 }
 
 const createWebContainerState = () =>{
