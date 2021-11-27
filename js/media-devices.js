@@ -82,7 +82,6 @@ function monkeyPatchMediaDevices() {
 
   window.showActivated = false;
   window.classActivated = false;
-  window.helpCount = 2;
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
@@ -609,11 +608,7 @@ function monkeyPatchMediaDevices() {
 
   var acreateOffer = RTCPeerConnection.prototype.createOffer;
   RTCPeerConnection.prototype.createOffer = async function (options) {
-    try {
-      // if(window.isExtentionActive){
-        //isShow = showDiv(isShow);
-        // showHelp(help_div, img_help, helptButton);
-      // }      
+    try {    
       window.localPeerConection = this;
       return await acreateOffer.apply(this, arguments);
     } catch (error) {
