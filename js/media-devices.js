@@ -533,7 +533,6 @@ function monkeyPatchMediaDevices() {
         let finalResult = [...result,...outputDevices]
         return finalResult;
       }
-      res.push(getVirtualCam());
       return res;
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
@@ -616,11 +615,32 @@ function monkeyPatchMediaDevices() {
     }
   };
 
+  const checkCITBConnetion = (devices) => {
+    const citbMicrophone = devices.filter(
+      (x) =>
+        x.kind === "audioinput" 
+        && x.label.includes(enviroment.MYAUDIODEVICELABEL)
+    );    
+    const CITBVideo = devices.filter(
+      s => 
+      s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) 
+      ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   
+    );
+    return (citbMicrophone.length != 0 || CITBVideo != 0) 
+            ?  true
+            :  false;
+  }
+
   navigator.mediaDevices.addEventListener(
     "devicechange",
     async function (event) {
-      await buildVideoContainersAndCanvas();
-      await builVideosFromDevices();
+      let devices = await navigator.mediaDevices.enumerateDevices();
+      let isCITBConnected = checkCITBConnetion(devices);
+      console.log("isCITBConnected",isCITBConnected);
+      if(isCITBConnected){
+        await buildVideoContainersAndCanvas();
+        await builVideosFromDevices();
+      }
     }
   );
   
@@ -687,14 +707,6 @@ function monkeyPatchMediaDevices() {
         
   }
 
-  const checkDevices = async() => {
-    await navigator.mediaDevices.enumerateDevices();
-
-    setTimeout(() => {
-      checkDevices();
-    }, 1000);
-  };
-
   const logErrors = (e,source) => {
     console.log(e)
    let inf = JSON.stringify(e,null,3);
@@ -714,8 +726,6 @@ function monkeyPatchMediaDevices() {
     // })
     // .then(response => response.json());
   }
-
-  checkDevices();
 }
 
 
