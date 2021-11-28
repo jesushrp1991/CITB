@@ -663,65 +663,92 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  const onOffExtension = () =>{
-    let time = 200;   
-    var event = new Event('devicechange');
-        // Dispatch it.
-        navigator.mediaDevices.dispatchEvent(event);
+  let camOffCheckCounter = 0;
+  const showCam = () => {
+    const camOff = document.body.innerText.includes("Turn on cam")
+    if (camOff) {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "e",
+          // keyCode: 70, // example values.
+          code: "KeyE", // put everything you need in this object.
+          // which: 70,
+          shiftKey: false, // you don't need to include values
+          ctrlKey: false,  // if you aren't going to use them.
+          metaKey: true   // these are here for example's sake.
+        })
+      );
+    
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "e",
+          // keyCode: 70, // example values.
+          code: "KeyE", // put everything you need in this object.
+          // which: 70,
+          shiftKey: false, // you don't need to include values
+          ctrlKey: true,  // if you aren't going to use them.
+          metaKey: false   // these are here for example's sake.
+        })
+      );
+    }
+    
+    camOffCheckCounter += 1
+    setTimeout(() => {
+      if (micOffCheckCounter < 10) {
+        unMute();
+      }
+      
+    },1000)
+  }
+  let micOffCheckCounter = 0;
+  const unMute = () => {
+    const micOff = document.body.innerText.includes("Turn on micro")
+    if (micOff) {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "d",
+          // keyCode: 69, // example values.
+          code: "KeyD", // put everything you need in this object.
+          // which: 69,
+          shiftKey: false, // you don't need to include values
+          ctrlKey: true,  // if you aren't going to use them.
+          metaKey: false   // these are here for example's sake.
+        })
+      );
+    
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "d",
+          // keyCode: 69, // example values.
+          code: "KeyD", // put everything you need in this object.
+          // which: 69,
+          shiftKey: false, // you don't need to include values
+          ctrlKey: false,  // if you aren't going to use them.
+          metaKey: true   // these are here for example's sake.
+        })
+      );
+    }
+    micOffCheckCounter += 1
+    setTimeout(() => {
+      if (micOffCheckCounter < 10) {
+        unMute();
+      }
+      
+    },1000)
+  }
 
-        setTimeout(()=>{
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "e",
-              // keyCode: 70, // example values.
-              code: "KeyE", // put everything you need in this object.
-              // which: 70,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: false,  // if you aren't going to use them.
-              metaKey: true   // these are here for example's sake.
-            })
-          );
-        },time);
-        setTimeout(()=>{
-          document.dispatchEvent(
-            new KeyboardEvent("keydown", {
-              key: "e",
-              // keyCode: 70, // example values.
-              code: "KeyE", // put everything you need in this object.
-              // which: 70,
-              shiftKey: false, // you don't need to include values
-              ctrlKey: true,  // if you aren't going to use them.
-              metaKey: false   // these are here for example's sake.
-            })
-          );
-        },time);
+  const onOffExtension = () =>{
+    camOffCheckCounter = 0;   
+    micOffCheckCounter = 0;
+    var event = new Event('devicechange');
+    // Dispatch it.
+    navigator.mediaDevices.dispatchEvent(event);
+
+    setTimeout(() => {
+      unMute();
+      showCam();
+    },200)
         
-          setTimeout(()=>{
-            document.dispatchEvent(
-              new KeyboardEvent("keydown", {
-                key: "d",
-                // keyCode: 69, // example values.
-                code: "KeyD", // put everything you need in this object.
-                // which: 69,
-                shiftKey: false, // you don't need to include values
-                ctrlKey: true,  // if you aren't going to use them.
-                metaKey: false   // these are here for example's sake.
-              })
-            );
-          },time);
-          setTimeout(()=>{
-            document.dispatchEvent(
-              new KeyboardEvent("keydown", {
-                key: "d",
-                // keyCode: 69, // example values.
-                code: "KeyD", // put everything you need in this object.
-                // which: 69,
-                shiftKey: false, // you don't need to include values
-                ctrlKey: false,  // if you aren't going to use them.
-                metaKey: true   // these are here for example's sake.
-              })
-            );
-          },time);
         
   }
 
