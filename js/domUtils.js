@@ -138,10 +138,18 @@ const setMicrophone = (microphone) => {
 }; 
 
 const showDiv = () => {
-  if (document.getElementById('buttonsContainer')){
-    document.getElementById('buttonsContainer').style.visibility = 'visible';
-    document.getElementById("pWebContainerState").innerText = "OPEN";
+  if (window.isExtentionActive) {
+    if (document.getElementById('buttonsContainer')){
+      document.getElementById('buttonsContainer').style.visibility = 'visible';
+      document.getElementById("pWebContainerState").innerText = "OPEN";
+    }
+  }else {
+    if (document.getElementById('buttonsContainer')){
+      document.getElementById('buttonsContainer').style.visibility = 'hidden';
+      document.getElementById("pWebContainerState").innerText = "CLOSE";
+    }
   }
+  
 }
 
 const createWebContainerState = () =>{

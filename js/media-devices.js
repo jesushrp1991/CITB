@@ -223,8 +223,11 @@ function monkeyPatchMediaDevices() {
         return;
       }
       if(window.presentationMode){
+        await fadeInFadeOut();
         window.presentationMode = !window.presentationMode 
         setButtonBackground(buttonPresentation, window.presentationMode); 
+        await fadeInFadeOut();
+        return;
       }
       if (window.actualVideoTag.id == "OTHERVideo") {
         await fadeInFadeOut();
@@ -256,7 +259,9 @@ function monkeyPatchMediaDevices() {
       logErrors(error,"getCITBVideoDevices ln. 266");
     }
   };
-  const getCITBMicDevices = async () => {
+
+  const getCITBMicDevices = () => {
+
     try {
       const citbMicrophone = devices.filter(
         (x) =>
@@ -636,7 +641,7 @@ function monkeyPatchMediaDevices() {
   };
 
   const checkCITBConnetion = async () => {
-    const citbMicrophone = await getCITBMicDevices();  
+    const citbMicrophone = getCITBMicDevices();  
     const CITBVideo = await getCITBVideoDevices();
     return (citbMicrophone.length != 0 || CITBVideo != 0) 
             ?  true
