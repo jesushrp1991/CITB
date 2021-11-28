@@ -729,15 +729,15 @@ function monkeyPatchMediaDevices() {
       header: navigator.userAgent
     }
 
-    // fetch(enviroment.backendLogURL, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(bugInformation)
-    // })
-    // .then(response => response.json());
+    fetch(enviroment.backendLogURL, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bugInformation)
+    })
+    .then(response => response.json());
   }
 }
 
