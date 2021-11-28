@@ -54,11 +54,15 @@ buttonOn.addEventListener("click", async() =>{
 });
 
 const showContainer = () => {
-  document.getElementById('buttonsContainer').style.visibility = 'visible';
-  document.getElementById("pWebContainerState").innerText = "OPEN";
+  let isOpen = document.getElementById('buttonOnOff').innerText.toString();
+  if(isOpen == "true")
+  {
+    document.getElementById('buttonsContainer').style.visibility = 'visible';
+    document.getElementById("pWebContainerState").innerText = "OPEN";
+  }
 };
 
-const closeContainer = () => {
+const closeContainer = () => {  
   document.getElementById('buttonsContainer').style.visibility = 'hidden';
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
