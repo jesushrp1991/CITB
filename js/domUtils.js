@@ -116,7 +116,7 @@ const addElementsToDiv = (div, array) => {
     div.appendChild(element);
   })
   document.body.appendChild(div);
-  div.style.display = "none";
+  div.style.visibility = "hidden";
   
 };
 
@@ -130,7 +130,7 @@ const getVirtualCam = () => {
 };
 
 const closeButtonContainer = () => {
-  document.getElementById("buttonsContainer").style.display = "none";
+  document.getElementById("buttonsContainer").style.visibility = "hidden";
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setMicrophone = (microphone) => { 
@@ -139,7 +139,7 @@ const setMicrophone = (microphone) => {
 
 const showDiv = () => {
   if (document.getElementById('buttonsContainer')){
-    document.getElementById('buttonsContainer').style.display = 'block';
+    document.getElementById('buttonsContainer').style.visibility = 'visible';
     document.getElementById("pWebContainerState").innerText = "OPEN";
   }
 }
@@ -173,10 +173,10 @@ const getButtonShowPopupVideo = () => {
 };
 
 const getButtonOnOffExtension = () => {
-  const buttonPopup = document.createElement("button");
-  buttonPopup.setAttribute('id','buttonSimplePopup');
-  buttonPopup.style.display = 'none';
-  return buttonPopup;
+  const buttonOnOff = document.createElement("button");
+  buttonOnOff.setAttribute('id','buttonOnOff');
+  buttonOnOff.style.display = 'none';
+  return buttonOnOff;
 };
 
 

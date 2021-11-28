@@ -6,7 +6,7 @@ let buttonChooseMic = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = false;
  
 const getExtensionState = () =>{
-  let isOpen = document.getElementById('buttonSimplePopup').innerText.toString();  
+  let isOpen = document.getElementById('buttonOnOff').innerText.toString();  
   return isOpen;
 }
 const getOnOffState = async() =>{ 
@@ -32,28 +32,23 @@ const getOnOffState = async() =>{
 } 
 getOnOffState(); 
 
-const alertPopup = () =>{
-  document.getElementById("buttonSimplePopup").click(); 
+const clickOnOff = () =>{
+  document.getElementById("buttonOnOff").click(); 
 }
 
 buttonOn.addEventListener("click", async() =>{
-  globalState ? buttonOn.className = 'buttonOnOff' : buttonOn.className = 'buttonOnOffDeactivate';
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
     if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: alertPopup,
+        function: clickOnOff,
       });
     }
-    if(globalState == 'on'){
-      globalState = "off";      
-      buttonOn.setAttribute('class','buttonOnOffDeactivate');
-    }else{
-      globalState = "on";
-      buttonOn.setAttribute('class','buttonOnOff');
-    }   
+    setTimeout(()=>{
+      getOnOffState();
+    },100);
   });
     
 });

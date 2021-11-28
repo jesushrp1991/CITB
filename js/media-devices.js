@@ -85,18 +85,23 @@ function monkeyPatchMediaDevices() {
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
-  buttonOnOffExtension.addEventListener("click", ()=>{  
-    if(window.isExtentionActive){
+  
+  const openCloseExtension = async () =>{
+    let isCITBConnected = await checkCITBConnetion();
+    if(window.isExtentionActive){      
       closeButtonContainer();
     }
-    if(!window.isExtentionActive){
-      audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
-      showDiv();
+    if(isCITBConnected){
+      if(!window.isExtentionActive){
+        audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+        showDiv();
+      }
     }
     window.isExtentionActive = !window.isExtentionActive;
     buttonOnOffExtension.innerText = window.isExtentionActive;    
     onOffExtension();
-  });
+  }
+  buttonOnOffExtension.addEventListener("click", openCloseExtension);
   
   //WEB CONTAINER
   const buttonShow = getButtonShow();
@@ -200,7 +205,7 @@ function monkeyPatchMediaDevices() {
         classCallBackFunction
       );
      checkingMicrophoneId();
-     speachCommands();
+    //  speachCommands();
     }
   }; //END ONREADY STATE CHANGE
 
@@ -238,13 +243,35 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const getCITBMicMedia = async () => {
+
+  const getCITBVideoDevices = async () => {
+    try {
+      const citbVideo = devices.filter(
+        s => 
+        s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) 
+        ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   
+      );
+      return (citbVideo.length > 0) ? citbVideo : [];
+    } catch (error) {
+      logErrors(error,"getCITBVideoDevices ln. 266");
+    }
+  };
+  const getCITBMicDevices = async () => {
     try {
       const citbMicrophone = devices.filter(
         (x) =>
           x.kind === "audioinput" &&
           x.label.includes(enviroment.MYAUDIODEVICELABEL)
       );
+      return (citbMicrophone.length > 0) ? citbMicrophone : [];
+    } catch (error) {
+      logErrors(error,"getCITBMicDevices ln. 266");
+    }
+  };
+
+  const getCITBMicMedia = async () => {
+    try {
+      let citbMicrophone = getCITBMicDevices();
       if (citbMicrophone.length > 0) {
         let constraints = {
           video: false,
@@ -311,11 +338,7 @@ function monkeyPatchMediaDevices() {
 
   const deactivateClassMode = () => {
    try {
-    const citbMicrophone = devices.filter(
-      (x) =>
-        x.kind === "audioinput" &&
-        x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );
+    const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
       setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
@@ -513,7 +536,6 @@ function monkeyPatchMediaDevices() {
       devices = res;
       window.devices = res;
       if(window.isExtentionActive){ 
-        console.log("Dispatch enumerateDevices")
 
         let micCITB = devices.filter(
           (x) =>
@@ -549,7 +571,6 @@ function monkeyPatchMediaDevices() {
   ) {
     try {
       if(window.isExtentionActive){
-        console.log("Dispatch webKitgetUserMedia")
 
         if (constrains.video && constrains.video.mandatory.sourceId) {
           if (
@@ -582,7 +603,6 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        console.log("Dispatch getUserMedia")
         if (args.length && args[0].video && args[0].video.deviceId) {
           if (
             args[0].video.deviceId === "virtual" ||
@@ -615,17 +635,9 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const checkCITBConnetion = (devices) => {
-    const citbMicrophone = devices.filter(
-      (x) =>
-        x.kind === "audioinput" 
-        && x.label.includes(enviroment.MYAUDIODEVICELABEL)
-    );    
-    const CITBVideo = devices.filter(
-      s => 
-      s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) 
-      ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   
-    );
+  const checkCITBConnetion = async () => {
+    const citbMicrophone = await getCITBMicDevices();  
+    const CITBVideo = await getCITBVideoDevices();
     return (citbMicrophone.length != 0 || CITBVideo != 0) 
             ?  true
             :  false;
@@ -634,12 +646,14 @@ function monkeyPatchMediaDevices() {
   navigator.mediaDevices.addEventListener(
     "devicechange",
     async function (event) {
-      let devices = await navigator.mediaDevices.enumerateDevices();
-      let isCITBConnected = checkCITBConnetion(devices);
-      console.log("isCITBConnected",isCITBConnected);
+      await navigator.mediaDevices.enumerateDevices();
+      let isCITBConnected = await checkCITBConnetion();
       if(isCITBConnected){
         await buildVideoContainersAndCanvas();
         await builVideosFromDevices();
+      }
+      if (!isCITBConnected && window.isExtentionActive){
+        openCloseExtension();
       }
     }
   );
@@ -648,7 +662,6 @@ function monkeyPatchMediaDevices() {
     let time = 200;   
     var event = new Event('devicechange');
         // Dispatch it.
-        console.log("Dispatch");
         navigator.mediaDevices.dispatchEvent(event);
 
         setTimeout(()=>{
