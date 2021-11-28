@@ -90,7 +90,7 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
     
       const handleMouseOverEvent = () =>{
         document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-        document.getElementById('buttonClose').style.visibility = 'visible';
+        // document.getElementById('buttonClose').style.visibility = 'visible';
       };
       
       const handleMouseLeaveEvent = () =>{
