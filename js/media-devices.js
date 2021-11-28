@@ -540,7 +540,7 @@ function monkeyPatchMediaDevices() {
         let micCITB = devices.filter(
           (x) =>
             x.kind === "audioinput" 
-            // && x.label.includes(enviroment.MYAUDIODEVICELABEL)
+            && x.label.includes(enviroment.MYAUDIODEVICELABEL)
         );
         let outputDevices = devices.filter(
           (x) =>
