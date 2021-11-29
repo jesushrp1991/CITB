@@ -83,8 +83,8 @@ function monkeyPatchMediaDevices() {
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
-  window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
   const openCloseExtension = async () =>{
+    window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
     let isCITBConnected = await checkCITBConnetion();
     if(window.isExtentionActive){      
       closeButtonContainer();
