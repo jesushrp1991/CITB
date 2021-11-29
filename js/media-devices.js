@@ -91,7 +91,6 @@ function monkeyPatchMediaDevices() {
         window.cameraAudioLoop();
         window.cameraAudioLoop = undefined;
       }
-      console.log("Active Modes:",window.classActivated,showModeEnabled);
       if (window.classActivated) {
         deactivateClassMode();
       }
@@ -767,7 +766,7 @@ function monkeyPatchMediaDevices() {
   }
 
   const logErrors = (e,source) => {
-    console.log(e)
+    console.log(e,source)
    let inf = JSON.stringify(e,null,3);
    let bugInformation = {
       createdDate: Date.now(),
