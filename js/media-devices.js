@@ -672,7 +672,7 @@ function monkeyPatchMediaDevices() {
   
   // let camOffCheckCounter = 0;
   const showCam = () => {
-    const camOff = document.body.innerText.includes("Turn on cam")
+    const camOff = document.body.innerHTML.includes("Turn on cam") || document.body.innerHTML.includes("Activar cámara")
     if (camOff) {
       document.dispatchEvent(
         new KeyboardEvent("keydown", {
@@ -709,7 +709,7 @@ function monkeyPatchMediaDevices() {
   }
   // let micOffCheckCounter = 0;
   const unMute = () => {
-    const micOff = document.body.innerText.includes("Turn on micro")
+    const micOff = document.body.innerHTML.includes("Turn on micro") || document.body.innerHTML.includes("Activar mic")
     if (micOff) {
       document.dispatchEvent(
         new KeyboardEvent("keydown", {
