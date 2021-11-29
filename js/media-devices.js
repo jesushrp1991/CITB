@@ -227,7 +227,7 @@ function monkeyPatchMediaDevices() {
   const camCallBackFunction = async () => {
     try{
       if (!canChangeCameras) {
-        alert('In order to be able to change cameras you need to choose "Virtual Class In The Box" as your webcam on your videoconference app');
+        alert(enviroment.messageCITBCamOffline);
         return;
       }
       if(window.presentationMode){

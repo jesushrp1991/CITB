@@ -15,7 +15,8 @@ const enviroment = {
     textHeaderSelectMicClassMode: 'Classroom mode Mic',
     textHeaderSelectVideo: 'Choose Camera',
     backendLogURL: 'https://apicitb.tk/api/log/savelog',
-    messageRestartConference : "Please, restart the page to apply changes."
+    messageRestartConference : "Please, restart the page to apply changes.",
+    messageCITBCamOffline : "You dont have a CITB camera connected."
 
 }
 
