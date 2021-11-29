@@ -84,11 +84,13 @@ function monkeyPatchMediaDevices() {
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
   const openCloseExtension = async () =>{
-    window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
     let isCITBConnected = await checkCITBConnetion();
     if(window.isExtentionActive){      
       closeButtonContainer();
-      window.cameraAudioLoop();
+      if (window.cameraAudioLoop != undefined) {
+        window.cameraAudioLoop();
+        window.cameraAudioLoop = undefined;
+      }
       console.log("Active Modes:",window.classActivated,showModeEnabled);
       if (window.classActivated) {
         console.log("Class Deactivate");
@@ -100,7 +102,7 @@ function monkeyPatchMediaDevices() {
     }
     if(isCITBConnected){
       if(!window.isExtentionActive){
-        audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+        window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
         showDiv();
       }
     }  
@@ -670,7 +672,7 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  // let camOffCheckCounter = 0;
+  let camOffCheckCounter = 0;
   const showCam = () => {
     const camOff = document.body.innerHTML.includes("Turn on cam") || document.body.innerHTML.includes("Activar cámara")
     if (camOff) {
@@ -699,15 +701,15 @@ function monkeyPatchMediaDevices() {
       );
     }
     
-    // camOffCheckCounter += 1
-    // setTimeout(() => {
-    //   if (micOffCheckCounter < 10) {
-    //     unMute();
-    //   }
+    camOffCheckCounter += 1
+    setTimeout(() => {
+      if (micOffCheckCounter < 10) {
+        unMute();
+      }
       
-    // },1000)
+    },1000)
   }
-  // let micOffCheckCounter = 0;
+  let micOffCheckCounter = 0;
   const unMute = () => {
     const micOff = document.body.innerHTML.includes("Turn on micro") || document.body.innerHTML.includes("Activar mic")
     if (micOff) {
@@ -735,18 +737,18 @@ function monkeyPatchMediaDevices() {
         })
       );
     }
-    // micOffCheckCounter += 1
-    // setTimeout(() => {
-    //   if (micOffCheckCounter < 10) {
-    //     unMute();
-    //   }
+    micOffCheckCounter += 1
+    setTimeout(() => {
+      if (micOffCheckCounter < 10) {
+        unMute();
+      }
       
-    // },1000)
+    },1000)
   }
 
   const onOffExtension = () =>{
-    // camOffCheckCounter = 0;   
-    // micOffCheckCounter = 0;
+    camOffCheckCounter = 0;   
+    micOffCheckCounter = 0;
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
@@ -754,7 +756,7 @@ function monkeyPatchMediaDevices() {
     setTimeout(() => {
       unMute();
       showCam();
-    },500)
+    },200)
         
         
   }
