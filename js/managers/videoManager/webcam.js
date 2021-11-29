@@ -91,7 +91,8 @@ function audioTimerLoop(callback, frequency) {
     };
     // return a function to stop our loop
     return function() {
-      stopped = true;
+        console.log("Audio Loop stoped");
+        stopped = true;
     };
   }
   

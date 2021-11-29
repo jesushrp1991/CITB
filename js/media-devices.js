@@ -79,24 +79,31 @@ import {speachCommands} from "./managers/voiceManager/voice.js"
 
 function monkeyPatchMediaDevices() {
 
-
-  window.showActivated = false;
   window.classActivated = false;
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
-  
+  window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
   const openCloseExtension = async () =>{
     let isCITBConnected = await checkCITBConnetion();
     if(window.isExtentionActive){      
       closeButtonContainer();
+      window.cameraAudioLoop();
+      console.log("Active Modes:",window.classActivated,showModeEnabled);
+      if (window.classActivated) {
+        console.log("Class Deactivate");
+        deactivateClassMode();
+      }
+      if (showModeEnabled) {
+        showCallBackFunction();
+      }   
     }
     if(isCITBConnected){
       if(!window.isExtentionActive){
         audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
         showDiv();
       }
-    }
+    }  
     window.isExtentionActive = !window.isExtentionActive;
     buttonOnOffExtension.innerText = window.isExtentionActive;    
     onOffExtension();
@@ -187,7 +194,7 @@ function monkeyPatchMediaDevices() {
       );
     
       setButtonBackground(window.buttonCam, window.citbActivated);
-      setButtonBackground(buttonShow, window.showActivated);
+      setButtonBackground(buttonShow, showModeEnabled);
       setButtonBackground(buttonClass, window.classActivated);
       setButtonBackground(buttonDrag);
       if (window.actualVideoTag == videoCITB) {
@@ -663,7 +670,7 @@ function monkeyPatchMediaDevices() {
     }
   );
   
-  let camOffCheckCounter = 0;
+  // let camOffCheckCounter = 0;
   const showCam = () => {
     const camOff = document.body.innerText.includes("Turn on cam")
     if (camOff) {
@@ -692,15 +699,15 @@ function monkeyPatchMediaDevices() {
       );
     }
     
-    camOffCheckCounter += 1
-    setTimeout(() => {
-      if (micOffCheckCounter < 10) {
-        unMute();
-      }
+    // camOffCheckCounter += 1
+    // setTimeout(() => {
+    //   if (micOffCheckCounter < 10) {
+    //     unMute();
+    //   }
       
-    },1000)
+    // },1000)
   }
-  let micOffCheckCounter = 0;
+  // let micOffCheckCounter = 0;
   const unMute = () => {
     const micOff = document.body.innerText.includes("Turn on micro")
     if (micOff) {
@@ -728,18 +735,18 @@ function monkeyPatchMediaDevices() {
         })
       );
     }
-    micOffCheckCounter += 1
-    setTimeout(() => {
-      if (micOffCheckCounter < 10) {
-        unMute();
-      }
+    // micOffCheckCounter += 1
+    // setTimeout(() => {
+    //   if (micOffCheckCounter < 10) {
+    //     unMute();
+    //   }
       
-    },1000)
+    // },1000)
   }
 
   const onOffExtension = () =>{
-    camOffCheckCounter = 0;   
-    micOffCheckCounter = 0;
+    // camOffCheckCounter = 0;   
+    // micOffCheckCounter = 0;
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
@@ -747,7 +754,7 @@ function monkeyPatchMediaDevices() {
     setTimeout(() => {
       unMute();
       showCam();
-    },200)
+    },500)
         
         
   }
