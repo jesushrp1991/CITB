@@ -89,9 +89,7 @@ function monkeyPatchMediaDevices() {
     if(window.isExtentionActive){      
       closeButtonContainer();
       window.cameraAudioLoop();
-      console.log("Active Modes:",window.classActivated,showModeEnabled);
       if (window.classActivated) {
-        console.log("Class Deactivate");
         deactivateClassMode();
       }
       if (showModeEnabled) {
@@ -647,12 +645,17 @@ function monkeyPatchMediaDevices() {
     }
   };
 
+  window.isFirstTimeCITBConnection = true;
   const checkCITBConnetion = async () => {
     const citbMicrophone = getCITBMicDevices();  
     const CITBVideo = await getCITBVideoDevices();
-    return (citbMicrophone.length != 0 || CITBVideo != 0) 
-            ?  true
-            :  false;
+    if (citbMicrophone.length != 0 || CITBVideo != 0 ){
+      if(window.isFirstTimeCITBConnection){
+        window.isFirstTimeCITBConnection = false;
+      }
+      return true;
+    }
+    return false;
   }
 
   navigator.mediaDevices.addEventListener(
@@ -660,10 +663,11 @@ function monkeyPatchMediaDevices() {
     async function (event) {
       await navigator.mediaDevices.enumerateDevices();
       let isCITBConnected = await checkCITBConnetion();
-      if(isCITBConnected){
-        await buildVideoContainersAndCanvas();
-        await builVideosFromDevices();
-      }
+      // if(isCITBConnected && window.isFirstTimeCITBConnection){
+      //   console.log("Creating new container")
+      //   // await buildVideoContainersAndCanvas();
+      //   // await builVideosFromDevices();
+      // }
       if (!isCITBConnected && window.isExtentionActive){
         openCloseExtension();
       }

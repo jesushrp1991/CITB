@@ -1,5 +1,4 @@
 const speachCommands = () => {
-  console.log("SPEACH INIT")
 try{
   
       var cameraCommands = {
