@@ -543,6 +543,8 @@ function monkeyPatchMediaDevices() {
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
   MediaDevices.prototype.enumerateDevices = async function () {
+    window.noelTest = arguments;
+    console.log("enumerateDevices",arguments);
    try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
@@ -659,22 +661,26 @@ function monkeyPatchMediaDevices() {
     }
     return false;
   }
-
-  navigator.mediaDevices.addEventListener(
-    "devicechange",
-    async function (event) {
-      await navigator.mediaDevices.enumerateDevices();
-      let isCITBConnected = await checkCITBConnetion();
-      // if(isCITBConnected && window.isFirstTimeCITBConnection){
-      //   console.log("Creating new container")
-      //   // await buildVideoContainersAndCanvas();
-      //   // await builVideosFromDevices();
-      // }
-      if (!isCITBConnected && window.isExtentionActive){
-        openCloseExtension();
+  navigator.mediaDevices.getUserMedia({audio: true, video: true})
+  setTimeout(() => {
+    navigator.mediaDevices.addEventListener(
+      "devicechange",
+      async function (event) {
+        console.log("deviceChange")
+        await navigator.mediaDevices.enumerateDevices();
+        let isCITBConnected = await checkCITBConnetion();
+        if(isCITBConnected ){
+          console.log("Creating new container")
+          await buildVideoContainersAndCanvas();
+          await builVideosFromDevices();
+        }
+        if (!isCITBConnected && window.isExtentionActive){
+          openCloseExtension();
+        }
       }
-    }
-  );
+    );
+  },2000)
+  
   
   let camOffCheckCounter = 0;
   const showCam = () => {
