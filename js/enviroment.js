@@ -16,7 +16,7 @@ const enviroment = {
     textHeaderSelectVideo: 'Choose Camera',
     backendLogURL: 'https://apicitb.tk/api/log/savelog',
     messageRestartConference : "Please, restart the page to apply changes.",
-    messageCITBCamOffline : "You dont have a CITB camera connected."
+    messageCITBCamOffline : "Press the citb physical cam button to have the videoconferencing program detect and use this camera by default."
 
 }
 
