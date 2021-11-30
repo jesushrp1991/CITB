@@ -7,3 +7,8 @@ chrome.runtime.onInstalled.addListener(function(details){
       chrome.storage.sync.set({ extensionGlobalState: "on" });
     }
 });
+
+
+chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+  console.log("test test", msg, sender)
+});
