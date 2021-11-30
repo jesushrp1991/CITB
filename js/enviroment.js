@@ -5,7 +5,7 @@ const enviroment = {
     MYAUDIODEVICELABEL: 'CITB',
 
     //**** */ COLLADO *****//
-    EXTENSIONID: "pgloinlccpmhpgbnccfecikdjgdhneof",
+    EXTENSIONID: "ijbdnbhhklnlmdpldichdlknfaibceaf",
     // MYVIDEODDEVICELABEL: ["2K HD Camera","PC Camera"],
     // MYVIDEODDEVICELABEL: "Sirius USB2.0 Camera (0ac8:3340), PC Camera",
     // MYAUDIODEVICELABEL: 'Comunicaciones - Micrófono (Dispositivo de High Definition Audio)',
