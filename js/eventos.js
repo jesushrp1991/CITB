@@ -3,7 +3,7 @@ import {
   } from './domUtils.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
-    
+    console.log("set events");
     buttonCam.addEventListener('click', camCallBackFunction);
 
     buttonShow.addEventListener('click', showCallBackFunction);

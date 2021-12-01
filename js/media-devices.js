@@ -8,7 +8,7 @@ import {
   getButtonClose,
   getContainerButton,
   setButtonBackground,
-  addElementsToDiv,
+  addFloatingContainerToDom,
   getVirtualCam,
   getButtonDrag,
   setMicrophone,
@@ -18,9 +18,6 @@ import {
   getButtonShowPopupMicClassMode,
   getButtonShowPopupVideo,
   getButtonPresentation,
-  showTooltip,
-  classTooltip,
-  presentationTooltip,
   getButtonOnOffExtension,
   closeButtonContainer
 } from "./domUtils.js";
@@ -78,8 +75,186 @@ import {
 import {speachCommands} from "./managers/voiceManager/voice.js"
 
 function monkeyPatchMediaDevices() {
+  var floatingButtonsHTML = "";
+  const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
+    createHTML: (to_escape) => to_escape
+  })
 
-  window.classActivated = false;
+  const duplo2FirstTimeFromDuplo = (duplo) => {
+    return window.presentationMode && duplo && !window.duplo2
+  }
+
+  const duplo2SecondTime = (duplo) => {
+    return window.presentationMode && duplo && window.duplo2
+  }
+
+  const duploFirstTimeFromDuplo2 = (duplo) => {
+    return window.presentationMode && !duplo && window.duplo2
+  }
+
+  const duploSecondTimeFromDuplo2 = (duplo) => {
+    return window.presentationMode && !duplo && !window.duplo2
+
+  }
+
+  const duploMode = async (duplo) => {
+    await fadeInFadeOut();
+    if (!window.presentationMode) {
+      window.presentationMode = true;
+    }
+    else if (duplo2FirstTimeFromDuplo(duplo)) {
+      window.presentationMode = true
+    }else if (duplo2SecondTime(duplo)) {
+      window.presentationMode = false
+      window.duplo2 = false
+    }else if (duploFirstTimeFromDuplo2(duplo)) {
+      window.presentationMode = true
+    }else if (duploSecondTimeFromDuplo2(duplo)) {
+      window.presentationMode = false
+    }
+   
+    window.duplo2 = duplo;
+   
+    const duploContainerButton = document.getElementById("buttonPresentation");
+    const duplo2Button = document.getElementById("duplo2");
+    setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
+    setButtonBackground(duploContainerButton, window.presentationMode );
+    setButtonBackground(duplo2Button, duplo && window.presentationMode );
+
+
+    await fadeInFadeOut();
+  }
+
+  const presentacionCallBackFunction = async () =>{
+    duploMode(false);
+  }
+  const presentacion2CallBackFunction = async () =>{
+    duploMode(true);
+  }
+
+  const camCallBackFunction = async () => {
+    try{
+      if (!canChangeCameras) {
+        alert(enviroment.messageCITBCamOffline);
+        return;
+      }
+      if(window.presentationMode){
+        await fadeInFadeOut();
+        window.presentationMode = !window.presentationMode 
+        const duploContainerButton = document.getElementById("buttonPresentation");
+        const duplo2Button = document.getElementById("duplo2");
+        setButtonBackground(buttonPresentation, false);
+        setButtonBackground(duploContainerButton, false );
+        setButtonBackground(duplo2Button, false );
+        await fadeInFadeOut();
+        return;
+      }
+      if (window.actualVideoTag.id == "OTHERVideo") {
+        await fadeInFadeOut();
+        window.actualVideoTag = videoCITB;
+        window.citbActivated = true;
+        await fadeInFadeOut();
+      } else {
+        await fadeInFadeOut();
+        window.actualVideoTag = videoOther;
+        window.citbActivated = false;
+        await fadeInFadeOut();
+
+      }
+
+      setButtonBackground(window.buttonCam, window.citbActivated);
+    }catch(e){
+      logErrors(e,"camCallBackFunction,ln 205");
+    }
+  };
+
+  const showCallBackFunction = async () => {
+    try {
+      if (window.classActivated) {
+        deactivateClassMode();
+      }
+      if (showModeEnabled) {
+        if (showAudioContext != null) {
+          showAudioContext.close();
+          showAudioContext = null;
+          showModeEnabled = false;
+          setButtonBackground(buttonShow, showModeEnabled);
+        }
+      } else {
+        showAudioContext = new AudioContext();
+        const CITBMicMedia = await getCITBMicMedia();
+        if (CITBMicMedia == null) {
+          setButtonBackground(buttonShow, false);
+          return;
+        }
+        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
+        source.connect(showAudioContext.destination);
+        showModeEnabled = true;
+        setButtonBackground(buttonShow, showModeEnabled);
+      }
+    } catch (error) {
+      logErrors(error,"showCallBackFunction ln. 251")
+    }
+  };
+
+  const classCallBackFunction = async (isFromPopup) => {
+    try {
+      if(!checkbox_class.checked && !window.classActivated){
+        showPopupMic();
+      }else{
+        changeToClassMode();
+      }
+    } catch (error) {
+      logErrors(error,"classCallBackFunction ln 352")
+    }
+  };
+
+  const setCITBButtonsAndListeners = () => {
+    console.log("setCITBButtonsAndListeners");
+    buttonShow = getButtonShow();
+    buttonClass = getButtonClass();
+    buttonPresentation = getButtonPresentation();
+    buttonClose = getButtonClose();
+    buttonDrag = getButtonDrag();
+    window.buttonCam = getButtonCam();
+    buttonsContainerDiv = getContainerButton();
+
+    buttonPresentation.addEventListener('click',presentacionCallBackFunction);
+    // document.getElementById("buttonPresentation").addEventListener('click',presentacionCallBackFunction);
+    document.getElementById("duplo2").addEventListener('click',presentacion2CallBackFunction);
+
+    setEvents(
+      buttonShow,
+      buttonClass,
+      window.buttonCam,
+      buttonClose,
+      buttonsContainerDiv,
+      camCallBackFunction,
+      showCallBackFunction,
+      classCallBackFunction
+    );
+  }
+
+  document.addEventListener('floatingButtons', function (e) {
+    floatingButtonsHTML = e.detail;
+    addFloatingContainerToDom(
+      escapeHTMLPolicy.createHTML(floatingButtonsHTML)
+    );
+    setCITBButtonsAndListeners();
+    console.log("AFTER FLOATING LISTENER")
+
+  });
+
+  const setCITBPresets = () => {
+    window.presentationMode = false;
+    window.classActivated = false;
+  }
+  setCITBPresets();
+
+ 
+
+ 
+ 
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
@@ -111,17 +286,8 @@ function monkeyPatchMediaDevices() {
   buttonOnOffExtension.addEventListener("click", openCloseExtension);
   
   //WEB CONTAINER
-  const buttonShow = getButtonShow();
-  const showTip = showTooltip();
-  const buttonClass = getButtonClass();
-  const classTip = classTooltip();
-  const buttonPresentation = getButtonPresentation();
-  const presentationTip = presentationTooltip();
-  window.presentationMode = false;
-
-  window.buttonCam = getButtonCam();
-  const buttonClose = getButtonClose();
-  const buttonDrag = getButtonDrag();
+  
+  var buttonShow, buttonClass, buttonPresentation,buttonClose,buttonDrag,buttonsContainerDiv;
   const buttonPopup = getButtonShowPopupMicClassMode();
   const buttonVideoPopup = getButtonShowPopupVideo();
   const pWebContainerState = createWebContainerState();
@@ -164,11 +330,15 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
+      console.log("DOCUMENT READY");
       document.body.appendChild(buttonOnOffExtension);
+
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
+      console.log("AFTER AFTER");
+
       document.body.appendChild(buttonPopup);
       document.body.appendChild(buttonVideoPopup);
       document.body.appendChild(pWebContainerState);
@@ -176,22 +346,8 @@ function monkeyPatchMediaDevices() {
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
       //WEB CONTAINER
-      const buttonsContainerDiv = getContainerButton();
-
-      addElementsToDiv(
-        buttonsContainerDiv,
-        [
-          buttonClose,
-          window.buttonCam,
-          buttonShow,
-          showTip,
-          buttonClass,
-          classTip,
-          buttonPresentation,
-          presentationTip,
-          buttonDrag,
-        ]
-      );
+      console.log("IN HERE", floatingButtonsHTML);
+      
     
       setButtonBackground(window.buttonCam, window.citbActivated);
       setButtonBackground(buttonShow, showModeEnabled);
@@ -201,57 +357,13 @@ function monkeyPatchMediaDevices() {
         window.citbActivated = true;
         setButtonBackground(window.buttonCam, window.citbActivated);
       }
-      setEvents(
-        buttonShow,
-        buttonClass,
-        window.buttonCam,
-        buttonClose,
-        buttonsContainerDiv,
-        camCallBackFunction,
-        showCallBackFunction,
-        classCallBackFunction
-      );
+      
      checkingMicrophoneId();
     //  speachCommands();
     }
   }; //END ONREADY STATE CHANGE
 
-  const presentacionCallBackFunction = async () =>{
-      await fadeInFadeOut();
-      window.presentationMode = !window.presentationMode
-      setButtonBackground(buttonPresentation, window.presentationMode);
-      await fadeInFadeOut();
-  }
-  buttonPresentation.addEventListener('click',presentacionCallBackFunction);
-  const camCallBackFunction = async () => {
-    try{
-      if (!canChangeCameras) {
-        alert(enviroment.messageCITBCamOffline);
-        return;
-      }
-      if(window.presentationMode){
-        await fadeInFadeOut();
-        window.presentationMode = !window.presentationMode 
-        setButtonBackground(buttonPresentation, window.presentationMode); 
-        await fadeInFadeOut();
-        return;
-      }
-      if (window.actualVideoTag.id == "OTHERVideo") {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoCITB;
-        window.citbActivated = true;
-        await fadeInFadeOut();
-      } else {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoOther;
-        window.citbActivated = false;
-        await fadeInFadeOut();
-      }
-      setButtonBackground(window.buttonCam, window.citbActivated);
-    }catch(e){
-      logErrors(e,"camCallBackFunction,ln 205");
-    }
-  };
+
 
 
   const getCITBVideoDevices = async () => {
@@ -301,34 +413,7 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const showCallBackFunction = async () => {
-    try {
-      if (window.classActivated) {
-        deactivateClassMode();
-      }
-      if (showModeEnabled) {
-        if (showAudioContext != null) {
-          showAudioContext.close();
-          showAudioContext = null;
-          showModeEnabled = false;
-          setButtonBackground(buttonShow, showModeEnabled);
-        }
-      } else {
-        showAudioContext = new AudioContext();
-        const CITBMicMedia = await getCITBMicMedia();
-        if (CITBMicMedia == null) {
-          setButtonBackground(buttonShow, false);
-          return;
-        }
-        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
-        source.connect(showAudioContext.destination);
-        showModeEnabled = true;
-        setButtonBackground(buttonShow, showModeEnabled);
-      }
-    } catch (error) {
-      logErrors(error,"showCallBackFunction ln. 251")
-    }
-  };
+  
 
   const activateClassMode = () => {
     try {
@@ -403,17 +488,6 @@ function monkeyPatchMediaDevices() {
     div_Fab.setAttribute('class','fab');
     div_Overlay.removeAttribute('class');
   }
-  const classCallBackFunction = async (isFromPopup) => {
-    try {
-      if(!checkbox_class.checked && !window.classActivated){
-        showPopupMic();
-      }else{
-        changeToClassMode();
-      }
-    } catch (error) {
-      logErrors(error,"classCallBackFunction ln 352")
-    }
-  };
 
   const showPopupMic = async() =>{
     try {
@@ -545,7 +619,7 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.enumerateDevices = async function () {
     window.noelTest = arguments;
     console.log("enumerateDevices",arguments);
-   try {
+    try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
       window.devices = res;
@@ -568,6 +642,22 @@ function monkeyPatchMediaDevices() {
         
         let finalResult = [...result,...outputDevices]
         return finalResult;
+      }else {
+        return res.filter( x => {
+          if (x.kind === "audioinput" && x.label.includes(enviroment.MYAUDIODEVICELABEL)){
+            return false
+          }
+          if (
+            x.kind === "videoinput" 
+              && (
+                x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0])
+                || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])
+              )
+          ) {
+            return false
+          }
+          return true;
+        })
       }
       return res;
    } catch (error) {

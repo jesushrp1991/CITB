@@ -17,47 +17,42 @@ var virtualWebCamMediaStream = new MediaStream();
 const virtualWebCamCanvasVideoContainer = generateVirtualWebCamCanvas();
 const videoCITB = generateCITBVideoContainer();
 const videoOther = generateOtherVideoContainer();
-let timeFromLastFrame = performance.now(); 
 const fps = 1000/30 
 let currentAlphaValue = 0
 let up = true
-let fadeTimer = performance.now(); 
 
 const fadeInFadeOut = () => {
      
     return new Promise((resolve, reject) =>{
         let done = false;
         const runLoop = () => {
-            const timeCurrent = performance.now(); 
             if (!done) {
-                requestAnimationFrame(runLoop);
-    
+                setTimeout(() =>{
+                    runLoop();
+                }, Math.ceil(1000/30))    
             }
-    
-            if (timeCurrent - fadeTimer >= fps) { 
-                const fadeInSteps = 100 / 30 / 100
-    
-                if (up) {
-                    currentAlphaValue += fadeInSteps 
-                }  else{
-                    currentAlphaValue -= fadeInSteps;
-                }
-                if (currentAlphaValue >= 1) {
-                        currentAlphaValue = 1;
-                        up = false
-                        done = true
-                        return resolve();
-                        return
-                }
-                if (currentAlphaValue <= 0 ) {
-                    currentAlphaValue = 0;
-                    up = true
+            const fadeInSteps = 100 / 30 / 100
+
+            if (up) {
+                currentAlphaValue += fadeInSteps 
+            }  else{
+                currentAlphaValue -= fadeInSteps;
+            }
+            if (currentAlphaValue >= 1) {
+                    currentAlphaValue = 1;
+                    up = false
                     done = true
                     return resolve();
-                }
+                    return
+            }
+            if (currentAlphaValue <= 0 ) {
+                currentAlphaValue = 0;
+                up = true
+                done = true
+                return resolve();
             }
         }
-        runLoop();  
+        runLoop();
     })
     
     
@@ -94,7 +89,6 @@ function audioTimerLoop(callback, frequency) {
         stopped = true;
     };
   }
-  
 const drawFrameOnVirtualCamera = async () => { 
     if (window.actualVideoTag == undefined) { 
         return; 
@@ -107,20 +101,38 @@ const drawFrameOnVirtualCamera = async () => {
     context.clearRect(0,0,virtualWebCamCanvasVideoContainer.width, virtualWebCamCanvasVideoContainer.height);
 
     if (window.presentationMode) {
+        let xPositionCITB = 0
+        let yPositionCITB = (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+        let widthCITB = virtualWebCamCanvasVideoContainer.width / 2
+        let heightCITB = virtualWebCamCanvasVideoContainer.height / 2
+        let xPositionOther = virtualWebCamCanvasVideoContainer.width / 2
+        let yPositionOther = yPositionCITB;
+        let widthOther = widthCITB;
+        let heightOther = heightCITB;
+        if (window.duplo2) {
+            widthCITB = virtualWebCamCanvasVideoContainer.width
+            heightCITB = virtualWebCamCanvasVideoContainer.height
+            xPositionCITB = 0;
+            yPositionCITB = 0;
+            widthOther = widthCITB * 0.25;
+            heightOther = heightCITB * 0.25;
+            xPositionOther = 0
+            yPositionOther = 0.75 * heightCITB;
+        }
         context.drawImage(
             videoCITB
-            , 0
-            , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
-            , (virtualWebCamCanvasVideoContainer.width / 2)
-            , (virtualWebCamCanvasVideoContainer.height / 2)
+            , xPositionCITB
+            , yPositionCITB
+            , widthCITB
+            , heightCITB
         );
 
         context.drawImage(
             videoOther
-            , virtualWebCamCanvasVideoContainer.width / 2
-            , (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
-            , virtualWebCamCanvasVideoContainer.width / 2
-            , virtualWebCamCanvasVideoContainer.height / 2
+            , xPositionOther
+            , yPositionOther
+            , widthOther
+            , heightOther
         );
     }else {
         context.drawImage(

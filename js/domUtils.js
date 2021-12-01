@@ -22,86 +22,36 @@ const generateOtherVideoContainer = () => {
 }
 
 const getButtonShow = () => {
-  const buttonShow = document.createElement("button");
-  buttonShow.id="buttonShow"; 
-  buttonShow.className = "CITBButton";
-  buttonShow.classList.add("CITBShowButton");
+  const buttonShow = document.getElementById("buttonShow");
   return buttonShow;
 };
 
-const showTooltip = () => {
-  const showTooltip = document.createElement("div");
-  showTooltip.id="showTooltip"; 
-  showTooltip.className = "mdl-tooltip";
-  showTooltip.setAttribute("data-mdl-for", "buttonShow")
-  showTooltip.textContent = "Show Mode";
-  return showTooltip;
-}
-
 const getButtonClass = () => {
-  const buttonClass = document.createElement("button");
-  buttonClass.id="buttonClass"; 
-
-  buttonClass.className = "CITBButton";
-  buttonClass.classList.add("CITBClassButton");
+  const buttonClass = document.getElementById("buttonClass");
   return buttonClass;
 };
 
-const classTooltip = () => {
-  const classTooltip = document.createElement("div");
-  classTooltip.id="classTooltip"; 
-  classTooltip.className = "mdl-tooltip";
-  classTooltip.setAttribute("data-mdl-for", "buttonClass")
-  classTooltip.textContent = "Classroom mode";
-  return classTooltip;
-}
-
-
 const getButtonPresentation = () => {
-  const buttonPresentation = document.createElement("button");
-  buttonPresentation.id="presentationTooltip"; 
-  buttonPresentation.className = "CITBButton";
-  buttonPresentation.classList.add("CITBPresentationButton");
+  const buttonPresentation = document.getElementById("duplo1");
   return buttonPresentation;
 };
 
-const presentationTooltip = () => {
-  const presentationTooltip = document.createElement("div");
-  presentationTooltip.id="classTooltip"; 
-  presentationTooltip.className = "mdl-tooltip";
-  presentationTooltip.setAttribute("data-mdl-for", "presentationTooltip")
-  presentationTooltip.textContent = "Duplo mode";
-  return presentationTooltip;
-}
-
 const getButtonCam = () => {
-  const buttonCam = document.createElement("button");
-  buttonCam.className = "CITBButton";
-  buttonCam.classList.add("CITBCamButton");
+  const buttonCam = document.getElementById("CITBcamButton");
   return buttonCam;
 };
 const getButtonClose = () => {
-  const buttonClose = document.createElement("button");
-  buttonClose.setAttribute("id", "buttonClose");
+  const buttonClose = document.getElementById("buttonClose");
   return buttonClose;
 };
 
 const getContainerButton = () => {
-  const div = document.createElement("div");
-  div.setAttribute("id", "buttonsContainer");
-  div.style.position = "absolute";
-  div.style.zIndex = 980;
-  div.style.width = "40px";
-  div.style.height = "250px";
-  div.style.top = "60px";
-  div.style.right = "16px";
-  div.style.background = "rgb(240, 243, 250)";
-  div.style.borderRadius = "20px";
+  const div = document.getElementById("buttonsContainer");
   return div;
 };
+
 const getButtonDrag = () => {
-  const buttonDrag = document.createElement("button");
-  buttonDrag.setAttribute("id", "buttonDrag");
+  const buttonDrag = document.getElementById("buttonDrag");
   return buttonDrag;
 };
 
@@ -111,13 +61,13 @@ const setButtonBackground = (button, activated) => {
     : button.classList.remove("active");
 };
 
-const addElementsToDiv = (div, array) => {
-  array.forEach(element => {
-    div.appendChild(element);
-  })
+const addFloatingContainerToDom = (html) => {
+  console.log("IN HERE", html);
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  console.log(div);
   document.body.appendChild(div);
-  div.style.visibility = "hidden";
-  
+  return;
 };
 
 const getVirtualCam = () => {
@@ -188,7 +138,7 @@ export {
   getButtonClose,
   getContainerButton,
   setButtonBackground,
-  addElementsToDiv,
+  addFloatingContainerToDom,
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,
@@ -201,8 +151,5 @@ export {
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
   getButtonShowPopupVideo,
-  getButtonOnOffExtension,
-  showTooltip,
-  classTooltip,
-  presentationTooltip
+  getButtonOnOffExtension
 };
