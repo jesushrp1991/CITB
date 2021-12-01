@@ -34,8 +34,14 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
                     fetch(chrome.runtime.getURL('html/actionButtons.html')).then(r => r.text()).then(html => {
                         document.dispatchEvent(new CustomEvent('floatingButtons', { detail: html }));
                     });
+
+                    fetch(chrome.runtime.getURL('html/simplePopup.html')).then(r => r.text()).then(html => {
+                        document.dispatchEvent(new CustomEvent('simplePopup', { detail: html }));
+                    });
                 }
             }
+
+         
         }
     // }
 });

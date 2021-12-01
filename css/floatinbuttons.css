@@ -1,7 +1,36 @@
 @font-face {
   font-family: myFont;
-  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-Bold.otf');
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-Medium.otf');
 }
+@font-face {
+  font-family: myFont;
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-Bold.otf');
+  font-weight: bold;
+}
+@font-face {
+  font-family: myFont;
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-Light.otf');
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: myFont;
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-MediumItalic.otf');
+  font-style: italic;
+}
+@font-face {
+  font-family: myFont;
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-BoldItalic.otf');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: myFont;
+  src: url('chrome-extension://ijbdnbhhklnlmdpldichdlknfaibceaf/css/font/AntartidaRounded-LightItalic.otf');
+  font-weight: lighter;
+  font-style: italic;
+}
+
 .CITBButton {
     width: 40px;
     height: 40px;

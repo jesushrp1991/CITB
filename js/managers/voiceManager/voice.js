@@ -82,10 +82,17 @@ try{
     }
   }
 
+  var estudioCommands5 = {
+    'CITB duplo mini': () => {
+      beep();
+      document.getElementsByClassName("duplo2")[0].click(); 
+    }
+  }
+
   var estudioCommands3 = {
     'CITV duplo': () => {
       beep();
-      document.getElementsByClassName("duplo1")[0].click(); 
+      document.getElementById("duplo1").click(); 
     }
   }
 
@@ -96,15 +103,22 @@ try{
     }
   }
 
+  var estudioCommands4 = {
+    '*w the box duplo mini': () => {
+      beep();
+      document.getElementById("duplo2").click(); 
+    }
+  }
+
   var duplo1Commands = {
-    'duplo uno': () => {
+    'Duplo': () => {
       beep();
       document.getElementById("duplo1").click(); 
     }
   }
 
   var duplo2Commands = {
-    'duplo dos': () => {
+    'Duplo mini': () => {
       beep();
       document.getElementById("duplo2").click(); 
     }
@@ -157,13 +171,15 @@ try{
       annyang.addCommands(showCommands1);
       annyang.addCommands(showCommands2);
 
-      annyang.addCommands(classCommands);    
-      annyang.addCommands(classCommands1);    
-      annyang.addCommands(classCommands2);    
+      annyang.addCommands(classCommands);
+      annyang.addCommands(classCommands1);
+      annyang.addCommands(classCommands2);
 
       annyang.addCommands(estudioCommands1); 
       annyang.addCommands(estudioCommands2); 
       annyang.addCommands(estudioCommands3); 
+      annyang.addCommands(estudioCommands4); 
+      annyang.addCommands(estudioCommands5); 
 
  
 

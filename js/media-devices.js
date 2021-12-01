@@ -53,6 +53,11 @@ import {
   setButtonCallBack
 } from "./managers/popupClassMode/popupClassMode.js";
 
+import { 
+  initPopup,
+  showPopup
+} from "./managers/modal/modal.js"
+
 import {
     divOverlayVideo,
     divFabVideo,
@@ -79,6 +84,54 @@ function monkeyPatchMediaDevices() {
   const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
     createHTML: (to_escape) => to_escape
   })
+  initPopup();
+
+  function KeyPress(e) {
+    var evtobj = window.event? event : e
+    if (evtobj.keyCode == 67 && evtobj.altKey) {
+      showPopup(
+        "#4eb056"
+        , "CITB Voice Commands"
+        , `
+          <p style="font-style: italic">Now you can freely use CITB functionality using only your voice. Above you can find a list of available commands to use.</p>
+          <div>
+            <div style="float:left; width: 100%">
+              <div style="float:left; width: 49%"><p><strong>IF YOU SAY</strong></p></div>
+              <div style="float:right; width: 49%"><p><strong>YOU GET</strong></p></div>
+            </div>
+            <div style="float:left; width: 100%">
+              <p style="float:left; width: 49%"><strong>"Class in the box camera"</strong></p>
+              <div style="float:right; width: 49%"><p>Swap between CITB Camera and System (or choosen) camera</p></div>
+            </div>
+            <div style="float:left; width: 100%">
+              <p style="float:left; width: 49%"><strong>"Class in the box show"</strong></p>
+              <div style="float:right; width: 49%"><p>Activate the show mode that allows you to here yourself trough a speaker system</p></div>
+            </div>
+            <div style="float:left; width: 100%">
+              <p style="float:left; width: 49%"><strong>"Class in the box class"</strong></p>
+              <div style="float:right; width: 49%"><p>Activate classroom mode, that allows other to hear your surronding by choosing another mic in your system</p></div>
+            </div>
+            <div style="float:left; width: 100%">
+              <p style="float:left; width: 49%"><strong>"Class in the box duplo"</strong></p>
+              <div style="float:right; width: 49%"><p>Activate Duplo mode with both cameras visible with the same size</p></div>
+            </div>
+            <div style="float:left; width: 100%">
+              <p style="float:left; width: 49%"><strong>"Class in the box duplo mini"</strong></p>
+              <div style="float:right; width: 49%"><p>Activate duplo mini mode with both camera visible, CITB camera been the main one and your sistem camera the small one</p></div>
+            </div>
+          </div>
+          
+          
+          
+          
+          
+        `
+        , "Thanks!"
+        )
+    }
+  }
+
+  document.onkeydown = KeyPress;
 
   const duplo2FirstTimeFromDuplo = (duplo) => {
     return window.presentationMode && duplo && !window.duplo2
@@ -555,7 +608,7 @@ function monkeyPatchMediaDevices() {
         // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
         //   usableVideo = usableVideo.filter((device)=> device.label != element);
         // });
-        usableVideo = usableVideo.filter((x) => !x.label.includes('box'));
+        usableVideo = usableVideo.filter((x) => !(x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])));
         createPopupVideo(
           div_OverlayVideo,
           div_FabVideo,
