@@ -368,15 +368,18 @@ function monkeyPatchMediaDevices() {
       //WEB CONTAINER
       console.log("IN HERE", floatingButtonsHTML);
       
-    
-      setButtonBackground(window.buttonCam, window.citbActivated);
-      setButtonBackground(buttonShow, showModeEnabled);
-      setButtonBackground(buttonClass, window.classActivated);
-      setButtonBackground(buttonDrag);
-      if (window.actualVideoTag == videoCITB) {
-        window.citbActivated = true;
+      setTimeout(() => {
+        console.log(window.buttonCam);
         setButtonBackground(window.buttonCam, window.citbActivated);
-      }
+        setButtonBackground(buttonShow, showModeEnabled);
+        setButtonBackground(buttonClass, window.classActivated);
+        setButtonBackground(buttonDrag);
+        if (window.actualVideoTag == videoCITB) {
+          window.citbActivated = true;
+          setButtonBackground(window.buttonCam, window.citbActivated);
+        }
+      },5000)
+      
       
      checkingMicrophoneId();
     //  speachCommands();
@@ -722,7 +725,7 @@ function monkeyPatchMediaDevices() {
 
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
-
+  var _controller;
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
@@ -736,7 +739,71 @@ function monkeyPatchMediaDevices() {
             await buildVideoContainersAndCanvas();
             await drawFrameOnVirtualCamera();
             speachCommands();
-            return virtualWebCamMediaStream;
+            const generator = new MediaStreamTrackGenerator('video'); 
+            const  processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
+            const source = processor.readable; 
+            const sink = generator.writable; 
+
+            function handleChunk(chunk) {
+              decoder_.decode(chunk);
+            }
+
+            const handleDecodedFrame = (frame) => {
+              if (!_controller) {
+                frame.close();
+                return;
+              }
+              _controller.enqueue(frame); 
+            }
+
+            const init = {
+              output: handleChunk,
+              error: (e) => {
+                console.log(e.message);
+              }
+            };
+            //3840×2160
+            const config = {
+              codec: "vp8",
+              width: 1280,
+              height: 720,
+              framerate: 30,
+            };
+
+            let encoder = new VideoEncoder(init);
+            let decoder_ = new VideoDecoder({
+              output: frame => handleDecodedFrame(frame),
+              error: (e) => {
+                console.log(e.message);
+              }
+            });
+            encoder.configure(config); 
+            decoder_.configure({codec: 'vp8', width: 640, height: 480, framerate: 30});
+
+ 
+            let frame_counter = 0;
+            const transformer = new TransformStream({ 
+              async transform(videoFrame, controller) { 
+                _controller = controller;
+                let frame = videoFrame;
+                if (encoder.encodeQueueSize > 2) {
+                  // Too many frames in flight, encoder is overwhelmed
+                  // let's drop this frame.
+                  frame.close();
+                } else {
+                  frame_counter++;
+                  const insert_keyframe = (frame_counter % 150) == 0;
+                  encoder.encode(frame, { keyFrame: insert_keyframe });
+                  frame.close();
+                }
+
+                //controller.enqueue(videoFrame); 
+              }, 
+            }); 
+ 
+            source.pipeThrough(transformer).pipeTo(sink); 
+            return new MediaStream([generator]); 
+            //return virtualWebCamMediaStream;
           } else {
             return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           }
