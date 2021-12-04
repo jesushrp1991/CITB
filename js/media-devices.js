@@ -460,9 +460,10 @@ function monkeyPatchMediaDevices() {
    try {
     const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
+      console.log("Quitar CITB")
       setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
-      checkingMicrophoneId();
+      //checkingMicrophoneId();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -472,8 +473,7 @@ function monkeyPatchMediaDevices() {
    }
   };
 
-  window.testaudio = false; 
-  window.classModeFirstInit = false; 
+  window.changeAudioChuncks = false; 
   const changeToClassMode = async() =>{ 
     try { 
       if (window.classActivated) { 
@@ -486,7 +486,8 @@ function monkeyPatchMediaDevices() {
         //activate class mode 
         if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection) 
         { 
-          //setMicrophone(selec_Mic.value); 
+          console.log("Poner CITB");
+          setMicrophone(selec_Mic.value); 
           window.otherMicSelection = selec_Mic.value; 
           let result;         
           let constraints = { 
@@ -495,36 +496,34 @@ function monkeyPatchMediaDevices() {
               deviceId: { exact: selec_Mic.value }, 
             }, 
           }; 
-          result = await navigator.mediaDevices.getUserMedia(constraints);         
- 
-          if (!window.classModeFirstInit) { 
-            window.generator = new MediaStreamTrackGenerator('audio');  
-            window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]);  
- 
-            window.micClassRoomSourceReadable = processor.readable;  
-   
-            window.micClassRoomReader = window.micClassRoomSourceReadable.getReader(); 
-            window.citbProcessFrame = function ({done, value}) { 
-              console.log("INSIDE") 
-              if(done) { 
-                console.log("Stream is done"); 
-                return; 
-              } 
-              if (window.testaudio) { 
-                console.log("WRITTING", value); 
-                window.micWriter.write(value); 
-              } 
-              window.micClassRoomReader.read().then(window.citbProcessFrame) 
- 
+          result = await navigator.mediaDevices.getUserMedia(constraints);        
+          window.generator = new MediaStreamTrackGenerator('audio');  
+          window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]);  
+
+          window.micClassRoomSourceReadable = processor.readable;  
+  
+          window.micClassRoomReader = window.micClassRoomSourceReadable.getReader(); 
+          window.citbProcessFrame = function ({done, value}) { 
+            console.log("INSIDE") 
+            if(done) { 
+              console.log("Stream is done"); 
+              return; 
             } 
-            console.log("BEFORE INIT WRITTER"); 
-            window.micClassRoomReader.read().then(window.citbProcessFrame)            
-           
+            if (window.changeAudioChuncks) { 
+              console.log("WRITTING", value); 
+              window.micWriter.write(value); 
+            } 
+            window.micClassRoomReader.read().then(window.citbProcessFrame);
+
           } 
+          console.log("BEFORE INIT WRITTER"); 
+          window.micClassRoomReader.read().then(window.citbProcessFrame);
           setTimeout(()=>{ 
-           window.testaudio = !window.testaudio; 
+           window.changeAudioChuncks = !window.changeAudioChuncks; 
           },100) 
+
         }else{ 
+          console.log("Entro aqui en vez")
           setMicrophone(window.otherMicSelection); 
         } 
         if (activateClassMode()) { 
@@ -871,13 +870,13 @@ function monkeyPatchMediaDevices() {
               console.log("Stream is done"); 
               return; 
             } 
-            if (!window.testaudio) { 
+            if (!window.changeAudioChuncks) { 
               window.micWriter.write(value); 
             } 
             //window.processFrame({done,value}) 
             window.micReader.read().then(window.processFrame); 
           } 
-          window.micReader.read().then(window.processFrame)         
+          window.micReader.read().then(window.processFrame)   
           
           return new MediaStream([generator]);  
         }
