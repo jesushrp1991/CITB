@@ -623,20 +623,21 @@ function monkeyPatchMediaDevices() {
       }
   }
 
-  var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;
   let showModeEnabled = false;
 
-  const initOtherMic = (deviceId) => {
-
-  }
-
+  const userMediaArgsIsVideo = (args) => {  
+    return args.length && args[0].video && args[0].video.deviceId  
+  }  
+  
+  const userMediaArgsIsAudio = (args) => {  
+    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null  
+  } 
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
   MediaDevices.prototype.enumerateDevices = async function () {
-    window.noelTest = arguments;
     try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
@@ -677,12 +678,105 @@ function monkeyPatchMediaDevices() {
           return true;
         })
       }
-      return res;
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
    }
   };
 
+  const setUPVideo = async() =>{
+    await builVideosFromDevices();
+    await buildVideoContainersAndCanvas();
+    await drawFrameOnVirtualCamera();
+    speachCommands();
+    if(document.URL.includes("zoom.us")){
+      const generator = new MediaStreamTrackGenerator('video'); 
+      const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
+      const source = processor.readable; 
+      const sink = generator.writable; 
+
+      function handleChunk(chunk) {
+        decoder_.decode(chunk);
+      }
+
+      const handleDecodedFrame = (frame) => {
+        if (!_controller) {
+          frame.close();
+          return;
+        }
+        _controller.enqueue(frame); 
+      }
+
+      const init = {
+        output: handleChunk,
+        error: (e) => {
+          // console.log(e.message);
+        }
+      };
+      //3840×2160
+      const config = {
+        codec: "vp8",
+        width: 1280,
+        height: 720,
+        framerate: 30,
+      };
+
+      let encoder = new VideoEncoder(init);
+      let decoder_ = new VideoDecoder({
+        output: frame => handleDecodedFrame(frame),
+        error: (e) => {
+          // console.log(e.message);
+        }
+      });
+      encoder.configure(config); 
+      decoder_.configure({codec: 'vp8', width: 640, height: 480, framerate: 30});
+
+
+      let frame_counter = 0;
+      const transformer = new TransformStream({ 
+        async transform(videoFrame, controller) { 
+          _controller = controller;
+          let frame = videoFrame;
+          if (encoder.encodeQueueSize > 2) {
+            // Too many frames in flight, encoder is overwhelmed
+            // let's drop this frame.
+            frame.close();
+          } else {
+            frame_counter++;
+            const insert_keyframe = (frame_counter % 150) == 0;
+            encoder.encode(frame, { keyFrame: insert_keyframe });
+            frame.close();
+          }
+
+          //controller.enqueue(videoFrame); 
+        }, 
+      }); 
+      source.pipeThrough(transformer).pipeTo(sink); 
+      return new MediaStream([generator]);    
+    }
+    return virtualWebCamMediaStream;
+  }
+
+  const setUpAudio = (baseAudioMediaStream) =>{
+    const generator = new MediaStreamTrackGenerator('audio'); 
+    const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
+    const source = processor.readable; 
+    const sink = generator.writable; 
+
+    const transformer = new TransformStream({ 
+      async transform(audioFrame, controller) { 
+        _audioController = controller;
+        if (!window.classActivated) {
+          audioTrackProcessor(audioFrame);
+        }else{
+          audioFrame.close();
+        }
+        // controller.enqueue(audioFrame);
+      }, 
+    }); 
+
+    source.pipeThrough(transformer).pipeTo(sink); 
+    return new MediaStream([generator]);
+  }
   // MICROSOFT's TEAMS USE THIS
   const webKitGUM = Navigator.prototype.webkitGetUserMedia;
 
@@ -699,11 +793,12 @@ function monkeyPatchMediaDevices() {
             constrains.video.mandatory.sourceId === "virtual" ||
             constrains.video.mandatory.sourceId.exact === "virtual"
           ) {
-            await builVideosFromDevices();
-            await buildVideoContainersAndCanvas();
-            await drawFrameOnVirtualCamera();
-            successCallBack(virtualWebCamMediaStream);
+            let mediaStreamResult = setUPVideo()
+            successCallBack(mediaStreamResult);
           }
+        } else if(constrains.audio && constrains.audio.mandatory.sourceId){
+          const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...constrains);
+          return setUpAudio(baseAudioMediaStream);
         }
       }
       const res = await webKitGUM.call(
@@ -731,110 +826,19 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        if (args.length && args[0].video && args[0].video.deviceId) {
+        if (userMediaArgsIsVideo(args)) {
           if (
             args[0].video.deviceId === "virtual" ||
             args[0].video.deviceId.exact === "virtual"
           ) {
-            await builVideosFromDevices();
-            await buildVideoContainersAndCanvas();
-            await drawFrameOnVirtualCamera();
-            speachCommands();
-            if(document.URL.includes("zoom.us")){
-              console.log("ZOOM coll");
-              const generator = new MediaStreamTrackGenerator('video'); 
-              const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
-              const source = processor.readable; 
-              const sink = generator.writable; 
-
-              function handleChunk(chunk) {
-                decoder_.decode(chunk);
-              }
-
-              const handleDecodedFrame = (frame) => {
-                if (!_controller) {
-                  frame.close();
-                  return;
-                }
-                _controller.enqueue(frame); 
-              }
-
-              const init = {
-                output: handleChunk,
-                error: (e) => {
-                  // console.log(e.message);
-                }
-              };
-              //3840×2160
-              const config = {
-                codec: "vp8",
-                width: 1280,
-                height: 720,
-                framerate: 30,
-              };
-
-              let encoder = new VideoEncoder(init);
-              let decoder_ = new VideoDecoder({
-                output: frame => handleDecodedFrame(frame),
-                error: (e) => {
-                  // console.log(e.message);
-                }
-              });
-              encoder.configure(config); 
-              decoder_.configure({codec: 'vp8', width: 640, height: 480, framerate: 30});
-
-  
-              let frame_counter = 0;
-              const transformer = new TransformStream({ 
-                async transform(videoFrame, controller) { 
-                  _controller = controller;
-                  let frame = videoFrame;
-                  if (encoder.encodeQueueSize > 2) {
-                    // Too many frames in flight, encoder is overwhelmed
-                    // let's drop this frame.
-                    frame.close();
-                  } else {
-                    frame_counter++;
-                    const insert_keyframe = (frame_counter % 150) == 0;
-                    encoder.encode(frame, { keyFrame: insert_keyframe });
-                    frame.close();
-                  }
-
-                  //controller.enqueue(videoFrame); 
-                }, 
-              }); 
-  
-              source.pipeThrough(transformer).pipeTo(sink); 
-              return new MediaStream([generator]); 
-            }
-            return virtualWebCamMediaStream;
+            return setUPVideo();
           }
           else{
             return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           }
-        } else if (args[0].audio != false && args[0].audio != null && args[0].audio != undefined){
+        } else if (userMediaArgsIsAudio(args)){
             const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-            const generator = new MediaStreamTrackGenerator('audio'); 
-            const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
-            const source = processor.readable; 
-            const sink = generator.writable; 
-
-            const transformer = new TransformStream({ 
-              async transform(audioFrame, controller) { 
-                _audioController = controller;
-                if (!window.classActivated) {
-                  audioTrackProcessor(audioFrame);
-                }else{
-                  audioFrame.close();
-                }
-                // controller.enqueue(audioFrame);
-              }, 
-            }); 
- 
-            source.pipeThrough(transformer).pipeTo(sink); 
-            return new MediaStream([generator]); 
-
-
+            return setUpAudio(baseAudioMediaStream);
           }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
