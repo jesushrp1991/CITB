@@ -181,7 +181,6 @@ function monkeyPatchMediaDevices() {
         await fadeInFadeOut();
 
       }
-
       setButtonBackground(window.buttonCam, window.citbActivated);
     }catch(e){
       logErrors(e,"camCallBackFunction,ln 205");
@@ -230,7 +229,6 @@ function monkeyPatchMediaDevices() {
   };
 
   const setCITBButtonsAndListeners = () => {
-    console.log("setCITBButtonsAndListeners");
     buttonShow = getButtonShow();
     buttonClass = getButtonClass();
     buttonPresentation = getButtonPresentation();
@@ -261,8 +259,6 @@ function monkeyPatchMediaDevices() {
       escapeHTMLPolicy.createHTML(floatingButtonsHTML)
     );
     setCITBButtonsAndListeners();
-    console.log("AFTER FLOATING LISTENER")
-
   });
 
   const setCITBPresets = () => {
@@ -350,14 +346,12 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
-      console.log("DOCUMENT READY");
       document.body.appendChild(buttonOnOffExtension);
 
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
       // setEventButtonNext(helptButton, buttonHelpNextCallBack);
       buttonPopup.addEventListener('click',showPopupMic);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
-      console.log("AFTER AFTER");
 
       document.body.appendChild(buttonPopup);
       document.body.appendChild(buttonVideoPopup);
@@ -366,10 +360,8 @@ function monkeyPatchMediaDevices() {
       setMicrophone(enviroment.MYAUDIODEVICELABEL);
 
       //WEB CONTAINER
-      console.log("IN HERE", floatingButtonsHTML);
       
       setTimeout(() => {
-        console.log(window.buttonCam);
         setButtonBackground(window.buttonCam, window.citbActivated);
         setButtonBackground(buttonShow, showModeEnabled);
         setButtonBackground(buttonClass, window.classActivated);
@@ -379,10 +371,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(window.buttonCam, window.citbActivated);
         }
       },5000)
-      
-      
-     checkingMicrophoneId();
-    //  speachCommands();
+            
     }
   }; //END ONREADY STATE CHANGE
 
@@ -436,7 +425,32 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  
+  var otherMicStream;
+  const setOtherMicTransformStream = async (deviceId) => {
+    otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
+        audio: { deviceId: deviceId },
+        video: false,
+    });
+
+    const generator = new MediaStreamTrackGenerator('audio'); 
+    const processor = new MediaStreamTrackProcessor(otherMicStream.getTracks()[0]); 
+    const source = processor.readable; 
+    const sink = generator.writable; 
+
+    const transformer = new TransformStream({ 
+      async transform(audioFrame, controller) { 
+        //_audioController = controller;
+        if (window.classActivated) {
+          audioTrackProcessor(audioFrame);
+        }else{
+          audioFrame.close();
+        }
+        // controller.enqueue(audioFrame);
+      }, 
+    }); 
+    source.pipeThrough(transformer).pipeTo(sink); 
+
+  }
 
   const activateClassMode = () => {
     try {
@@ -446,7 +460,9 @@ function monkeyPatchMediaDevices() {
       const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
       if (otherMicrophones) {
         window.classActivated = true;
-        checkingMicrophoneId();
+        setOtherMicTransformStream(otherMicrophones).then(data => {
+          // console.log(data);
+        });
         setButtonBackground(buttonClass, window.classActivated);
         return true;
       }
@@ -460,10 +476,13 @@ function monkeyPatchMediaDevices() {
    try {
     const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
-      console.log("Quitar CITB")
-      setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
-      //checkingMicrophoneId();
+
+      setMicrophone(citbMicrophone[0].deviceId);
+      otherMicStream.getAudioTracks().forEach(track => {
+        track.stop();
+      })
+      otherMicStream = undefined;
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -640,45 +659,21 @@ function monkeyPatchMediaDevices() {
       }
   }
 
-  var currentAudioMediaStream = new MediaStream();
   let devices = [];
   var showAudioContext;
   let showModeEnabled = false;
 
-  const checkingMicrophoneId = async function () {
-    try {
-      let currentMic;
-      if(document.getElementById("pModeCurrentMic"))
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (window.localPeerConection) {
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: currentMic },
-            video: false,
-          });
-          if (
-            currentAudioMediaStream &&
-            currentAudioMediaStream.getAudioTracks().length > 0
-          ) {
-            const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            const senders = window.localPeerConection.getSenders();
-            const sendersWithTracks = senders.filter((s) => s.track != null);
-            sendersWithTracks
-              .filter((x) => x.track.kind === "audio")
-              .forEach((mysender) => {
-                mysender.replaceTrack(micAudioTrack);
-              });
-          }
-      }
-    } catch (error) {
-      logErrors(error,"checkingMichrophoneId ln 452")
-    }
-  };
+  const userMediaArgsIsVideo = (args) => {  
+    return args.length && args[0].video && args[0].video.deviceId  
+  }  
+  
+  const userMediaArgsIsAudio = (args) => {  
+    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null  
+  } 
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
   MediaDevices.prototype.enumerateDevices = async function () {
-    window.noelTest = arguments;
-    console.log("enumerateDevices",arguments);
     try {
       const res = await window.enumerateDevicesFn.call(navigator.mediaDevices);
       devices = res;
@@ -719,21 +714,105 @@ function monkeyPatchMediaDevices() {
           return true;
         })
       }
-      return res;
    } catch (error) {
      logErrors(error,"prototype enumerateDevices ln 484")
    }
   };
 
+  const setUPVideo = async() =>{
+    await builVideosFromDevices();
+    await buildVideoContainersAndCanvas();
+    await drawFrameOnVirtualCamera();
+    speachCommands();
+    if(document.URL.includes("zoom.us")){
+      const generator = new MediaStreamTrackGenerator('video'); 
+      const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
+      const source = processor.readable; 
+      const sink = generator.writable; 
 
-  const userMediaArgsIsVideo = (args) => { 
-    return args.length && args[0].video && args[0].video.deviceId 
-  } 
- 
-  const userMediaArgsIsAudio = (args) => { 
-    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null 
+      function handleChunk(chunk) {
+        decoder_.decode(chunk);
+      }
+
+      const handleDecodedFrame = (frame) => {
+        if (!_controller) {
+          frame.close();
+          return;
+        }
+        _controller.enqueue(frame); 
+      }
+
+      const init = {
+        output: handleChunk,
+        error: (e) => {
+          // console.log(e.message);
+        }
+      };
+      //3840×2160
+      const config = {
+        codec: "vp8",
+        width: 1280,
+        height: 720,
+        framerate: 30,
+      };
+
+      let encoder = new VideoEncoder(init);
+      let decoder_ = new VideoDecoder({
+        output: frame => handleDecodedFrame(frame),
+        error: (e) => {
+          // console.log(e.message);
+        }
+      });
+      encoder.configure(config); 
+      decoder_.configure({codec: 'vp8', width: 640, height: 480, framerate: 30});
+
+
+      let frame_counter = 0;
+      const transformer = new TransformStream({ 
+        async transform(videoFrame, controller) { 
+          _controller = controller;
+          let frame = videoFrame;
+          if (encoder.encodeQueueSize > 2) {
+            // Too many frames in flight, encoder is overwhelmed
+            // let's drop this frame.
+            frame.close();
+          } else {
+            frame_counter++;
+            const insert_keyframe = (frame_counter % 150) == 0;
+            encoder.encode(frame, { keyFrame: insert_keyframe });
+            frame.close();
+          }
+
+          //controller.enqueue(videoFrame); 
+        }, 
+      }); 
+      source.pipeThrough(transformer).pipeTo(sink); 
+      return new MediaStream([generator]);    
+    }
+    return virtualWebCamMediaStream;
   }
 
+  const setUpAudio = (baseAudioMediaStream) =>{
+    const generator = new MediaStreamTrackGenerator('audio'); 
+    const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
+    const source = processor.readable; 
+    const sink = generator.writable; 
+
+    const transformer = new TransformStream({ 
+      async transform(audioFrame, controller) { 
+        _audioController = controller;
+        if (!window.classActivated) {
+          audioTrackProcessor(audioFrame);
+        }else{
+          audioFrame.close();
+        }
+        // controller.enqueue(audioFrame);
+      }, 
+    }); 
+
+    source.pipeThrough(transformer).pipeTo(sink); 
+    return new MediaStream([generator]);
+  }
   // MICROSOFT's TEAMS USE THIS
   const webKitGUM = Navigator.prototype.webkitGetUserMedia;
 
@@ -750,11 +829,12 @@ function monkeyPatchMediaDevices() {
             constrains.video.mandatory.sourceId === "virtual" ||
             constrains.video.mandatory.sourceId.exact === "virtual"
           ) {
-            await builVideosFromDevices();
-            await buildVideoContainersAndCanvas();
-            await drawFrameOnVirtualCamera();
-            successCallBack(virtualWebCamMediaStream);
+            let mediaStreamResult = setUPVideo()
+            successCallBack(mediaStreamResult);
           }
+        } else if(constrains.audio && constrains.audio.mandatory.sourceId){
+          const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...constrains);
+          return setUpAudio(baseAudioMediaStream);
         }
       }
       const res = await webKitGUM.call(
@@ -772,6 +852,12 @@ function monkeyPatchMediaDevices() {
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
   var _controller;
+  var _audioController;
+
+  const audioTrackProcessor = (frame) => {
+    _audioController.enqueue(frame);
+    //frame.close();
+  }
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
@@ -781,121 +867,20 @@ function monkeyPatchMediaDevices() {
             args[0].video.deviceId === "virtual" ||
             args[0].video.deviceId.exact === "virtual"
           ) {
-            await builVideosFromDevices();
-            await buildVideoContainersAndCanvas();
-            await drawFrameOnVirtualCamera();
-            speachCommands();
-            const generator = new MediaStreamTrackGenerator('video'); 
-            const  processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
-            const source = processor.readable; 
-            const sink = generator.writable; 
-
-            function handleChunk(chunk) {
-              decoder_.decode(chunk);
-            }
-
-            const handleDecodedFrame = (frame) => {
-              if (!_controller) {
-                frame.close();
-                return;
-              }
-              _controller.enqueue(frame); 
-            }
-
-            const init = {
-              output: handleChunk,
-              error: (e) => {
-                console.log(e.message);
-              }
-            };
-            //3840×2160
-            const config = {
-              codec: "vp8",
-              width: 1280,
-              height: 720,
-              framerate: 30,
-            };
-
-            let encoder = new VideoEncoder(init);
-            let decoder_ = new VideoDecoder({
-              output: frame => handleDecodedFrame(frame),
-              error: (e) => {
-                console.log(e.message);
-              }
-            });
-            encoder.configure(config); 
-            decoder_.configure({codec: 'vp8', width: 640, height: 480, framerate: 30});
-
- 
-            let frame_counter = 0;
-            const transformer = new TransformStream({ 
-              async transform(videoFrame, controller) { 
-                _controller = controller;
-                let frame = videoFrame;
-                if (encoder.encodeQueueSize > 2) {
-                  // Too many frames in flight, encoder is overwhelmed
-                  // let's drop this frame.
-                  frame.close();
-                } else {
-                  frame_counter++;
-                  const insert_keyframe = (frame_counter % 150) == 0;
-                  encoder.encode(frame, { keyFrame: insert_keyframe });
-                  frame.close();
-                }
-
-                //controller.enqueue(videoFrame); 
-              }, 
-            }); 
-            source.pipeThrough(transformer).pipeTo(sink); 
-            return new MediaStream([generator]); 
-            //return virtualWebCamMediaStream;
-          } else {
+            return setUPVideo();
+          }
+          else{
             return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           }
-        }
-        if(userMediaArgsIsAudio(args)){
-          console.log("INSIDE");  
-          const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);  
-          console.log("res",res) 
-          const generator = new MediaStreamTrackGenerator('audio');  
-          const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]);  
-  
-          window.micSourceReadable = processor.readable;  
-          window.micDestinationWritable = generator.writable;  
- 
-          window.micReader = window.micSourceReadable.getReader(); 
-          window.micWriter = window.micDestinationWritable.getWriter(); 
-          window.processFrame = function ({done, value}) { 
-            if(done) { 
-              console.log("Stream is done"); 
-              return; 
-            } 
-            if (!window.changeAudioChuncks) { 
-              window.micWriter.write(value); 
-            } 
-            //window.processFrame({done,value}) 
-            window.micReader.read().then(window.processFrame); 
-          } 
-          window.micReader.read().then(window.processFrame)   
-          
-          return new MediaStream([generator]);  
-        }
-
+        } else if (userMediaArgsIsAudio(args)){
+            const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+            return setUpAudio(baseAudioMediaStream);
+          }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
     return res;
     } catch (error) {
       logErrors(error,"prototype getUserMedia ln 531")
-    }
-  };
-
-  var acreateOffer = RTCPeerConnection.prototype.createOffer;
-  RTCPeerConnection.prototype.createOffer = async function (options) {
-    try {    
-      window.localPeerConection = this;
-      return await acreateOffer.apply(this, arguments);
-    } catch (error) {
-      logErrors(error,"prototype createOffer ln 555")
     }
   };
 
@@ -916,11 +901,9 @@ function monkeyPatchMediaDevices() {
     navigator.mediaDevices.addEventListener(
       "devicechange",
       async function (event) {
-        console.log("deviceChange")
         await navigator.mediaDevices.enumerateDevices();
         let isCITBConnected = await checkCITBConnetion();
         if(isCITBConnected ){
-          console.log("Creating new container")
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices();
         }
@@ -1022,7 +1005,7 @@ function monkeyPatchMediaDevices() {
   }
 
   const logErrors = (e,source) => {
-    console.log(e,source)
+    // console.log(e,source)
    let inf = JSON.stringify(e,null,3);
    let bugInformation = {
       createdDate: Date.now(),

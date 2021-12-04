@@ -46,7 +46,6 @@ try{
     };
     var cameraCommands5 = {
       'CITV camera': () => {
-        console.log("INSIDE INSIDE CITB CAMERA");
         beep();
         document.getElementsByClassName("CITBCamButton")[0].click(); 
       }

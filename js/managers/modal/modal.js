@@ -9,10 +9,7 @@ let overlayElement;
 let container = document.createElement("div");
 const initPopup = () => {
     document.addEventListener('simplePopup', function (e) {
-        popupContent = e.detail;
-       
-        console.log(popupContent);
-    
+        popupContent = e.detail;    
     }); 
     
 }

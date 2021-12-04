@@ -62,10 +62,8 @@ const setButtonBackground = (button, activated) => {
 };
 
 const addFloatingContainerToDom = (html) => {
-  console.log("IN HERE", html);
   const div = document.createElement("div");
   div.innerHTML = html;
-  console.log(div);
   document.body.appendChild(div);
   return;
 };
