@@ -166,7 +166,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
         .then((stream) => {
             video.srcObject = stream;
         }).catch(err => {
-            console.log(err)
+            // console.log(err)
         });
 }
 

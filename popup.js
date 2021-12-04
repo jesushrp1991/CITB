@@ -33,7 +33,6 @@ const getOnOffState = async() =>{
 getOnOffState(); 
 
 const clickOnOff = () =>{
-  console.log("CLICK ON OF");
   document.getElementById("buttonOnOff").click(); 
 }
 
