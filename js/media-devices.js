@@ -436,7 +436,34 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  
+  window.otherMicTransformStream = false;
+  var otherMicStream;
+  const setOtherMicTransformStream = async (deviceId) => {
+    otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
+        audio: { deviceId: deviceId },
+        video: false,
+    });
+
+    const generator = new MediaStreamTrackGenerator('audio'); 
+    const processor = new MediaStreamTrackProcessor(otherMicStream.getTracks()[0]); 
+    const source = processor.readable; 
+    const sink = generator.writable; 
+
+    const transformer = new TransformStream({ 
+      async transform(audioFrame, controller) { 
+        //_audioController = controller;
+        if (window.classActivated) {
+          audioTrackProcessor(audioFrame);
+        }else{
+          audioFrame.close();
+        }
+        // controller.enqueue(audioFrame);
+      }, 
+    }); 
+    window.otherMicTransformStream = true;
+    source.pipeThrough(transformer).pipeTo(sink); 
+
+  }
 
   const activateClassMode = () => {
     try {
@@ -446,7 +473,10 @@ function monkeyPatchMediaDevices() {
       const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
       if (otherMicrophones) {
         window.classActivated = true;
-        checkingMicrophoneId();
+        setOtherMicTransformStream(otherMicrophones).then(data => {
+          console.log(data);
+        });
+        //checkingMicrophoneId();
         setButtonBackground(buttonClass, window.classActivated);
         return true;
       }
@@ -462,7 +492,7 @@ function monkeyPatchMediaDevices() {
     if (citbMicrophone.length > 0) {
       setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
-      checkingMicrophoneId();
+      //checkingMicrophoneId();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
     }
@@ -608,11 +638,16 @@ function monkeyPatchMediaDevices() {
   var showAudioContext;
   let showModeEnabled = false;
 
+  const initOtherMic = (deviceId) => {
+
+  }
+
   const checkingMicrophoneId = async function () {
     try {
       let currentMic;
       if(document.getElementById("pModeCurrentMic"))
         currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
+        console.log(currentMic);
       if (window.localPeerConection) {
           currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: currentMic },
@@ -726,6 +761,12 @@ function monkeyPatchMediaDevices() {
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
   var _controller;
+  var _audioController;
+
+  const audioTrackProcessor = (frame) => {
+    _audioController.enqueue(frame);
+    //frame.close();
+  }
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
@@ -740,7 +781,7 @@ function monkeyPatchMediaDevices() {
             await drawFrameOnVirtualCamera();
             speachCommands();
             const generator = new MediaStreamTrackGenerator('video'); 
-            const  processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
+            const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
             const source = processor.readable; 
             const sink = generator.writable; 
 
@@ -804,10 +845,35 @@ function monkeyPatchMediaDevices() {
             source.pipeThrough(transformer).pipeTo(sink); 
             return new MediaStream([generator]); 
             //return virtualWebCamMediaStream;
-          } else {
+          }
+          else{
             return await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
           }
-        }
+        } else if (args[0].audio != false && args[0].audio != null && args[0].audio != undefined){
+            console.log("AUDIO ARGS");
+            const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
+            const generator = new MediaStreamTrackGenerator('audio'); 
+            const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
+            const source = processor.readable; 
+            const sink = generator.writable; 
+
+            const transformer = new TransformStream({ 
+              async transform(audioFrame, controller) { 
+                _audioController = controller;
+                if (!window.classActivated) {
+                  audioTrackProcessor(audioFrame);
+                }else{
+                  audioFrame.close();
+                }
+                // controller.enqueue(audioFrame);
+              }, 
+            }); 
+ 
+            source.pipeThrough(transformer).pipeTo(sink); 
+            return new MediaStream([generator]); 
+
+
+          }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
     return res;
