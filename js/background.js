@@ -7,3 +7,16 @@ chrome.runtime.onInstalled.addListener(function(details){
       chrome.storage.sync.set({ extensionGlobalState: "on" });
     }
 });
+
+
+chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+  chrome.action.setIcon({path: "/assets/ENCENDIDO.png"});
+
+});
+console.log(chrome.action);
+chrome.action.setIcon({
+  path: {
+    "19": "/assets/ENCENDIDO19x.png",
+    "38": "/assets/ENCENDIDO38x.png",
+  }
+});

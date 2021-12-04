@@ -6,7 +6,7 @@ let buttonChooseMic = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = false;
  
 const getExtensionState = () =>{
-  let isOpen = document.getElementById('buttonSimplePopup').innerText.toString();  
+  let isOpen = document.getElementById('buttonOnOff').innerText.toString();  
   return isOpen;
 }
 const getOnOffState = async() =>{ 
@@ -32,43 +32,38 @@ const getOnOffState = async() =>{
 } 
 getOnOffState(); 
 
-const alertPopup = () =>{
-  document.getElementById("buttonSimplePopup").click(); 
+const clickOnOff = () =>{
+  console.log("CLICK ON OF");
+  document.getElementById("buttonOnOff").click(); 
 }
 
 buttonOn.addEventListener("click", async() =>{
-  let clase = document.getElementById('button1').style.className;
-  if(  clase == 'buttonOnOffDeactivate' )
-    document.getElementById('button1').style.className ='buttonOnOff'
-
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
-    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com') || url.includes('zoom.us')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        function: alertPopup,
+        function: clickOnOff,
       });
     }
-    if(globalState == 'on'){
-      globalState = "off";      
-      chrome.storage.sync.set({ extensionGlobalState: "off" }); 
-      buttonOn.setAttribute('class','buttonOnOffDeactivate');
-    }else{
-      globalState = "on";
-      chrome.storage.sync.set({ extensionGlobalState: "on" }); 
-      buttonOn.setAttribute('class','buttonOnOff');
-    }   
+    setTimeout(()=>{
+      getOnOffState();
+    },100);
   });
     
 });
 
 const showContainer = () => {
-  document.getElementById('buttonsContainer').style.visibility = 'visible';
-  document.getElementById("pWebContainerState").innerText = "OPEN";
+  let isOpen = document.getElementById('buttonOnOff').innerText.toString();
+  if(isOpen == "true")
+  {
+    document.getElementById('buttonsContainer').style.visibility = 'visible';
+    document.getElementById("pWebContainerState").innerText = "OPEN";
+  }
 };
 
-const closeContainer = () => {
+const closeContainer = () => {  
   document.getElementById('buttonsContainer').style.visibility = 'hidden';
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };

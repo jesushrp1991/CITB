@@ -3,7 +3,7 @@ import {
   } from './domUtils.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
-    
+    console.log("set events");
     buttonCam.addEventListener('click', camCallBackFunction);
 
     buttonShow.addEventListener('click', showCallBackFunction);
@@ -90,7 +90,7 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
     
       const handleMouseOverEvent = () =>{
         document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-        document.getElementById('buttonClose').style.display = 'block';
+        // document.getElementById('buttonClose').style.visibility = 'visible';
       };
       
       const handleMouseLeaveEvent = () =>{

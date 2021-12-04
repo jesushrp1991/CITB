@@ -1,5 +1,4 @@
 const speachCommands = () => {
-  console.log("SPEACH INIT")
 try{
   
       var cameraCommands = {
@@ -47,6 +46,7 @@ try{
     };
     var cameraCommands5 = {
       'CITV camera': () => {
+        console.log("INSIDE INSIDE CITB CAMERA");
         beep();
         document.getElementsByClassName("CITBCamButton")[0].click(); 
       }
@@ -78,21 +78,49 @@ try{
   var estudioCommands1 = {
     'CITB duplo': () => {
       beep();
-      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+      document.getElementsByClassName("duplo1")[0].click(); 
+    }
+  }
+
+  var estudioCommands5 = {
+    'CITB duplo mini': () => {
+      beep();
+      document.getElementsByClassName("duplo2")[0].click(); 
     }
   }
 
   var estudioCommands3 = {
     'CITV duplo': () => {
       beep();
-      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+      document.getElementById("duplo1").click(); 
     }
   }
 
   var estudioCommands2 = {
     '*w the box duplo': () => {
       beep();
-      document.getElementsByClassName("CITBPresentationButton")[0].click(); 
+      document.getElementById("duplo1").click(); 
+    }
+  }
+
+  var estudioCommands4 = {
+    '*w the box duplo mini': () => {
+      beep();
+      document.getElementById("duplo2").click(); 
+    }
+  }
+
+  var duplo1Commands = {
+    'Duplo': () => {
+      beep();
+      document.getElementById("duplo1").click(); 
+    }
+  }
+
+  var duplo2Commands = {
+    'Duplo mini': () => {
+      beep();
+      document.getElementById("duplo2").click(); 
     }
   }
   //   var estudioCommands1 = {
@@ -129,6 +157,9 @@ try{
 
 
       // Add our commands to annyang
+      annyang.addCommands(duplo1Commands); 
+      annyang.addCommands(duplo2Commands); 
+
       annyang.addCommands(cameraCommands);
       annyang.addCommands(cameraCommands1);
       annyang.addCommands(cameraCommands2);
@@ -140,18 +171,19 @@ try{
       annyang.addCommands(showCommands1);
       annyang.addCommands(showCommands2);
 
-      annyang.addCommands(classCommands);    
-      annyang.addCommands(classCommands1);    
-      annyang.addCommands(classCommands2);    
+      annyang.addCommands(classCommands);
+      annyang.addCommands(classCommands1);
+      annyang.addCommands(classCommands2);
 
       annyang.addCommands(estudioCommands1); 
       annyang.addCommands(estudioCommands2); 
       annyang.addCommands(estudioCommands3); 
+      annyang.addCommands(estudioCommands4); 
+      annyang.addCommands(estudioCommands5); 
 
-      
+ 
 
       // Start listening. You can call this here, or attach this call to an event, button, etc.
-      annyang.debug(true);
       annyang.start({ autoRestart: true, continuous: true });
       
 }catch(e){
