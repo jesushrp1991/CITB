@@ -181,7 +181,6 @@ function monkeyPatchMediaDevices() {
         await fadeInFadeOut();
 
       }
-
       setButtonBackground(window.buttonCam, window.citbActivated);
     }catch(e){
       logErrors(e,"camCallBackFunction,ln 205");
@@ -742,6 +741,7 @@ function monkeyPatchMediaDevices() {
             await drawFrameOnVirtualCamera();
             speachCommands();
             if(document.URL.includes("zoom.us")){
+              console.log("ZOOM coll");
               const generator = new MediaStreamTrackGenerator('video'); 
               const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
               const source = processor.readable; 

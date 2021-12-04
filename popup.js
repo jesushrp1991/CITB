@@ -13,7 +13,7 @@ const getOnOffState = async() =>{
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
     let url = tabs[0].url;
-    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')){
+    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')|| url.includes('zoom.us')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: getExtensionState
