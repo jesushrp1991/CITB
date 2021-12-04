@@ -446,8 +446,7 @@ function monkeyPatchMediaDevices() {
       const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
       if (otherMicrophones) {
         window.classActivated = true;
-        // checkingMicrophoneId();
-        changeMicrophone();
+        checkingMicrophoneId();
         setButtonBackground(buttonClass, window.classActivated);
         return true;
       }
@@ -473,32 +472,70 @@ function monkeyPatchMediaDevices() {
    }
   };
 
-  const changeToClassMode = () =>{
-    try {
-      if (window.classActivated) {
-        if (deactivateClassMode()) {
-          
-        } else {
-          alert("There is no CITB microphone");
-        }
-      } else {
-        //activate class mode
-        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
-        {
-          setMicrophone(selec_Mic.value);
-          window.otherMicSelection = selec_Mic.value;
-        }else{
-          setMicrophone(window.otherMicSelection);
-        }
-        if (activateClassMode()) {
-        } else {
-          alert("There is not another microphone");
-        }
-      }
-    } catch (error) {
-      logErrors(error,"changeToClassMode ln 318")
-    }
-  }
+  window.testaudio = false; 
+  window.classModeFirstInit = false; 
+  const changeToClassMode = async() =>{ 
+    try { 
+      if (window.classActivated) { 
+        if (deactivateClassMode()) { 
+           
+        } else { 
+          alert("There is no CITB microphone"); 
+        } 
+      } else { 
+        //activate class mode 
+        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection) 
+        { 
+          //setMicrophone(selec_Mic.value); 
+          window.otherMicSelection = selec_Mic.value; 
+          let result;         
+          let constraints = { 
+            video: false, 
+            audio: { 
+              deviceId: { exact: selec_Mic.value }, 
+            }, 
+          }; 
+          result = await navigator.mediaDevices.getUserMedia(constraints);         
+ 
+          if (!window.classModeFirstInit) { 
+            window.generator = new MediaStreamTrackGenerator('audio');  
+            window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]);  
+ 
+            window.micClassRoomSourceReadable = processor.readable;  
+   
+            window.micClassRoomReader = window.micClassRoomSourceReadable.getReader(); 
+            window.citbProcessFrame = function ({done, value}) { 
+              console.log("INSIDE") 
+              if(done) { 
+                console.log("Stream is done"); 
+                return; 
+              } 
+              if (window.testaudio) { 
+                console.log("WRITTING", value); 
+                window.micWriter.write(value); 
+              } 
+              window.micClassRoomReader.read().then(window.citbProcessFrame) 
+ 
+            } 
+            console.log("BEFORE INIT WRITTER"); 
+            window.micClassRoomReader.read().then(window.citbProcessFrame)            
+           
+          } 
+          setTimeout(()=>{ 
+           window.testaudio = !window.testaudio; 
+          },100) 
+        }else{ 
+          setMicrophone(window.otherMicSelection); 
+        } 
+        if (activateClassMode()) { 
+        } else { 
+          alert("There is not another microphone"); 
+        } 
+      } 
+    } catch (error) { 
+      logErrors(error,"changeToClassMode ln 318") 
+    } 
+  } 
 
   const chooseMicClassMode = (e) =>{
     e.preventDefault();
@@ -603,42 +640,6 @@ function monkeyPatchMediaDevices() {
         logErrors(error,"showPopupVideo ln 412")
       }
   }
-
-  const changeMicrophone = async function () {  
-    // try {  
-      let currentMic;
-      if(window.currentAudioMediaStream){
-        console.log(window.currentAudioMediaStream);
-        window.currentAudioMediaStream.getAudioTracks().forEach(t => {t.stop()});
-      }
-      const micDomElement = document.getElementById("pModeCurrentMic")
-      if(micDomElement){
-        currentMic = micDomElement.innerText.toString();
-        if(currentMic == ""){
-          const allDevices = await navigator.mediaDevices.enumerateDevices();
-          console.log("allDevices",allDevices)  
-           currentMic = allDevices.filter(
-             (x) =>
-               x.kind === "audioinput" &&
-               x.label.includes(enviroment.MYAUDIODEVICELABEL)
-           )[0].deviceId;
-           setMicrophone(currentMic);
-        }
-      } 
-
-      window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, {  
-        audio: { deviceId: {exact: currentMic} },
-        video: false
-      });       
-      mediaStreamSource.disconnect(splitter);
-      mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
-      mediaStreamSource.connect(splitter);
-          
-    // } catch (error) {  
-    //   console.log(error);
-    //   // logErrors(error,"checkingMichrophoneId ln 452")  
-    // }  
-  }; 
 
   var currentAudioMediaStream = new MediaStream();
   let devices = [];
@@ -772,13 +773,6 @@ function monkeyPatchMediaDevices() {
   // GOOGLE's MEET USE THIS
   const getUserMediaFn = MediaDevices.prototype.getUserMedia;
   var _controller;
-  let isCreatedAudioContext = false;
-  let audioContext = new AudioContext();
-  let mediaStreamSource;
-  let mediaStreamDestination;
-  const gainNode = audioContext.createGain();
-  const splitter = audioContext.createChannelSplitter(2);
-  const merger = audioContext.createChannelMerger(2);
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
@@ -853,7 +847,6 @@ function monkeyPatchMediaDevices() {
                 //controller.enqueue(videoFrame); 
               }, 
             }); 
- 
             source.pipeThrough(transformer).pipeTo(sink); 
             return new MediaStream([generator]); 
             //return virtualWebCamMediaStream;
@@ -862,98 +855,31 @@ function monkeyPatchMediaDevices() {
           }
         }
         if(userMediaArgsIsAudio(args)){
-          if (window.currentAudioMediaStream != undefined && window.currentAudioMediaStream != null) {
-            const tracks = window.currentAudioMediaStream.getTracks();
-            tracks.forEach( t => {
-              t.stop();
-            })
-          }
+          console.log("INSIDE");  
+          const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);  
+          console.log("res",res) 
+          const generator = new MediaStreamTrackGenerator('audio');  
+          const  processor = new MediaStreamTrackProcessor(res.getAudioTracks()[0]);  
+  
+          window.micSourceReadable = processor.readable;  
+          window.micDestinationWritable = generator.writable;  
+ 
+          window.micReader = window.micSourceReadable.getReader(); 
+          window.micWriter = window.micDestinationWritable.getWriter(); 
+          window.processFrame = function ({done, value}) { 
+            if(done) { 
+              console.log("Stream is done"); 
+              return; 
+            } 
+            if (!window.testaudio) { 
+              window.micWriter.write(value); 
+            } 
+            //window.processFrame({done,value}) 
+            window.micReader.read().then(window.processFrame); 
+          } 
+          window.micReader.read().then(window.processFrame)         
           
-          gainNode.gain.setValueAtTime(2, audioContext.currentTime);
-          splitter.connect(gainNode);
-  
-          window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-          mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream);
-          mediaStreamDestination = audioContext.createMediaStreamDestination();
-  
-          let channelCount = 1;
-          let track = window.currentAudioMediaStream.getAudioTracks()[0]
-          if (track != undefined && track != null) {
-            channelCount = track.getSettings.channelCount;
-          }
-          if (channelCount == 1) {
-  
-          }
-  
-          mediaStreamSource.connect(splitter);
-          gainNode.connect(merger, 0, 1);
-          gainNode.connect(merger, 0, 0);
-          splitter.connect(merger, 1, 0);
-          splitter.connect(merger, 0, 0);
-  
-          merger.connect(mediaStreamDestination);    
-          // gainNode.connect(mediaStreamDestination)
-          isCreatedAudioContext = true;  
-          window.webAudioStream = mediaStreamDestination;
-
-          //MediaStreamTrackGenerator to Encode Audio:
-          const generator = new MediaStreamTrackGenerator('audio'); 
-          const  processor = new MediaStreamTrackProcessor(mediaStreamDestination.stream.getTracks()[0]); 
-          const source = processor.readable; 
-          const sink = generator.writable; 
-
-          function handleChunk(chunk) {
-            decoder_.decode(chunk);
-          }
-          const init = {
-            output: handleChunk,
-            error: (e) => {
-              console.log(e.message);
-            }
-          };
-
-          const handleDecodedFrame = (frame) => {
-            if (!_controller) {
-              frame.close();
-              return;
-            }
-            _controller.enqueue(frame); 
-          }
-
-          const config = {
-            codec: "opus",
-            sampleRate: 16000,
-            numberOfChannels: 1,
-            bitrate: 128000
-          };
-          let encoder = new AudioEncoder(init);
-          let decoder_ = new AudioDecoder({
-            output: frame => handleDecodedFrame(frame),
-            error: (e) => {
-              console.log(e.message);
-            }
-          });
-          encoder.configure(config); 
-          decoder_.configure(config);
-          
-          const transformer = new TransformStream({ 
-            async transform(audioFrame, controller) { 
-              _controller = controller;
-              if (encoder.encodeQueueSize > 2) {
-                // Too many frames in flight, encoder is overwhelmed
-                // let's drop this frame.
-                audioFrame.close();
-              } else {
-                encoder.encode(audioFrame);
-                audioFrame.close();
-              }
-              //controller.enqueue(audioFrame); 
-            }, 
-          }); 
-
-          source.pipeThrough(transformer).pipeTo(sink); 
-          return new MediaStream([generator]); 
-          //return mediaStreamDestination.stream;
+          return new MediaStream([generator]);  
         }
 
       }
