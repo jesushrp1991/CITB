@@ -436,7 +436,6 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  window.otherMicTransformStream = false;
   var otherMicStream;
   const setOtherMicTransformStream = async (deviceId) => {
     otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
@@ -460,7 +459,6 @@ function monkeyPatchMediaDevices() {
         // controller.enqueue(audioFrame);
       }, 
     }); 
-    window.otherMicTransformStream = true;
     source.pipeThrough(transformer).pipeTo(sink); 
 
   }
@@ -490,8 +488,13 @@ function monkeyPatchMediaDevices() {
    try {
     const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
-      setMicrophone(citbMicrophone[0].deviceId);
       window.classActivated = false;
+
+      setMicrophone(citbMicrophone[0].deviceId);
+      otherMicStream.getAudioTracks().forEach(track => {
+        track.stop();
+      })
+      otherMicStream = undefined;
       //checkingMicrophoneId();
       setButtonBackground(buttonClass, window.classActivated);
       return true;
@@ -642,35 +645,6 @@ function monkeyPatchMediaDevices() {
 
   }
 
-  const checkingMicrophoneId = async function () {
-    try {
-      let currentMic;
-      if(document.getElementById("pModeCurrentMic"))
-        currentMic = document.getElementById("pModeCurrentMic").innerText.toString();
-        console.log(currentMic);
-      if (window.localPeerConection) {
-          currentAudioMediaStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: currentMic },
-            video: false,
-          });
-          if (
-            currentAudioMediaStream &&
-            currentAudioMediaStream.getAudioTracks().length > 0
-          ) {
-            const micAudioTrack = currentAudioMediaStream.getAudioTracks()[0];
-            const senders = window.localPeerConection.getSenders();
-            const sendersWithTracks = senders.filter((s) => s.track != null);
-            sendersWithTracks
-              .filter((x) => x.track.kind === "audio")
-              .forEach((mysender) => {
-                mysender.replaceTrack(micAudioTrack);
-              });
-          }
-      }
-    } catch (error) {
-      logErrors(error,"checkingMichrophoneId ln 452")
-    }
-  };
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
 
@@ -879,16 +853,6 @@ function monkeyPatchMediaDevices() {
     return res;
     } catch (error) {
       logErrors(error,"prototype getUserMedia ln 531")
-    }
-  };
-
-  var acreateOffer = RTCPeerConnection.prototype.createOffer;
-  RTCPeerConnection.prototype.createOffer = async function (options) {
-    try {    
-      window.localPeerConection = this;
-      return await acreateOffer.apply(this, arguments);
-    } catch (error) {
-      logErrors(error,"prototype createOffer ln 555")
     }
   };
 
