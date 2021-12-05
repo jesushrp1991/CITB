@@ -3,7 +3,6 @@ import {
   } from './domUtils.js';
 
 const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainerDiv,camCallBackFunction,showCallBackFunction,classCallBackFunction) => {
-    
     buttonCam.addEventListener('click', camCallBackFunction);
 
     buttonShow.addEventListener('click', showCallBackFunction);
@@ -90,13 +89,12 @@ const setEvents = (buttonShow,buttonClass,buttonCam,buttonClose,buttonsContainer
     
       const handleMouseOverEvent = () =>{
         document.getElementById('buttonsContainer').style.background = 'rgba(240, 243, 250,0.8)';
-        document.getElementById('buttonClose').style.display = 'block';
+        // document.getElementById('buttonClose').style.visibility = 'visible';
       };
       
       const handleMouseLeaveEvent = () =>{
         document.getElementById('buttonsContainer').style.background = 'rgb(240, 243, 250)';
         document.getElementById('buttonsContainer').style.boxShadow = 'none'
-        document.getElementById('buttonClose').style.display = 'none';
       };
     
       function closeDragElement() {

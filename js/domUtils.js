@@ -22,47 +22,36 @@ const generateOtherVideoContainer = () => {
 }
 
 const getButtonShow = () => {
-  const buttonShow = document.createElement("button");
-  buttonShow.className = "CITBButton";
-  buttonShow.classList.add("CITBShowButton");
+  const buttonShow = document.getElementById("buttonShow");
   return buttonShow;
 };
 
 const getButtonClass = () => {
-  const buttonClass = document.createElement("button");
-  buttonClass.className = "CITBButton";
-  buttonClass.classList.add("CITBClassButton");
+  const buttonClass = document.getElementById("buttonClass");
   return buttonClass;
 };
 
+const getButtonPresentation = () => {
+  const buttonPresentation = document.getElementById("duplo1");
+  return buttonPresentation;
+};
+
 const getButtonCam = () => {
-  const buttonCam = document.createElement("button");
-  buttonCam.className = "CITBButton";
-  buttonCam.classList.add("CITBCamButton");
+  const buttonCam = document.getElementById("CITBcamButton");
   return buttonCam;
 };
 const getButtonClose = () => {
-  const buttonClose = document.createElement("button");
-  buttonClose.setAttribute("id", "buttonClose");
+  const buttonClose = document.getElementById("buttonClose");
   return buttonClose;
 };
 
 const getContainerButton = () => {
-  const div = document.createElement("div");
-  div.setAttribute("id", "buttonsContainer");
-  div.style.position = "absolute";
-  div.style.zIndex = 999;
-  div.style.width = "40px";
-  div.style.height = "210px";
-  div.style.top = "60px";
-  div.style.right = "16px";
-  div.style.background = "rgb(240, 243, 250)";
-  div.style.borderRadius = "20px";
+  const div = document.getElementById("buttonsContainer");
   return div;
 };
+
 const getButtonDrag = () => {
-  const buttonDrag = document.createElement("button");
-  buttonDrag.setAttribute("id", "buttonDrag");
+  const buttonDrag = document.getElementById("buttonDrag");
   return buttonDrag;
 };
 
@@ -72,28 +61,11 @@ const setButtonBackground = (button, activated) => {
     : button.classList.remove("active");
 };
 
-const addElementsToDiv = (
-  div,
-  buttonClose,
-  br0,
-  buttonCam,
-  br,
-  buttonShow,
-  br1,
-  buttonClass,
-  br2,
-  buttonDrag
-) => {
-  div.appendChild(buttonClose);
-  div.appendChild(buttonCam);
-  div.appendChild(br);
-  div.appendChild(buttonShow);
-  div.appendChild(br1);
-  div.appendChild(buttonClass);
-  div.appendChild(br2);
-  div.appendChild(buttonDrag);
+const addFloatingContainerToDom = (html) => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
   document.body.appendChild(div);
-  div.style.display = "none";
+  return;
 };
 
 const getVirtualCam = () => {
@@ -113,6 +85,49 @@ const setMicrophone = (microphone) => {
   document.getElementById("pModeCurrentMic").innerText = microphone;
 }; 
 
+const showDiv = () => {
+  if (document.getElementById('buttonsContainer')){
+    document.getElementById('buttonsContainer').style.visibility = 'visible';
+    document.getElementById("pWebContainerState").innerText = "OPEN";
+  }
+}
+
+const createWebContainerState = () =>{
+  const pWebContainerState = document.createElement('p');
+  pWebContainerState.setAttribute('id','pWebContainerState');
+  pWebContainerState.style.display = 'none';
+  return pWebContainerState;
+}
+
+const createModeCurrentMic = () =>{
+  const pModeCurrentMic = document.createElement('p');
+  pModeCurrentMic.setAttribute('id','pModeCurrentMic');
+  pModeCurrentMic.style.display = 'none';
+  return pModeCurrentMic;
+}
+
+const getButtonShowPopupMicClassMode = () => {
+  const buttonPopup = document.createElement("button");
+  buttonPopup.setAttribute('id','buttonPopup');
+  buttonPopup.style.display = 'none';
+  return buttonPopup;
+};
+
+const getButtonShowPopupVideo = () => {
+  const buttonPopup = document.createElement("button");
+  buttonPopup.setAttribute('id','buttonPopupVideo');
+  buttonPopup.style.display = 'none';
+  return buttonPopup;
+};
+
+const getButtonOnOffExtension = () => {
+  const buttonOnOff = document.createElement("button");
+  buttonOnOff.setAttribute('id','buttonOnOff');
+  buttonOnOff.style.display = 'none';
+  return buttonOnOff;
+};
+
+
 export {
   generateVirtualWebCamCanvas,
   getButtonShow,
@@ -121,11 +136,18 @@ export {
   getButtonClose,
   getContainerButton,
   setButtonBackground,
-  addElementsToDiv,
+  addFloatingContainerToDom,
   getVirtualCam,
   getButtonDrag,
   closeButtonContainer,
   setMicrophone,
   generateOtherVideoContainer,
-  generateCITBVideoContainer
+  generateCITBVideoContainer,
+  showDiv,
+  createWebContainerState,
+  createModeCurrentMic,
+  getButtonShowPopupMicClassMode,
+  getButtonPresentation,
+  getButtonShowPopupVideo,
+  getButtonOnOffExtension
 };

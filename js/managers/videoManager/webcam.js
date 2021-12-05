@@ -12,72 +12,129 @@ import {
     , generateOtherVideoContainer
 } from '../../domUtils.js'
 
-import {
-    detectGesture
-} from '../gestureManager/gesture.js'
-
-var canChangeCameras = true;
+var canChangeCameras = false;
 var virtualWebCamMediaStream = new MediaStream();
 const virtualWebCamCanvasVideoContainer = generateVirtualWebCamCanvas();
 const videoCITB = generateCITBVideoContainer();
 const videoOther = generateOtherVideoContainer();
-let timeFromLastFrame = performance.now(); 
 const fps = 1000/30 
 let currentAlphaValue = 0
 let up = true
-let fadeTimer = performance.now(); 
-
 
 const fadeInFadeOut = () => {
      
     return new Promise((resolve, reject) =>{
         let done = false;
         const runLoop = () => {
-            const timeCurrent = performance.now(); 
             if (!done) {
-                requestAnimationFrame(runLoop);
-    
+                setTimeout(() =>{
+                    runLoop();
+                }, Math.ceil(1000/30))    
             }
-    
-            if (timeCurrent - fadeTimer >= fps) { 
-                const fadeInSteps = 100 / 30 / 100
-    
-                if (up) {
-                    currentAlphaValue += fadeInSteps 
-                }  else{
-                    currentAlphaValue -= fadeInSteps;
-                }
-                if (currentAlphaValue >= 1) {
-                        currentAlphaValue = 1;
-                        up = false
-                        done = true
-                        return resolve();
-                        return
-                }
-                if (currentAlphaValue <= 0 ) {
-                    currentAlphaValue = 0;
-                    up = true
+            const fadeInSteps = 100 / 30 / 100
+
+            if (up) {
+                currentAlphaValue += fadeInSteps 
+            }  else{
+                currentAlphaValue -= fadeInSteps;
+            }
+            if (currentAlphaValue >= 1) {
+                    currentAlphaValue = 1;
+                    up = false
                     done = true
                     return resolve();
-                }
+                    return
+            }
+            if (currentAlphaValue <= 0 ) {
+                currentAlphaValue = 0;
+                up = true
+                done = true
+                return resolve();
             }
         }
-        runLoop();  
+        runLoop();
     })
     
     
 }
 
-
+function audioTimerLoop(callback, frequency) {
+    var freq = frequency / 1000;      // AudioContext time parameters are in seconds
+    var aCtx = new AudioContext();
+    // Chrome needs our oscillator node to be attached to the destination
+    // So we create a silent Gain Node
+    var silence = aCtx.createGain();
+    silence.gain.value = 0;
+    silence.connect(aCtx.destination);
+  
+    onOSCend();
+  
+    var stopped = false;       // A flag to know when we'll stop the loop
+    function onOSCend() {
+      var osc = aCtx.createOscillator();
+      osc.onended = onOSCend; // so we can loop
+      osc.connect(silence);
+      osc.start(0); // start it now
+      osc.stop(aCtx.currentTime + freq); // stop it next frame
+      callback(aCtx.currentTime); // one frame is done
+      if (stopped) {  // user broke the loop
+        osc.onended = function() {
+          aCtx.close(); // clear the audioContext
+          return;
+        };
+      }
+    };
+    // return a function to stop our loop
+    return function() {
+        stopped = true;
+    };
+  }
 const drawFrameOnVirtualCamera = async () => { 
-    const timeCurrent = performance.now(); 
-    requestAnimationFrame(drawFrameOnVirtualCamera);
-    if (timeCurrent - timeFromLastFrame >= fps) { 
-        const width = window.actualVideoTag.videoWidth; 
-        const height = window.actualVideoTag.videoHeight; 
-        virtualWebCamCanvasVideoContainer.width = width;
-        virtualWebCamCanvasVideoContainer.height = height;
-        const context = virtualWebCamCanvasVideoContainer.getContext('2d');
+    if (window.actualVideoTag == undefined) { 
+        return; 
+    }
+    const width = window.actualVideoTag.videoWidth; 
+    const height = window.actualVideoTag.videoHeight; 
+    virtualWebCamCanvasVideoContainer.width = width;
+    virtualWebCamCanvasVideoContainer.height = height;
+    const context = virtualWebCamCanvasVideoContainer.getContext('2d');
+    context.clearRect(0,0,virtualWebCamCanvasVideoContainer.width, virtualWebCamCanvasVideoContainer.height);
+
+    if (window.presentationMode) {
+        let xPositionCITB = 0
+        let yPositionCITB = (0.5 * virtualWebCamCanvasVideoContainer.height / 2 )
+        let widthCITB = virtualWebCamCanvasVideoContainer.width / 2
+        let heightCITB = virtualWebCamCanvasVideoContainer.height / 2
+        let xPositionOther = virtualWebCamCanvasVideoContainer.width / 2
+        let yPositionOther = yPositionCITB;
+        let widthOther = widthCITB;
+        let heightOther = heightCITB;
+        if (window.duplo2) {
+            widthCITB = virtualWebCamCanvasVideoContainer.width
+            heightCITB = virtualWebCamCanvasVideoContainer.height
+            xPositionCITB = 0;
+            yPositionCITB = 0;
+            widthOther = widthCITB * 0.25;
+            heightOther = heightCITB * 0.25;
+            xPositionOther = 0
+            yPositionOther = 0.75 * heightCITB;
+        }
+        context.drawImage(
+            videoCITB
+            , xPositionCITB
+            , yPositionCITB
+            , widthCITB
+            , heightCITB
+        );
+
+        context.drawImage(
+            videoOther
+            , xPositionOther
+            , yPositionOther
+            , widthOther
+            , heightOther
+        );
+    }else {
         context.drawImage(
             window.actualVideoTag
             , 0
@@ -85,11 +142,10 @@ const drawFrameOnVirtualCamera = async () => {
             , virtualWebCamCanvasVideoContainer.width
             , virtualWebCamCanvasVideoContainer.height
         );
-        context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`
-        context.fillRect(0,0, width, height)
-        detectGesture(virtualWebCamCanvasVideoContainer);        
-        timeFromLastFrame = performance.now(); 
-    } 
+    }
+
+    context.fillStyle = `rgb(0, 0, 0, ${currentAlphaValue})`;
+    context.fillRect(0,0, width, height);
 }
 
 
@@ -98,9 +154,9 @@ const buildVideoContainersAndCanvas = async () => {
 }
 
 
-const builVideosFromDevices = async () => {
-    const devices = await window.enumerateDevicesFn.call(navigator.mediaDevices)
-    const videoSources = await getFinalVideoSources(devices)
+const builVideosFromDevices = async (videoDeviceId) => {
+    const devices = window.devices;
+    const videoSources = await getFinalVideoSources(devices,videoDeviceId)
     await buildVideos(videoSources)
 }
 
@@ -110,7 +166,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
         .then((stream) => {
             video.srcObject = stream;
         }).catch(err => {
-            console.log(err)
+            // console.log(err)
         });
 }
 
@@ -119,6 +175,7 @@ const buildVideos = async (sources) => {
     let constraints = {
       video: {
         deviceId: { exact: "" },
+        aspectRatio: 1.7777777778
       },
       audio: false,
     };
@@ -144,11 +201,23 @@ const buildVideos = async (sources) => {
 }
 
 
-const getFinalVideoSources = async (devices) => {
+const getFinalVideoSources = async (devices,videoDeviceId) => {
     const sources = devices;
     const videoSources = sources.filter(s => s.kind == "videoinput");
-    const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL));
-    const OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL));
+    const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   );
+    // var CITBVideo;
+    // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
+    //     CITBVideo = CITBVideo.filter((device)=> device.label == element);
+    //   });
+    let OTHERVIDEO;
+    if(videoDeviceId != undefined || videoDeviceId != null){
+        OTHERVIDEO = videoSources.filter(s => s.deviceId.includes(videoDeviceId));
+    }else{
+        OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) && !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1]));
+        // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
+        //     OTHERVIDEO = videoSources.filter((device)=> device.label != element);
+        //   });
+    }
     let returnValue = {citbVideo: null, otherVideo: null}
     if (CITBVideo.length > 0){
       returnValue.citbVideo = CITBVideo[0];
@@ -169,4 +238,5 @@ export {
     , videoOther
     , canChangeCameras
     , fadeInFadeOut
+    , audioTimerLoop
 }
