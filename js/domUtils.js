@@ -1,6 +1,8 @@
 const generateVirtualWebCamCanvas = () => {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'virtualWebCamCanvasVideoContainer')
+    canvas.width = 720;
+    canvas.height = 576;
     return canvas
 }
 
