@@ -132,10 +132,10 @@ function monkeyPatchMediaDevices() {
 
   let betweenTransition = false;
 
-  const runInsideTransition = async (cb) => {
+  const runInsideTransition = async (callBackFunction) => {
     betweenTransition = true;
     await fadeInFadeOut();
-    cb();
+    callBackFunction();
     await fadeInFadeOut();
     betweenTransition = false;
     return;
