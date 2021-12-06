@@ -30,7 +30,8 @@ import {
   videoCITB,
   videoOther,
   canChangeCameras,
-  fadeInFadeOut
+  fadeInFadeOut,
+  isCITBCamera
 } from "./managers/videoManager/webcam.js";
 
 import {
@@ -679,8 +680,7 @@ function monkeyPatchMediaDevices() {
           if (
             x.kind === "videoinput" 
               && (
-                x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0])
-                || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])
+                isCITBCamera(x.label)
               )
           ) {
             return false
