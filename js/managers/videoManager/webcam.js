@@ -200,11 +200,22 @@ const buildVideos = async (sources) => {
     }
 }
 
+const isCITBCamera = (label) => {
+    const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
+    let returnValue = false;
+    cameraArray.forEach(camera => {
+      if (label.includes(camera)){
+        returnValue = true;
+      }
+    })
+    return returnValue
+   
+  }
 
 const getFinalVideoSources = async (devices,videoDeviceId) => {
     const sources = devices;
     const videoSources = sources.filter(s => s.kind == "videoinput");
-    const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   );
+    const CITBVideo = videoSources.filter(s => isCITBCamera(s.label)   );
     // var CITBVideo;
     // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
     //     CITBVideo = CITBVideo.filter((device)=> device.label == element);
@@ -213,7 +224,7 @@ const getFinalVideoSources = async (devices,videoDeviceId) => {
     if(videoDeviceId != undefined || videoDeviceId != null){
         OTHERVIDEO = videoSources.filter(s => s.deviceId.includes(videoDeviceId));
     }else{
-        OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) && !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1]));
+        OTHERVIDEO = videoSources.filter(s => !isCITBCamera(s.label));
         // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
         //     OTHERVIDEO = videoSources.filter((device)=> device.label != element);
         //   });

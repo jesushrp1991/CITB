@@ -80,6 +80,18 @@ import {
 import {speachCommands} from "./managers/voiceManager/voice.js"
 import {strings} from "./strings.js"
 function monkeyPatchMediaDevices() {
+
+  const isCITBCamera = (label) => {
+    const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
+    let returnValue = false;
+    cameraArray.forEach(camera => {
+      if (label.includes(camera)){
+        returnValue = true;
+      }
+    })
+    return returnValue
+   
+  }
   var floatingButtonsHTML = "";
   const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
     createHTML: (to_escape) => to_escape
@@ -378,13 +390,11 @@ function monkeyPatchMediaDevices() {
 
 
 
+
   const getCITBVideoDevices = async () => {
     try {
       const citbVideo = devices.filter(
-        s => 
-        s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) 
-        ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   
-      );
+        s => isCITBCamera(s.label));
       return (citbVideo.length > 0) ? citbVideo : [];
     } catch (error) {
       logErrors(error,"getCITBVideoDevices ln. 266");
@@ -598,7 +608,7 @@ function monkeyPatchMediaDevices() {
         // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
         //   usableVideo = usableVideo.filter((device)=> device.label != element);
         // });
-        usableVideo = usableVideo.filter((x) => !(x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])));
+        usableVideo = usableVideo.filter((x) => !( isCITBCamera(x.label) ));
         createPopupVideo(
           div_OverlayVideo,
           div_FabVideo,
