@@ -130,32 +130,43 @@ function monkeyPatchMediaDevices() {
 
   }
 
+  let betweenTransition = false;
+
+  const runInsideTransition = async (cb) => {
+    betweenTransition = true;
+    await fadeInFadeOut();
+    cb();
+    await fadeInFadeOut();
+    betweenTransition = false;
+    return;
+  }
   const duploMode = async (duplo) => {
-    await fadeInFadeOut();
-    if (!window.presentationMode) {
-      window.presentationMode = true;
+    if (betweenTransition) {
+      return;
     }
-    else if (duplo2FirstTimeFromDuplo(duplo)) {
-      window.presentationMode = true
-    }else if (duplo2SecondTime(duplo)) {
-      window.presentationMode = false
-      window.duplo2 = false
-    }else if (duploFirstTimeFromDuplo2(duplo)) {
-      window.presentationMode = true
-    }else if (duploSecondTimeFromDuplo2(duplo)) {
-      window.presentationMode = false
-    }
-   
-    window.duplo2 = duplo;
-   
-    const duploContainerButton = document.getElementById("buttonPresentation");
-    const duplo2Button = document.getElementById("duplo2");
-    setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
-    setButtonBackground(duploContainerButton, window.presentationMode );
-    setButtonBackground(duplo2Button, duplo && window.presentationMode );
-
-
-    await fadeInFadeOut();
+    runInsideTransition(() => {
+      if (!window.presentationMode) {
+        window.presentationMode = true;
+      }
+      else if (duplo2FirstTimeFromDuplo(duplo)) {
+        window.presentationMode = true
+      }else if (duplo2SecondTime(duplo)) {
+        window.presentationMode = false
+        window.duplo2 = false
+      }else if (duploFirstTimeFromDuplo2(duplo)) {
+        window.presentationMode = true
+      }else if (duploSecondTimeFromDuplo2(duplo)) {
+        window.presentationMode = false
+      }
+    
+      window.duplo2 = duplo;
+    
+      const duploContainerButton = document.getElementById("buttonPresentation");
+      const duplo2Button = document.getElementById("duplo2");
+      setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
+      setButtonBackground(duploContainerButton, window.presentationMode );
+      setButtonBackground(duplo2Button, duplo && window.presentationMode );
+    })
   }
 
   const presentacionCallBackFunction = async () =>{
@@ -164,38 +175,46 @@ function monkeyPatchMediaDevices() {
   const presentacion2CallBackFunction = async () =>{
     duploMode(true);
   }
+  
 
   const camCallBackFunction = async () => {
+    if (betweenTransition) {
+      return
+    }
     try{
       if (!canChangeCameras) {
+        betweenTransition = false;
         alert(enviroment.messageCITBCamOffline);
         return;
       }
       if(window.presentationMode){
-        await fadeInFadeOut();
-        window.presentationMode = !window.presentationMode 
-        const duploContainerButton = document.getElementById("buttonPresentation");
-        const duplo2Button = document.getElementById("duplo2");
-        setButtonBackground(buttonPresentation, false);
-        setButtonBackground(duploContainerButton, false );
-        setButtonBackground(duplo2Button, false );
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.presentationMode = !window.presentationMode 
+          const duploContainerButton = document.getElementById("buttonPresentation");
+          const duplo2Button = document.getElementById("duplo2");
+          setButtonBackground(buttonPresentation, false);
+          setButtonBackground(duploContainerButton, false );
+          setButtonBackground(duplo2Button, false );
+        })
         return;
       }
       if (window.actualVideoTag.id == "OTHERVideo") {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoCITB;
-        window.citbActivated = true;
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.actualVideoTag = videoCITB;
+          window.citbActivated = true;  
+        })
+
       } else {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoOther;
-        window.citbActivated = false;
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.actualVideoTag = videoOther;
+          window.citbActivated = false;
+        })
+       
 
       }
       setButtonBackground(window.buttonCam, window.citbActivated);
     }catch(e){
+      betweenTransition = false;
       logErrors(e,"camCallBackFunction,ln 205");
     }
   };
