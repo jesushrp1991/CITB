@@ -1,6 +1,6 @@
 'use strict';
 
-chrome.storage.sync.get('extensionGlobalState', (data) =>{
+// chrome.storage.sync.get('extensionGlobalState', (data) =>{
     
     // const scriptpopup = document.createElement('script');
     // scriptpopup.setAttribute("type", "module");
@@ -38,10 +38,14 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
                     fetch(chrome.runtime.getURL('html/simplePopup.html')).then(r => r.text()).then(html => {
                         document.dispatchEvent(new CustomEvent('simplePopup', { detail: html }));
                     });
+                    
+                    fetch(chrome.runtime.getURL('html/formPopup.html')).then(r => r.text()).then(html => {
+                        document.dispatchEvent(new CustomEvent('formPopup', { detail: html }));
+                    });
                 }
             }
 
          
         }
     // }
-});
+// });

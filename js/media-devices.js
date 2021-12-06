@@ -55,7 +55,8 @@ import {
 
 import { 
   initPopup,
-  showPopup
+  showPopup,
+  showFormPopup
 } from "./managers/modal/modal.js"
 
 import {
@@ -94,7 +95,7 @@ function monkeyPatchMediaDevices() {
         , "CITB Voice Commands"
         , strings.voiceCommandPopup
         , "Thanks!"
-        )
+        )      
     }
   }
 
@@ -267,10 +268,6 @@ function monkeyPatchMediaDevices() {
   }
   setCITBPresets();
 
- 
-
- 
- 
   //Activate Extension 
   window.isExtentionActive = false;
   const buttonOnOffExtension = getButtonOnOffExtension();
@@ -631,29 +628,33 @@ function monkeyPatchMediaDevices() {
             && !x.label.includes("Virtual Class In The Box") 
 
           );
-        // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
-        //   usableVideo = usableVideo.filter((device)=> device.label != element);
-        // });
         usableVideo = usableVideo.filter((x) => !(x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])));
-        createPopupVideo(
-          div_OverlayVideo,
-          div_FabVideo,
-          form_WrapperVideo,
-          div_HeaderVideo,
-          close_headerVideo,
-          h_HeaderVideo,
-          div_ContentVideo,
-          div_ButtonIconVideo,
-          div_TextFieldsVideo,
-          selec_MicVideo,
-          label_TextVideo,
-          div_ButtonVideo,
-          button_SelectVideo,
-          brVideo,
-          usableVideo
-        );
-        setButtonCallBackVideo(button_SelectVideo,chooseVideo);
-        setButtonCallBackVideo(close_headerVideo,closeVideo);
+        
+        showFormPopup(
+          "#DC3336"
+          , enviroment.textHeaderSelectVideo
+          , usableVideo
+          , enviroment.textButtonVideo
+          )
+        // createPopupVideo(
+        //   div_OverlayVideo,
+        //   div_FabVideo,
+        //   form_WrapperVideo,
+        //   div_HeaderVideo,
+        //   close_headerVideo,
+        //   h_HeaderVideo,
+        //   div_ContentVideo,
+        //   div_ButtonIconVideo,
+        //   div_TextFieldsVideo,
+        //   selec_MicVideo,
+        //   label_TextVideo,
+        //   div_ButtonVideo,
+        //   button_SelectVideo,
+        //   brVideo,
+        //   usableVideo
+        // );
+        // setButtonCallBackVideo(button_SelectVideo,chooseVideo);
+        // setButtonCallBackVideo(close_headerVideo,closeVideo);
       } catch (error) {
         logErrors(error,"showPopupVideo ln 412")
       }
