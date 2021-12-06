@@ -310,6 +310,7 @@ function monkeyPatchMediaDevices() {
     let isCITBConnected = await checkCITBConnetion();
     if(window.isExtentionActive){      
       closeButtonContainer();
+      annyang.abort();
       if (window.cameraAudioLoop != undefined) {
         window.cameraAudioLoop();
         window.cameraAudioLoop = undefined;
@@ -320,11 +321,26 @@ function monkeyPatchMediaDevices() {
       if (showModeEnabled) {
         showCallBackFunction();
       }   
+      if(document.URL.includes("zoom.us")){
+        setTimeout(()=>{
+          const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+          cameraElement.childNodes[1].children[0].click();
+          const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+          micElement.childNodes[1].children[0].click();
+        },300)
+      }
+    
     }
     if(isCITBConnected){
       if(!window.isExtentionActive){
         window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
         showDiv();
+      }
+      if(document.URL.includes("zoom.us")){
+        setTimeout(()=>{
+          const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+          cameraElement.childNodes[1].children[0].click();
+        },300)
       }
     }  
     window.isExtentionActive = !window.isExtentionActive;
@@ -992,9 +1008,7 @@ function monkeyPatchMediaDevices() {
     setTimeout(() => {
       unMute();
       showCam();
-    },200)
-        
-        
+    },200);     
   }
 
   const logErrors = (e,source) => {
