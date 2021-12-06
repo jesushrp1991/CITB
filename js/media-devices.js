@@ -305,7 +305,9 @@ function monkeyPatchMediaDevices() {
  
   //Activate Extension 
   window.isExtentionActive = false;
+
   const buttonOnOffExtension = getButtonOnOffExtension();
+
   const openCloseExtension = async () =>{
     let isCITBConnected = await checkCITBConnetion();
     if(window.isExtentionActive){      
@@ -320,7 +322,11 @@ function monkeyPatchMediaDevices() {
       }
       if (showModeEnabled) {
         showCallBackFunction();
-      }   
+      }  
+      window.duplo2 ? 
+        presentacion2CallBackFunction()
+      : presentacionCallBackFunction();
+
       if(document.URL.includes("zoom.us")){
         setTimeout(()=>{
           const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
