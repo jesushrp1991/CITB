@@ -802,6 +802,7 @@ function monkeyPatchMediaDevices() {
   }
 
   const setUpAudio = (baseAudioMediaStream) =>{
+    console.log("setup audio");
     const generator = new MediaStreamTrackGenerator('audio'); 
     const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
     const source = processor.readable; 
@@ -832,7 +833,7 @@ function monkeyPatchMediaDevices() {
   ) {
     try {
       if(window.isExtentionActive){
-
+        
         if (constrains.video && constrains.video.mandatory.sourceId) {
           if (
             constrains.video.mandatory.sourceId === "virtual" ||
@@ -864,14 +865,20 @@ function monkeyPatchMediaDevices() {
   var _audioController;
 
   const audioTrackProcessor = (frame) => {
-    _audioController.enqueue(frame);
+     if (!_audioController) {
+        frame.close();
+        return;
+      }
+      _audioController.enqueue(frame);
     //frame.close();
   }
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
       if(window.isExtentionActive){
+        console.log(args);
         if (userMediaArgsIsVideo(args)) {
+
           if (
             args[0].video.deviceId === "virtual" ||
             args[0].video.deviceId.exact === "virtual"
