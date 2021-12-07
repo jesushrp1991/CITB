@@ -144,6 +144,11 @@ function monkeyPatchMediaDevices() {
     if (betweenTransition) {
       return;
     }
+    if (!canChangeCameras) {
+      betweenTransition = false;
+      alert(enviroment.messageCITBCamOffline);
+      return;
+    }
     runInsideTransition(() => {
       if (!window.presentationMode) {
         window.presentationMode = true;
