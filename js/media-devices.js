@@ -330,12 +330,17 @@ function monkeyPatchMediaDevices() {
         presentacionCallBackFunction();
       }
       if(document.URL.includes("zoom.us")){
-        setTimeout(()=>{
-          const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-          cameraElement.childNodes[1].children[0].click();
-          const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
-          micElement.childNodes[1].children[0].click();
-        },300)
+        // if(window.generatorCITB)
+        //   window.generatorCITB.stop();
+        // if(window.generatorOtherMic)
+        //   window.generatorOtherMic.stop();
+        // setTimeout(()=>{
+        //   const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+        //   cameraElement.childNodes[1].children[0].click();
+        //   const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+        //   micElement.childNodes[1].children[0].click();
+        // },300)
+        alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
       }
     
     }
@@ -485,8 +490,8 @@ function monkeyPatchMediaDevices() {
         audio: { deviceId: deviceId },
         video: false,
     });
-
     const generator = new MediaStreamTrackGenerator('audio'); 
+    // window.generatorOtherMic = generator;
     const processor = new MediaStreamTrackProcessor(otherMicStream.getTracks()[0]); 
     const source = processor.readable; 
     const sink = generator.writable; 
@@ -531,7 +536,6 @@ function monkeyPatchMediaDevices() {
     const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
       window.classActivated = false;
-
       setMicrophone(citbMicrophone[0].deviceId);
       otherMicStream.getAudioTracks().forEach(track => {
         track.stop();
@@ -697,7 +701,6 @@ function monkeyPatchMediaDevices() {
       devices = res;
       window.devices = res;
       if(window.isExtentionActive){ 
-
         let micCITB = devices.filter(
           (x) =>
             x.kind === "audioinput" 
@@ -811,6 +814,7 @@ function monkeyPatchMediaDevices() {
 
   const setUpAudio = (baseAudioMediaStream) =>{
     const generator = new MediaStreamTrackGenerator('audio'); 
+    // window.generatorCITB = generator;
     const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
     const source = processor.readable; 
     const sink = generator.writable; 
@@ -906,14 +910,10 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  window.isFirstTimeCITBConnection = true;
   const checkCITBConnetion = async () => {
     const citbMicrophone = getCITBMicDevices();  
     const CITBVideo = await getCITBVideoDevices();
     if (citbMicrophone.length != 0 || CITBVideo != 0 ){
-      if(window.isFirstTimeCITBConnection){
-        window.isFirstTimeCITBConnection = false;
-      }
       return true;
     }
     return false;
@@ -1017,11 +1017,12 @@ function monkeyPatchMediaDevices() {
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
-
-    setTimeout(() => {
-      unMute();
-      showCam();
-    },200);     
+    if(document.URL.includes("meet.com")){
+      setTimeout(() => {
+        unMute();
+        showCam();
+      },200);     
+    }
   }
 
   const logErrors = (e,source) => {
