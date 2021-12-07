@@ -303,12 +303,17 @@ function monkeyPatchMediaDevices() {
  
   //Activate Extension 
   window.isExtentionActive = false;
+  const executeOpenClose = () =>{
+    window.isExtentionActive = !window.isExtentionActive;
+    buttonOnOffExtension.innerText = window.isExtentionActive;    
+    onOffExtension();
+  }
 
   const buttonOnOffExtension = getButtonOnOffExtension();
 
   const openCloseExtension = async () =>{
     let isCITBConnected = await checkCITBConnetion();
-    if(window.isExtentionActive){      
+    if(window.isExtentionActive){    
       closeButtonContainer();
       annyang.abort();
 
@@ -342,7 +347,7 @@ function monkeyPatchMediaDevices() {
         // },300)
         alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
       }
-    
+      executeOpenClose();    
     }
     if(isCITBConnected){
       if(!window.isExtentionActive){
@@ -355,10 +360,9 @@ function monkeyPatchMediaDevices() {
           cameraElement.childNodes[1].children[0].click();
         },300)
       }
+      executeOpenClose();    
     }  
-    window.isExtentionActive = !window.isExtentionActive;
-    buttonOnOffExtension.innerText = window.isExtentionActive;    
-    onOffExtension();
+    
   }
   buttonOnOffExtension.addEventListener("click", openCloseExtension);
   
