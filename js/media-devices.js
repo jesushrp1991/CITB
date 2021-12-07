@@ -158,9 +158,7 @@ function monkeyPatchMediaDevices() {
       }else if (duploSecondTimeFromDuplo2(duplo)) {
         window.presentationMode = false
       }
-    
-      window.duplo2 = duplo;
-    
+      window.duplo2 = duplo;  
       const duploContainerButton = document.getElementById("buttonPresentation");
       const duplo2Button = document.getElementById("duplo2");
       setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
@@ -313,6 +311,7 @@ function monkeyPatchMediaDevices() {
     if(window.isExtentionActive){      
       closeButtonContainer();
       annyang.abort();
+
       if (window.cameraAudioLoop != undefined) {
         window.cameraAudioLoop();
         window.cameraAudioLoop = undefined;
@@ -322,11 +321,14 @@ function monkeyPatchMediaDevices() {
       }
       if (showModeEnabled) {
         showCallBackFunction();
-      }  
-      window.duplo2 ? 
-        presentacion2CallBackFunction()
-      : presentacionCallBackFunction();
-
+      } 
+      
+      if(window.presentationMode && window.duplo2){
+        presentacion2CallBackFunction();        
+      }
+      if(window.presentationMode && !window.duplo2){
+        presentacionCallBackFunction();
+      }
       if(document.URL.includes("zoom.us")){
         setTimeout(()=>{
           const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
@@ -808,7 +810,6 @@ function monkeyPatchMediaDevices() {
   }
 
   const setUpAudio = (baseAudioMediaStream) =>{
-    console.log("setup audio");
     const generator = new MediaStreamTrackGenerator('audio'); 
     const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
     const source = processor.readable; 
@@ -882,7 +883,6 @@ function monkeyPatchMediaDevices() {
     try {
       const args = arguments;
       if(window.isExtentionActive){
-        console.log(args);
         if (userMediaArgsIsVideo(args)) {
 
           if (
