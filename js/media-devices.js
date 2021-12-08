@@ -140,6 +140,7 @@ function monkeyPatchMediaDevices() {
     betweenTransition = false;
     return;
   }
+
   const duploMode = async (duplo) => {
     if (betweenTransition) {
       return;
@@ -318,6 +319,10 @@ function monkeyPatchMediaDevices() {
 
   const openCloseExtension = async () =>{
     let isCITBConnected = await checkCITBConnetion();
+    if (!isCITBConnected) {
+      alert(enviroment.messageCITBDisconnected);
+      return;
+    }
     if(window.isExtentionActive){    
       closeButtonContainer();
       annyang.abort();
@@ -601,6 +606,11 @@ function monkeyPatchMediaDevices() {
 
   const showPopupMic = async() =>{
     try {
+      if (!window.isExtentionActive) {
+        betweenTransition = false;
+        alert(enviroment.messageCITBExtentionOff);
+        return;
+      }
       let usableMics = devices.filter(
         (x) =>
           x.kind === "audioinput" &&
@@ -655,6 +665,11 @@ function monkeyPatchMediaDevices() {
   }
   const showPopupVideo = async() =>{
       try {
+        if (!window.isExtentionActive) {
+          betweenTransition = false;
+          alert(enviroment.messageCITBExtentionOff);
+          return;
+        }
         let usableVideo = devices.filter(
           (x) =>
             x.kind === "videoinput" 
