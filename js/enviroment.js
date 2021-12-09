@@ -11,7 +11,9 @@ const enviroment = {
     messageCITBCamOffline : "Press the citb physical cam button to have the videoconferencing program detect and use this camera by default.",
     videoDevicePriorityOrder: ["PC Camera","SPCA2650","2K HD Camera"],
     messageCITBExtentionOff: "Please turn on the extension to use this feature.",
-    messageCITBDisconnected: "Please connect a CITB device to activate the extension."
+    messageCITBDisconnected: "Please connect a CITB device to activate the extension.",
+    videoRecordMimeType : 'video/webm; codecs=vp9',
+    audioRecordMimeType : 'audio/webm; codecs=vp9'
 
 }
 
