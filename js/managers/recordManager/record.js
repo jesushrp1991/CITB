@@ -32,7 +32,7 @@ const addEventos = () =>{
 }
 
 function handleDataAvailable(event) {
-    console.log("data-available");
+    //console.log("data-available");
     if (event.data.size > 0) {
         console.log("data-available",event.data);
       recordedChunks.push(event.data);
@@ -43,6 +43,7 @@ function handleDataAvailable(event) {
     }
   }
   function download() {
+    console.log("Hello download")
     var blob = new Blob(recordedChunks, {
       type: "video/webm"
     });

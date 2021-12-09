@@ -181,6 +181,11 @@ function monkeyPatchMediaDevices() {
     duploMode(true);
   }
   
+  let isRecording = false; 
+  const recVideo = () =>{ 
+    createRecord(virtualWebCamMediaStream,isRecording); 
+    isRecording = !isRecording; 
+  }
   
   const camCallBackFunction = async () => {
     if (betweenTransition) {
@@ -192,6 +197,7 @@ function monkeyPatchMediaDevices() {
         alert(enviroment.messageCITBCamOffline);
         return;
       }
+      recVideo();
       if(window.presentationMode){
         await runInsideTransition(() => {
           window.presentationMode = !window.presentationMode 
