@@ -28,7 +28,6 @@ const createRecord = (stream,isRecording) =>{
 const addEventos = () =>{
     let mediaRecorder = window.mediaRecorder;
     mediaRecorder.dataavailable = handleDataAvailable;
-
     mediaRecorder.onstop = handleDataAvailable;
 }
 

@@ -1,6 +1,7 @@
 import { setEvents } from "./eventos.js";
 import { enviroment } from "./enviroment.js";
-import{ audioTimerLoop } from "./managers/videoManager/webcam.js"
+import{ audioTimerLoop } from "./managers/videoManager/webcam.js";
+import { createRecord } from "./managers/recordManager/record.js";
 import {
   getButtonShow,
   getButtonClass,
@@ -180,7 +181,7 @@ function monkeyPatchMediaDevices() {
     duploMode(true);
   }
   
-
+  
   const camCallBackFunction = async () => {
     if (betweenTransition) {
       return
