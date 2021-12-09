@@ -3,9 +3,9 @@ import {
 } from '../../enviroment.js'
 
 
-import { 
-     generateVideoContainerWithId
-} from '../../domUtils.js'
+// import { 
+//      generateVideoContainerWithId
+// } from '../../domUtils.js'
 
 let recorder = null
 
@@ -101,7 +101,7 @@ async function mergeFullAudio(){
   return dest.stream;
 
 }
-
+let chunks = [];
 async function recordVirtualCam(){
   const virtualCamStream = await captureVirtualCam();
   const audioStream = mergeFullAudio();
@@ -109,7 +109,7 @@ async function recordVirtualCam(){
   const stream = new MediaStream([...virtualCamStream.getTracks(), ...audioStream.getTracks()]);
 
   recorder = new MediaRecorder(stream)
-  let chunks = []
+  
 
   recorder.ondataavailable = event => {
     if (event.data.size > 0) {
@@ -136,14 +136,17 @@ async function recordVirtualCam(){
   recorder.start(200);
 }
 
-async function recordScreem(){
+async function recordScreem(isRecording){
+  if(!isRecording){
+    recorder.stop();
+  }
   const screenStream = await captureScreen();
-  const audioStream = mergeFullAudio();
+  // const audioStream = mergeFullAudio();
 
-  const stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
+  // const stream = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
 
-  recorder = new MediaRecorder(stream)
-  let chunks = []
+  // recorder = new MediaRecorder(stream)
+  recorder = new MediaRecorder(screenStream)
 
   recorder.ondataavailable = event => {
     if (event.data.size > 0) {
@@ -152,22 +155,25 @@ async function recordScreem(){
   }
   
   recorder.onstop = () => {
-    const blob = new Blob(chunks, {
-      type: 'video/webm'
-    })
-    
-    chunks = []
-    const blobUrl = URL.createObjectURL(blob)
-
-    console.log(blobUrl);
-    
-    stream.getTracks().forEach((track) => {
-          track.stop();
-    });
-
+    download();
    }
   
   recorder.start(200);
+}
+
+function download() {
+  console.log("Hello download")
+  var blob = new Blob(chunks, {
+    type: "video/webm"
+  });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+  a.href = url;
+  a.download = "test.webm";
+  a.click();
+  window.URL.revokeObjectURL(url);
 }
 
 

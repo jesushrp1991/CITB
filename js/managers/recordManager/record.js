@@ -9,6 +9,7 @@ var options = {
   }
 
 const createRecord = (stream,isRecording) =>{
+    console.log("Create Recodrd",stream)
     if(!isRecording){
         try{
             window.mediaRecorder = new MediaRecorder(stream,options);
@@ -26,13 +27,14 @@ const createRecord = (stream,isRecording) =>{
 }
 
 const addEventos = () =>{
+    console.log("AddEventos")
     let mediaRecorder = window.mediaRecorder;
     mediaRecorder.dataavailable = handleDataAvailable;
     mediaRecorder.onstop = handleDataAvailable;
 }
 
 function handleDataAvailable(event) {
-    //console.log("data-available");
+    console.log("data-available");
     if (event.data.size > 0) {
         console.log("data-available",event.data);
       recordedChunks.push(event.data);
