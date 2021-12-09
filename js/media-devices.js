@@ -30,7 +30,8 @@ import {
   videoCITB,
   videoOther,
   canChangeCameras,
-  fadeInFadeOut
+  fadeInFadeOut,
+  isCITBCamera
 } from "./managers/videoManager/webcam.js";
 
 import {
@@ -80,6 +81,18 @@ import {
 import {speachCommands} from "./managers/voiceManager/voice.js"
 import {strings} from "./strings.js"
 function monkeyPatchMediaDevices() {
+
+  const isCITBCamera = (label) => {
+    const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
+    let returnValue = false;
+    cameraArray.forEach(camera => {
+      if (label.includes(camera)){
+        returnValue = true;
+      }
+    })
+    return returnValue
+   
+  }
   var floatingButtonsHTML = "";
   const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
     createHTML: (to_escape) => to_escape
@@ -117,32 +130,47 @@ function monkeyPatchMediaDevices() {
 
   }
 
+  let betweenTransition = false;
+
+  const runInsideTransition = async (callBackFunction) => {
+    betweenTransition = true;
+    await fadeInFadeOut();
+    callBackFunction();
+    await fadeInFadeOut();
+    betweenTransition = false;
+    return;
+  }
+
   const duploMode = async (duplo) => {
-    await fadeInFadeOut();
-    if (!window.presentationMode) {
-      window.presentationMode = true;
+    if (betweenTransition) {
+      return;
     }
-    else if (duplo2FirstTimeFromDuplo(duplo)) {
-      window.presentationMode = true
-    }else if (duplo2SecondTime(duplo)) {
-      window.presentationMode = false
-      window.duplo2 = false
-    }else if (duploFirstTimeFromDuplo2(duplo)) {
-      window.presentationMode = true
-    }else if (duploSecondTimeFromDuplo2(duplo)) {
-      window.presentationMode = false
+    if (!canChangeCameras) {
+      betweenTransition = false;
+      alert(enviroment.messageCITBCamOffline);
+      return;
     }
-   
-    window.duplo2 = duplo;
-   
-    const duploContainerButton = document.getElementById("buttonPresentation");
-    const duplo2Button = document.getElementById("duplo2");
-    setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
-    setButtonBackground(duploContainerButton, window.presentationMode );
-    setButtonBackground(duplo2Button, duplo && window.presentationMode );
-
-
-    await fadeInFadeOut();
+    runInsideTransition(() => {
+      if (!window.presentationMode) {
+        window.presentationMode = true;
+      }
+      else if (duplo2FirstTimeFromDuplo(duplo)) {
+        window.presentationMode = true
+      }else if (duplo2SecondTime(duplo)) {
+        window.presentationMode = false
+        window.duplo2 = false
+      }else if (duploFirstTimeFromDuplo2(duplo)) {
+        window.presentationMode = true
+      }else if (duploSecondTimeFromDuplo2(duplo)) {
+        window.presentationMode = false
+      }
+      window.duplo2 = duplo;  
+      const duploContainerButton = document.getElementById("buttonPresentation");
+      const duplo2Button = document.getElementById("duplo2");
+      setButtonBackground(buttonPresentation, window.presentationMode && !duplo);
+      setButtonBackground(duploContainerButton, window.presentationMode );
+      setButtonBackground(duplo2Button, duplo && window.presentationMode );
+    })
   }
 
   const presentacionCallBackFunction = async () =>{
@@ -151,38 +179,46 @@ function monkeyPatchMediaDevices() {
   const presentacion2CallBackFunction = async () =>{
     duploMode(true);
   }
+  
 
   const camCallBackFunction = async () => {
+    if (betweenTransition) {
+      return
+    }
     try{
       if (!canChangeCameras) {
+        betweenTransition = false;
         alert(enviroment.messageCITBCamOffline);
         return;
       }
       if(window.presentationMode){
-        await fadeInFadeOut();
-        window.presentationMode = !window.presentationMode 
-        const duploContainerButton = document.getElementById("buttonPresentation");
-        const duplo2Button = document.getElementById("duplo2");
-        setButtonBackground(buttonPresentation, false);
-        setButtonBackground(duploContainerButton, false );
-        setButtonBackground(duplo2Button, false );
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.presentationMode = !window.presentationMode 
+          const duploContainerButton = document.getElementById("buttonPresentation");
+          const duplo2Button = document.getElementById("duplo2");
+          setButtonBackground(buttonPresentation, false);
+          setButtonBackground(duploContainerButton, false );
+          setButtonBackground(duplo2Button, false );
+        })
         return;
       }
       if (window.actualVideoTag.id == "OTHERVideo") {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoCITB;
-        window.citbActivated = true;
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.actualVideoTag = videoCITB;
+          window.citbActivated = true;  
+        })
+
       } else {
-        await fadeInFadeOut();
-        window.actualVideoTag = videoOther;
-        window.citbActivated = false;
-        await fadeInFadeOut();
+        await runInsideTransition(() => {
+          window.actualVideoTag = videoOther;
+          window.citbActivated = false;
+        })
+       
 
       }
       setButtonBackground(window.buttonCam, window.citbActivated);
     }catch(e){
+      betweenTransition = false;
       logErrors(e,"camCallBackFunction,ln 205");
     }
   };
@@ -273,11 +309,24 @@ function monkeyPatchMediaDevices() {
  
   //Activate Extension 
   window.isExtentionActive = false;
+  const executeOpenClose = () =>{
+    window.isExtentionActive = !window.isExtentionActive;
+    buttonOnOffExtension.innerText = window.isExtentionActive;    
+    onOffExtension();
+  }
+
   const buttonOnOffExtension = getButtonOnOffExtension();
+
   const openCloseExtension = async () =>{
     let isCITBConnected = await checkCITBConnetion();
-    if(window.isExtentionActive){      
+    if (!isCITBConnected) {
+      alert(enviroment.messageCITBDisconnected);
+      return;
+    }
+    if(window.isExtentionActive){    
       closeButtonContainer();
+      annyang.abort();
+
       if (window.cameraAudioLoop != undefined) {
         window.cameraAudioLoop();
         window.cameraAudioLoop = undefined;
@@ -287,17 +336,43 @@ function monkeyPatchMediaDevices() {
       }
       if (showModeEnabled) {
         showCallBackFunction();
-      }   
+      } 
+      
+      if(window.presentationMode && window.duplo2){
+        presentacion2CallBackFunction();        
+      }
+      if(window.presentationMode && !window.duplo2){
+        presentacionCallBackFunction();
+      }
+      if(document.URL.includes("zoom.us")){
+        // if(window.generatorCITB)
+        //   window.generatorCITB.stop();
+        // if(window.generatorOtherMic)
+        //   window.generatorOtherMic.stop();
+        // setTimeout(()=>{
+        //   const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+        //   cameraElement.childNodes[1].children[0].click();
+        //   const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+        //   micElement.childNodes[1].children[0].click();
+        // },300)
+        alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
+      }
+      executeOpenClose();    
     }
     if(isCITBConnected){
       if(!window.isExtentionActive){
         window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
         showDiv();
       }
+      if(document.URL.includes("zoom.us")){
+        setTimeout(()=>{
+          const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+          cameraElement.childNodes[1].children[0].click();
+        },300)
+      }
+      executeOpenClose();    
     }  
-    window.isExtentionActive = !window.isExtentionActive;
-    buttonOnOffExtension.innerText = window.isExtentionActive;    
-    onOffExtension();
+    
   }
   buttonOnOffExtension.addEventListener("click", openCloseExtension);
   
@@ -378,13 +453,11 @@ function monkeyPatchMediaDevices() {
 
 
 
+
   const getCITBVideoDevices = async () => {
     try {
       const citbVideo = devices.filter(
-        s => 
-        s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) 
-        ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   
-      );
+        s => isCITBCamera(s.label));
       return (citbVideo.length > 0) ? citbVideo : [];
     } catch (error) {
       logErrors(error,"getCITBVideoDevices ln. 266");
@@ -431,8 +504,8 @@ function monkeyPatchMediaDevices() {
         audio: { deviceId: deviceId },
         video: false,
     });
-
     const generator = new MediaStreamTrackGenerator('audio'); 
+    // window.generatorOtherMic = generator;
     const processor = new MediaStreamTrackProcessor(otherMicStream.getTracks()[0]); 
     const source = processor.readable; 
     const sink = generator.writable; 
@@ -477,7 +550,6 @@ function monkeyPatchMediaDevices() {
     const citbMicrophone = getCITBMicDevices();
     if (citbMicrophone.length > 0) {
       window.classActivated = false;
-
       setMicrophone(citbMicrophone[0].deviceId);
       otherMicStream.getAudioTracks().forEach(track => {
         track.stop();
@@ -570,6 +642,11 @@ function monkeyPatchMediaDevices() {
 
   const showPopupMic = async() =>{
     try {
+      if (!window.isExtentionActive) {
+        betweenTransition = false;
+        alert(enviroment.messageCITBExtentionOff);
+        return;
+      }
       let usableMics = devices.filter(
         (x) =>
           x.kind === "audioinput" &&
@@ -624,6 +701,11 @@ function monkeyPatchMediaDevices() {
   }
   const showPopupVideo = async() =>{
       try {
+        if (!window.isExtentionActive) {
+          betweenTransition = false;
+          alert(enviroment.messageCITBExtentionOff);
+          return;
+        }
         let usableVideo = devices.filter(
           (x) =>
             x.kind === "videoinput" 
@@ -634,7 +716,7 @@ function monkeyPatchMediaDevices() {
         // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
         //   usableVideo = usableVideo.filter((device)=> device.label != element);
         // });
-        usableVideo = usableVideo.filter((x) => !(x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])));
+        usableVideo = usableVideo.filter((x) => !( isCITBCamera(x.label) ));
         createPopupVideo(
           div_OverlayVideo,
           div_FabVideo,
@@ -679,7 +761,6 @@ function monkeyPatchMediaDevices() {
       devices = res;
       window.devices = res;
       if(window.isExtentionActive){ 
-
         let micCITB = devices.filter(
           (x) =>
             x.kind === "audioinput" 
@@ -705,8 +786,7 @@ function monkeyPatchMediaDevices() {
           if (
             x.kind === "videoinput" 
               && (
-                x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0])
-                || x.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])
+                isCITBCamera(x.label)
               )
           ) {
             return false
@@ -794,6 +874,7 @@ function monkeyPatchMediaDevices() {
 
   const setUpAudio = (baseAudioMediaStream) =>{
     const generator = new MediaStreamTrackGenerator('audio'); 
+    // window.generatorCITB = generator;
     const processor = new MediaStreamTrackProcessor(baseAudioMediaStream.getTracks()[0]); 
     const source = processor.readable; 
     const sink = generator.writable; 
@@ -823,7 +904,7 @@ function monkeyPatchMediaDevices() {
   ) {
     try {
       if(window.isExtentionActive){
-
+        
         if (constrains.video && constrains.video.mandatory.sourceId) {
           if (
             constrains.video.mandatory.sourceId === "virtual" ||
@@ -855,7 +936,11 @@ function monkeyPatchMediaDevices() {
   var _audioController;
 
   const audioTrackProcessor = (frame) => {
-    _audioController.enqueue(frame);
+     if (!_audioController) {
+        frame.close();
+        return;
+      }
+      _audioController.enqueue(frame);
     //frame.close();
   }
   MediaDevices.prototype.getUserMedia = async function () {
@@ -863,6 +948,7 @@ function monkeyPatchMediaDevices() {
       const args = arguments;
       if(window.isExtentionActive){
         if (userMediaArgsIsVideo(args)) {
+
           if (
             args[0].video.deviceId === "virtual" ||
             args[0].video.deviceId.exact === "virtual"
@@ -884,14 +970,10 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  window.isFirstTimeCITBConnection = true;
   const checkCITBConnetion = async () => {
     const citbMicrophone = getCITBMicDevices();  
     const CITBVideo = await getCITBVideoDevices();
     if (citbMicrophone.length != 0 || CITBVideo != 0 ){
-      if(window.isFirstTimeCITBConnection){
-        window.isFirstTimeCITBConnection = false;
-      }
       return true;
     }
     return false;
@@ -995,13 +1077,12 @@ function monkeyPatchMediaDevices() {
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
-
-    setTimeout(() => {
-      unMute();
-      showCam();
-    },200)
-        
-        
+    if(document.URL.includes("meet.com")){
+      setTimeout(() => {
+        unMute();
+        showCam();
+      },200);     
+    }
   }
 
   const logErrors = (e,source) => {

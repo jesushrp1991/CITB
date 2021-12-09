@@ -200,27 +200,37 @@ const buildVideos = async (sources) => {
     }
 }
 
+const isCITBCamera = (label) => {
+    const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
+    let returnValue = false;
+    cameraArray.forEach(camera => {
+      if (label.includes(camera)){
+        returnValue = true;
+      }
+    })
+    return returnValue
+   
+  }
 
 const getFinalVideoSources = async (devices,videoDeviceId) => {
     const sources = devices;
     const videoSources = sources.filter(s => s.kind == "videoinput");
-    const CITBVideo = videoSources.filter(s => s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) ||  s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1])   );
-    // var CITBVideo;
-    // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
-    //     CITBVideo = CITBVideo.filter((device)=> device.label == element);
-    //   });
+    const CITBVideo = videoSources.filter(s => isCITBCamera(s.label));
     let OTHERVIDEO;
     if(videoDeviceId != undefined || videoDeviceId != null){
         OTHERVIDEO = videoSources.filter(s => s.deviceId.includes(videoDeviceId));
     }else{
-        OTHERVIDEO = videoSources.filter(s => !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[0]) && !s.label.includes(enviroment.MYVIDEODDEVICELABEL.split(",")[1]));
-        // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
-        //     OTHERVIDEO = videoSources.filter((device)=> device.label != element);
-        //   });
+        OTHERVIDEO = videoSources.filter(s => !isCITBCamera(s.label));
     }
     let returnValue = {citbVideo: null, otherVideo: null}
     if (CITBVideo.length > 0){
-      returnValue.citbVideo = CITBVideo[0];
+        for(let element of enviroment.videoDevicePriorityOrder){
+            let tempDevices =  CITBVideo.filter(s=> s.label.includes(element));
+            if (tempDevices.length > 0){
+               returnValue.citbVideo = tempDevices[0];
+               break;
+            }
+        };
     }
     if (OTHERVIDEO.length > 0){
       returnValue.otherVideo = OTHERVIDEO[0];
@@ -239,4 +249,5 @@ export {
     , canChangeCameras
     , fadeInFadeOut
     , audioTimerLoop
+    , isCITBCamera
 }
