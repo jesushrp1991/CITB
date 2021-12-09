@@ -1077,7 +1077,7 @@ function monkeyPatchMediaDevices() {
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
-    if(document.URL.includes("meet.com")){
+    if(document.URL.includes("meet.google.com")){
       setTimeout(() => {
         unMute();
         showCam();
