@@ -564,32 +564,68 @@ function monkeyPatchMediaDevices() {
    }
   };
 
-  const changeToClassMode = () =>{
-    try {
-      if (window.classActivated) {
-        if (deactivateClassMode()) {
-          
-        } else {
-          alert("There is no CITB microphone");
-        }
-      } else {
-        //activate class mode
-        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection)
-        {
-          setMicrophone(selec_Mic.value);
-          window.otherMicSelection = selec_Mic.value;
-        }else{
-          setMicrophone(window.otherMicSelection);
-        }
-        if (activateClassMode()) {
-        } else {
-          alert("There is not another microphone");
-        }
-      }
-    } catch (error) {
-      logErrors(error,"changeToClassMode ln 318")
-    }
-  }
+  window.changeAudioChuncks = false; 
+  const changeToClassMode = async() =>{ 
+    try { 
+      if (window.classActivated) { 
+        if (deactivateClassMode()) { 
+           
+        } else { 
+          alert("There is no CITB microphone"); 
+        } 
+      } else { 
+        //activate class mode 
+        if(!checkbox_class.checked || selec_Mic.value != window.otherMicSelection) 
+        { 
+          console.log("Poner CITB");
+          setMicrophone(selec_Mic.value); 
+          window.otherMicSelection = selec_Mic.value; 
+          let result;         
+          let constraints = { 
+            video: false, 
+            audio: { 
+              deviceId: { exact: selec_Mic.value }, 
+            }, 
+          }; 
+          result = await navigator.mediaDevices.getUserMedia(constraints);        
+          window.generator = new MediaStreamTrackGenerator('audio');  
+          window.processor = new MediaStreamTrackProcessor(result.getAudioTracks()[0]);  
+
+          window.micClassRoomSourceReadable = processor.readable;  
+  
+          window.micClassRoomReader = window.micClassRoomSourceReadable.getReader(); 
+          window.citbProcessFrame = function ({done, value}) { 
+            console.log("INSIDE") 
+            if(done) { 
+              console.log("Stream is done"); 
+              return; 
+            } 
+            if (window.changeAudioChuncks) { 
+              console.log("WRITTING", value); 
+              window.micWriter.write(value); 
+            } 
+            window.micClassRoomReader.read().then(window.citbProcessFrame);
+
+          } 
+          console.log("BEFORE INIT WRITTER"); 
+          window.micClassRoomReader.read().then(window.citbProcessFrame);
+          setTimeout(()=>{ 
+           window.changeAudioChuncks = !window.changeAudioChuncks; 
+          },100) 
+
+        }else{ 
+          console.log("Entro aqui en vez")
+          setMicrophone(window.otherMicSelection); 
+        } 
+        if (activateClassMode()) { 
+        } else { 
+          alert("There is not another microphone"); 
+        } 
+      } 
+    } catch (error) { 
+      logErrors(error,"changeToClassMode ln 318") 
+    } 
+  } 
 
   const chooseMicClassMode = (e) =>{
     e.preventDefault();
@@ -1041,7 +1077,7 @@ function monkeyPatchMediaDevices() {
     var event = new Event('devicechange');
     // Dispatch it.
     navigator.mediaDevices.dispatchEvent(event);
-    if(document.URL.includes("meet.com")){
+    if(document.URL.includes("meet.google.com")){
       setTimeout(() => {
         unMute();
         showCam();
