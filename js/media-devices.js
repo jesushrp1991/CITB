@@ -2,7 +2,7 @@ import { setEvents } from "./eventos.js";
 import { enviroment } from "./enviroment.js";  
 import{ audioTimerLoop } from "./managers/videoManager/webcam.js";
 import { createRecord } from "./managers/recordManager/record.js";  
-import { recordScreem,recordVirtualCam } from "./managers/recManager/recManager.js";  
+import { recordScreem } from "./managers/recManager/recManager.js";  
 import {  
   getButtonShow,  
   getButtonClass,  
