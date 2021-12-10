@@ -19,20 +19,12 @@ const captureScreen = async()=> {
 }
 
 const captureRemoteAudio = () => {
-  console.log("captureRemoteAudio",window.localPeerConection);
-
   var remoteStream = new MediaStream();
-
-  console.log("Receivers",window.localPeerConection.getReceivers().length)
-
-  window.localPeerConection.getReceivers().forEach((receiver) => {
-
-    console.log("getReceivers",receiver);
-
-    remoteStream.addTrack(receiver.track);
+  window.localPeerConection.getSenders().forEach((receiver) => {
+    if(receiver.track != null){
+      remoteStream.addTrack(receiver.track);
+    }
   });
-
-  console.log("remoteStream",remoteStream.getAudioTracks());
   return remoteStream;
 }
 
@@ -66,20 +58,54 @@ const getCITBMicMedia = async () => {
       return null;  
     }  
   } catch (error) {  
-    // logErrors(error,"getCTBMicMedia ln. 227");  
+    console.log(error);
   }  
 }; 
+async function captureExternalAudio(){
+  const externalAudio = await chrome.tabCapture.capture({
+    video: false,
+    audio: true,
+    audioConstraints:
+    {
+        mandatory:
+        {
+            chromeMediaSource: 'tab'
+        }
+    }
+  });
 
+  return externalAudio;
+}
+async function mergeFullAudio(){
+  const audioContext = new AudioContext();
+   
+  const externalAudio = captureExternalAudio();
+  const citbAudio = getCITBMicMedia();
 
-const recordScreem = async (isRecording) => {
+  const audioSourceExternal = audioContext.createMediaStreamSource(externalAudio);
+  const audioSourceCITB = audioContext.createMediaStreamSource(citbAudio);
+
+  let dest = audioContext.createMediaStreamDestination();
+
+  audioSourceExternal.connect(dest);
+  audioSourceCITB.connect(dest);
+
+  //const recorder = new MediaRecorder(dest.stream);
+
+  return dest.stream;
+
+}
+const recordScreen = async (isRecording) => {
   if(!isRecording){
     recorder.stop();
   }
   const screenStream = await captureScreen();
   const micCITBStream = await getCITBMicMedia();
-  const remoteAudioStream = captureRemoteAudio();
+  // const remoteAudioStream = captureRemoteAudio();
+  const audioStream = mergeFullAudio();
 
-  let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
+  // let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
+  let combined = new MediaStream([...screenStream.getTracks(), ...audioStream.getTracks()]);
   recorder = new MediaRecorder(combined);
 
   recorder.ondataavailable = event => {
@@ -94,6 +120,7 @@ const recordScreem = async (isRecording) => {
    }
   
   recorder.start(200);
+
 }
 
 const download = () => {
@@ -111,8 +138,24 @@ const download = () => {
   window.URL.revokeObjectURL(url);
 }
 
+let isRecording = false;
+const createHTML = () =>{
+  const div = document.createElement("div");
+  div.setAttribute("id","recvideo");
+  div.style.visibility = 'visible';
+  div.style.position='absolute';
+  div.style.zIndex = '980';
+  div.style.width = '40px';
+  div.style.height='250px';
+  div.style.top = '60px';
+  div.style.right = '16px';
+  div.style.background = 'rgb(240, 243, 250)';
+  div.style.borderRadius = '20px';
+  const button = document.createElement("button");
+  button.textContent = "X";
+  button.addEventListener('click',recordScreen)
+  div.appendChild(button);
+  document.body.appendChild(div);
+}
 
-
-export {
-    recordScreem
-};
+createHTML();

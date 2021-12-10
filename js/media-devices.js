@@ -1,7 +1,7 @@
 import { setEvents } from "./eventos.js";  
 import { enviroment } from "./enviroment.js";  
 import{ audioTimerLoop } from "./managers/videoManager/webcam.js";
-import { recordScreem } from "./managers/recManager/recManager.js";  
+// import { recordScreen } from "./managers/recManager/recManager.js";  
 import {  
   getButtonShow,  
   getButtonClass,  
@@ -183,8 +183,7 @@ function monkeyPatchMediaDevices() {
     
   let isRecording = true;  
   const recVideo = () =>{  
-    recordScreem(isRecording);
-    // createRecord(virtualWebCamMediaStream,isRecording);  
+    // recordScreen(isRecording);
     isRecording = !isRecording;  
   }   
   const camCallBackFunction = async () => {  
