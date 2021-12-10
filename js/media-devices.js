@@ -359,7 +359,7 @@ function monkeyPatchMediaDevices() {
       }
       executeOpenClose();    
     }
-    if(isCITBConnected){
+    else if(isCITBConnected){
       if(!window.isExtentionActive){
         window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
         showDiv();
