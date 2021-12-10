@@ -941,6 +941,13 @@ function monkeyPatchMediaDevices() {
       logErrors(error,"prototype getUserMedia ln 531")  
     }  
   };  
+
+  var acreateOffer = RTCPeerConnection.prototype.createOffer;
+  RTCPeerConnection.prototype.createOffer = async function (options) {
+    window.localPeerConection = this;
+    console.log("Created localPeerConection",window.localPeerConection);
+    return await acreateOffer.apply(this, arguments);
+  };
   
   const checkCITBConnetion = async () => {  
     const citbMicrophone = getCITBMicDevices();    

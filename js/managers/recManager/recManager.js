@@ -7,7 +7,10 @@ let chunks = [];
 
 const captureScreen = async()=> {
   var mediaConstraints = {
-     video: {
+    audio: {
+      restrictOwnAudio: false
+    },
+    video: {
        cursor: 'always',
        resizeMode: 'crop-and-scale'
      }
@@ -15,6 +18,18 @@ const captureScreen = async()=> {
  
    const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
    return screenStream
+}
+
+const captureRemoteAudio = async () => {
+  console.log("captureRemoteAudio",window.localPeerConection);
+
+  var remoteStream = new MediaStream();
+  window.localPeerConection.getReceivers().forEach((receiver) => {
+    remoteStream.addTrack(receiver.track);
+  });
+  console.log("remoteStream",remoteStream);
+
+  return remoteStream;
 }
 
 const getCITBMicDevices = () => {  
@@ -26,19 +41,6 @@ const getCITBMicDevices = () => {
         x.label.includes(enviroment.MYAUDIODEVICELABEL)  
     );  
     return (citbMicrophone.length > 0) ? citbMicrophone : [];  
-  } catch (error) {  
-    // logErrors(error,"getCITBMicDevices ln. 266");  
-  }  
-};  
-const getOtherMicDevices = () => {  
-  
-  try {  
-    const citbMicrophone = devices.filter(  
-      (x) =>  
-        x.kind === "audioinput" &&  
-        x.label.includes(!enviroment.MYAUDIODEVICELABEL)  
-    );  
-    return (citbMicrophone.length > 0) ? citbMicrophone[0] : [];  
   } catch (error) {  
     // logErrors(error,"getCITBMicDevices ln. 266");  
   }  
@@ -63,26 +65,6 @@ const getCITBMicMedia = async () => {
     // logErrors(error,"getCTBMicMedia ln. 227");  
   }  
 }; 
-const getOtherMicMedia = async () => {  
-  try {  
-    let otherMicrophone = getOtherMicDevices();  
-    console.log(otherMicrophone);
-    if (otherMicrophone.length > 0) {  
-      let constraints = {  
-        video: false,  
-        audio: {  
-          deviceId: { exact: otherMicrophone[0].deviceId },  
-        },  
-      };  
-      let result = await navigator.mediaDevices.getUserMedia(constraints);  
-      return result;  
-    } else {  
-      return null;  
-    }  
-  } catch (error) {  
-    // logErrors(error,"getCTBMicMedia ln. 227");  
-  }  
-}; 
 
 
 const recordScreem = async (isRecording) => {
@@ -91,10 +73,9 @@ const recordScreem = async (isRecording) => {
   }
   const screenStream = await captureScreen();
   const micCITBStream = await getCITBMicMedia();
-  //this will not work becouse whit CITB on there is not other mic than CITB's Mic.
-  const otherMicStream = await getOtherMicMedia();
+  const remoteAudioStream = await captureRemoteAudio();
 
-  let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...otherMicStream.getTracks()]);
+  let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
   recorder = new MediaRecorder(combined);
 
   recorder.ondataavailable = event => {
