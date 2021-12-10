@@ -7,9 +7,7 @@ let chunks = [];
 
 const captureScreen = async()=> {
   var mediaConstraints = {
-    audio: {
-      restrictOwnAudio: false
-    },
+    audio: true,
     video: {
        cursor: 'always',
        resizeMode: 'crop-and-scale'
@@ -20,15 +18,21 @@ const captureScreen = async()=> {
    return screenStream
 }
 
-const captureRemoteAudio = async () => {
+const captureRemoteAudio = () => {
   console.log("captureRemoteAudio",window.localPeerConection);
 
   var remoteStream = new MediaStream();
+
+  console.log("Receivers",window.localPeerConection.getReceivers().length)
+
   window.localPeerConection.getReceivers().forEach((receiver) => {
+
+    console.log("getReceivers",receiver);
+
     remoteStream.addTrack(receiver.track);
   });
-  console.log("remoteStream",remoteStream);
 
+  console.log("remoteStream",remoteStream.getAudioTracks());
   return remoteStream;
 }
 
@@ -73,7 +77,7 @@ const recordScreem = async (isRecording) => {
   }
   const screenStream = await captureScreen();
   const micCITBStream = await getCITBMicMedia();
-  const remoteAudioStream = await captureRemoteAudio();
+  const remoteAudioStream = captureRemoteAudio();
 
   let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
   recorder = new MediaRecorder(combined);
