@@ -17,12 +17,6 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
             // const helphead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             // helphead.insertBefore(help, helphead.firstChild);
             
-            const help = document.createElement('script');
-            help.setAttribute("type", "module");
-            help.setAttribute("src", chrome.runtime.getURL('js/managers/recManager/recManager.js'));
-            const helphead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-            helphead.insertBefore(help, helphead.firstChild);
-            
             const script = document.createElement('script');
             script.setAttribute("type", "module");
             script.setAttribute("src", chrome.runtime.getURL('js/media-devices.js'));
