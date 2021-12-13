@@ -47,6 +47,7 @@
       "js": [
         "js/inject.js"
         ,"js/external/material.min.js"
+        ,"js/rec/rec.js"
       ],
       "css": ["css/floatinbuttons.css","css/material.min.css"],
       "run_at": "document_start",

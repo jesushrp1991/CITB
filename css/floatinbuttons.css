@@ -494,3 +494,66 @@
     margin-right: 10px;
   }
 /* END Popup choose mic Class Mode */
+
+/* REC Panel */
+.toolbox-wrapper{
+  z-index: 999;
+  display: grid;
+  /* display: none; */
+  grid-auto-flow: column;
+  justify-items: start;
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  height: 63px;
+  width: 63px;
+  border-radius: 50%;
+  margin: 3px;
+  box-shadow: 0 0 9px 0 rgb(0 0 0 / 74%);
+  background-color: #383838;
+  color: #fff;
+  font-size: 10px;
+}
+
+.tool-menu-container {
+  display: grid;
+  grid-auto-flow: column;
+  place-items: center center;
+  width: auto;
+  height: inherit;
+  font-size: 10px;
+}
+
+.tool-menu-container button.rec-button.selected {
+  background-color: #000;
+  border-bottom: 3px solid #0af;
+}
+.tool-menu-container button.rec-button {
+  width: 60px;
+  min-width: unset;
+  height: 60px;
+  padding: 6px 5px 3px;
+  font-size: 10px;
+  border-radius: 50%;
+  border-bottom: 3px solid #383838;
+  background-color: #d35400;;
+  
+}
+.rec-button, .rec-icon-button, .rec-stroked-button, .rec-flat-button {
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 50%;
+  overflow: visible;
+}
+/* END REC Panel */

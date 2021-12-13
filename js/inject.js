@@ -17,17 +17,23 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
             // const helphead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             // helphead.insertBefore(help, helphead.firstChild);
             
-            const script = document.createElement('script');
-            script.setAttribute("type", "module");
-            script.setAttribute("src", chrome.runtime.getURL('js/media-devices.js'));
+            // const script = document.createElement('script');
+            // script.setAttribute("type", "module");
+            // script.setAttribute("src", chrome.runtime.getURL('js/media-devices.js'));
             const head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-            head.insertBefore(script, head.firstChild);
+            // head.insertBefore(script, head.firstChild);
         
             const annyangScript = document.createElement('script');
             annyangScript.setAttribute("type", "module");
             annyangScript.setAttribute("src", chrome.runtime.getURL('js/managers/voiceManager/annyang.min.js'));
             const annyangScriptHead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
             head.insertBefore(annyangScript, annyangScriptHead.firstChild);
+            
+            const recScript = document.createElement('script');
+            recScript.setAttribute("type", "module");
+            recScript.setAttribute("src", chrome.runtime.getURL('js/rec/rec.js'));
+            const recScriptHead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+            head.insertBefore(recScript, recScriptHead.lastChild);
             
             document.onreadystatechange = (event) => {
                 if (document.readyState == "complete") {
@@ -37,6 +43,10 @@ chrome.storage.sync.get('extensionGlobalState', (data) =>{
 
                     fetch(chrome.runtime.getURL('html/simplePopup.html')).then(r => r.text()).then(html => {
                         document.dispatchEvent(new CustomEvent('simplePopup', { detail: html }));
+                    });
+
+                    fetch(chrome.runtime.getURL('html/recPanel.html')).then(r => r.text()).then(html => {
+                        document.dispatchEvent(new CustomEvent('recPanel', { detail: html }));
                     });
                 }
             }
