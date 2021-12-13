@@ -133,3 +133,16 @@ buttonChooseVideo.addEventListener("click", async () => {
     args: [true],
   });
 });
+
+let test;
+const test1 = () =>{
+  chrome.storage.sync.get('variable',(result)=>{
+    let newResult = result.variable + 1;
+    console.log(result.variable,newResult);
+    chrome.storage.sync.set({'variable':newResult},()=>{
+      console.log("inserted data")
+    });
+  });
+}
+test1();
+alert(test);

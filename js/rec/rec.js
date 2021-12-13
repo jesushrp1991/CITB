@@ -35,31 +35,67 @@ const captureScreen = async()=> {
 
 let isRecording = false;
 let recorder;
-const recordScreen = async () => {
+const recordScreen = async (streamId) => {
+    try{
+        if(isRecording){
+            recorder.stop();
+        }
+        var constraints = {
+            audio: {
+             mandatory: {
+                     chromeMediaSource: 'desktop',
+                     chromeMediaSourceId: streamId
+                 }
+            },
+            video: {
+                optional: [],
+                mandatory: {
+                    chromeMediaSource: 'desktop',
+                    chromeMediaSourceId: streamId,
+                    maxWidth: 2560,
+                    maxHeight: 1440,
+                    maxFrameRate:30
+                }
+            }
+        }
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        recorder = new MediaRecorder(stream);
+
+        recorder.ondataavailable = event => {
+            if (event.data.size > 0) {
+                console.log("insert chunck")
+                chunks.push(event.data)
+            }
+        }
+        recorder.onstop = () => {
+            download();
+        }
+        recorder.start();
+        isRecording = true;
+    }catch(e){
+        console.log(e);
+    }
+}
+const recordBack = () =>{
+    try{
+        console.log("recordBack")
+        const request = { sources: ['window', 'screen', 'tab'] };
+        const EXTENSION_ID  = "ijbdnbhhklnlmdpldichdlknfaibceaf";
+        chrome.runtime.sendMessage(EXTENSION_ID, request, async (response) => {
+            console.log(response);
+            await recordScreen(response.streamId);
+        });
+    }catch(e){
+        console.log(e);
+    }
+}
+const stopBack = () =>{
+    console.log(isRecording);
     if(isRecording){
         recorder.stop();
-    }
-    
-    const screenStream = await captureScreen();
-    // const micCITBStream = await getCITBMicMedia();
-    // const remoteAudioStream = captureRemoteAudio();
-    // let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
-    // recorder = new MediaRecorder(combined);
-    recorder = new MediaRecorder(screenStream);
+        isRecording = false;
 
-    recorder.ondataavailable = event => {
-    if (event.data.size > 0) {
-        console.log("insert chunck")
-        chunks.push(event.data)
     }
-    }
-
-    recorder.onstop = () => {
-        download();
-    }
-
-    recorder.start(200);
-    isRecording = !isRecording;
 }
 
 document.onreadystatechange = (event) => {  
@@ -72,7 +108,8 @@ document.onreadystatechange = (event) => {
                 let container = document.createElement("div");
                 container.innerHTML = htmlContent;
                 document.body.appendChild(container);    
-                document.getElementById("recPanel").addEventListener('click',recordScreen);
+                document.getElementById("recPanel").addEventListener('click',recordBack);
+                document.getElementById("stopPanel").addEventListener('click',stopBack);
             },300)
         }
         initPopup();
