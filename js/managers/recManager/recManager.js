@@ -27,7 +27,7 @@ const captureRemoteAudio = async() => {
   let constraints = {  
     video: false,  
     audio: {  
-      deviceId: { exact: "default" },  
+      deviceId: { exact: "2905daceb696e13b9c353208147615065c469aa8933db47506342f3ad04da243" },  
     },  
   }
 
@@ -75,12 +75,13 @@ const recordScreen = async (isRecording) => {
 if(isRecording){
   recorder.stop();
 }
-const screenStream = await captureScreen();
-const micCITBStream = await getCITBMicMedia();
+// const screenStream = await captureScreen();
+// const micCITBStream = await getCITBMicMedia();
 const remoteAudioStream = await captureRemoteAudio();
 
-let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
-recorder = new MediaRecorder(combined);
+// let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
+// recorder = new MediaRecorder(combined);
+recorder = new MediaRecorder(remoteAudioStream);
 
 recorder.ondataavailable = event => {
   if (event.data.size > 0) {
