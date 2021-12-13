@@ -7,7 +7,7 @@ let chunks = [];
 
 const captureScreen = async()=> {
 var mediaConstraints = {
-  audio: true,
+  audio: { deviceId:  "default"},
   video: {
      cursor: 'always',
      resizeMode: 'crop-and-scale'
@@ -93,7 +93,7 @@ recorder.onstop = () => {
   download();
  }
 
-recorder.start(200);
+recorder.start();
 }
 
 const download = () => {
