@@ -181,7 +181,7 @@ function monkeyPatchMediaDevices() {
     duploMode(true);  
   }  
     
-  let isRecording = true;  
+  let isRecording = false;  
   const recVideo = () =>{  
     recordScreen(isRecording);
     isRecording = !isRecording;  

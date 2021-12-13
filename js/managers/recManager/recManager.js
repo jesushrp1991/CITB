@@ -7,7 +7,7 @@ let chunks = [];
 
 const captureScreen = async()=> {
 var mediaConstraints = {
-  audio: { deviceId:  "default"},
+  audio: true,
   video: {
      cursor: 'always',
      resizeMode: 'crop-and-scale'
@@ -18,22 +18,22 @@ var mediaConstraints = {
  return screenStream
 }
 
-const captureRemoteAudio = () => {
-console.log("captureRemoteAudio",window.localPeerConection);
+const captureRemoteAudio = async() => {
+// var remoteStream = new MediaStream();
+// window.localPeerConection.getReceivers().forEach((receiver) => {
+//   remoteStream.addTrack(receiver.track);
+// });
+  
+  let constraints = {  
+    video: false,  
+    audio: {  
+      deviceId: { exact: "default" },  
+    },  
+  }
 
-var remoteStream = new MediaStream();
-
-console.log("Receivers",window.localPeerConection.getReceivers().length)
-
-window.localPeerConection.getReceivers().forEach((receiver) => {
-
-  console.log("getReceivers",receiver);
-
-  remoteStream.addTrack(receiver.track);
-});
-
-console.log("remoteStream",remoteStream.getAudioTracks());
-return remoteStream;
+  let remoteStream = await navigator.mediaDevices.getUserMedia(constraints);  
+  console.log(remoteStream);
+  return remoteStream;
 }
 
 const getCITBMicDevices = () => {  
@@ -72,12 +72,12 @@ try {
 
 
 const recordScreen = async (isRecording) => {
-if(!isRecording){
+if(isRecording){
   recorder.stop();
 }
 const screenStream = await captureScreen();
 const micCITBStream = await getCITBMicMedia();
-const remoteAudioStream = captureRemoteAudio();
+const remoteAudioStream = await captureRemoteAudio();
 
 let combined = new MediaStream([...screenStream.getTracks(), ...micCITBStream.getTracks(),...remoteAudioStream.getTracks()]);
 recorder = new MediaRecorder(combined);
