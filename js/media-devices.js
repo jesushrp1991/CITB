@@ -1,7 +1,6 @@
 import { setEvents } from "./eventos.js";  
 import { enviroment } from "./enviroment.js";  
 import{ audioTimerLoop } from "./managers/videoManager/webcam.js";
-import { recordScreen } from "./managers/recManager/recManager.js";  
 import {  
   getButtonShow,  
   getButtonClass,  
@@ -181,11 +180,6 @@ function monkeyPatchMediaDevices() {
     duploMode(true);  
   }  
     
-  let isRecording = false;  
-  const recVideo = () =>{  
-    recordScreen(isRecording);
-    isRecording = !isRecording;  
-  }   
   const camCallBackFunction = async () => {  
     if (betweenTransition) {  
       return  
@@ -196,7 +190,6 @@ function monkeyPatchMediaDevices() {
         alert(enviroment.messageCITBCamOffline);  
         return;  
       }  
-      recVideo();
       if(window.presentationMode){  
         await runInsideTransition(() => {  
           window.presentationMode = !window.presentationMode   

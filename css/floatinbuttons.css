@@ -501,13 +501,13 @@
   display: grid;
   /* display: none; */
   grid-auto-flow: column;
-  justify-items: start;
+  justify-items: center;
   position: absolute;
   bottom: 15px;
   left: 15px;
-  height: 63px;
-  width: 63px;
-  border-radius: 50%;
+  height: 75px;
+  width: 200px;
+  border-radius: 3px;
   margin: 3px;
   box-shadow: 0 0 9px 0 rgb(0 0 0 / 74%);
   background-color: #383838;
@@ -534,10 +534,10 @@
   height: 60px;
   padding: 6px 5px 3px;
   font-size: 10px;
-  border-radius: 50%;
+  border-radius: 3px;
   border-bottom: 3px solid #383838;
-  background-color: #d35400;;
-  
+  background-color: #d35400;
+  margin: 3px;
 }
 .rec-button, .rec-icon-button, .rec-stroked-button, .rec-flat-button {
   box-sizing: border-box;
@@ -553,7 +553,7 @@
   min-width: 64px;
   line-height: 36px;
   padding: 0 16px;
-  border-radius: 50%;
+  border-radius: 3px;
   overflow: visible;
 }
 /* END REC Panel */
