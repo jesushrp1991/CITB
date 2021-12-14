@@ -25,7 +25,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
   const sources = message.sources;
   const tab = sender.tab;
   console.log(sources,tab,sender)
-  chrome.desktopCapture.chooseDesktopMedia(sources, tab, (streamId,canRequestAudioTrack) => {
+  chrome.desktopCapture.chooseDesktopMedia(sources, tab, streamId => {
     if (!streamId) {
       sendResponse({
         type: 'error',
@@ -34,8 +34,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     } else {
       sendResponse({
         type: 'success',
-        streamId: streamId,
-        canRequestAudioTrack:canRequestAudioTrack
+        streamId: streamId
       });
     }
   });

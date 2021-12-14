@@ -41,11 +41,12 @@ const recordScreen = async (streamId) => {
             recorder.stop();
         }
         var constraints = {
-            audio: {
-             mandatory: {
-                     chromeMediaSource: 'desktop',
-                     chromeMediaSourceId: streamId
-                 }
+            audio:{
+                mandatory: {
+                    chromeMediaSource: 'desktop',
+                    chromeMediaSourceId: streamId,
+                    echoCancellation: true
+                }
             },
             video: {
                 optional: [],
@@ -79,7 +80,7 @@ const recordScreen = async (streamId) => {
 const recordBack = () =>{
     try{
         console.log("recordBack")
-        const request = { sources: ['window', 'screen', 'tab'] };
+        const request = { sources: ['screen','audio'] };
         const EXTENSION_ID  = "ijbdnbhhklnlmdpldichdlknfaibceaf";
         chrome.runtime.sendMessage(EXTENSION_ID, request, async (response) => {
             console.log(response);
