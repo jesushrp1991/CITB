@@ -6,14 +6,18 @@
   "minimum_chrome_version": "88.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsiTbtsAQszcqFHIwUEJLC6vW9nYMajp2Cd4pqb2+HZUoZx1yCZwkJfrGFvEBQXmZCDSy/SNgjROdnDxrVtgYi/w8a7fBZBN77jt6QNpUQohHhkvSgCv+YPifbutyXbz6V4MBa4uLiOp0nUUVdrb6d6U1hxdthiuyW1C9+gDkB/Esxrr8vw94pmkvPjD0dWN7i89Zj1aEw9wk2lEseK+nSYE8xid3SnmWF1ijSmy8pT+eYLser6WJtcc7G7OIOd25lYgLnyFGYtlEupU40IgIBu9Gnbpbde+fagVmkST3pbofVEalWUIXttBNhQUeNX8/XjYwKUxbxmjJh+MdWXMBxwIDAQAB",
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "tabs",
-    "activeTab",
-    "tabCapture",
-    "desktopCapture"
+      "storage"
+    , "activeTab"
+    , "scripting"
+    , "tabs"
+    , "tabCapture"
+    , "desktopCapture"
+    , "identity"
   ],
+  "oauth2": {
+    "client_id": "19686602327-9r18u3m3mvpt9195nafk1fjde8cc6vjh.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive"]
+  },
   "background": {
     "service_worker": "js/background.js"
   }, 
@@ -49,6 +53,8 @@
       "js": [
         "js/inject.js"
         ,"js/external/material.min.js"
+        ,"js/external/resumableupload_js.min.js"
+        ,"js/external/oauth2/injection.js"
         ,"js/rec/rec.js"
       ],
       "css": ["css/floatinbuttons.css","css/material.min.css"],
@@ -65,7 +71,7 @@
     "matches": ["<all_urls>"]
   }],
   "externally_connectable": {
-    "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
+    "ids": ["ijbdnbhhklnlmdpldichdlknfaibceaf"],
     "matches": ["https://meet.google.com/*","https://zoom.us/*","https://meet.jit.si/*","https://teams.live.com/*","https://teams.microsoft.com/*"],
     "accepts_tls_channel_id": true
   }

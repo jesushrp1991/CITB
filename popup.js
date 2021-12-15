@@ -5,6 +5,11 @@ let button4WEB = document.getElementById('button4');
 let buttonChooseMic = document.getElementById('button5');
 let showActivated = false, classActivated = false, citbActivated,webContainerActivated,canChangeCameras,globalState = false;
  
+
+document.getElementById('oauth-button').addEventListener('click',()=>{
+  window.oauth2.start();
+});
+
 const getExtensionState = () =>{
   let isOpen = document.getElementById('buttonOnOff').innerText.toString();  
   return isOpen;
@@ -133,16 +138,3 @@ buttonChooseVideo.addEventListener("click", async () => {
     args: [true],
   });
 });
-
-let test;
-const test1 = () =>{
-  chrome.storage.sync.get('variable',(result)=>{
-    let newResult = result.variable + 1;
-    console.log(result.variable,newResult);
-    chrome.storage.sync.set({'variable':newResult},()=>{
-      console.log("inserted data")
-    });
-  });
-}
-test1();
-alert(test);

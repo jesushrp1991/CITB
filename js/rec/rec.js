@@ -99,6 +99,10 @@ const stopBack = () =>{
     }
 }
 
+const saveToDrive = () => {
+    
+}
+
 document.onreadystatechange = (event) => {  
     if (document.readyState == "complete") {
         console.log("REC")
@@ -111,6 +115,7 @@ document.onreadystatechange = (event) => {
                 document.body.appendChild(container);    
                 document.getElementById("recPanel").addEventListener('click',recordBack);
                 document.getElementById("stopPanel").addEventListener('click',stopBack);
+                document.getElementById("savePanel").addEventListener('click',saveToDrive);
             },300)
         }
         initPopup();
