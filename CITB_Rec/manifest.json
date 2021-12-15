@@ -1,25 +1,24 @@
 {
-  "name": "CITBRec",
-  "description": "Sistema profesional de grabado CITB",
-  "version": "1.0.0",
+  "name": "CITB Rec",
+  "version": "1.0",
+  "description": "CITB Rec Utility",
   "manifest_version": 2,
-  "minimum_chrome_version": "88.0",
-  "permissions": [
-      "storage"
-    , "activeTab"
-    , "tabs"
-    , "tabCapture"
-    , "desktopCapture"
-    , "identity"
-  ],
-  "oauth2": {
-    "client_id": "19686602327-9r18u3m3mvpt9195nafk1fjde8cc6vjh.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/drive"]
-  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsiTbtsAQszcqFHIwUEJLC6vW9nYMajp2Cd4pqb2+HZUoZx1yCZwkJfrGFvEBQXmZCDSy/SNgjROdnDxrVtgYi/w8a7fBZBN77jt6QNpUQohHhkvSgCv+YPifbutyXbz6V4MBa4uLiOp0nUUVdrb6d6U1hxdthiuyW1C9+gDkB/Esxrr8vw94pmkvPjD0dWN7i89Zj1aEw9wk2lEseK+nSYE8xid3SnmWF1ijSmy8pT+eYLser6WJtcc7G7OIOd25lYgLnyFGYtlEupU40IgIBu9Gnbpbde+fagVmkST3pbofVEalWUIXttBNhQUeNX8/XjYwKUxbxmjJh+MdWXMBxwIDAQAB",
   "background": {
-    "service_worker": "js/background.js"
-  }, 
+     "page": "background.html"
+    ,"persistent": false
+  },
+  "oauth2": {
+     "client_id": "19686602327-poevejt2q5aqpctosm08t6kueaun1rrk.apps.googleusercontent.com"
+    ,"scopes":["https://www.googleapis.com/auth/drive"]
+  },
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
+  "permissions": [
+      "identity"
+    , "desktopCapture"
+  ],
   "browser_action": {
+    "default_title": "CITB Rec",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "CITB COLOR SIN CIRCULO.png",
@@ -33,46 +32,10 @@
     "48": "CITB COLOR SIN CIRCULO.png",
     "128": "CITB COLOR SIN CIRCULO.png"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://meet.google.com/*",
-        "https://zoom.us/*",
-        "https://meet.jit.si/*",
-        "https://teams.live.com/*",
-        "https://teams.microsoft.com/*",
-        "https://accounts.google.com/o/oauth2/v2/auth"
-      ],
-      "js": [
-        "js/inject.js"
-        ,"js/external/resumableupload_js.min.js"
-        ,"js/external/oauth2/injection.js"
-        ,"js/rec/rec.js"
-      ],
-      "css": ["css/floatinbuttons.css"],
-      "run_at": "document_start",
-      "all_frames": true
-    } 
-  ],
-  "options_ui": {
-    "page": "options.html",
-    "open_in_tab": false
-  },
   "web_accessible_resources": [
-    "js/*"
+     "js/*"
     ,"helper/*"
     , "css/font/*"
     , "html/*"
-  ],
-  "externally_connectable": {
-    "ids": ["pbaohaghbcddfmljiihhjmgdnbgkginc"],
-    "matches": [
-      "https://meet.google.com/*"
-      ,"https://zoom.us/*"
-      ,"https://meet.jit.si/*"
-      ,"https://teams.live.com/*"
-      ,"https://teams.microsoft.com/*"
-    ],
-    "accepts_tls_channel_id": true
-  }
+  ]
 }

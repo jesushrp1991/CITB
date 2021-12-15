@@ -2,7 +2,6 @@
 <html>
   <head>
     <link href="popup.css" rel="stylesheet" type="text/css">
-    <script src="js/external/oauth2/oauth2.js"></script>
   </head>
   <body>
     <div class="buttonsBorder">
@@ -14,9 +13,16 @@
       </button>
       <button type="button" id="button4" class="button4WebContainer">
       </button>
-      <button id="authButton"> Click
+      <button id="authButton"> 
+          Click
       </button>
     </div>
-  <script src="popup.js"></script>
+    <form>
+      <input name="file" id="uploadfile" type="file" />
+    </form>
+    <div id="progress"></div>
+    <script src="popup.js"></script>
+    <script src="js/external/resumableupload_js.min.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=onGAPILoad"></script>
   </body>
 </html>
