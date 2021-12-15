@@ -1,12 +1,3 @@
-const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
-    createHTML: (to_escape) => to_escape
-})
-let popupContent;
-document.addEventListener('recPanel', function (e) {
-    console.log("Fire event",e.detail);
-    popupContent = e.detail;    
-}); 
-
 let chunks = [];
 const download = () => {
     console.log("Hello download")
@@ -81,8 +72,7 @@ const recordBack = () =>{
     try{
         console.log("recordBack")
         const request = { sources: ['screen','audio'] };
-        const EXTENSION_ID  = "ijbdnbhhklnlmdpldichdlknfaibceaf";
-        chrome.runtime.sendMessage(EXTENSION_ID, request, async (response) => {
+        chrome.runtime.sendMessage(request, async (response) => {
             console.log(response);
             await recordScreen(response.streamId);
         });
@@ -99,25 +89,5 @@ const stopBack = () =>{
     }
 }
 
-const saveToDrive = () => {
-    
-}
-
-document.onreadystatechange = (event) => {  
-    if (document.readyState == "complete") {
-        console.log("REC")
-        const initPopup = () => {            
-            setTimeout(()=>{
-                console.log("popupContent",popupContent);
-                const htmlContent = escapeHTMLPolicy.createHTML(popupContent);
-                let container = document.createElement("div");
-                container.innerHTML = htmlContent;
-                document.body.appendChild(container);    
-                document.getElementById("recPanel").addEventListener('click',recordBack);
-                document.getElementById("stopPanel").addEventListener('click',stopBack);
-                document.getElementById("savePanel").addEventListener('click',saveToDrive);
-            },300)
-        }
-        initPopup();
-    }
-}
+document.getElementById("recPanel").addEventListener('click',recordBack);
+document.getElementById("stopPanel").addEventListener('click',stopBack);
