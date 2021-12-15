@@ -1,0 +1,78 @@
+{
+  "name": "CITBRec",
+  "description": "Sistema profesional de grabado CITB",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "minimum_chrome_version": "88.0",
+  "permissions": [
+      "storage"
+    , "activeTab"
+    , "tabs"
+    , "tabCapture"
+    , "desktopCapture"
+    , "identity"
+  ],
+  "oauth2": {
+    "client_id": "19686602327-9r18u3m3mvpt9195nafk1fjde8cc6vjh.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive"]
+  },
+  "background": {
+    "service_worker": "js/background.js"
+  }, 
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "CITB COLOR SIN CIRCULO.png",
+      "48": "CITB COLOR SIN CIRCULO.png",
+      "64": "CITB COLOR SIN CIRCULO.png",
+      "128": "CITB COLOR SIN CIRCULO.png"
+    }
+  },
+  "icons": {
+    "16": "CITB COLOR SIN CIRCULO.png",
+    "48": "CITB COLOR SIN CIRCULO.png",
+    "128": "CITB COLOR SIN CIRCULO.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*",
+        "https://zoom.us/*",
+        "https://meet.jit.si/*",
+        "https://teams.live.com/*",
+        "https://teams.microsoft.com/*",
+        "https://accounts.google.com/o/oauth2/v2/auth"
+      ],
+      "js": [
+        "js/inject.js"
+        ,"js/external/resumableupload_js.min.js"
+        ,"js/external/oauth2/injection.js"
+        ,"js/rec/rec.js"
+      ],
+      "css": ["css/floatinbuttons.css"],
+      "run_at": "document_start",
+      "all_frames": true
+    } 
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "web_accessible_resources": [
+    "js/*"
+    ,"helper/*"
+    , "css/font/*"
+    , "html/*"
+  ],
+  "externally_connectable": {
+    "ids": ["pbaohaghbcddfmljiihhjmgdnbgkginc"],
+    "matches": [
+      "https://meet.google.com/*"
+      ,"https://zoom.us/*"
+      ,"https://meet.jit.si/*"
+      ,"https://teams.live.com/*"
+      ,"https://teams.microsoft.com/*"
+    ],
+    "accepts_tls_channel_id": true
+  }
+}
