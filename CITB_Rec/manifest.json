@@ -16,6 +16,7 @@
   "permissions": [
       "identity"
     , "desktopCapture"
+    , "storage"
   ],
   "browser_action": {
     "default_title": "CITB Rec",
@@ -39,7 +40,8 @@
         "js/inject.js"
        ,"js/rec/rec.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_start",
+      "all_frames": true
   }],
   "web_accessible_resources": [
      "js/*"

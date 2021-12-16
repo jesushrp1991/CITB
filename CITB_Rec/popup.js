@@ -18,37 +18,9 @@ function onGAPILoad() {
   });
 }
 
-
-
-async function listFiles  () {
-  retrieveAllFiles(displayItems);        
-}
-
-function displayItems (result) {
-  console.log("response",result)
-  console.log('Files:');
-  if (result && result.length > 0) {
-      for (var i = 0; i<result.length; i++) {
-          var file = result[i];
-          console.log(file.name + ' (' + file.id + ')');
-      }
-  } else {
-  console.log('No files found.');
-  }
-}
-
-function retrieveAllFiles(callback) {
-  var initialRequest = gapi.client.drive.files.list({});
-  initialRequest.execute((resp)=>{
-      console.log("resp",resp.files,resp['files']);
-      displayItems(resp.files);
-  })        
-}
-
 const getAuthToken = () =>{
   chrome.identity.getAuthToken({interactive: true}, function(token) {
     console.log('got the token', token);
-    listFiles();
   })
 };
 
@@ -57,8 +29,6 @@ const getAuthToken = () =>{
   *   Upload to Drive
   *
 */ 
-document.getElementById("uploadfile").addEventListener("change", run);
-
   function run(obj) {
     const file = obj.target.files[0];
     if (file.name != "") {
@@ -103,5 +73,4 @@ document.getElementById("uploadfile").addEventListener("change", run);
     });
   }
 
-const authButton = document.getElementById('authButton');
-authButton.addEventListener('click',getAuthToken);
+getAuthToken()
