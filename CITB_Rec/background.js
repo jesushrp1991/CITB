@@ -1,7 +1,10 @@
 const API_KEY = 'AIzaSyDhLKHKTBWjlDSrRLPY_-kvgV0xcJH7qd0';
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 
-function onGAPILoad() {
+const onGAPIFirstLoad = () =>{
+  console.log("GAPI LOADED!!")
+}
+const onGAPILoad = () => {
   gapi.client.init({
     // Don't pass client nor scope as these will init auth2, which we don't want
     apiKey: API_KEY,
@@ -23,13 +26,17 @@ const getAuthToken = () =>{
     console.log('got the token', token);
   })
 };
+const verificateAuth = () =>{
+  onGAPILoad();
+  getAuthToken();
+}
 
 
 /*
   *   Upload to Drive
   *
 */ 
-  function run(obj) {
+  const prepareUploadToDrive = (obj) => {
     // const file = obj.target.files[0];
     const file = obj;
     if (file.name != "") {
@@ -38,11 +45,11 @@ const getAuthToken = () =>{
       fr.fileSize = file.size;
       fr.fileType = file.type;
       fr.readAsArrayBuffer(file);
-      fr.onload = resumableUpload;
+      fr.onload = startResumableUploadToDrive;
     }
   }
 
-  function resumableUpload(e) {
+  const startResumableUploadToDrive = (e) => {
     accessToken = gapi.auth.getToken().access_token; // Please set access token here.
     // console.log("accessToken",accessToken)
     // document.getElementById("progress").innerHTML = "Initializing.";
@@ -54,48 +61,37 @@ const getAuthToken = () =>{
       fileBuffer: f.result,
       accessToken: accessToken,
     };
-    const ru = new ResumableUploadToGoogleDrive();
-    ru.Do(resource, function (res, err) {
+    const upload = new ResumableUploadToGoogleDrive();
+    upload.Do(resource, function (res, err) {
       if (err) {
         console.log(err);
         return;
       }
-    //   console.log(res);
-    //   let msg = "";
-    //   if (res.status == "Uploading") {
-    //     msg =
-    //       Math.round(
-    //         (res.progressNumber.current / res.progressNumber.end) * 100
-    //       ) + "%";
-    //   } else {
-    //     msg = res.status;
-    //   }
-    //   document.getElementById("progress").innerText = msg;
+      console.log(res);
+      let msg = "";
+      if (res.status == "Uploading") {
+        msg =
+          Math.round(
+            (res.progressNumber.current / res.progressNumber.end) * 100
+          ) + "%";
+      } else {
+        msg = res.status;
+      }
+      console.log(msg);
     });
   }
-
-getAuthToken()
-
   /* 
   ** DESKTOP REC
   */
-let chunks = [];
-const download = () => {
+let videoChunksArray = [];
+const prepareRecordFile = () => {
     console.log("Hello download")
-    var blob = new Blob(chunks, {
+    var blob = new Blob(videoChunksArray, {
         type: "video/webm"
     });
     var file = new File([blob], "CITB REC " + Date() + ".webm");
-    run(file);
-    // var url = URL.createObjectURL(blob);
-    // var a = document.createElement("a");
-    // document.body.appendChild(a);
-    // a.style = "display: none";
-    // a.href = url;
-    // a.download = "test.webm";
-    // a.click();
-    // window.URL.revokeObjectURL(url);
-}
+    return file;
+  }
   
 const captureScreen = async()=> {
     var mediaConstraints = {
@@ -135,12 +131,14 @@ const recordScreen = async (streamId) => {
 
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {
-                console.log("insert chunck")
-                chunks.push(event.data)
+                videoChunksArray.push(event.data)
             }
         }
         recorder.onstop = () => {
-            download();
+            let file = prepareRecordFile();
+            console.log("file",file);
+            prepareUploadToDrive(file);
+
         }
         recorder.start();
         isRecording = true;
@@ -148,7 +146,7 @@ const recordScreen = async (streamId) => {
         console.log(e);
     }
 }
-const recordBack = () =>{
+const startRecordScreen = () =>{
     try{
         const request = ['screen','audio'];
         chrome.desktopCapture.chooseDesktopMedia(request, async (streamId) => {
@@ -167,7 +165,7 @@ const recordBack = () =>{
         console.log(e);
     }
 }
-const stopBack = () =>{
+const stopRecordScreen = () =>{
     console.log(isRecording);
     if(isRecording){
         recorder.stop();
@@ -180,13 +178,14 @@ const stopBack = () =>{
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log('is recorfing',isRecording)
     if(!isRecording){
-        await recordBack();
+        await verificateAuth();
+        await startRecordScreen();
         sendResponse({
             type: 'ok',
             message: 'Recording'
           })
     }else{
-        await stopBack();
+        await stopRecordScreen();
         sendResponse({
             type: 'ok',
             message: 'Stopping'
