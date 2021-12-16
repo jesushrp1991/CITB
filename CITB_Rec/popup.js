@@ -1,76 +1,42 @@
-// const API_KEY = 'AIzaSyDhLKHKTBWjlDSrRLPY_-kvgV0xcJH7qd0';
-// const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+const sendMessage = (msg) =>{
+    chrome.runtime.sendMessage(msg, async (response) => {         
+    });
+}
 
-// function onGAPILoad() {
-//   gapi.client.init({
-//     // Don't pass client nor scope as these will init auth2, which we don't want
-//     apiKey: API_KEY,
-//     discoveryDocs: DISCOVERY_DOCS,
-//   }).then(function () {
-//     console.log('gapi initialized')
-//     chrome.identity.getAuthToken({interactive: true}, function(token) {
-//       gapi.auth.setToken({
-//         'access_token': token,
-//       });
-//     })
-//   }, function(error) {
-//     console.log('error', error)
-//   });
-// }
+const sendRecordCommand = () =>{
+    const request = { recordingStatus: 'rec' };
+    buttonRec.getAttribute('class') ==  'buttonRecOn' 
+        ?  buttonRec.setAttribute('class','buttonRecOff')
+        :  buttonRec.setAttribute('class','buttonRecOn') ;
+    sendMessage(request);
+}
 
-// const getAuthToken = () =>{
-//   chrome.identity.getAuthToken({interactive: true}, function(token) {
-//     console.log('got the token', token);
-//   })
-// };
+const getCurrentState = () =>{
+    chrome.storage.sync.get('isRecording', function(result) {
+        result.isRecording 
+            ?  buttonRec.setAttribute('class','buttonRecOn') 
+            :  buttonRec.setAttribute('class','buttonRecOff');
+    });
+    chrome.storage.sync.get('isPaused', function(result) {
+        result.isPaused 
+            ?  buttonPlayPause.setAttribute('class','buttonPlay') 
+            :  buttonPlayPause.setAttribute('class','buttonPause');
+    });
+}
+
+let buttonRec = document.getElementById("recButton");
+buttonRec.addEventListener('click',sendRecordCommand);
 
 
-// /*
-//   *   Upload to Drive
-//   *
-// */ 
-//   function run(obj) {
-//     const file = obj.target.files[0];
-//     if (file.name != "") {
-//       let fr = new FileReader();
-//       fr.fileName = file.name;
-//       fr.fileSize = file.size;
-//       fr.fileType = file.type;
-//       fr.readAsArrayBuffer(file);
-//       fr.onload = resumableUpload;
-//     }
-//   }
+const playPause = () =>{
+    const request = { recordingStatus: 'pause' };
+    buttonPlayPause.getAttribute('class') ==  'buttonPause' 
+        ?  buttonPlayPause.setAttribute('class','buttonPlay')
+        :  buttonPlayPause.setAttribute('class','buttonPause');
+    sendMessage(request);
+}
 
-//   function resumableUpload(e) {
-//     accessToken = gapi.auth.getToken().access_token; // Please set access token here.
-//     console.log("accessToken",accessToken)
-//     document.getElementById("progress").innerHTML = "Initializing.";
-//     const f = e.target;
-//     const resource = {
-//       fileName: f.fileName,
-//       fileSize: f.fileSize,
-//       fileType: f.fileType,
-//       fileBuffer: f.result,
-//       accessToken: accessToken,
-//     };
-//     const ru = new ResumableUploadToGoogleDrive();
-//     ru.Do(resource, function (res, err) {
-//       if (err) {
-//         console.log(err);
-//         return;
-//       }
-//       console.log(res);
-//       let msg = "";
-//       if (res.status == "Uploading") {
-//         msg =
-//           Math.round(
-//             (res.progressNumber.current / res.progressNumber.end) * 100
-//           ) + "%";
-//       } else {
-//         msg = res.status;
-//       }
-//       document.getElementById("progress").innerText = msg;
-//     });
-//   }
+let buttonPlayPause = document.getElementById("playPauseButton");
+buttonPlayPause.addEventListener('click',playPause);
 
-// getAuthToken()
+getCurrentState();

@@ -1,5 +1,8 @@
-const API_KEY = 'AIzaSyDhLKHKTBWjlDSrRLPY_-kvgV0xcJH7qd0';
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+import { environment } from "./config/environment.js";  
+const popupMessages = {
+  rec:'rec',
+  pause:'pause'
+}
 
 const onGAPIFirstLoad = () =>{
   console.log("GAPI LOADED!!")
@@ -7,8 +10,8 @@ const onGAPIFirstLoad = () =>{
 const onGAPILoad = () => {
   gapi.client.init({
     // Don't pass client nor scope as these will init auth2, which we don't want
-    apiKey: API_KEY,
-    discoveryDocs: DISCOVERY_DOCS,
+    apiKey: environment.API_KEY,
+    discoveryDocs: environment.DISCOVERY_DOCS,
   }).then(function () {
     console.log('gapi initialized')
     chrome.identity.getAuthToken({interactive: true}, function(token) {
@@ -50,7 +53,7 @@ const verificateAuth = () =>{
   }
 
   const startResumableUploadToDrive = (e) => {
-    accessToken = gapi.auth.getToken().access_token; // Please set access token here.
+    let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
     // console.log("accessToken",accessToken)
     // document.getElementById("progress").innerHTML = "Initializing.";
     const f = e.target;
@@ -92,6 +95,22 @@ const prepareRecordFile = () => {
     var file = new File([blob], "CITB REC " + Date() + ".webm");
     return file;
   }
+
+  //test only, to save in mi pc
+  const download = () => {
+    console.log("Hello download")
+    var blob = new Blob(videoChunksArray, {
+        type: "video/webm"
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = url;
+    a.download = "test.webm";
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
   
 const captureScreen = async()=> {
     var mediaConstraints = {
@@ -104,6 +123,7 @@ const captureScreen = async()=> {
 }
 
 let isRecording = false;
+let isPaused = false;
 let recorder;
 const recordScreen = async (streamId) => {
     try{
@@ -135,10 +155,14 @@ const recordScreen = async (streamId) => {
             }
         }
         recorder.onstop = () => {
-            let file = prepareRecordFile();
-            console.log("file",file);
-            prepareUploadToDrive(file);
-
+            if(environment.testEnvironment){
+               download();
+            }else{
+              let file = prepareRecordFile();
+              console.log("file",file);
+              prepareUploadToDrive(file);
+            }
+           
         }
         recorder.start();
         isRecording = true;
@@ -148,8 +172,7 @@ const recordScreen = async (streamId) => {
 }
 const startRecordScreen = () =>{
     try{
-        const request = ['screen','audio'];
-        chrome.desktopCapture.chooseDesktopMedia(request, async (streamId) => {
+        chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => {
             if (!streamId) {
                 isRecording = false;
                 chrome.storage.sync.set({isRecording: false}, function() {
@@ -176,20 +199,44 @@ const stopRecordScreen = () =>{
 }
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    console.log(message);
     console.log('is recorfing',isRecording)
-    if(!isRecording){
-        await verificateAuth();
-        await startRecordScreen();
-        sendResponse({
-            type: 'ok',
-            message: 'Recording'
-          })
-    }else{
-        await stopRecordScreen();
-        sendResponse({
-            type: 'ok',
-            message: 'Stopping'
-          })
-    }    
+    switch(message.recordingStatus){
+      case popupMessages.rec :
+        console.log("recording")
+        if(!isRecording){
+          await verificateAuth();
+          await startRecordScreen();
+          sendResponse({
+              type: 'ok',
+              message: 'Recording'
+            })
+        }else{
+            await stopRecordScreen();
+            sendResponse({
+                type: 'ok',
+                message: 'Stopping'
+              })
+            chrome.storage.sync.set({isPaused: false}, function() {
+            });
+        }    
+        break;
+      case popupMessages.pause :
+        console.log("pause/resume")
+
+        if(!isPaused && isRecording){
+          recorder.pause()
+          chrome.storage.sync.set({isPaused: true}, function() {
+          });
+        }else{
+          recorder.resume();
+          chrome.storage.sync.set({isPaused: false}, function() {
+          });
+        }
+        isPaused = !isPaused;
+        break;
+    }
+
+    
     return true;
   });
