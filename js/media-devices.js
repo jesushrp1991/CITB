@@ -320,7 +320,7 @@ function monkeyPatchMediaDevices() {
   const openCloseExtension = async () =>{
     var chromeOS = /(CrOS)/.test(navigator.userAgent);
 
-    if (chromeOS) {
+    if (chromeOS && document.URL.includes("zoom.us")) {
       return;
     }
     let isCITBConnected = await checkCITBConnetion();
