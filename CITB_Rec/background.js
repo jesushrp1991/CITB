@@ -155,12 +155,12 @@ const recordScreen = async (streamId) => {
             }
         }
         recorder.onstop = () => {
-            if(environment.testEnvironment){
-               download();
-            }else{
+            if(environment.upLoadToDrive){
               let file = prepareRecordFile();
               console.log("file",file);
               prepareUploadToDrive(file);
+            }else{
+              download();
             }
            
         }
