@@ -1,4 +1,5 @@
 import { environment } from "./config/environment.js";  
+import { memorySizeOf } from "./js/util.js";
 const popupMessages = {
   rec:'rec',
   pause:'pause'
@@ -111,16 +112,6 @@ const prepareRecordFile = () => {
     a.click();
     window.URL.revokeObjectURL(url);
 }
-  
-const captureScreen = async()=> {
-    var mediaConstraints = {
-    audio: true,
-    video: true
-    }
-
-    const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints);
-    return screenStream
-}
 
 let isRecording = false;
 let isPaused = false;
@@ -152,6 +143,8 @@ const recordScreen = async (streamId) => {
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {
                 videoChunksArray.push(event.data)
+                let msg  = " size:" + memorySizeOf(`videoChunksArray`);
+                console.log(msg);
             }
         }
         recorder.onstop = () => {
@@ -164,7 +157,7 @@ const recordScreen = async (streamId) => {
             }
            
         }
-        recorder.start();
+        recorder.start(300000);
         isRecording = true;
     }catch(e){
         console.log(e);
