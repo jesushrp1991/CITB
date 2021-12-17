@@ -6,7 +6,8 @@ const environment = {
     upLoadToDrive : false,
     API_KEY : 'AIzaSyDhLKHKTBWjlDSrRLPY_-kvgV0xcJH7qd0',
     DISCOVERY_DOCS : ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-    videoCaptureModes : ['screen','audio']
+    videoCaptureModes : ['screen','audio'],
+    videoCaptureModesForMac : ['tab','audio'],
 
 }
 

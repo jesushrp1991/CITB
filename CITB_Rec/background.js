@@ -165,7 +165,11 @@ const recordScreen = async (streamId) => {
 }
 const startRecordScreen = () =>{
     try{
-        chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => {
+      let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
+      let videoCaptureModes;
+      !userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
+      console.log(userAgentData,videoCaptureModes);
+        chrome.desktopCapture.chooseDesktopMedia(videoCaptureModes, async (streamId) => {
             if (!streamId) {
                 isRecording = false;
                 chrome.storage.sync.set({isRecording: false}, function() {
