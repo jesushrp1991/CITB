@@ -111,6 +111,8 @@ const tryPersistWithoutPromtingUser = async () => {
   const prepareDB = async() =>{
     createDB();
     await initStoragePersistence();
+    console.log(isStoragePersisted());
+    showEstimatedQuota();
   }
 
 export {

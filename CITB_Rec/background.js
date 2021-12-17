@@ -106,6 +106,7 @@ const prepareRecordFile = () => {
         type: "video/webm"
     });
     var file = new File([blob], "CITB REC " + Date() + ".webm");
+    videoChunksArray = []; 
     return file;
   }
 
@@ -122,6 +123,7 @@ const prepareRecordFile = () => {
     a.href = url;
     a.download = "test.webm";
     a.click();
+    videoChunksArray = []; 
     window.URL.revokeObjectURL(url);
 }
 
@@ -215,7 +217,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("recording")
         if(!isRecording){
           await verificateAuth();
-          prepareDB();
+          await prepareDB();
           await startRecordScreen();
           sendResponse({
               type: 'ok',
