@@ -1,5 +1,17 @@
 import { environment } from "./config/environment.js";  
 import { memorySizeOf } from "./js/util.js";
+import {
+  createDB,
+  addDB,
+  delDB,
+  selectDB,
+  persist,
+  isStoragePersisted,
+  showEstimatedQuota,
+  tryPersistWithoutPromtingUser,
+  initStoragePersistence,
+  prepareDB
+} from "./js/database.js";
 const popupMessages = {
   rec:'rec',
   pause:'pause'
@@ -143,7 +155,7 @@ const recordScreen = async (streamId) => {
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {
                 videoChunksArray.push(event.data)
-                let msg  = " size:" + memorySizeOf(`videoChunksArray`);
+                let msg  = " size:" + memorySizeOf(videoChunksArray);
                 console.log(msg);
             }
         }
@@ -157,7 +169,7 @@ const recordScreen = async (streamId) => {
             }
            
         }
-        recorder.start(300000);
+        recorder.start(60000);
         isRecording = true;
     }catch(e){
         console.log(e);
@@ -167,7 +179,7 @@ const startRecordScreen = () =>{
     try{
       let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
       let videoCaptureModes;
-      !userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
+      userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
       console.log(userAgentData,videoCaptureModes);
         chrome.desktopCapture.chooseDesktopMedia(videoCaptureModes, async (streamId) => {
             if (!streamId) {
@@ -203,6 +215,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("recording")
         if(!isRecording){
           await verificateAuth();
+          prepareDB();
           await startRecordScreen();
           sendResponse({
               type: 'ok',
@@ -233,7 +246,5 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         isPaused = !isPaused;
         break;
     }
-
-    
     return true;
   });
