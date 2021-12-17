@@ -318,6 +318,11 @@ function monkeyPatchMediaDevices() {
   const buttonOnOffExtension = getButtonOnOffExtension();
 
   const openCloseExtension = async () =>{
+    var chromeOS = /(CrOS)/.test(navigator.userAgent);
+
+    if (chromeOS) {
+      return;
+    }
     let isCITBConnected = await checkCITBConnetion();
     if (!isCITBConnected) {
       alert(enviroment.messageCITBDisconnected);
@@ -365,12 +370,35 @@ function monkeyPatchMediaDevices() {
         showDiv();
       }
       if(document.URL.includes("zoom.us")){
-        setTimeout(()=>{
-          const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-          cameraElement.childNodes[1].children[0].click();
-        },300)
+        try {
+          document.getElementsByClassName("join-audio-container__btn")[0].click();
+        } catch (error) {
+          //do nothing, not needed
+        }
+        setTimeout(function(){
+          try {
+            document.getElementsByClassName("join-audio-by-voip__join-btn")[0].click();
+          } catch (error) {
+            //do nothing, not needed
+          }
+          setTimeout(function(){
+            const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+            micElement.childNodes[1].children[0].click();
+            setTimeout(() => {
+              setTimeout(()=>{
+                const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+                cameraElement.childNodes[1].children[0].click();
+              },300)
+              executeOpenClose();    
+            },2000)
+          },500)
+        },500)
+         
+          
+      }else {
+        executeOpenClose();    
+
       }
-      executeOpenClose();    
     }  
     
   }
@@ -904,7 +932,11 @@ function monkeyPatchMediaDevices() {
         frame.close();
         return;
       }
-      _audioController.enqueue(frame);
+      try {
+        _audioController.enqueue(frame);
+      } catch (error) {
+        
+      }
     //frame.close();
   }
   MediaDevices.prototype.getUserMedia = async function () {

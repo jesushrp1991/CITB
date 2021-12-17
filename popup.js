@@ -9,26 +9,45 @@ const getExtensionState = () =>{
   let isOpen = document.getElementById('buttonOnOff').innerText.toString();  
   return isOpen;
 }
+
+var onOfChekerCounter = 0;
+const onOfChecker = (tab) => {
+  console.log(tab, onOfChekerCounter);
+
+  const url = tab.url;
+  if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')|| url.includes('zoom.us') || url.includes('meet.jit.si') ){
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: getExtensionState
+    },(injectionResults) => {
+      injectionResults[0].result == "true" ?
+                  globalState = true
+                  : globalState = false;
+      console.log(globalState);
+      if(globalState){ 
+          buttonOn.setAttribute('class','buttonOnOff'); 
+      }else{ 
+        buttonOn.setAttribute('class','buttonOnOffDeactivate'); 
+      } 
+    });      
+  }
+  //try again each second during 5 seconds
+  if (onOfChekerCounter < 5) {
+    onOfChekerCounter += 1
+    setTimeout(() => {
+      onOfChecker(tab);
+    },1000)
+  }else {
+    onOfChekerCounter = 0;
+  }
+  
+}
 const getOnOffState = async() =>{ 
+  console.log("GET ON OFF STATE");
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-    let url = tabs[0].url;
-    if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com')|| url.includes('zoom.us') || url.includes('meet.jit.si') ){
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        function: getExtensionState
-      },(injectionResults) => {
-        injectionResults[0].result == "true" ?
-                    globalState = true
-                    : globalState = false;
-        if(globalState){ 
-            buttonOn.setAttribute('class','buttonOnOff'); 
-        }else{ 
-          buttonOn.setAttribute('class','buttonOnOffDeactivate'); 
-        } 
-      });      
-    }
-  }); 
+  onOfChecker(tab);  
+   
+
 } 
 getOnOffState(); 
 
@@ -39,7 +58,7 @@ const clickOnOff = () =>{
 buttonOn.addEventListener("click", async() =>{
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-    let url = tabs[0].url;
+    let url = tab.url;
     if(url.includes('meet.google.com') || url.includes('teams.microsoft.com')||url.includes('teams.live.com') || url.includes('zoom.us') || url.includes('meet.jit.si')){
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
