@@ -1,6 +1,10 @@
-    const db = new Dexie("CITBRecords");
+    let db = new Dexie("CITBRecords");
 
-    const createDB = () =>{
+    const createDB = async () =>{
+        let exitsDB = await Dexie.exists("CITBRecords");
+        if(exitsDB){
+            delDB();
+        }
         db.version(1).stores({
             records: `
                 ++id,
@@ -19,7 +23,7 @@
 
     const delDB = async () => {
         try{
-            await db.delete('CITBRecords');
+            await db.delete();
         }catch(error){
             console.log(error);
             throw error; //needed to abort the transaction.
@@ -28,7 +32,7 @@
 
     const selectDB = async () =>{
         try{
-            let result = await db.records.orderBy('id');
+            let result = await db.records.orderBy('id').toArray();
             return result; 
         }catch(error){
             console.log(error);
@@ -52,6 +56,10 @@ const showEstimatedQuota = async() => {
       const estimation = await navigator.storage.estimate();
       console.log(`Quota: ${estimation.quota}`);
       console.log(`Usage: ${estimation.usage}`);
+      let limit = estimation.quota / 2 ;
+      if( estimation.usage >= limit )
+        return true;
+      return false;
     } else {
       console.error("StorageManager not found");
     }

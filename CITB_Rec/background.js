@@ -1,5 +1,5 @@
 import { environment } from "./config/environment.js";  
-import { memorySizeOf } from "./js/util.js";
+import { memorySizeOf, getReadableFileSizeString } from "./js/util.js";
 import {
   createDB,
   addDB,
@@ -111,9 +111,12 @@ const prepareRecordFile = () => {
   }
 
   //test only, to save in mi pc
-  const download = () => {
+  const download = (test) => {
+    //prepare again video
+
+    //prepare again vide
     console.log("Hello download")
-    var blob = new Blob(videoChunksArray, {
+    var blob = new Blob(test, {
         type: "video/webm"
     });
     var url = URL.createObjectURL(blob);
@@ -156,22 +159,35 @@ const recordScreen = async (streamId) => {
 
         recorder.ondataavailable = event => {
             if (event.data.size > 0) {
-                videoChunksArray.push(event.data)
-                let msg  = " size:" + memorySizeOf(videoChunksArray);
-                console.log(msg);
+                console.log("dataAvailable",event.data.size);  
+              //console.log(event.data.size);
+                videoChunksArray.push(event.data);
+                console.log(videoChunksArray);
+                addDB(videoChunksArray);
+                videoChunksArray = [];
+                // let size = memorySizeOf(videoChunksArray);
+                // let msg  = " size:" + getReadableFileSizeString(size);
+                // console.log(msg);
             }
         }
-        recorder.onstop = () => {
+        recorder.onstop = async() => {
+            let save = await selectDB();
+            let finalArray = [];
+            save.forEach(element => {
+              finalArray.push(element.record[0]);
+            });
+            console.log("FinalArray",finalArray);
+            //END TEST
             if(environment.upLoadToDrive){
               let file = prepareRecordFile();
               console.log("file",file);
               prepareUploadToDrive(file);
             }else{
-              download();
+              download(finalArray);
             }
-           
+            delDB();           
         }
-        recorder.start(60000);
+        recorder.start(30000);
         isRecording = true;
     }catch(e){
         console.log(e);
@@ -209,9 +225,37 @@ const stopRecordScreen = () =>{
     }
 }
 
+const pauseOrResume = () => {
+  console.log("pause/resume")
+  if(!isPaused && isRecording){
+    recorder.pause()
+    chrome.storage.sync.set({isPaused: true}, function() {
+    });
+  }else{
+    recorder.resume();
+    chrome.storage.sync.set({isPaused: false}, function() {
+    });
+  }
+  isPaused = !isPaused;
+}
+
+const saveToDB = () =>{
+  setTimeout(()=>{
+    if(showEstimatedQuota()){
+      console.log("hay que parar");
+      pauseOrResume();
+      //sendMessage to popup to alert the user about insufficient disk space.
+    }
+  },180000)
+}
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log(message);
     console.log('is recorfing',isRecording)
+    if(showEstimatedQuota()){
+      //sendMessage to popup to alert the user about insufficient disk space.
+      console.log("insufficient disk space");      
+    }
     switch(message.recordingStatus){
       case popupMessages.rec :
         console.log("recording")
@@ -219,6 +263,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           await verificateAuth();
           await prepareDB();
           await startRecordScreen();
+          saveToDB();
           sendResponse({
               type: 'ok',
               message: 'Recording'
@@ -234,18 +279,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }    
         break;
       case popupMessages.pause :
-        console.log("pause/resume")
-
-        if(!isPaused && isRecording){
-          recorder.pause()
-          chrome.storage.sync.set({isPaused: true}, function() {
-          });
-        }else{
-          recorder.resume();
-          chrome.storage.sync.set({isPaused: false}, function() {
-          });
-        }
-        isPaused = !isPaused;
+        pauseOrResume();
         break;
     }
     return true;
