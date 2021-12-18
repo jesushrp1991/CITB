@@ -158,11 +158,12 @@ const recordScreen = async (streamId) => {
         recorder = new MediaRecorder(stream);
 
         recorder.ondataavailable = event => {
+            verifyAvailableSpaceOnDisk();
             if (event.data.size > 0) {
-                console.log("dataAvailable",event.data.size);  
+                // console.log("dataAvailable",event.data.size);  
               //console.log(event.data.size);
                 videoChunksArray.push(event.data);
-                console.log(videoChunksArray);
+                // console.log(videoChunksArray);
                 addDB(videoChunksArray);
                 videoChunksArray = [];
                 // let size = memorySizeOf(videoChunksArray);
@@ -239,20 +240,21 @@ const pauseOrResume = () => {
   isPaused = !isPaused;
 }
 
-const saveToDB = () =>{
-  setTimeout(()=>{
-    if(showEstimatedQuota()){
+const verifyAvailableSpaceOnDisk = async () =>{  
+    let thereAreLowDiskSpace = await showEstimatedQuota();
+    // console.log("thereAreLowDiskSpace",thereAreLowDiskSpace);
+    if(thereAreLowDiskSpace){
       console.log("hay que parar");
       pauseOrResume();
       //sendMessage to popup to alert the user about insufficient disk space.
     }
-  },180000)
 }
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log(message);
     console.log('is recorfing',isRecording)
-    if(showEstimatedQuota()){
+    let thereAreLowDiskSpace = await showEstimatedQuota();
+    if(thereAreLowDiskSpace){
       //sendMessage to popup to alert the user about insufficient disk space.
       console.log("insufficient disk space");      
     }
@@ -263,7 +265,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           await verificateAuth();
           await prepareDB();
           await startRecordScreen();
-          saveToDB();
           sendResponse({
               type: 'ok',
               message: 'Recording'

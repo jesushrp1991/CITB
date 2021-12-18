@@ -1,5 +1,5 @@
 const sendMessage = (msg) =>{
-    chrome.runtime.sendMessage(msg, async (response) => {         
+    chrome.runtime.sendMessage(msg, (response) => {         
     });
 }
 

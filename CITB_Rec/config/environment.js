@@ -8,6 +8,7 @@ const environment = {
     DISCOVERY_DOCS : ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
     videoCaptureModes : ['screen','audio'],
     videoCaptureModesForMac : ['tab','audio'],
+    lowDiskSpaceAlert : 0.07,
 
 }
 

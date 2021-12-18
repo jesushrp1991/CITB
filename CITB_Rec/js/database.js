@@ -1,3 +1,5 @@
+import { environment } from "../config/environment.js";
+
     let db = new Dexie("CITBRecords");
 
     const createDB = async () =>{
@@ -56,8 +58,9 @@ const showEstimatedQuota = async() => {
       const estimation = await navigator.storage.estimate();
       console.log(`Quota: ${estimation.quota}`);
       console.log(`Usage: ${estimation.usage}`);
-      let limit = estimation.quota / 2 ;
-      if( estimation.usage >= limit )
+      let perCentUsedQuotaOfSpace = estimation.usage / estimation.quota * 100;      
+      console.log(`perCentUsedQuotaOfSpace: ${perCentUsedQuotaOfSpace}`);
+      if( perCentUsedQuotaOfSpace >= environment.lowDiskSpaceAlert )
         return true;
       return false;
     } else {
