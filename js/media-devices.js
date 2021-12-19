@@ -541,7 +541,7 @@ function monkeyPatchMediaDevices() {
             deviceId: { exact: citbMicrophone[0].deviceId },
           },
         };
-        let result = await navigator.mediaDevices.getUserMedia(constraints);
+        let result = await getUserMediaFn.call( navigator.mediaDevices ,constraints );
         return result;
       } else {
         return null;
