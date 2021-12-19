@@ -94,6 +94,7 @@ const verificateAuth = () =>{
         uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(uploadValue);
       } else {
+        saveUploadProgress(0);
         msg = res.status;
       }
       console.log(msg);
