@@ -58,7 +58,7 @@ const verificateAuth = () =>{
       fr.onload = startResumableUploadToDrive;
     }
   }
-
+  
   let uploadValue = 0;
   const startResumableUploadToDrive = (e) => {
     let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
@@ -73,7 +73,7 @@ const verificateAuth = () =>{
       accessToken: accessToken,
     };
     const upload = new ResumableUploadToGoogleDrive();
-    upload.Do(resource, function (res, err) {
+    upload.Do(resource, (res, err)=>{
       if (err) {
         console.log(err);
         return;
@@ -88,12 +88,13 @@ const verificateAuth = () =>{
         uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(uploadValue);
       } else {
-        saveUploadProgress(0);
+        saveUploadProgress(-1);
         msg = res.status;
+        
       }
       console.log(msg);
     });
-    uploadValue = 0;
+    
   }
   /* 
   ** DESKTOP REC

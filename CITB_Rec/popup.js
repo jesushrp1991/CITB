@@ -11,8 +11,10 @@ const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg, (response) => {         
     });
 }
+let isRec = true;
 
 const sendRecordCommand = () =>{
+    countVideoRecordTime(isRec);
     const request = { recordingStatus: 'rec' };
     buttonRec.getAttribute('class') ==  'buttonRecOn' 
         ?  buttonRec.setAttribute('class','buttonRecOff')
@@ -24,7 +26,7 @@ const getCurrentState = () =>{
     chrome.storage.sync.get('isRecording', function(result) {
         if (result.isRecording ){
             buttonRec.setAttribute('class','buttonRecOn') 
-            countVideoRecordTime();
+            countVideoRecordTime(isRec);
         }else{
             buttonRec.setAttribute('class','buttonRecOff');
         }
@@ -42,9 +44,13 @@ buttonRec.addEventListener('click',sendRecordCommand);
 
 const playPause = () =>{
     const request = { recordingStatus: 'pause' };
-    buttonPlayPause.getAttribute('class') ==  'buttonPause' 
-        ?  buttonPlayPause.setAttribute('class','buttonPlay')
-        :  buttonPlayPause.setAttribute('class','buttonPause');
+    if(buttonPlayPause.getAttribute('class') ==  'buttonPause' ){
+        buttonPlayPause.setAttribute('class','buttonPlay')
+        isRec = true;
+    }else{
+        buttonPlayPause.setAttribute('class','buttonPause');
+        isRec = false;
+    }
     sendMessage(request);
 }
 
