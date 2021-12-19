@@ -39,4 +39,52 @@ const playPause = () =>{
 let buttonPlayPause = document.getElementById("playPauseButton");
 buttonPlayPause.addEventListener('click',playPause);
 
+
+const displayProgressBar = () =>{
+    document.getElementById('progreesBarContainer').style.display = 'block';
+}
+
+const hideProgressBar = () =>{
+    document.getElementById('progreesBarContainer').style.display = 'none';
+}
+
+const updateProgressBar = (value) => {
+    console.log(value,typeof(value));
+
+    document.getElementById('progressBar').style.width = value;
+    document.getElementById('progressBar').innerHTML =  value+"%";
+
+}
+
+var port = chrome.extension.connect({
+    name: "Sample Communication"
+});
+
+port.postMessage("Hi BackGround");
+port.onMessage.addListener(function(msg) {
+    console.log("message recieved" + msg);
+});
+
+const checkUploadStatus = () => {
+    setTimeout(()=>{
+        console.log("timeout check upload")
+        chrome.storage.sync.get('uploadPercent', function(result) {
+            if (result.uploadPercent > 0){
+                updateProgressBar(result.uploadPercent);
+                displayProgressBar();
+            }
+            if(result.uploadProgress >= 99 || result.uploadProgress == 0 ){
+                hideProgressBar();
+            }
+        });
+    },1500)
+}
+
+window.onload = function()
+{
+    setTimeout(() =>{
+        checkUploadStatus();
+    },3000);
+}
+
 getCurrentState();

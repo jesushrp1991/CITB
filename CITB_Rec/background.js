@@ -65,6 +65,7 @@ const verificateAuth = () =>{
     }
   }
 
+  let uploadValue = 0;
   const startResumableUploadToDrive = (e) => {
     let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
     // console.log("accessToken",accessToken)
@@ -90,31 +91,29 @@ const verificateAuth = () =>{
           Math.round(
             (res.progressNumber.current / res.progressNumber.end) * 100
           ) + "%";
+        uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
+        saveUploadProgress(uploadValue);
       } else {
         msg = res.status;
       }
       console.log(msg);
     });
+    uploadValue = 0;
   }
   /* 
   ** DESKTOP REC
   */
-let videoChunksArray = [];
-const prepareRecordFile = () => {
+const prepareRecordFile = (finalArray) => {
     console.log("Hello download")
-    var blob = new Blob(videoChunksArray, {
+    var blob = new Blob(finalArray, {
         type: "video/webm"
     });
     var file = new File([blob], "CITB REC " + Date() + ".webm");
-    videoChunksArray = []; 
     return file;
   }
 
   //test only, to save in mi pc
   const download = (test) => {
-    //prepare again video
-
-    //prepare again vide
     console.log("Hello download")
     var blob = new Blob(test, {
         type: "video/webm"
@@ -126,13 +125,14 @@ const prepareRecordFile = () => {
     a.href = url;
     a.download = "test.webm";
     a.click();
-    videoChunksArray = []; 
     window.URL.revokeObjectURL(url);
 }
 
 let isRecording = false;
 let isPaused = false;
 let recorder;
+let videoChunksArray = [];
+
 const recordScreen = async (streamId) => {
     try{
         var constraints = {
@@ -160,15 +160,9 @@ const recordScreen = async (streamId) => {
         recorder.ondataavailable = event => {
             verifyAvailableSpaceOnDisk();
             if (event.data.size > 0) {
-                // console.log("dataAvailable",event.data.size);  
-              //console.log(event.data.size);
                 videoChunksArray.push(event.data);
-                // console.log(videoChunksArray);
                 addDB(videoChunksArray);
                 videoChunksArray = [];
-                // let size = memorySizeOf(videoChunksArray);
-                // let msg  = " size:" + getReadableFileSizeString(size);
-                // console.log(msg);
             }
         }
         recorder.onstop = async() => {
@@ -178,9 +172,9 @@ const recordScreen = async (streamId) => {
               finalArray.push(element.record[0]);
             });
             console.log("FinalArray",finalArray);
-            //END TEST
+            
             if(environment.upLoadToDrive){
-              let file = prepareRecordFile();
+              let file = prepareRecordFile(finalArray);
               console.log("file",file);
               prepareUploadToDrive(file);
             }else{
@@ -250,6 +244,11 @@ const verifyAvailableSpaceOnDisk = async () =>{
     }
 }
 
+const saveUploadProgress = (value) =>{
+  chrome.storage.sync.set({uploadPercent: value}, function() {
+  });
+}
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log(message);
     console.log('is recorfing',isRecording)
@@ -261,20 +260,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         console.log("recording")
-        if(!isRecording){
+        if(!isRecording || uploadValue != 0){
           await verificateAuth();
           await prepareDB();
           await startRecordScreen();
-          sendResponse({
-              type: 'ok',
-              message: 'Recording'
-            })
         }else{
-            await stopRecordScreen();
-            sendResponse({
-                type: 'ok',
-                message: 'Stopping'
-              })
+            stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, function() {
             });
         }    
@@ -285,3 +276,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     return true;
   });
+
+  chrome.extension.onConnect.addListener(function(port) {
+    console.log("Connected .....");
+    port.onMessage.addListener(function(msg) {
+         console.log("message recieved" + msg);
+         port.postMessage(uploadValue);
+    });
+})
