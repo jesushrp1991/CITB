@@ -1,53 +1,50 @@
-function memorySizeOf(obj) {
-    var bytes = 0;
+const countVideoRecordTime = () =>{
+    var countDownDate = localStorage.getItem('startDate');
+    if (countDownDate) {
+        countDownDate = new Date(countDownDate);
+    } else {
+        countDownDate = new Date();
+        localStorage.setItem('startDate', countDownDate);
+    }
+    // Update the count down every 1 second
+    var x = setInterval(function() {
 
-    function sizeOf(obj) {
-        if(obj !== null && obj !== undefined) {
-            switch(typeof obj) {
-            case 'number':
-                bytes += 8;
-                break;
-            case 'string':
-                bytes += obj.length * 2;
-                break;
-            case 'boolean':
-                bytes += 4;
-                break;
-            case 'object':
-                var objClass = Object.prototype.toString.call(obj).slice(8, -1);
-                if(objClass === 'Object' || objClass === 'Array') {
-                    for(var key in obj) {
-                        if(!obj.hasOwnProperty(key)) continue;
-                        sizeOf(obj[key]);
-                    }
-                } else bytes += obj.toString().length * 2;
-                break;
-            }
-        }
-        return bytes;
-    };
+        // Get todays date and time
+        var now = new Date().getTime();
 
-    function formatByteSize(bytes) {
-        if(bytes < 1024) return bytes + " bytes";
-        else if(bytes < 1048576) return(bytes / 1024).toFixed(3) + " KiB";
-        else if(bytes < 1073741824) return(bytes / 1048576).toFixed(3) + " MiB";
-        else return(bytes / 1073741824).toFixed(3) + " GiB";
-    };
+        // Find the distance between now an the count down date
+        var distance = now - countDownDate.getTime();
 
-    return formatByteSize(sizeOf(obj));
-};
-function getReadableFileSizeString(fileSizeInBytes) {
-    var i = -1;
-    var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
-    do {
-        fileSizeInBytes = fileSizeInBytes / 1024;
-        i++;
-    } while (fileSizeInBytes > 1024);
+        // Time calculations for days, hours, minutes and seconds
+        // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
-};
+        // Output the result in an element with id="demo"
+        // document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        document.getElementById("demo").innerHTML =  hours + "h " + minutes + "m " + seconds + "s ";
+        displayVideoRecCounter();
+    }, 1000);
+}
+const stopVideoRecordTime = () =>{
+    var countDownDate = localStorage.getItem('startDate');
+    if(countDownDate){
+        storage.removeItem('startDate');
+        hideVideoRecCounter();
+
+    }
+}
+
+const displayVideoRecCounter = () => {
+    
+}
+
+const hideVideoRecCounter = () => {
+
+}
 
 export {
-    memorySizeOf,
-    getReadableFileSizeString
+    countVideoRecordTime,
+    stopVideoRecordTime,
 }

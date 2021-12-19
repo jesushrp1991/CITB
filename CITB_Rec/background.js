@@ -1,15 +1,9 @@
 import { environment } from "./config/environment.js";  
-import { memorySizeOf, getReadableFileSizeString } from "./js/util.js";
 import {
-  createDB,
   addDB,
   delDB,
   selectDB,
-  persist,
-  isStoragePersisted,
   showEstimatedQuota,
-  tryPersistWithoutPromtingUser,
-  initStoragePersistence,
   prepareDB
 } from "./js/database.js";
 const popupMessages = {

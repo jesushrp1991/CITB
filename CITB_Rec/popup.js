@@ -1,3 +1,12 @@
+import {
+    countVideoRecordTime,
+    stopVideoRecordTime,
+} from './js/util.js'
+
+import {
+    checkUploadStatus
+} from './js/progressBar.js'
+
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg, (response) => {         
     });
@@ -13,9 +22,12 @@ const sendRecordCommand = () =>{
 
 const getCurrentState = () =>{
     chrome.storage.sync.get('isRecording', function(result) {
-        result.isRecording 
-            ?  buttonRec.setAttribute('class','buttonRecOn') 
-            :  buttonRec.setAttribute('class','buttonRecOff');
+        if (result.isRecording ){
+            buttonRec.setAttribute('class','buttonRecOn') 
+            countVideoRecordTime();
+        }else{
+            buttonRec.setAttribute('class','buttonRecOff');
+        }
     });
     chrome.storage.sync.get('isPaused', function(result) {
         result.isPaused 
@@ -40,22 +52,6 @@ let buttonPlayPause = document.getElementById("playPauseButton");
 buttonPlayPause.addEventListener('click',playPause);
 
 
-const displayProgressBar = () =>{
-    document.getElementById('progreesBarContainer').style.display = 'block';
-}
-
-const hideProgressBar = () =>{
-    document.getElementById('progreesBarContainer').style.display = 'none';
-}
-
-const updateProgressBar = (value) => {
-    console.log(value,typeof(value));
-
-    document.getElementById('progressBar').style.width = value;
-    document.getElementById('progressBar').innerHTML =  value+"%";
-
-}
-
 var port = chrome.extension.connect({
     name: "Sample Communication"
 });
@@ -65,20 +61,7 @@ port.onMessage.addListener(function(msg) {
     console.log("message recieved" + msg);
 });
 
-const checkUploadStatus = () => {
-    setInterval(()=>{
-        console.log("timeout check upload")
-        chrome.storage.sync.get('uploadPercent', function(result) {
-            if (result.uploadPercent > 0){
-                updateProgressBar(result.uploadPercent);
-                displayProgressBar();
-            }
-            if(result.uploadProgress >= 99 || result.uploadProgress == 0 ){
-                hideProgressBar();
-            }
-        });
-    },1500)
-}
+
 
 checkUploadStatus();
 getCurrentState();
