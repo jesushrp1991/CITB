@@ -66,7 +66,7 @@ port.onMessage.addListener(function(msg) {
 });
 
 const checkUploadStatus = () => {
-    setTimeout(()=>{
+    setInterval(()=>{
         console.log("timeout check upload")
         chrome.storage.sync.get('uploadPercent', function(result) {
             if (result.uploadPercent > 0){
@@ -80,11 +80,5 @@ const checkUploadStatus = () => {
     },1500)
 }
 
-window.onload = function()
-{
-    setTimeout(() =>{
-        checkUploadStatus();
-    },3000);
-}
-
+checkUploadStatus();
 getCurrentState();
