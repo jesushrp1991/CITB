@@ -726,6 +726,7 @@ function monkeyPatchMediaDevices() {
   }
   const chooseVideo = async(e) =>{
     e.preventDefault();
+    window.otherMicSelected = selec_MicVideo.value;
     await builVideosFromDevices(selec_MicVideo.value);
     await buildVideoContainersAndCanvas();
     await drawFrameOnVirtualCamera();
@@ -1049,6 +1050,9 @@ function monkeyPatchMediaDevices() {
         let isCITBConnected = await checkCITBConnetion();
         
         if(isCITBConnected ){
+          window.otherMicSelected != undefined 
+            ? await builVideosFromDevices(window.otherMicSelected) 
+            : await builVideosFromDevices() ;
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices();
         }
