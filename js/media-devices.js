@@ -226,7 +226,7 @@ function monkeyPatchMediaDevices() {
   const showCallBackFunction = async () => {
     try {
       if (window.classActivated) {
-        deactivateClassMode();
+        await deactivateClassMode();
       }
       if (showModeEnabled) {
         if (showAudioContext != null) {
@@ -234,6 +234,9 @@ function monkeyPatchMediaDevices() {
           showAudioContext = null;
           showModeEnabled = false;
           setButtonBackground(buttonShow, showModeEnabled);
+          setTimeout(() => {
+            return;
+          },1000)
         }
       } else {
         showAudioContext = new AudioContext();
@@ -247,8 +250,9 @@ function monkeyPatchMediaDevices() {
         showModeEnabled = true;
         setButtonBackground(buttonShow, showModeEnabled);
       }
+      return;
     } catch (error) {
-      logErrors(error,"showCallBackFunction ln. 251")
+      logErrors(error,"await showCallBackFunction ln. 251")
     }
   };
 
@@ -257,7 +261,7 @@ function monkeyPatchMediaDevices() {
       if(!checkbox_class.checked && !window.classActivated){
         showPopupMic();
       }else{
-        changeToClassMode();
+        await changeToClassMode();
       }
     } catch (error) {
       logErrors(error,"classCallBackFunction ln 352")
@@ -317,52 +321,60 @@ function monkeyPatchMediaDevices() {
 
   const buttonOnOffExtension = getButtonOnOffExtension();
 
+  const closeExtension = async () => {
+    closeButtonContainer();
+    annyang.abort();
+
+    if (window.cameraAudioLoop != undefined) {
+      window.cameraAudioLoop();
+      window.cameraAudioLoop = undefined;
+    }
+    if (window.classActivated) {
+      await deactivateClassMode();
+    }
+    if (showModeEnabled) {
+      await showCallBackFunction();
+    } 
+    
+    if(window.presentationMode && window.duplo2){
+      presentacion2CallBackFunction();        
+    }
+    if(window.presentationMode && !window.duplo2){
+      presentacionCallBackFunction();
+    }
+    if(document.URL.includes("zoom.us")){
+      // if(window.generatorCITB)
+      //   window.generatorCITB.stop();
+      // if(window.generatorOtherMic)
+      //   window.generatorOtherMic.stop();
+      // setTimeout(()=>{
+      //   const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+      //   cameraElement.childNodes[1].children[0].click();
+      //   const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+      //   micElement.childNodes[1].children[0].click();
+      // },300)
+      alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
+    }
+    executeOpenClose();    
+  }
+
   const openCloseExtension = async () =>{
+    console.log("OPEN CLOSE", window.isExtentionActive)
     var chromeOS = /(CrOS)/.test(navigator.userAgent);
 
     if (chromeOS && document.URL.includes("zoom.us")) {
       return;
     }
     let isCITBConnected = await checkCITBConnetion();
-    if (!isCITBConnected) {
+    console.log("OPEN CLOSE AFTER", isCITBConnected, window.isExtentionActive)
+
+    if (!isCITBConnected && !window.isExtentionActive) {
+      console.log("INSIDE IF");
       alert(enviroment.messageCITBDisconnected);
       return;
     }
     if(window.isExtentionActive){    
-      closeButtonContainer();
-      annyang.abort();
-
-      if (window.cameraAudioLoop != undefined) {
-        window.cameraAudioLoop();
-        window.cameraAudioLoop = undefined;
-      }
-      if (window.classActivated) {
-        deactivateClassMode();
-      }
-      if (showModeEnabled) {
-        showCallBackFunction();
-      } 
-      
-      if(window.presentationMode && window.duplo2){
-        presentacion2CallBackFunction();        
-      }
-      if(window.presentationMode && !window.duplo2){
-        presentacionCallBackFunction();
-      }
-      if(document.URL.includes("zoom.us")){
-        // if(window.generatorCITB)
-        //   window.generatorCITB.stop();
-        // if(window.generatorOtherMic)
-        //   window.generatorOtherMic.stop();
-        // setTimeout(()=>{
-        //   const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-        //   cameraElement.childNodes[1].children[0].click();
-        //   const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
-        //   micElement.childNodes[1].children[0].click();
-        // },300)
-        alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
-      }
-      executeOpenClose();    
+      await closeExtension();
     }
     else if(isCITBConnected){
       if(!window.isExtentionActive){
@@ -479,12 +491,24 @@ function monkeyPatchMediaDevices() {
   }; //END ONREADY STATE CHANGE
 
 
+  navigator.usb.addEventListener('connect', event => {
+    // Add event.device to the UI.
+    console.log("USB CONNECT");
+  });
+  
+  navigator.usb.addEventListener('disconnect', event => {
+    // Remove event.device from the UI.
+    console.log("USB DISCONNECT");
+
+  });
 
 
 
   const getCITBVideoDevices = async () => {
+    const allDevices = await window.enumerateDevicesFn.call(navigator.mediaDevices);
+
     try {
-      const citbVideo = devices.filter(
+      const citbVideo = allDevices.filter(
         s => isCITBCamera(s.label));
       return (citbVideo.length > 0) ? citbVideo : [];
     } catch (error) {
@@ -492,10 +516,11 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  const getCITBMicDevices = () => {
+  const getCITBMicDevices = async () => {
+    const allDevices = await window.enumerateDevicesFn.call(navigator.mediaDevices);
 
     try {
-      const citbMicrophone = devices.filter(
+      const citbMicrophone = allDevices.filter(
         (x) =>
           x.kind === "audioinput" &&
           x.label.includes(enviroment.MYAUDIODEVICELABEL)
@@ -508,7 +533,7 @@ function monkeyPatchMediaDevices() {
 
   const getCITBMicMedia = async () => {
     try {
-      let citbMicrophone = getCITBMicDevices();
+      let citbMicrophone = await getCITBMicDevices();
       if (citbMicrophone.length > 0) {
         let constraints = {
           video: false,
@@ -528,6 +553,7 @@ function monkeyPatchMediaDevices() {
 
   var otherMicStream;
   const setOtherMicTransformStream = async (deviceId) => {
+    console.log("SET OTHER MIC TRANSFOR STREAM");
     otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
         audio: { deviceId: deviceId },
         video: false,
@@ -553,29 +579,48 @@ function monkeyPatchMediaDevices() {
 
   }
 
-  const activateClassMode = () => {
+  const activateClassMode = async () => {
     try {
+      var delayActivateClassMode = false;
       if (showModeEnabled) {
-        showCallBackFunction();
+        console.log("SHOE DISABLE BEFORE ")
+        await showCallBackFunction();
+        console.log("SHOE DISABLE AFTER ")
+        delayActivateClassMode = true;
       }
-      const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (otherMicrophones) {
-        window.classActivated = true;
-        setOtherMicTransformStream(otherMicrophones).then(data => {
-          // console.log(data);
-        });
-        setButtonBackground(buttonClass, window.classActivated);
-        return true;
+      if ( delayActivateClassMode ) {
+        const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+        if (otherMicrophones) {
+          setOtherMicTransformStream(otherMicrophones).then(data => {
+            // console.log(data);
+          });
+          window.classActivated = true;
+
+          setButtonBackground(buttonClass, window.classActivated);
+          return true;
+        }
+        return false;
+      }else{
+        const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+        if (otherMicrophones) {
+          setOtherMicTransformStream(otherMicrophones).then(data => {
+            // console.log(data);
+          });
+          window.classActivated = true;
+          setButtonBackground(buttonClass, window.classActivated);
+          return true;
+        }
+        return false;
       }
-      return false;
+      
     } catch (error) {
       logErrors(error,"activateClassMode ln 280")
     }
   };
 
-  const deactivateClassMode = () => {
+  const deactivateClassMode = async () => {
    try {
-    const citbMicrophone = getCITBMicDevices();
+    const citbMicrophone = await getCITBMicDevices();
     if (citbMicrophone.length > 0) {
       window.classActivated = false;
       setMicrophone(citbMicrophone[0].deviceId);
@@ -592,10 +637,11 @@ function monkeyPatchMediaDevices() {
    }
   };
 
-  const changeToClassMode = () =>{
+  const changeToClassMode = async () =>{
     try {
       if (window.classActivated) {
-        if (deactivateClassMode()) {
+        const classModeDeactivated = await deactivateClassMode();
+        if (classModeDeactivated) {
           
         } else {
           alert("There is no CITB microphone");
@@ -609,7 +655,8 @@ function monkeyPatchMediaDevices() {
         }else{
           setMicrophone(window.otherMicSelection);
         }
-        if (activateClassMode()) {
+        const classModeActivated = await activateClassMode();
+        if (classModeActivated) {
         } else {
           alert("There is not another microphone");
         }
@@ -619,11 +666,11 @@ function monkeyPatchMediaDevices() {
     }
   }
 
-  const chooseMicClassMode = (e) =>{
+  const chooseMicClassMode = async (e) =>{
     e.preventDefault();
     div_Fab.setAttribute('class','fab');
     div_Overlay.removeAttribute('class');
-    changeToClassMode();
+    await changeToClassMode();
   }
 
   const closeModalClassMode = (e) => {
@@ -935,7 +982,7 @@ function monkeyPatchMediaDevices() {
       try {
         _audioController.enqueue(frame);
       } catch (error) {
-        
+        console.log("ERROR ERROR", error)
       }
     //frame.close();
   }
@@ -966,9 +1013,27 @@ function monkeyPatchMediaDevices() {
     }
   };
 
+  var citbConnectionCount = 0;
   const checkCITBConnetion = async () => {
-    const citbMicrophone = getCITBMicDevices();  
+    const citbMicrophone = await getCITBMicDevices();  
     const CITBVideo = await getCITBVideoDevices();
+    if (CITBVideo.length == 0){
+      if(window.presentationMode && window.duplo2){
+        presentacion2CallBackFunction();        
+      }
+      if(window.presentationMode && !window.duplo2){
+        presentacionCallBackFunction();
+      }
+    }
+    console.log(citbMicrophone.length, CITBVideo.length);
+    if (citbConnectionCount < 3) {
+      setTimeout(async () =>{
+        await checkCITBConnetion();
+      }, 1000)
+      citbConnectionCount += 1;
+    }else {
+      citbConnectionCount = 0;
+    }
     if (citbMicrophone.length != 0 || CITBVideo != 0 ){
       return true;
     }
@@ -979,14 +1044,18 @@ function monkeyPatchMediaDevices() {
     navigator.mediaDevices.addEventListener(
       "devicechange",
       async function (event) {
+        console.log("DEVICE CHANGE");
         await navigator.mediaDevices.enumerateDevices();
         let isCITBConnected = await checkCITBConnetion();
+        
         if(isCITBConnected ){
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices();
         }
+        console.log("DEVICE CHANGE BEFORE IF");
         if (!isCITBConnected && window.isExtentionActive){
-          openCloseExtension();
+          console.log("DEVICE CHANGE AFTER IF");
+          await closeExtension();
         }
       }
     );
