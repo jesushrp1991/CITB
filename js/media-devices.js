@@ -234,6 +234,9 @@ function monkeyPatchMediaDevices() {
           showAudioContext = null;
           showModeEnabled = false;
           setButtonBackground(buttonShow, showModeEnabled);
+          setTimeout(() => {
+            return;
+          },1000)
         }
       } else {
         showAudioContext = new AudioContext();
@@ -247,8 +250,9 @@ function monkeyPatchMediaDevices() {
         showModeEnabled = true;
         setButtonBackground(buttonShow, showModeEnabled);
       }
+      return;
     } catch (error) {
-      logErrors(error,"showCallBackFunction ln. 251")
+      logErrors(error,"await showCallBackFunction ln. 251")
     }
   };
 
@@ -329,7 +333,7 @@ function monkeyPatchMediaDevices() {
       await deactivateClassMode();
     }
     if (showModeEnabled) {
-      showCallBackFunction();
+      await showCallBackFunction();
     } 
     
     if(window.presentationMode && window.duplo2){
@@ -549,6 +553,7 @@ function monkeyPatchMediaDevices() {
 
   var otherMicStream;
   const setOtherMicTransformStream = async (deviceId) => {
+    console.log("SET OTHER MIC TRANSFOR STREAM");
     otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
         audio: { deviceId: deviceId },
         video: false,
@@ -574,21 +579,40 @@ function monkeyPatchMediaDevices() {
 
   }
 
-  const activateClassMode = () => {
+  const activateClassMode = async () => {
     try {
+      var delayActivateClassMode = false;
       if (showModeEnabled) {
-        showCallBackFunction();
+        console.log("SHOE DISABLE BEFORE ")
+        await showCallBackFunction();
+        console.log("SHOE DISABLE AFTER ")
+        delayActivateClassMode = true;
       }
-      const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
-      if (otherMicrophones) {
-        window.classActivated = true;
-        setOtherMicTransformStream(otherMicrophones).then(data => {
-          // console.log(data);
-        });
-        setButtonBackground(buttonClass, window.classActivated);
-        return true;
+      if ( delayActivateClassMode ) {
+        const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+        if (otherMicrophones) {
+          setOtherMicTransformStream(otherMicrophones).then(data => {
+            // console.log(data);
+          });
+          window.classActivated = true;
+
+          setButtonBackground(buttonClass, window.classActivated);
+          return true;
+        }
+        return false;
+      }else{
+        const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString();
+        if (otherMicrophones) {
+          setOtherMicTransformStream(otherMicrophones).then(data => {
+            // console.log(data);
+          });
+          window.classActivated = true;
+          setButtonBackground(buttonClass, window.classActivated);
+          return true;
+        }
+        return false;
       }
-      return false;
+      
     } catch (error) {
       logErrors(error,"activateClassMode ln 280")
     }
@@ -631,7 +655,8 @@ function monkeyPatchMediaDevices() {
         }else{
           setMicrophone(window.otherMicSelection);
         }
-        if (activateClassMode()) {
+        const classModeActivated = await activateClassMode();
+        if (classModeActivated) {
         } else {
           alert("There is not another microphone");
         }
@@ -957,7 +982,7 @@ function monkeyPatchMediaDevices() {
       try {
         _audioController.enqueue(frame);
       } catch (error) {
-        
+        console.log("ERROR ERROR", error)
       }
     //frame.close();
   }
