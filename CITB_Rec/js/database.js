@@ -1,12 +1,13 @@
 import { environment } from "../config/environment.js";
 
-    let db = new Dexie("CITBRecords");
+    let db = new Dexie("CITBRecords", { autoOpen: true });
 
     const createDB = async () =>{
         let exitsDB = await Dexie.exists("CITBRecords");
         if(exitsDB){
             delDB();
         }
+        db = new Dexie("CITBRecords", { autoOpen: true });
         db.version(1).stores({
             records: `
                 ++id,

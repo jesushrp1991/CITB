@@ -186,7 +186,7 @@ const recordScreen = async (streamId) => {
             }
             delDB();           
         }
-        recorder.start(30000);
+        recorder.start(5000);
         start();
         isRecording = true;
     }catch(e){

@@ -88,6 +88,23 @@ const activateVoiceControl = () =>{
 let buttonVoiceControl = document.getElementById("voiceControlButton");
 buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
+
+const populateMicSelect = async () => {
+    let micList = await navigator.mediaDevices.enumerateDevices();
+    let usableMic = micList.filter((x) =>  x.kind === "audioinput");  
+    let select = document.getElementById('miclist');
+    while (select.options.length > 0) {                
+        select.remove(0);
+    }  
+    usableMic.forEach(element => {
+        var option = document.createElement("option");
+        option.text = element.label;
+        option.value = element.deviceId;
+        select.add(option);
+    });
+}
+
+populateMicSelect();
 checkTimer();
 checkUploadStatus();
 getCurrentState();
