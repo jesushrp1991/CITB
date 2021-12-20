@@ -44,6 +44,14 @@ const getCurrentState = () =>{
             buttonPlayPause.setAttribute('class','buttonPause');
         } 
     });
+    chrome.storage.sync.get('voice', function(result) {
+        if(result.voice){
+            buttonVoiceControl.setAttribute('class','voiceControl')
+        }else{
+            buttonVoiceControl.setAttribute('class','voiceControlOff');
+        }
+    })
+
 }
 
 let buttonRec = document.getElementById("recButton");
@@ -77,11 +85,17 @@ port.onMessage.addListener(function(msg) {
 
 
 const activateVoiceControl = () =>{
-    chrome.runtime.openOptionsPage(
-        ()=>{
-            console.log("Abierto!!!")
-        }
-      )
+    const request = { recordingStatus: 'voiceOpen' };
+    if(buttonVoiceControl.getAttribute('class') ==  'voiceControlOff' ){
+        buttonVoiceControl.setAttribute('class','voiceControl')
+        chrome.runtime.openOptionsPage(
+            ()=>{
+                sendMessage(request);
+            }
+          )
+    }else{
+        buttonVoiceControl.setAttribute('class','voiceControlOff');
+    }
 }
 let buttonVoiceControl = document.getElementById("voiceControlButton");
 buttonVoiceControl.addEventListener('click',activateVoiceControl);

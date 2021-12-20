@@ -1,3 +1,5 @@
+import { sendMessage , close } from "./voiceActions.js"
+
 const speachCommands = () => {
 try{
 
@@ -29,13 +31,14 @@ try{
     var playCommand = {
         '*w the box play': () => {
           beep();
-          document.getElementsByClassName("CITBCamButton")[0].click(); 
+          sendMessage(); 
         }
       };
     var stopCommand = {
         '*w the box stop': ()=> {
           beep();
-          document.getElementsByClassName("CITBShowButton")[0].click(); 
+          annyang.abort();
+          close();
         }
       };
     var pauseCommands = {

@@ -9,7 +9,10 @@ import {
 
 const popupMessages = {
   rec:'rec',
-  pause:'pause'
+  pause:'pause',
+  test:'test',
+  voiceOpen:'voiceOpen',
+  voiceClose:'voiceClose'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -255,7 +258,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        console.log("recording")
         if(!isRecording || uploadValue != 0){
           await verificateAuth();
           await prepareDB();
@@ -268,6 +270,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pause :
         pauseOrResume();
+        break;
+      case popupMessages.test :
+        console.log("test from options page")
+        break;
+      case popupMessages.voiceOpen :
+        chrome.storage.sync.set({voice: true}, function() {
+        });
+        break;
+      case popupMessages.voiceClose :
+        chrome.storage.sync.set({voice: false}, function() {
+        });
         break;
     }
     return true;
