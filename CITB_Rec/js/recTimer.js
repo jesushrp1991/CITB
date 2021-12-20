@@ -8,8 +8,10 @@ const countVideoRecordTime = (isRec) =>{
     }
     // Update the count down every 1 second
     var x = setInterval(function() {
+        console.log("Is rec",isRec) 
         if(isRec)
-        {// Get todays date and time
+        {
+            // Get todays date and time
             var now = new Date().getTime();
 
             // Find the distance between now an the count down date
@@ -25,8 +27,19 @@ const countVideoRecordTime = (isRec) =>{
             // document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
             document.getElementById("demo").innerHTML =  hours + "h " + minutes + "m " + seconds + "s ";
             displayVideoRecCounter();
+        }else{
+            if(countDownDate){
+                countDownDate = localStorage.getItem('startDate');
+                countDownDate = new Date(countDownDate).getTime();
+                var now = new Date().getTime();
+                var result = now-countDownDate;
+                result = new Date(result);
+                alert(result);
+                localStorage.setItem('startDate', );
+            }
         }
     }, 1000);
+    return x;
 }
 const stopVideoRecordTime = () =>{
     var countDownDate = localStorage.getItem('startDate');

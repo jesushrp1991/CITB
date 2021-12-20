@@ -6,6 +6,7 @@ import {
   showEstimatedQuota,
   prepareDB
 } from "./js/database.js";
+
 const popupMessages = {
   rec:'rec',
   pause:'pause'
@@ -217,7 +218,7 @@ const stopRecordScreen = () =>{
 }
 
 const pauseOrResume = () => {
-  console.log("pause/resume")
+  console.log('pause/resume',isRecording)
   if(!isPaused && isRecording){
     recorder.pause()
     chrome.storage.sync.set({isPaused: true}, function() {
@@ -247,7 +248,6 @@ const saveUploadProgress = (value) =>{
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log(message);
-    console.log('is recorfing',isRecording)
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
       //sendMessage to popup to alert the user about insufficient disk space.
