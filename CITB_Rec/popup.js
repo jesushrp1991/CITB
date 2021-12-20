@@ -77,7 +77,11 @@ port.onMessage.addListener(function(msg) {
 
 
 const activateVoiceControl = () =>{
-    
+    chrome.runtime.openOptionsPage(
+        ()=>{
+            console.log("Abierto!!!")
+        }
+      )
 }
 let buttonVoiceControl = document.getElementById("voiceControlButton");
 buttonVoiceControl.addEventListener('click',activateVoiceControl);

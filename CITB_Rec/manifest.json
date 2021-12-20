@@ -33,6 +33,7 @@
     "48": "CITB COLOR SIN CIRCULO.png",
     "128": "CITB COLOR SIN CIRCULO.png"
   },
+  "options_page": "options.html",
   "web_accessible_resources": [
      "js/*"
     ,"helper/*"
