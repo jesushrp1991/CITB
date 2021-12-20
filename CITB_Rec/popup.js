@@ -8,12 +8,12 @@ const sendMessage = (msg) =>{
     });
 }
 const sendRecordCommand = () =>{
-    const request = { recordingStatus: 'rec' };
+    const request = { recordingStatus: 'rec' , idMic: select.value};
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
         buttonRec.setAttribute('class','buttonRecOff');
     }else{
         buttonRec.setAttribute('class','buttonRecOn') ;
-    }  
+    }
     sendMessage(request);
 }
 
@@ -88,11 +88,10 @@ const activateVoiceControl = () =>{
 let buttonVoiceControl = document.getElementById("voiceControlButton");
 buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
-
+let select = document.getElementById('miclist');
 const populateMicSelect = async () => {
     let micList = await navigator.mediaDevices.enumerateDevices();
-    let usableMic = micList.filter((x) =>  x.kind === "audioinput");  
-    let select = document.getElementById('miclist');
+    let usableMic = micList.filter((x) =>  x.kind === "audioinput");      
     while (select.options.length > 0) {                
         select.remove(0);
     }  

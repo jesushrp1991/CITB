@@ -137,9 +137,9 @@ let isPaused = false;
 let recorder;
 let videoChunksArray = [];
 
-const recordScreen = async (streamId) => {
+const recordScreen = async (streamId,idMic) => {
     try{
-        var constraints = {
+        const constraints = {
             audio:{
                 mandatory: {
                     chromeMediaSource: 'desktop',
@@ -158,8 +158,32 @@ const recordScreen = async (streamId) => {
                 }
             }
         }
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        recorder = new MediaRecorder(stream);
+        const micConstraints = {  
+          video: false,  
+          audio: {  
+              deviceId: { exact: idMic },  
+          },  
+        } 
+        let desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
+        let micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
+
+        const context = new AudioContext();
+        const sourceDesktop = context.createMediaStreamSource(desktopStream);
+        const sourceMic = context.createMediaStreamSource(micStream);
+        const destination = context.createMediaStreamDestination();
+
+        const desktopGain = context.createGain();
+        const voiceGain = context.createGain();
+
+        desktopGain.gain.value = 0.7;
+        voiceGain.gain.value = 0.7;
+
+        sourceDesktop.connect(desktopGain).connect(destination);
+        sourceMic.connect(voiceGain).connect(destination);
+
+        
+        let resultStream = new MediaStream([...desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
+        recorder = new MediaRecorder(resultStream);
 
         recorder.ondataavailable = event => {
             verifyAvailableSpaceOnDisk();
@@ -193,7 +217,7 @@ const recordScreen = async (streamId) => {
         console.log(e);
     }
 }
-const startRecordScreen = () =>{
+const startRecordScreen = (idMic) =>{
     try{
       let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
       let videoCaptureModes;
@@ -208,7 +232,7 @@ const startRecordScreen = () =>{
                 isRecording = true;
                 chrome.storage.sync.set({isRecording: true}, function() {
                 });
-                await recordScreen(streamId);
+                await recordScreen(streamId,idMic);
             }
           });
     }catch(e){
@@ -269,7 +293,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if(!isRecording || uploadValue != 0){
           await verificateAuth();
           await prepareDB();
-          await startRecordScreen();
+          await startRecordScreen(message.idMic);
         }else{
             stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, function() {
