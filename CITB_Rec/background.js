@@ -16,7 +16,8 @@ const popupMessages = {
   rec:'rec',
   pause:'pause',
   voiceOpen:'voiceOpen',
-  voiceClose:'voiceClose'
+  voiceClose:'voiceClose',
+  checkAuth:'checkAuth',
 }
 
 const onGAPIFirstLoad = () =>{
@@ -136,6 +137,7 @@ let isRecording = false;
 let isPaused = false;
 let recorder;
 let videoChunksArray = [];
+let resultStream;
 
 const recordScreen = async (streamId,idMic) => {
     try{
@@ -182,7 +184,7 @@ const recordScreen = async (streamId,idMic) => {
         sourceMic.connect(voiceGain).connect(destination);
 
         
-        let resultStream = new MediaStream([...desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
+        resultStream = new MediaStream([...desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
         recorder = new MediaRecorder(resultStream);
 
         recorder.ondataavailable = event => {
@@ -243,6 +245,7 @@ const stopRecordScreen = () =>{
     console.log(isRecording);
     if(isRecording){
         recorder.stop();
+        resultStream.getTracks().forEach(track => track.stop())
         reset();
         isRecording = false;
         chrome.storage.sync.set({isRecording: false}, function() {
@@ -291,7 +294,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!isRecording || uploadValue != 0){
-          await verificateAuth();
           await prepareDB();
           await startRecordScreen(message.idMic);
         }else{
@@ -310,6 +312,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.voiceClose :
         chrome.storage.sync.set({voice: false}, function() {
         });
+        break;
+      case popupMessages.checkAuth :
+        await verificateAuth();
         break;
     }
     return true;

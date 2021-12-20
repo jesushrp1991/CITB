@@ -103,6 +103,12 @@ const populateMicSelect = async () => {
     });
 }
 
+const checkAut = () => {
+    const request = { recordingStatus: 'checkAuth' };
+    sendMessage(request);
+}
+
+checkAut();
 populateMicSelect();
 checkTimer();
 checkUploadStatus();
