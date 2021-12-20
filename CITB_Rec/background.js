@@ -4,7 +4,8 @@ import {
   delDB,
   selectDB,
   showEstimatedQuota,
-  prepareDB
+  prepareDB,
+  delLastItem
 } from "./js/database.js";
 import {
   start,
@@ -212,7 +213,7 @@ const recordScreen = async (streamId,idMic) => {
             }
             delDB();           
         }
-        recorder.start(5000);
+        recorder.start(1000);
         start();
         isRecording = true;
     }catch(e){
@@ -315,6 +316,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pause :
         pauseOrResume();
+        if(message.isVoiceCommand)
+          delLastItem();
         break;
       case popupMessages.voiceOpen :
         chrome.storage.sync.set({voice: true}, function() {

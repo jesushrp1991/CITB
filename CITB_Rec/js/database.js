@@ -57,10 +57,7 @@ const isStoragePersisted = async () => {
 const showEstimatedQuota = async() => {
     if (navigator.storage && navigator.storage.estimate) {
       const estimation = await navigator.storage.estimate();
-      console.log(`Quota: ${estimation.quota}`);
-      console.log(`Usage: ${estimation.usage}`);
       let perCentUsedQuotaOfSpace = estimation.usage / estimation.quota * 100;      
-      console.log(`perCentUsedQuotaOfSpace: ${perCentUsedQuotaOfSpace}`);
       if( perCentUsedQuotaOfSpace >= environment.lowDiskSpaceAlert )
         return true;
       return false;
@@ -127,6 +124,12 @@ const tryPersistWithoutPromtingUser = async () => {
     showEstimatedQuota();
   }
 
+  const delLastItem = async () => {    
+    let last = await db.records.orderBy('id').last();
+    console.log(last.id);
+    await db.records.delete(last.id);    
+  }
+
 export {
     createDB,
     addDB,
@@ -137,5 +140,6 @@ export {
     showEstimatedQuota,
     tryPersistWithoutPromtingUser,
     initStoragePersistence,
-    prepareDB
+    prepareDB,
+    delLastItem
 }

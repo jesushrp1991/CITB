@@ -15,7 +15,7 @@ const close = () =>{
 }
 
 const playPause = () =>{
-    const request = { recordingStatus: 'pause' };
+    const request = { recordingStatus: 'pause' , isVoiceCommand: true };
     chrome.runtime.sendMessage(request, (response) => {         
     });
 }
