@@ -10,7 +10,6 @@ import {
 const popupMessages = {
   rec:'rec',
   pause:'pause',
-  test:'test',
   voiceOpen:'voiceOpen',
   voiceClose:'voiceClose'
 }
@@ -270,9 +269,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pause :
         pauseOrResume();
-        break;
-      case popupMessages.test :
-        console.log("test from options page")
         break;
       case popupMessages.voiceOpen :
         chrome.storage.sync.set({voice: true}, function() {
