@@ -20,6 +20,12 @@ const playPause = () =>{
     });
 }
 
+window.addEventListener("beforeunload", function(event) { 
+    const request = { recordingStatus: 'voiceClose' };
+    chrome.runtime.sendMessage(request, (response) => {         
+    });
+ });
+
 export {
     rec,
     close,
