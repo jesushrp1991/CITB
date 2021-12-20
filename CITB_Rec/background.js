@@ -36,18 +36,18 @@ const onGAPILoad = () => {
       });
     })
   }, function(error) {
-    console.log('error', error)
+    errorHandling(error);
   });
 }
 
-const getAuthToken = () =>{
-  chrome.identity.getAuthToken({interactive: true}, function(token) {
-    console.log('got the token', token);
-  })
-};
+// const getAuthToken = () =>{
+//   chrome.identity.getAuthToken({interactive: true}, function(token) {
+//     console.log('got the token', token);
+//   })
+// };
 const verificateAuth = () =>{
   onGAPILoad();
-  getAuthToken();
+  // getAuthToken();
 }
 
 
@@ -216,7 +216,7 @@ const recordScreen = async (streamId,idMic) => {
         start();
         isRecording = true;
     }catch(e){
-        console.log(e);
+      errorHandling(error);
     }
 }
 const startRecordScreen = (idMic) =>{
@@ -238,7 +238,7 @@ const startRecordScreen = (idMic) =>{
             }
           });
     }catch(e){
-        console.log(e);
+      errorHandling(error);
     }
 }
 const stopRecordScreen = () =>{
@@ -284,6 +284,17 @@ const saveUploadProgress = (value) =>{
   });
 }
 
+const errorHandling = (error) => {
+    console.log(error);
+    recorder.stop();
+    resultStream.getTracks().forEach(track => track.stop())
+    reset();
+    isRecording = false;
+    chrome.storage.sync.set({isRecording: false}, function() {
+    });
+
+}
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log(message);
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -293,11 +304,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!isRecording || uploadValue != 0){
+        if(!isRecording && uploadValue == 0){
           await prepareDB();
           await startRecordScreen(message.idMic);
         }else{
-            stopRecordScreen();
+            await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, function() {
             });
         }    
