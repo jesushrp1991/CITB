@@ -76,6 +76,11 @@ port.onMessage.addListener(function(msg) {
 });
 
 
+const activateVoiceControl = () =>{
+    
+}
+let buttonVoiceControl = document.getElementById("voiceControlButton");
+buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
 checkUploadStatus();
 getCurrentState();
