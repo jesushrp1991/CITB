@@ -1,4 +1,4 @@
-const sendMessage = () =>{
+const rec = () =>{
     const request = { recordingStatus: 'rec' };
     chrome.runtime.sendMessage(request, (response) => {         
     });
@@ -14,7 +14,14 @@ const close = () =>{
     window.close();
 }
 
+const playPause = () =>{
+    const request = { recordingStatus: 'pause' };
+    chrome.runtime.sendMessage(request, (response) => {         
+    });
+}
+
 export {
-    sendMessage,
-    close
+    rec,
+    close,
+    playPause
 }

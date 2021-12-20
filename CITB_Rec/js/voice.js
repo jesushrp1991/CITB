@@ -1,73 +1,75 @@
-import { sendMessage , close } from "./voiceActions.js"
+import { rec, close, playPause } from "./voiceActions.js";
 
 const speachCommands = () => {
-try{
+  try {
+    const beep = (frequency) => {
+      if (frequency == undefined || frequency == null || frequency == 0) {
+        frequency = 1760;
+      }
+      const rampDownTimeNum = function () {
+        return parseFloat(1);
+      };
 
-  const beep = (frequency) => {
-    if (frequency == undefined || frequency == null || frequency == 0) {
-        frequency = 1760
-    }
-    const rampDownTimeNum = function(){
-      return parseFloat(1)
-    }
+      const beepContext = new AudioContext();
+      const oscillator = beepContext.createOscillator();
+      const gain = beepContext.createGain();
+      oscillator.connect(gain);
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(0.5, beepContext.currentTime);
 
-    const beepContext = new AudioContext();
-    const oscillator = beepContext.createOscillator();
-    const gain = beepContext.createGain();
-    oscillator.connect(gain);
-    oscillator.type = "sine";
-    oscillator.frequency.value = frequency
-    gain.gain.setValueAtTime(0.5, beepContext.currentTime);
+      gain.connect(beepContext.destination);
+      gain.gain.exponentialRampToValueAtTime(
+        0.00001,
+        beepContext.currentTime + rampDownTimeNum()
+      );
 
-
-    gain.connect(beepContext.destination);
-    gain.gain.exponentialRampToValueAtTime(0.00001, beepContext.currentTime + rampDownTimeNum());
-
-
-
-    oscillator.start(beepContext.currentTime);
-    oscillator.stop(beepContext.currentTime + rampDownTimeNum() + .01);
-}
+      oscillator.start(beepContext.currentTime);
+      oscillator.stop(beepContext.currentTime + rampDownTimeNum() + 0.01);
+    };
     var playCommand = {
-        '*w the box play': () => {
-          beep();
-          sendMessage(); 
-        }
-      };
+      "*w the box start": () => {
+        beep();
+        rec();
+      },
+    };
     var stopCommand = {
-        '*w the box stop': ()=> {
-          beep();
-          annyang.abort();
-          close();
-        }
-      };
+      "*w the box stop": () => {
+        beep();
+        annyang.abort();
+        close();
+      },
+    };
     var pauseCommands = {
-        '*w the box pause': () => {
-          beep();
-          document.getElementsByClassName("CITBClassButton")[0].click(); 
-        }
+      "*w the box pause": () => {
+        beep();
+        playPause();
+      },
     };
     var pausaCommands = {
-        '*w the box pausa': () => {
-          beep();
-          document.getElementsByClassName("CITBClassButton")[0].click(); 
-        }
+      "*w the box pausa": () => {
+        beep();
+        playPause();
+      },
+    };
+    var pausaCommands = {
+      "*w the box play": () => {
+        beep();
+        playPause();
+      },
     };
 
-      // Add our commands to annyang
-      annyang.addCommands(playCommand); 
-      annyang.addCommands(stopCommand); 
-      annyang.addCommands(pauseCommands);
-      annyang.addCommands(pausaCommands);
+    // Add our commands to annyang
+    annyang.addCommands(playCommand);
+    annyang.addCommands(stopCommand);
+    annyang.addCommands(pauseCommands);
+    annyang.addCommands(pausaCommands);
 
- 
-
-      // Start listening. You can call this here, or attach this call to an event, button, etc.
-      annyang.start({ autoRestart: true, continuous: true });
-      annyang.debug([true]);
-      
-  }catch(e){
-      console.log("annyang error",e);
+    // Start listening. You can call this here, or attach this call to an event, button, etc.
+    annyang.start({ autoRestart: true, continuous: true });
+    annyang.debug([true]);
+  } catch (e) {
+    console.log("annyang error", e);
   }
-}
+};
 speachCommands();
