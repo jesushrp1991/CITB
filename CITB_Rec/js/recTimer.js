@@ -1,63 +1,71 @@
-const countVideoRecordTime = (isRec) =>{
-    var countDownDate = localStorage.getItem('startDate');
-    if (countDownDate) {
-        countDownDate = new Date(countDownDate);
-    } else {
-        countDownDate = new Date();
-        localStorage.setItem('startDate', countDownDate);
-    }
-    // Update the count down every 1 second
-    var x = setInterval(function() {
-        console.log("Is rec",isRec) 
-        if(isRec)
-        {
-            // Get todays date and time
-            var now = new Date().getTime();
+let output = document.getElementById('demo');
+let ms = 0;
+let sec = 0;
+let min = 0;
+let time;
 
-            // Find the distance between now an the count down date
-            var distance = now - countDownDate.getTime();
-
-            // Time calculations for days, hours, minutes and seconds
-            // var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Output the result in an element with id="demo"
-            // document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-            document.getElementById("demo").innerHTML =  hours + "h " + minutes + "m " + seconds + "s ";
-            displayVideoRecCounter();
-        }else{
-            if(countDownDate){
-                countDownDate = localStorage.getItem('startDate');
-                countDownDate = new Date(countDownDate).getTime();
-                var now = new Date().getTime();
-                var result = now-countDownDate;
-                result = new Date(result);
-                alert(result);
-                localStorage.setItem('startDate', );
-            }
+function timer (){
+        ms++;
+        if(ms >= 100){
+            sec++
+            ms = 0
         }
-    }, 1000);
-    return x;
-}
-const stopVideoRecordTime = () =>{
-    var countDownDate = localStorage.getItem('startDate');
-    if(countDownDate){
-        localStorage.removeItem('startDate');
-        hideVideoRecCounter();
-    }
-}
+        if(sec === 60){
+            min++
+            sec = 0
+        }
+        if(min === 60){
+            ms, sec, min = 0;
+        }
 
-const displayVideoRecCounter = () => {
+        //Doing some string interpolation
+        let milli = ms < 10 ? `0`+ ms : ms;
+        let seconds = sec < 10 ? `0`+ sec : sec;
+        let minute = min < 10 ? `0` + min : min;
+
+        let timer= `${minute}:${seconds}:${milli}`;
+        output.innerHTML =timer;
+        localStorage.setItem('timeMinSaved', min);
+        localStorage.setItem('timeSecSaved', sec);
+
+};
+//Start timer
+
+const start = () => {
+    var minSaved = localStorage.getItem('timeMinSaved');
+    var secSaved = localStorage.getItem('timeSecSaved');
+    if (minSaved) {
+        min = minSaved;
+    }
+    if(secSaved){
+        sec = secSaved;
+    }
+    time = setInterval(timer,10);
     document.getElementById('recTimerPanel').style.display = 'block';
 }
+//stop timer
+const stop = () => {
+    clearInterval(time);
+    let minSaved = localStorage.getItem('timeMinSaved');
+    minSaved = minSaved < 10 ? `0` + minSaved : minSaved;
+    let secSaved = localStorage.getItem('timeSecSaved');
+    secSaved = secSaved < 10 ? `0` + secSaved : secSaved;
+    let timer= `${minSaved}:${secSaved}:00`;
+    output.innerHTML =timer;
+}
+//reset timer
+const reset = () =>{
+    ms = 0;
+    sec = 0;
+    min = 0;
 
-const hideVideoRecCounter = () => {
+    output.innerHTML = `00:00:00`
+    localStorage.removeItem('timeSaved');
     document.getElementById('recTimerPanel').style.display = 'none';
 }
 
 export {
-    countVideoRecordTime,
-    stopVideoRecordTime,
+    start,
+    stop,
+    reset
 }

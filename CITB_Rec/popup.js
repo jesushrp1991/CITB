@@ -1,6 +1,7 @@
 import {
-    countVideoRecordTime,
-    stopVideoRecordTime,
+    start,
+    stop,
+    reset
 } from './js/recTimer.js'
 
 import {
@@ -11,35 +12,35 @@ const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg, (response) => {         
     });
 }
-let isRec = true;
-let intervalCounter;
-
 const sendRecordCommand = () =>{
-    intervalCounter = countVideoRecordTime(isRec);
     const request = { recordingStatus: 'rec' };
-    buttonRec.getAttribute('class') ==  'buttonRecOn' 
-        ?  buttonRec.setAttribute('class','buttonRecOff')
-        :  buttonRec.setAttribute('class','buttonRecOn') ;
+    if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
+        buttonRec.setAttribute('class','buttonRecOff');
+        reset();
+    }else{
+        buttonRec.setAttribute('class','buttonRecOn') ;
+        start();
+    }  
     sendMessage(request);
 }
 
 const getCurrentState = () =>{
     chrome.storage.sync.get('isRecording', function(result) {
         if (result.isRecording ){
+            console.log("Is Recording")
             buttonRec.setAttribute('class','buttonRecOn') 
-            isRec = true;
-            intervalCounter = countVideoRecordTime(isRec);
+            start();
         }else{
             buttonRec.setAttribute('class','buttonRecOff');
-            stopVideoRecordTime();
+            reset();
         }
     });
     chrome.storage.sync.get('isPaused', function(result) {
         if(result.isPaused ){
-            isRec = false;
-            buttonPlayPause.setAttribute('class','buttonPlay') 
+            console.log("Is paused")
+            buttonPlayPause.setAttribute('class','buttonPlay');
+            stop();
         }else{
-            isRec = true;
             buttonPlayPause.setAttribute('class','buttonPause');
         } 
     });
@@ -53,14 +54,10 @@ const playPause = () =>{
     const request = { recordingStatus: 'pause' };
     if(buttonPlayPause.getAttribute('class') ==  'buttonPause' ){
         buttonPlayPause.setAttribute('class','buttonPlay')
-        isRec = false;
-        clearInterval(intervalCounter);
-        intervalCounter = countVideoRecordTime(isRec);
+        stop();
     }else{
         buttonPlayPause.setAttribute('class','buttonPause');
-        isRec = true;
-        clearInterval(intervalCounter);
-        intervalCounter = countVideoRecordTime(isRec);
+        start();
     }
     sendMessage(request);
 }
