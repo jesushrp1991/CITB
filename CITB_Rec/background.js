@@ -6,6 +6,11 @@ import {
   showEstimatedQuota,
   prepareDB
 } from "./js/database.js";
+import {
+  start,
+  stop,
+  reset
+} from './js/recTimer.js'
 
 const popupMessages = {
   rec:'rec',
@@ -182,6 +187,7 @@ const recordScreen = async (streamId) => {
             delDB();           
         }
         recorder.start(30000);
+        start();
         isRecording = true;
     }catch(e){
         console.log(e);
@@ -213,6 +219,7 @@ const stopRecordScreen = () =>{
     console.log(isRecording);
     if(isRecording){
         recorder.stop();
+        reset();
         isRecording = false;
         chrome.storage.sync.set({isRecording: false}, function() {
         });
@@ -223,10 +230,12 @@ const pauseOrResume = () => {
   console.log('pause/resume',isRecording)
   if(!isPaused && isRecording){
     recorder.pause()
+    stop();
     chrome.storage.sync.set({isPaused: true}, function() {
     });
   }else{
     recorder.resume();
+    start();
     chrome.storage.sync.set({isPaused: false}, function() {
     });
   }

@@ -1,12 +1,15 @@
-let output = document.getElementById('demo');
 let ms = 0;
 let sec = 0;
 let min = 0;
 let time;
+let milli ,seconds, minute;
 
 function timer (){
         ms++;
         if(ms >= 100){
+            let timer= {minute:minute,seconds:seconds};
+            chrome.storage.sync.set({timerCounter: timer}, function() {
+            });
             sec++
             ms = 0
         }
@@ -19,12 +22,12 @@ function timer (){
         }
 
         //Doing some string interpolation
-        let milli = ms < 10 ? `0`+ ms : ms;
-        let seconds = sec < 10 ? `0`+ sec : sec;
-        let minute = min < 10 ? `0` + min : min;
+         milli = ms < 10 ? `0`+ ms : ms;
+         seconds = sec < 10 ? `0`+ sec : sec;
+         minute = min < 10 ? `0` + min : min;
 
-        let timer= `${minute}:${seconds}:${milli}`;
-        output.innerHTML =timer;
+       
+        
         localStorage.setItem('timeMinSaved', min);
         localStorage.setItem('timeSecSaved', sec);
 
@@ -41,27 +44,24 @@ const start = () => {
         sec = secSaved;
     }
     time = setInterval(timer,10);
-    document.getElementById('recTimerPanel').style.display = 'block';
 }
+
 //stop timer
 const stop = () => {
     clearInterval(time);
-    let minSaved = localStorage.getItem('timeMinSaved');
-    minSaved = minSaved < 10 ? `0` + minSaved : minSaved;
-    let secSaved = localStorage.getItem('timeSecSaved');
-    secSaved = secSaved < 10 ? `0` + secSaved : secSaved;
-    let timer= `${minSaved}:${secSaved}:00`;
-    output.innerHTML =timer;
 }
+
 //reset timer
 const reset = () =>{
     ms = 0;
     sec = 0;
     min = 0;
-
-    output.innerHTML = `00:00:00`
-    localStorage.removeItem('timeSaved');
-    document.getElementById('recTimerPanel').style.display = 'none';
+    clearInterval(time);
+    let timer= {minute:0,seconds:0};
+    chrome.storage.sync.set({timerCounter: timer}, function() {
+    });
+    localStorage.removeItem('timeMinSaved');
+    localStorage.removeItem('timeSecSaved');
 }
 
 export {
