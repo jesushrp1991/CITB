@@ -31,18 +31,17 @@ const countVideoRecordTime = (isRec) =>{
 const stopVideoRecordTime = () =>{
     var countDownDate = localStorage.getItem('startDate');
     if(countDownDate){
-        storage.removeItem('startDate');
+        localStorage.removeItem('startDate');
         hideVideoRecCounter();
-
     }
 }
 
 const displayVideoRecCounter = () => {
-    
+    document.getElementById('recTimerPanel').style.display = 'block';
 }
 
 const hideVideoRecCounter = () => {
-
+    document.getElementById('recTimerPanel').style.display = 'none';
 }
 
 export {

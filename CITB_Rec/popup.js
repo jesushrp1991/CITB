@@ -1,7 +1,7 @@
 import {
     countVideoRecordTime,
     stopVideoRecordTime,
-} from './js/util.js'
+} from './js/recTimer.js'
 
 import {
     checkUploadStatus
@@ -29,6 +29,7 @@ const getCurrentState = () =>{
             countVideoRecordTime(isRec);
         }else{
             buttonRec.setAttribute('class','buttonRecOff');
+            stopVideoRecordTime();
         }
     });
     chrome.storage.sync.get('isPaused', function(result) {
