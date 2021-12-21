@@ -134,12 +134,13 @@ const verificateAuth = () =>{
   /* 
   ** DESKTOP REC
   */
+let fileName = Date();
 const prepareRecordFile = (finalArray) => {
     console.log("Hello download")
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
-    var file = new File([blob], "CITB REC " + Date() + ".webm");
+    var file = new File([blob], fileName + ".webm");
     return file;
   }
 
@@ -154,7 +155,7 @@ const prepareRecordFile = (finalArray) => {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = "test.webm";
+    a.download = fileName + ".webm";
     a.click();
     window.URL.revokeObjectURL(url);
 }
@@ -346,7 +347,7 @@ const errorHandling = (error) => {
 }
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    console.log(message);
+    console.log("Backendmessage",message);
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
       //sendMessage to popup to alert the user about insufficient disk space.
@@ -355,6 +356,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!isRecording && uploadValue == 0){
+          fileName = message.fileName;
           await prepareDB();
           await startRecordScreen(message.idMic);
         }else{

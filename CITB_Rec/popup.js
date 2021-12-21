@@ -7,8 +7,8 @@ const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg, (response) => {         
     });
 }
+var fileName;
 const sendRecordCommand = () =>{
-    const request = { recordingStatus: 'rec' , idMic: select.value};
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
         buttonRec.setAttribute('class','buttonRecOff');
         buttonStop.setAttribute('class','stopButtonOff littleButton');
@@ -17,7 +17,7 @@ const sendRecordCommand = () =>{
         buttonStop.disabled = true;
         buttonPlayPause.disabled = true;
     }else{
-        var calendarMeetName = prompt("What's yours meet name?")
+        fileName = prompt("What's yours meet name?")
         buttonRec.setAttribute('class','buttonRecOn') ;
         buttonStop.setAttribute('class','stopButton littleButton') ;
         buttonPlayPause.setAttribute('class','buttonPause littleButton');
@@ -25,6 +25,8 @@ const sendRecordCommand = () =>{
         buttonStop.disabled = false;
         buttonPlayPause.disabled = false;
     }
+    const request = { recordingStatus: 'rec' , idMic: select.value ,fileName: fileName };
+    console.log(request);
     sendMessage(request);
 }
 
