@@ -22,16 +22,16 @@
     "default_title": "CITB Rec",
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "CITB COLOR SIN CIRCULO.png",
-      "48": "CITB COLOR SIN CIRCULO.png",
-      "64": "CITB COLOR SIN CIRCULO.png",
-      "128": "CITB COLOR SIN CIRCULO.png"
+      "16": "assets/CITB COLOR SIN CIRCULO.png",
+      "48": "assets/CITB COLOR SIN CIRCULO.png",
+      "64": "assets/CITB COLOR SIN CIRCULO.png",
+      "128": "assets/CITB COLOR SIN CIRCULO.png"
     }
   },
   "icons": {
-    "16": "CITB COLOR SIN CIRCULO.png",
-    "48": "CITB COLOR SIN CIRCULO.png",
-    "128": "CITB COLOR SIN CIRCULO.png"
+    "16": "assets/CITB COLOR SIN CIRCULO.png",
+    "48": "assets/CITB COLOR SIN CIRCULO.png",
+    "128": "assets/CITB COLOR SIN CIRCULO.png"
   },
   "options_page": "options.html",
   "web_accessible_resources": [
