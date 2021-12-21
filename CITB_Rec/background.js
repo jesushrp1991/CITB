@@ -139,7 +139,8 @@ let isPaused = false;
 let recorder;
 let videoChunksArray = [];
 let resultStream;
-
+let desktopStream;
+let micStream;
 const recordScreen = async (streamId,idMic) => {
     try{
         const constraints = {
@@ -167,8 +168,8 @@ const recordScreen = async (streamId,idMic) => {
               deviceId: { exact: idMic },  
           },  
         } 
-        let desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
-        let micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
+        desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
+        micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
 
         const context = new AudioContext();
         const sourceDesktop = context.createMediaStreamSource(desktopStream);
@@ -189,6 +190,7 @@ const recordScreen = async (streamId,idMic) => {
         recorder = new MediaRecorder(resultStream);
 
         recorder.ondataavailable = event => {
+          console.log("ON DATA AVAILABLE", videoChunksArray.length);
             verifyAvailableSpaceOnDisk();
             if (event.data.size > 0) {
                 videoChunksArray.push(event.data);
@@ -246,6 +248,8 @@ const stopRecordScreen = () =>{
     console.log(isRecording);
     if(isRecording){
         recorder.stop();
+        desktopStream.getTracks().forEach(track => track.stop())
+        micStream.getTracks().forEach(track => track.stop())
         resultStream.getTracks().forEach(track => track.stop())
         reset();
         isRecording = false;
@@ -254,8 +258,16 @@ const stopRecordScreen = () =>{
     }
 }
 
-const pauseOrResume = () => {
-  console.log('pause/resume',isRecording)
+const pauseOrResume = async () => {
+  const records = await selectDB();
+  console.log(records.length, records);
+  console.log('pause/resume',isRecording);
+  console.log(videoChunksArray.length);
+  // videoChunksArray.length = videoChunksArray.length - 5;
+  // console.log(videoChunksArray.length);
+
+  // videoChunksArray.push(event.data);
+  // addDB(videoChunksArray);
   if(!isPaused && isRecording){
     recorder.pause()
     stop();
@@ -288,6 +300,8 @@ const saveUploadProgress = (value) =>{
 const errorHandling = (error) => {
     console.log(error);
     recorder.stop();
+    desktopStream.getTracks().forEach(track => track.stop())
+    micStream.getTracks().forEach(track => track.stop())
     resultStream.getTracks().forEach(track => track.stop())
     reset();
     isRecording = false;
