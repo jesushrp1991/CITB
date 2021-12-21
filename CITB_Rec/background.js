@@ -171,10 +171,9 @@ const saveVideo = async(localDownload) =>{
     console.log("file",file);
     prepareUploadToDrive(file);
   }else{
-    download(finalArray);
-  }
-  if(localDownload){
-    download(finalArray);
+    if(finalArray.length != 0 ){
+      download(finalArray);
+    }
   }
 }
 let isRecording = false;
@@ -215,7 +214,11 @@ const recordScreen = async (streamId,idMic) => {
         micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
 
         const context = new AudioContext();
-        const sourceDesktop = context.createMediaStreamSource(desktopStream);
+        let sourceDesktop = null;
+        if(desktopStream.getAudioTracks().length > 0){
+          sourceDesktop = context.createMediaStreamSource(desktopStream);
+          console.log(sourceDesktop)
+        }
         const sourceMic = context.createMediaStreamSource(micStream);
         const destination = context.createMediaStreamDestination();
 
@@ -225,7 +228,10 @@ const recordScreen = async (streamId,idMic) => {
         desktopGain.gain.value = 0.7;
         voiceGain.gain.value = 0.7;
 
-        sourceDesktop.connect(desktopGain).connect(destination);
+        if(sourceDesktop != null){
+          console.log(sourceDesktop);
+          sourceDesktop.connect(desktopGain).connect(destination);
+        }
         sourceMic.connect(voiceGain).connect(destination);
 
         

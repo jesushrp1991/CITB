@@ -12,14 +12,18 @@ const sendRecordCommand = () =>{
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
         buttonRec.setAttribute('class','buttonRecOff');
         buttonStop.setAttribute('class','stopButtonOff littleButton');
+        buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
         buttonRec.disabled = false;
         buttonStop.disabled = true;
-
+        buttonPlayPause.disabled = true;
     }else{
+        var calendarMeetName = prompt("What's yours meet name?")
         buttonRec.setAttribute('class','buttonRecOn') ;
         buttonStop.setAttribute('class','stopButton littleButton') ;
+        buttonPlayPause.setAttribute('class','buttonPause littleButton');
         buttonRec.disabled = true;
         buttonStop.disabled = false;
+        buttonPlayPause.disabled = false;
     }
     sendMessage(request);
 }
@@ -33,27 +37,35 @@ buttonStop.addEventListener('click',sendRecordCommand);
 
 
 const getCurrentState = () =>{
+    let isRec = false;
     chrome.storage.sync.get('isRecording', function(result) {
         if (result.isRecording ){
-            console.log("Is Recording")
+            isRec = result.isRecording;
             buttonRec.setAttribute('class','buttonRecOn') 
             buttonStop.setAttribute('class','stopButton littleButton');
             buttonRec.disabled = true;
-             buttonStop.disabled = false;
+            buttonStop.disabled = false;
+            buttonPlayPause.disabled = false;
         }else{
             buttonRec.setAttribute('class','buttonRecOff');
             buttonStop.setAttribute('class','stopButtonOff littleButton') ;
+            buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
             buttonRec.disabled = false;
-             buttonStop.disabled = true;
+            buttonStop.disabled = true;
+            buttonPlayPause.disabled = true;
         }
     });
     chrome.storage.sync.get('isPaused', function(result) {
-        if(result.isPaused ){
-            console.log("Is paused")
-            buttonPlayPause.setAttribute('class','buttonPause littleButton');
+        if(!isRec){
+            buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
         }else{
-            buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
-        } 
+            if(result.isPaused ){
+                console.log("Is paused")
+                buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
+            }else{
+                buttonPlayPause.setAttribute('class','buttonPause littleButton');
+            }
+        }
     });
     chrome.storage.sync.get('voice', function(result) {
         if(result.voice){
@@ -67,15 +79,16 @@ const getCurrentState = () =>{
 
 const playPause = () =>{
     const request = { recordingStatus: 'pause' };
-    if(buttonPlayPause.getAttribute('class').includes('buttonPause')){
-        buttonPlayPause.setAttribute('class','buttonPauseOff littleButton')
+    if(buttonPlayPause.getAttribute('class').includes('buttonPauseOff')){
+        buttonPlayPause.setAttribute('class','buttonPause littleButton')
     }else{
-        buttonPlayPause.setAttribute('class','buttonPause littleButton');
+        buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
     }
     sendMessage(request);
 }
 
 let buttonPlayPause = document.getElementById("playPauseButton");
+buttonPlayPause.disabled = true;
 buttonPlayPause.addEventListener('click',playPause);
 
 
@@ -99,6 +112,8 @@ const activateVoiceControl = () =>{
             }
           )
     }else{
+        const request = { recordingStatus: 'voiceClose' };
+        sendMessage(request);
         buttonVoiceControl.setAttribute('class','voiceControlOff');
     }
 }
@@ -139,3 +154,5 @@ populateMicSelect();
 checkTimer();
 checkUploadStatus();
 getCurrentState();
+
+setInterval(getCurrentState,2000);

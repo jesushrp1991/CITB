@@ -43,6 +43,9 @@ button {
   background-image: url('./assets/PAUSE\ NEGRO.svg')
 }
 .buttonPauseOff{
+  background-image: url('./assets/PLAY\ NEGRO.svg')
+}
+.buttonPauseDisable{
   background-image: url('./assets/PAUSE\ GRIS.svg')
 }
 .stopButton{
