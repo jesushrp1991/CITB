@@ -118,6 +118,7 @@ const tryPersistWithoutPromtingUser = async () => {
   }
   
   const prepareDB = async() =>{
+    delDB();           
     createDB();
     await initStoragePersistence();
     console.log(isStoragePersisted());

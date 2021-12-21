@@ -103,6 +103,15 @@ const populateMicSelect = async () => {
     });
 }
 
+
+const localDownload = () => {
+    const request = { recordingStatus: 'localDownload' };
+    sendMessage(request);
+}
+
+let buttonLocalDownload = document.getElementById("localDownloadButton");
+buttonLocalDownload.addEventListener('click',localDownload);
+
 const checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     sendMessage(request);

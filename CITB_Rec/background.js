@@ -19,57 +19,63 @@ const popupMessages = {
   voiceOpen:'voiceOpen',
   voiceClose:'voiceClose',
   checkAuth:'checkAuth',
+  localDownload:'localDownload',
 }
 
 const onGAPIFirstLoad = () =>{
   console.log("GAPI LOADED!!")
 }
-let token;
 const onGAPILoad = () => {
   gapi.client.init({
     // Don't pass client nor scope as these will init auth2, which we don't want
     apiKey: environment.API_KEY,
     discoveryDocs: environment.DISCOVERY_DOCS,
-  }).then(function () {
+  }).then( async () =>{
     console.log('gapi initialized')
     chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
       gapi.auth.setToken({
         'access_token': tokenResult,
       });
-      token = tokenResult;
     })
-    createDriverFolder();
+    // let folderName = "CITB_REC";
+    // let result = await gapi.client.drive.files.list({
+    //     q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+    //     fields: 'nextPageToken, files(id, name)',
+    //     spaces: 'drive',
+    // })
+    // let folder = result.data.files.filter(x => x.name === folderName);
+    // var folderId = folder.length?folder[0].id:0;
+    // console.log(folder.id)
+    // if(folderId != 0){
+    //   var fileMetadata = {
+    //     'name': 'CITB_REC',
+    //     'mimeType': 'application/vnd.google-apps.folder',
+    //     'parents': 'root'
+    //   };    
+    //   gapi.client.drive.files.create({
+    //     resource: fileMetadata,
+    //   }).then(function(response) {
+    //     switch(response.status){
+    //       case 200:
+    //         var file = response.result;
+    //         console.log('Created Folder Id: ', file.id);
+    //         break;
+    //       default:
+    //         console.log('Error creating the folder, '+response);
+    //         break;
+    //       }
+    //   });
+    // }
   }, function(error) {
     errorHandling(error);
   });
 }
-let createFolderOptions = {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    mimeType: "application/vnd.google-apps.folder",
-    name: "CITB_Rec",
-  }),
-};
 
-const createDriverFolder = async() =>{
-  const response = await fetch("https://www.googleapis.com/drive/v3/files", createFolderOptions);
-  const json = await response.json();
-}
-// const getAuthToken = () =>{
-//   chrome.identity.getAuthToken({interactive: true}, function(token) {
-//     console.log('got the token', token);
-//   })
-// };
+
+
 const verificateAuth = () =>{
   onGAPILoad();
-  // getAuthToken();
 }
-
-
 /*
   *   Upload to Drive
   *
@@ -99,7 +105,7 @@ const verificateAuth = () =>{
       fileType: f.fileType,
       fileBuffer: f.result,
       accessToken: accessToken,
-      folderId: 'CITB_REC'
+      // folderId: 'CITB_REC'
     };
     const upload = new ResumableUploadToGoogleDrive();
     upload.Do(resource, (res, err)=>{
@@ -152,7 +158,25 @@ const prepareRecordFile = (finalArray) => {
     a.click();
     window.URL.revokeObjectURL(url);
 }
-
+const saveVideo = async(localDownload) =>{
+  let save = await selectDB();
+  let finalArray = [];
+  save.forEach(element => {
+    finalArray.push(element.record[0]);
+  });
+  console.log("FinalArray",finalArray);
+  
+  if(environment.upLoadToDrive && !localDownload){
+    let file = prepareRecordFile(finalArray);
+    console.log("file",file);
+    prepareUploadToDrive(file);
+  }else{
+    download(finalArray);
+  }
+  if(localDownload){
+    download(finalArray);
+  }
+}
 let isRecording = false;
 let isPaused = false;
 let recorder;
@@ -218,21 +242,7 @@ const recordScreen = async (streamId,idMic) => {
             }
         }
         recorder.onstop = async() => {
-            let save = await selectDB();
-            let finalArray = [];
-            save.forEach(element => {
-              finalArray.push(element.record[0]);
-            });
-            console.log("FinalArray",finalArray);
-            
-            if(environment.upLoadToDrive){
-              let file = prepareRecordFile(finalArray);
-              console.log("file",file);
-              prepareUploadToDrive(file);
-            }else{
-              download(finalArray);
-            }
-            delDB();           
+           saveVideo(false);
         }
         recorder.start(1000);
         start();
@@ -362,6 +372,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.checkAuth :
         await verificateAuth();
+        break;
+      case popupMessages.localDownload :
+        saveVideo(true);
         break;
     }
     return true;
