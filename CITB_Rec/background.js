@@ -248,7 +248,7 @@ const recordScreen = async (streamId,idMic) => {
         start();
         isRecording = true;
     }catch(e){
-      errorHandling(error);
+      errorHandling(e);
     }
 }
 const startRecordScreen = (idMic) =>{

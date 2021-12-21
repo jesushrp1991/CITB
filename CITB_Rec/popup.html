@@ -7,31 +7,28 @@
     <div class="buttonsBorder">
       <button type="button" id="recButton" class="buttonRecOff">
       </button>
-      <button type="button" id="playPauseButton" class="buttonPause">
+      <button type="button" id="recTimerPanel" class="recTimerPanelOff timer">
+      </button>
+      <button type="button" id="playPauseButton" class="buttonPauseOff littleButton">
+      </button>
+      <button type="button" id="stopButton" class="stopButtonOff littleButton">
       </button>
       <button type="button" id="localDownloadButton" class="buttonDownload">
       </button>
+      <button type="button" id="shareButton" class="buttonShare">
+      </button>
       <button type="button" id="voiceControlButton" class="voiceControlOff">
       </button>
-    </div>
-    <div>
-      <label for="mics">Microphone:</label>
-      <select name="mics" id="miclist">
-      </select>
-    </div>
-    
+    </div>   
     <div id ="progreesBarContainer" >
-      <div>
-        <a>Uploading:</a>
-      </div>
       <div class="light-grey round-xlarge">
         <div id="progressBar" class="progress-bar-container blue round-xlarge" style="width:0%"></div>
       </div>
     </div>
-    <div id="recTimerPanel" style="background-color: aquamarine; display: none;">
-      <p id="demo"></p>
-    </div>
-
+    <div class="box">
+      <select name="mics" id="miclist">
+      </select>
+    </div> 
     <script src="popup.js" type="module"></script>
   </body>
 </html>

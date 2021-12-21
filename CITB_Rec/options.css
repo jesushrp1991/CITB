@@ -7,5 +7,9 @@
 .child {
     background-color: transparent;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: auto;
   }
+img{
+  width: 50%;
+  height: 100%;
+}

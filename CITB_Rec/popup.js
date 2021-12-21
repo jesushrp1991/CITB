@@ -11,27 +11,48 @@ const sendRecordCommand = () =>{
     const request = { recordingStatus: 'rec' , idMic: select.value};
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
         buttonRec.setAttribute('class','buttonRecOff');
+        buttonStop.setAttribute('class','stopButtonOff littleButton');
+        buttonRec.disabled = false;
+        buttonStop.disabled = true;
+
     }else{
         buttonRec.setAttribute('class','buttonRecOn') ;
+        buttonStop.setAttribute('class','stopButton littleButton') ;
+        buttonRec.disabled = true;
+        buttonStop.disabled = false;
     }
     sendMessage(request);
 }
+
+let buttonRec = document.getElementById("recButton");
+buttonRec.addEventListener('click',sendRecordCommand);
+
+let buttonStop = document.getElementById("stopButton");
+buttonStop.disabled = true;
+buttonStop.addEventListener('click',sendRecordCommand);
+
 
 const getCurrentState = () =>{
     chrome.storage.sync.get('isRecording', function(result) {
         if (result.isRecording ){
             console.log("Is Recording")
             buttonRec.setAttribute('class','buttonRecOn') 
+            buttonStop.setAttribute('class','stopButton littleButton');
+            buttonRec.disabled = true;
+             buttonStop.disabled = false;
         }else{
             buttonRec.setAttribute('class','buttonRecOff');
+            buttonStop.setAttribute('class','stopButtonOff littleButton') ;
+            buttonRec.disabled = false;
+             buttonStop.disabled = true;
         }
     });
     chrome.storage.sync.get('isPaused', function(result) {
         if(result.isPaused ){
             console.log("Is paused")
-            buttonPlayPause.setAttribute('class','buttonPlay');
+            buttonPlayPause.setAttribute('class','buttonPause littleButton');
         }else{
-            buttonPlayPause.setAttribute('class','buttonPause');
+            buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
         } 
     });
     chrome.storage.sync.get('voice', function(result) {
@@ -44,16 +65,12 @@ const getCurrentState = () =>{
 
 }
 
-let buttonRec = document.getElementById("recButton");
-buttonRec.addEventListener('click',sendRecordCommand);
-
-
 const playPause = () =>{
     const request = { recordingStatus: 'pause' };
-    if(buttonPlayPause.getAttribute('class') ==  'buttonPause' ){
-        buttonPlayPause.setAttribute('class','buttonPlay')
+    if(buttonPlayPause.getAttribute('class').includes('buttonPause')){
+        buttonPlayPause.setAttribute('class','buttonPauseOff littleButton')
     }else{
-        buttonPlayPause.setAttribute('class','buttonPause');
+        buttonPlayPause.setAttribute('class','buttonPause littleButton');
     }
     sendMessage(request);
 }
