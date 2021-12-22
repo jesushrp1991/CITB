@@ -1,15 +1,11 @@
-.container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-.child {
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: auto;
-  }
 img{
   width: 50%;
   height: 100%;
+  display:block;
+  margin:auto;
+}
+
+
+.center {
+  margin: auto;
 }

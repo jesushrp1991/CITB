@@ -1,4 +1,4 @@
-import { rec, close, playPause } from "./voiceActions.js";
+import { rec,stop, close, play,pause } from "./voiceActions.js";
 
 const speachCommands = () => {
   try {
@@ -27,7 +27,7 @@ const speachCommands = () => {
       oscillator.start(beepContext.currentTime);
       oscillator.stop(beepContext.currentTime + rampDownTimeNum() + 0.01);
     };
-    var playCommand = {
+    var startCommand = {
       "*w the box start": () => {
         beep();
         rec();
@@ -37,34 +37,121 @@ const speachCommands = () => {
       "*w the box stop": () => {
         beep();
         annyang.abort();
-        close();
+        stop();
       },
     };
     var pauseCommands = {
       "*w the box pause": () => {
         beep();
-        playPause();
+        pause();
       },
     };
-    var pausaCommands = {
-      "*w the box pausa": () => {
+    var pauseCommands1 = {
+      "*w the box paws": () => {
         beep();
-        playPause();
+        pause();
       },
     };
-    var pausaCommands = {
+    var pauseCommands2 = {
+      "*w the box pass": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands3 = {
+      "*w the box spas": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands4 = {
+      "*w the box spots": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands5 = {
+      "*w the box house": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands6 = {
+      "*w the box spouse": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands7 = {
+      "*w the box space": () => {
+        beep();
+        pause();
+      },
+    };
+    var pauseCommands8 = {
+      "*w the box plus": () => {
+        beep();
+        pause();
+      },
+    };
+    
+    var playCommands = {
       "*w the box play": () => {
         beep();
-        playPause();
+        play();
+      },
+    };
+    var playCommands1 = {
+      "*w the woods play": () => {
+        beep();
+        play();
+      },
+    };
+    var playCommands2 = {
+      "*w the boats play": () => {
+        beep();
+        play();
+      },
+    };
+    var playCommands3 = {
+      "*w the box plate": () => {
+        beep();
+        play();
+      },
+    };
+    var playCommands4 = {
+      "*w the woods plate": () => {
+        beep();
+        play();
+      },
+    };
+    var playCommands5 = {
+      "*w the boats plate": () => {
+        beep();
+        play();
       },
     };
 
     // Add our commands to annyang
-    annyang.addCommands(playCommand);
+    annyang.addCommands(startCommand);
     annyang.addCommands(stopCommand);
     annyang.addCommands(pauseCommands);
-    annyang.addCommands(pausaCommands);
+    annyang.addCommands(pauseCommands1);
+    annyang.addCommands(pauseCommands2);
+    annyang.addCommands(pauseCommands3);
+    annyang.addCommands(pauseCommands4);
+    annyang.addCommands(pauseCommands5);
+    annyang.addCommands(pauseCommands6);
+    annyang.addCommands(pauseCommands7);
+    annyang.addCommands(pauseCommands8);
+    annyang.addCommands(playCommands);
+    annyang.addCommands(playCommands1);
+    annyang.addCommands(playCommands2);
+    annyang.addCommands(playCommands3);
+    annyang.addCommands(playCommands4);
+    annyang.addCommands(playCommands5);
 
+    // annyang.setLanguage("en-US");
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
     annyang.debug([true]);

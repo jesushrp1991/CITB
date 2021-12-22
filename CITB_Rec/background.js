@@ -20,6 +20,7 @@ const popupMessages = {
   voiceClose:'voiceClose',
   checkAuth:'checkAuth',
   localDownload:'localDownload',
+  isVoiceCommand:'voiceCommand'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -140,7 +141,7 @@ const prepareRecordFile = (finalArray) => {
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
-    var file = new File([blob], fileName + ".webm");
+    var file = new File([blob], fileName + Date() + ".webm");
     return file;
   }
 
@@ -155,7 +156,7 @@ const prepareRecordFile = (finalArray) => {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = fileName + ".webm";
+    a.download = fileName + Date() + ".webm";
     a.click();
     window.URL.revokeObjectURL(url);
 }
@@ -294,6 +295,21 @@ const stopRecordScreen = () =>{
     }
 }
 
+const pauseRec = () => {
+  recorder.pause()
+  stop();
+  chrome.storage.sync.set({isPaused: true}, function() {
+  });
+  isPaused = !isPaused;
+}
+const playRec = () =>{
+  recorder.resume();
+  start();
+  chrome.storage.sync.set({isPaused: false}, function() {
+  });
+  isPaused = !isPaused;
+}
+
 const pauseOrResume = async () => {
   const records = await selectDB();
   console.log(records.length, records);
@@ -305,17 +321,10 @@ const pauseOrResume = async () => {
   // videoChunksArray.push(event.data);
   // addDB(videoChunksArray);
   if(!isPaused && isRecording){
-    recorder.pause()
-    stop();
-    chrome.storage.sync.set({isPaused: true}, function() {
-    });
+    pauseRec();
   }else{
-    recorder.resume();
-    start();
-    chrome.storage.sync.set({isPaused: false}, function() {
-    });
+    playRec();
   }
-  isPaused = !isPaused;
 }
 
 const verifyAvailableSpaceOnDisk = async () =>{  
@@ -356,8 +365,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!isRecording && uploadValue == 0){
-          fileName = message.fileName;
           await prepareDB();
+          fileName = prompt("What's yours meet name?");
           await startRecordScreen(message.idMic);
         }else{
             await stopRecordScreen();
@@ -367,8 +376,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pause :
         pauseOrResume();
-        if(message.isVoiceCommand)
-          delLastItem();
+        delLastItem();
+        break;
+      case popupMessages.isVoiceCommand :
+        if(message.isVoiceCommandPause == 'pause'){
+          pauseRec();          
+        }else{
+          playRec();
+        }
+        delLastItem();
         break;
       case popupMessages.voiceOpen :
         chrome.storage.sync.set({voice: true}, function() {

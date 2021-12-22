@@ -8,14 +8,21 @@ const close = () =>{
     const request = { recordingStatus: 'voiceClose' };
     chrome.runtime.sendMessage(request, (response) => {         
     });
+    window.close();
+}
+const stop = () =>{
     const secondRequest = { recordingStatus: 'rec' };
     chrome.runtime.sendMessage(secondRequest, (response) => {         
     });
-    window.close();
 }
 
-const playPause = () =>{
-    const request = { recordingStatus: 'pause' , isVoiceCommand: true };
+const play = () =>{
+    const request = { recordingStatus: 'voiceCommand' , isVoiceCommandPause: 'play' };
+    chrome.runtime.sendMessage(request, (response) => {         
+    });
+}
+const pause = () =>{
+    const request = { recordingStatus: 'voiceCommand' , isVoiceCommandPause: 'pause' };
     chrome.runtime.sendMessage(request, (response) => {         
     });
 }
@@ -29,5 +36,7 @@ window.addEventListener("beforeunload", function(event) {
 export {
     rec,
     close,
-    playPause
+    stop,
+    play,
+    pause
 }
