@@ -130,6 +130,24 @@ const speachCommands = () => {
         play();
       },
     };
+    var closeCommands = {
+      "*w the box close": () => {
+        beep();
+        close();
+      },
+    };
+    var closeCommands1 = {
+      "*w the boats close": () => {
+        beep();
+        close();
+      },
+    };
+    var closeCommands2 = {
+      "*w the woods close": () => {
+        beep();
+        close();
+      },
+    };
 
     // Add our commands to annyang
     annyang.addCommands(startCommand);
@@ -149,10 +167,14 @@ const speachCommands = () => {
     annyang.addCommands(playCommands3);
     annyang.addCommands(playCommands4);
     annyang.addCommands(playCommands5);
+    annyang.addCommands(closeCommands);
+    annyang.addCommands(closeCommands1);
+    annyang.addCommands(closeCommands2);
 
     annyang.setLanguage("en-US");
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
+    annyang.debug([true]);  
   } catch (e) {
     console.log("annyang error", e);
   }
@@ -161,6 +183,7 @@ speachCommands();
 
 setInterval(()=>{
   chrome.storage.sync.get('voice', function(result) {
+    console.log("voice",result.voice);
     if(!result.voice){
       annyang.abort();
       window.close();
