@@ -28,6 +28,7 @@ const pause = () =>{
 }
 
 window.addEventListener("beforeunload", function(event) { 
+    console.log("before Unload")
     const request = { recordingStatus: 'voiceClose' };
     chrome.runtime.sendMessage(request, (response) => {         
     });

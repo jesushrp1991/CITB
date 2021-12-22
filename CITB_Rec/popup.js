@@ -93,14 +93,14 @@ buttonPlayPause.disabled = true;
 buttonPlayPause.addEventListener('click',playPause);
 
 
-var port = chrome.extension.connect({
-    name: "Sample Communication"
-});
+// var port = chrome.extension.connect({
+//     name: "Sample Communication"
+// });
 
-port.postMessage("Hi BackGround");
-port.onMessage.addListener(function(msg) {
-    console.log("message recieved" + msg);
-});
+// port.postMessage("Hi BackGround");
+// port.onMessage.addListener(function(msg) {
+//     console.log("message recieved" + msg);
+// });
 
 
 const activateVoiceControl = () =>{
