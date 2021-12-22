@@ -151,10 +151,9 @@ const speachCommands = () => {
     annyang.addCommands(playCommands4);
     annyang.addCommands(playCommands5);
 
-    // annyang.setLanguage("en-US");
+    annyang.setLanguage("en-US");
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
-    annyang.debug([true]);
   } catch (e) {
     console.log("annyang error", e);
   }
