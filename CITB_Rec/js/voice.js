@@ -36,7 +36,6 @@ const speachCommands = () => {
     var stopCommand = {
       "*w the box stop": () => {
         beep();
-        annyang.abort();
         stop();
       },
     };

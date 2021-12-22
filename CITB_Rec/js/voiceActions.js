@@ -8,6 +8,7 @@ const close = () =>{
     const request = { recordingStatus: 'voiceClose' };
     chrome.runtime.sendMessage(request, (response) => {         
     });
+    annyang.abort();
     window.close();
 }
 const stop = () =>{
