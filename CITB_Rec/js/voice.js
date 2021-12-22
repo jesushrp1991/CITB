@@ -174,7 +174,7 @@ const speachCommands = () => {
     annyang.setLanguage("en-US");
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
-    annyang.debug([true]);  
+    // annyang.debug([true]);  
   } catch (e) {
     console.log("annyang error", e);
   }
@@ -183,7 +183,6 @@ speachCommands();
 
 setInterval(()=>{
   chrome.storage.sync.get('voice', function(result) {
-    console.log("voice",result.voice);
     if(!result.voice){
       annyang.abort();
       window.close();
