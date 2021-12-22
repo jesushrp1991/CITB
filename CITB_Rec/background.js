@@ -124,13 +124,13 @@ const verificateAuth = () =>{
         uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(uploadValue);
       } else {
+        uploadValue = 0;
         saveUploadProgress(-1);
         msg = res.status;
         
       }
       console.log(msg);
     });
-    
   }
   /* 
   ** DESKTOP REC

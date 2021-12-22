@@ -162,7 +162,6 @@ speachCommands();
 
 setInterval(()=>{
   chrome.storage.sync.get('voice', function(result) {
-    console.log(result.voice);
     if(!result.voice){
       annyang.abort();
       window.close();
