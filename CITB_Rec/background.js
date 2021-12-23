@@ -362,6 +362,12 @@ const errorHandling = (error) => {
 
 }
 
+const getFileName = () =>{
+  alertify.prompt( 'Prompt Title', 'Prompt Message', 'Prompt Value'
+               , function(evt, value) { alertify.success('You entered: ' + value) }
+               , function() { alertify.error('Cancel') });
+
+}
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     console.log("Backendmessage",message);
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -373,7 +379,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.rec :
         if(!isRecording && uploadValue == 0){
           await prepareDB();
-          fileName = prompt("What's yours meet name?");
+          getFileName();
           meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
