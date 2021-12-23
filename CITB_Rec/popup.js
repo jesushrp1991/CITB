@@ -97,11 +97,22 @@ const activateVoiceControl = () =>{
 let select = document.getElementById('miclist');
 const populateMicSelect = async () => {
     let micList = await navigator.mediaDevices.enumerateDevices();
-    let usableMic = micList.filter((x) =>  x.kind === "audioinput");      
+    let usableMic = micList.filter((x) =>  x.kind === "audioinput" && !x.label.includes('CITB'));    
+    let citb = micList.filter((x) => x.kind === "audioinput" && x.label.includes('CITB'));
+    let organizedMicList = [];
+    console.log(citb);
+    if(citb.length > 0){
+        organizedMicList.push(citb[0]);
+        organizedMicList = organizedMicList.concat(usableMic);
+    }else{
+        organizedMicList = usableMic;
+    }
+    console.log(organizedMicList);
+    
     while (select.options.length > 0) {                
         select.remove(0);
     }  
-    usableMic.forEach(element => {
+    organizedMicList.forEach(element => {
         var option = document.createElement("option");
         option.text = element.label;
         option.value = element.deviceId;
