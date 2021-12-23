@@ -26,7 +26,28 @@ const popupMessages = {
 const onGAPIFirstLoad = () =>{
   console.log("GAPI LOADED!!")
 }
-const onGAPILoad = () => {
+
+var meetStartTime ;
+var meetEndTime ;
+function addEventToGoogleCalendar() {
+  let newEvent = {
+    "summary": fileName,
+    "start": {
+      "dateTime": meetStartTime
+    },
+    "end": {
+      "dateTime": meetEndTime
+    }
+  };
+  let request = gapi.client.calendar.events.insert({
+    'calendarId': 'primary',
+    'resource': newEvent
+  });
+  request.execute(function(resp) {
+   console.log("respuesta del calendar",resp);
+ });
+}
+const verificateAuth = () => {
   gapi.client.init({
     // Don't pass client nor scope as these will init auth2, which we don't want
     apiKey: environment.API_KEY,
@@ -38,45 +59,11 @@ const onGAPILoad = () => {
         'access_token': tokenResult,
       });
     })
-    // let folderName = "CITB_REC";
-    // let result = await gapi.client.drive.files.list({
-    //     q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
-    //     fields: 'nextPageToken, files(id, name)',
-    //     spaces: 'drive',
-    // })
-    // let folder = result.data.files.filter(x => x.name === folderName);
-    // var folderId = folder.length?folder[0].id:0;
-    // console.log(folder.id)
-    // if(folderId != 0){
-    //   var fileMetadata = {
-    //     'name': 'CITB_REC',
-    //     'mimeType': 'application/vnd.google-apps.folder',
-    //     'parents': 'root'
-    //   };    
-    //   gapi.client.drive.files.create({
-    //     resource: fileMetadata,
-    //   }).then(function(response) {
-    //     switch(response.status){
-    //       case 200:
-    //         var file = response.result;
-    //         console.log('Created Folder Id: ', file.id);
-    //         break;
-    //       default:
-    //         console.log('Error creating the folder, '+response);
-    //         break;
-    //       }
-    //   });
-    // }
   }, function(error) {
     errorHandling(error);
   });
 }
 
-
-
-const verificateAuth = () =>{
-  onGAPILoad();
-}
 /*
   *   Upload to Drive
   *
@@ -167,7 +154,7 @@ const saveVideo = async(localDownload) =>{
     finalArray.push(element.record[0]);
   });
   console.log("FinalArray",finalArray);
-  
+  addEventToGoogleCalendar();
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
     console.log("file",file);
@@ -284,6 +271,7 @@ const startRecordScreen = (idMic) =>{
 const stopRecordScreen = () =>{
     console.log(isRecording);
     if(isRecording){
+        meetEndTime = dayjs().format();
         recorder.stop();
         desktopStream.getTracks().forEach(track => track.stop())
         micStream.getTracks().forEach(track => track.stop())
@@ -360,13 +348,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
       //sendMessage to popup to alert the user about insufficient disk space.
-      console.log("insufficient disk space");      
+      prompt("Insufficient disk space");      
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!isRecording && uploadValue == 0){
           await prepareDB();
           fileName = prompt("What's yours meet name?");
+          meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
             await stopRecordScreen();

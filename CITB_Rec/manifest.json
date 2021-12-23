@@ -5,19 +5,17 @@
   "manifest_version": 2,
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsiTbtsAQszcqFHIwUEJLC6vW9nYMajp2Cd4pqb2+HZUoZx1yCZwkJfrGFvEBQXmZCDSy/SNgjROdnDxrVtgYi/w8a7fBZBN77jt6QNpUQohHhkvSgCv+YPifbutyXbz6V4MBa4uLiOp0nUUVdrb6d6U1hxdthiuyW1C9+gDkB/Esxrr8vw94pmkvPjD0dWN7i89Zj1aEw9wk2lEseK+nSYE8xid3SnmWF1ijSmy8pT+eYLser6WJtcc7G7OIOd25lYgLnyFGYtlEupU40IgIBu9Gnbpbde+fagVmkST3pbofVEalWUIXttBNhQUeNX8/XjYwKUxbxmjJh+MdWXMBxwIDAQAB",
   "background": {
-    "page" : "background.html"
-    ,"persistent": false
+    "page": "background.html",
+    "persistent": false
   },
   "oauth2": {
-     "client_id": "19686602327-poevejt2q5aqpctosm08t6kueaun1rrk.apps.googleusercontent.com"
-    ,"scopes":["https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file"]
+    "client_id": "19686602327-poevejt2q5aqpctosm08t6kueaun1rrk.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar"
+    ]
   },
   "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
-  "permissions": [
-      "identity"
-    , "desktopCapture"
-    , "storage"
-  ],
+  "permissions": ["identity", "desktopCapture", "storage"],
   "browser_action": {
     "default_title": "CITB Rec",
     "default_popup": "popup.html",
@@ -34,10 +32,5 @@
     "128": "assets/CITB COLOR SIN CIRCULO.png"
   },
   "options_page": "options.html",
-  "web_accessible_resources": [
-     "js/*"
-    ,"helper/*"
-    , "css/font/*"
-    , "html/*"
-  ]
+  "web_accessible_resources": ["js/*", "helper/*", "css/font/*", "html/*"]
 }

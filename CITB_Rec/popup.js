@@ -107,11 +107,8 @@ const activateVoiceControl = () =>{
     const request = { recordingStatus: 'voiceOpen' };
     if(buttonVoiceControl.getAttribute('class') ==  'voiceControlOff' ){
         buttonVoiceControl.setAttribute('class','voiceControl')
-        chrome.runtime.openOptionsPage(
-            ()=>{
-                sendMessage(request);
-            }
-          )
+        sendMessage(request);
+        chrome.runtime.openOptionsPage(()=>{});
     }else{
         const request = { recordingStatus: 'voiceClose' };
         sendMessage(request);
