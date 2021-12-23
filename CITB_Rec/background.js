@@ -30,13 +30,13 @@ const onGAPIFirstLoad = () =>{
 
 const getLinkFileDrive = async() => {  
     let result = await gapi.client.drive.files.list({
-        q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+        // q: "mimeType='application/vnd.google-apps.file' and trashed=false",
         fields: 'nextPageToken, files(id, name)',
         spaces: 'drive',
     })
-    let file = result.data.files.filter(x => x.name === fileName);
-    let fileId = folder.file?file.id:0;
-    console.log(fileId.id)
+    let files = result.result.files;
+    let file = files.filter(x => x.name === fileName);
+    let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing"
     return shareLink;
 }
@@ -45,9 +45,12 @@ const getLinkFileDrive = async() => {
 var meetStartTime ;
 var meetEndTime ;
 
-const addEventToGoogleCalendar = () => {
+const addEventToGoogleCalendar = async () => {
+  let linkDrive = await getLinkFileDrive();
+  let description = "See video here:" + linkDrive;
   let newEvent = {
     "summary": fileName,
+    "description": description ,
     "start": {
       "dateTime": meetStartTime
     },
@@ -126,11 +129,11 @@ const verificateAuth = () => {
           ) + "%";
         uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(uploadValue);
-      } else {
+      }else if(res.status == "Done"){
+        addEventToGoogleCalendar();        
         uploadValue = 0;
         saveUploadProgress(-1);
         msg = res.status;
-        
       }
       console.log(msg);
     });
@@ -144,7 +147,8 @@ const prepareRecordFile = (finalArray) => {
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
-    var file = new File([blob], fileName + Date() + ".webm");
+    fileName = fileName + Date() + ".webm";
+    var file = new File([blob], fileName);
     return file;
   }
 
@@ -171,7 +175,6 @@ const saveVideo = async(localDownload) =>{
   });
   console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
-    addEventToGoogleCalendar();
     let file = prepareRecordFile(finalArray);
     console.log("file",file);
     prepareUploadToDrive(file);
