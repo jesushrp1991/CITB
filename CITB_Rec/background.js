@@ -170,8 +170,8 @@ const saveVideo = async(localDownload) =>{
     finalArray.push(element.record[0]);
   });
   console.log("FinalArray",finalArray);
-  addEventToGoogleCalendar();
   if(environment.upLoadToDrive && !localDownload){
+    addEventToGoogleCalendar();
     let file = prepareRecordFile(finalArray);
     console.log("file",file);
     prepareUploadToDrive(file);
