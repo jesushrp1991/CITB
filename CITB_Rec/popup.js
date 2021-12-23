@@ -1,7 +1,7 @@
 import {
     checkUploadStatus
 } from './js/progressBar.js'
-import { checkTimer } from './js/timerBar.js'
+import { checkTimer } from './js/timerBar.js';
 
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg, (response) => {         
@@ -28,14 +28,6 @@ const sendRecordCommand = () =>{
     console.log(request);
     sendMessage(request);
 }
-
-let buttonRec = document.getElementById("recButton");
-buttonRec.addEventListener('click',sendRecordCommand);
-
-let buttonStop = document.getElementById("stopButton");
-buttonStop.disabled = true;
-buttonStop.addEventListener('click',sendRecordCommand);
-
 
 const getCurrentState = () =>{
     let isRec = false;
@@ -78,6 +70,7 @@ const getCurrentState = () =>{
 
 }
 
+
 const playPause = () =>{
     const request = { recordingStatus: 'pause' };
     if(buttonPlayPause.getAttribute('class').includes('buttonPauseOff')){
@@ -87,21 +80,6 @@ const playPause = () =>{
     }
     sendMessage(request);
 }
-
-let buttonPlayPause = document.getElementById("playPauseButton");
-buttonPlayPause.disabled = true;
-buttonPlayPause.addEventListener('click',playPause);
-
-
-// var port = chrome.extension.connect({
-//     name: "Sample Communication"
-// });
-
-// port.postMessage("Hi BackGround");
-// port.onMessage.addListener(function(msg) {
-//     console.log("message recieved" + msg);
-// });
-
 
 const activateVoiceControl = () =>{
     const request = { recordingStatus: 'voiceOpen' };
@@ -115,8 +93,6 @@ const activateVoiceControl = () =>{
         buttonVoiceControl.setAttribute('class','voiceControlOff');
     }
 }
-let buttonVoiceControl = document.getElementById("voiceControlButton");
-buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
 let select = document.getElementById('miclist');
 const populateMicSelect = async () => {
@@ -139,13 +115,51 @@ const localDownload = () => {
     sendMessage(request);
 }
 
-let buttonLocalDownload = document.getElementById("localDownloadButton");
-buttonLocalDownload.addEventListener('click',localDownload);
+const getShareLink = () =>{
+    chrome.storage.sync.get('isRecording', function(result) {
+        var formattedBody = "Hola! \n te comparto mi grabación hecha con CITB_REC \n" + result.drivelink;
+        var email = prompt("Email to share.");
+        var mailToLink = "mailto:" + email + "?body=" + encodeURIComponent(formattedBody);     
+
+        console.log(mailToLink);
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        a.href = mailToLink;
+        a.click();
+        a.parentNode.removeChild(a);
+        
+    });
+
+
+}
+
 
 const checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     sendMessage(request);
 }
+
+let buttonRec = document.getElementById("recButton");
+buttonRec.addEventListener('click',sendRecordCommand);
+
+let buttonStop = document.getElementById("stopButton");
+buttonStop.disabled = true;
+buttonStop.addEventListener('click',sendRecordCommand);
+
+let buttonPlayPause = document.getElementById("playPauseButton");
+buttonPlayPause.disabled = true;
+buttonPlayPause.addEventListener('click',playPause);
+
+let buttonVoiceControl = document.getElementById("voiceControlButton");
+buttonVoiceControl.addEventListener('click',activateVoiceControl);
+
+let buttonLocalDownload = document.getElementById("localDownloadButton");
+buttonLocalDownload.addEventListener('click',localDownload);
+
+let buttonShare = document.getElementById("shareButton");
+buttonShare.addEventListener('click',getShareLink);
+
 
 checkAut();
 populateMicSelect();

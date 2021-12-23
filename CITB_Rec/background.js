@@ -20,16 +20,32 @@ const popupMessages = {
   voiceClose:'voiceClose',
   checkAuth:'checkAuth',
   localDownload:'localDownload',
-  isVoiceCommand:'voiceCommand'
+  isVoiceCommand:'voiceCommand',
+  getDriveLink: 'getDriveLink'
 }
 
 const onGAPIFirstLoad = () =>{
   console.log("GAPI LOADED!!")
 }
 
+const getLinkFileDrive = async() => {  
+    let result = await gapi.client.drive.files.list({
+        q: "mimeType='application/vnd.google-apps.folder' and trashed=false",
+        fields: 'nextPageToken, files(id, name)',
+        spaces: 'drive',
+    })
+    let file = result.data.files.filter(x => x.name === fileName);
+    let fileId = folder.file?file.id:0;
+    console.log(fileId.id)
+    let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing"
+    return shareLink;
+}
+
+
 var meetStartTime ;
 var meetEndTime ;
-function addEventToGoogleCalendar() {
+
+const addEventToGoogleCalendar = () => {
   let newEvent = {
     "summary": fileName,
     "start": {
@@ -388,6 +404,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.localDownload :
         saveVideo(true);
+        break;
+      case popupMessages.getDriveLink :
+        let drivelink = getLinkFileDrive();
+        chrome.storage.sync.set({drivelink: drivelink}, function() {
+        });
         break;
     }
     return true;
