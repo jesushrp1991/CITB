@@ -25,7 +25,6 @@ const sendRecordCommand = () =>{
         buttonPlayPause.disabled = false;
     }
     const request = { recordingStatus: 'rec' , idMic: select.value };
-    console.log(request);
     sendMessage(request);
 }
 

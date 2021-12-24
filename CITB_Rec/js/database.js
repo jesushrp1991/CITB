@@ -105,13 +105,13 @@ const tryPersistWithoutPromtingUser = async () => {
     const tryToPersist = await tryPersistWithoutPromtingUser();
     switch (tryToPersist) {
       case "never":
-        console.log("Not possible to persist storage");
+        // console.log("Not possible to persist storage");
         break;
       case "persisted":
-        console.log("Successfully persisted storage silently");
+        // console.log("Successfully persisted storage silently");
         break;
       case "prompt":
-        console.log("Not persisted, but we may prompt user when we want to.");
+        // console.log("Not persisted, but we may prompt user when we want to.");
         await persist();
         break;
     }
@@ -121,7 +121,7 @@ const tryPersistWithoutPromtingUser = async () => {
     delDB();           
     createDB();
     await initStoragePersistence();
-    console.log(isStoragePersisted());
+    // console.log(isStoragePersisted());
     showEstimatedQuota();
   }
 

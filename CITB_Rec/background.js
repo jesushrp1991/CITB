@@ -72,7 +72,7 @@ const verificateAuth = () => {
     apiKey: environment.API_KEY,
     discoveryDocs: environment.DISCOVERY_DOCS,
   }).then( async () =>{
-    console.log('gapi initialized')
+    // console.log('gapi initialized')
     chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
       gapi.auth.setToken({
         'access_token': tokenResult,
@@ -134,6 +134,7 @@ const verificateAuth = () => {
         uploadValue = 0;
         saveUploadProgress(-1);
         msg = res.status;
+        // fileName = "CITB Rec";
       }
       console.log(msg);
     });
@@ -141,20 +142,19 @@ const verificateAuth = () => {
   /* 
   ** DESKTOP REC
   */
-let fileName = Date();
+let fileName = "CITB Rec";
 const prepareRecordFile = (finalArray) => {
     console.log("Hello download")
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
-    fileName = fileName + Date() + ".webm";
+    fileName = fileName + " " + Date() + ".webm";
     var file = new File([blob], fileName);
     return file;
   }
 
   //test only, to save in mi pc
   const download = (test) => {
-    console.log("Hello download")
     var blob = new Blob(test, {
         type: "video/webm"
     });
@@ -166,6 +166,8 @@ const prepareRecordFile = (finalArray) => {
     a.download = fileName + Date() + ".webm";
     a.click();
     window.URL.revokeObjectURL(url);
+    // fileName = "CITB Rec";
+    console.log("FileNAME",fileName)
 }
 const saveVideo = async(localDownload) =>{
   let save = await selectDB();
@@ -173,7 +175,7 @@ const saveVideo = async(localDownload) =>{
   save.forEach(element => {
     finalArray.push(element.record[0]);
   });
-  console.log("FinalArray",finalArray);
+  // console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
     console.log("file",file);
@@ -247,7 +249,7 @@ const recordScreen = async (streamId,idMic) => {
         recorder = new MediaRecorder(resultStream);
 
         recorder.ondataavailable = event => {
-          console.log("ON DATA AVAILABLE", videoChunksArray.length);
+          // console.log("ON DATA AVAILABLE", videoChunksArray.length);
             verifyAvailableSpaceOnDisk();
             if (event.data.size > 0) {
                 videoChunksArray.push(event.data);
@@ -258,7 +260,7 @@ const recordScreen = async (streamId,idMic) => {
         recorder.onstop = async() => {
            saveVideo(false);
         }
-        recorder.start(100);
+        recorder.start(environment.timeIntervalSaveDB);
         startTimerCount();
         isRecording = true;
     }catch(e){
@@ -270,7 +272,6 @@ const startRecordScreen = (idMic) =>{
       let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
       let videoCaptureModes;
       userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
-      console.log(userAgentData,videoCaptureModes);
         chrome.desktopCapture.chooseDesktopMedia(videoCaptureModes, async (streamId) => {
             if (!streamId) {
                 isRecording = false;
@@ -288,7 +289,6 @@ const startRecordScreen = (idMic) =>{
     }
 }
 const stopRecordScreen = () =>{
-    console.log(isRecording);
     if(isRecording){
         meetEndTime = dayjs().format();
         recorder.stop();
@@ -362,21 +362,60 @@ const errorHandling = (error) => {
 
 }
 
+
+function injectFileName() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    var currTab = tabs[0];
+    if (currTab) { // Sanity check
+      chrome.tabs.insertCSS(currTab.id,{file:"./css/alertify.min.css"});
+      chrome.tabs.insertCSS(currTab.id, {file:"./css/default.min.css"});
+      
+      chrome.tabs.executeScript(
+        currTab.id,
+        // {code: "document.body.style.backgroundColor='red'"}
+        {file:"./js/external/alertify.min.js"}
+      )
+      chrome.tabs.executeScript(
+        currTab.id,
+        // {code: "document.body.style.backgroundColor='red'"}
+        {file:"./js/content_script.js"}
+      )
+    }
+  });
+}
+let intervalFileName = null;
+
+const getFileName = () => {
+  chrome.storage.sync.get('test', function(result) {
+    if(result.fileName != "undefined"){
+      fileName = result.fileName;
+      clearInterval(intervalFileName);
+    }
+  })
+}
+
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    console.log("Backendmessage",message);
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
-      //sendMessage to popup to alert the user about insufficient disk space.
       prompt("Insufficient disk space");      
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!isRecording && uploadValue == 0 && !message.isVoiceCommandStop){
+          fileName = "CITB Rec";
+          chrome.storage.sync.set({fileName: "undefined"}, function() {
+          });
+          injectFileName();
+          intervalFileName = setInterval(getFileName,500);
           await prepareDB();
-          fileName = prompt("What's yours meet name?");
+          // fileName = prompt("What's yours meet name?");
           meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
+            if(intervalFileName != null){
+              clearInterval(intervalFileName);
+            }
             if(message.isVoiceCommandStop){
                 delLastItem(3);
             }

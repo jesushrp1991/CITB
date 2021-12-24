@@ -15,7 +15,7 @@
     ]
   },
   "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
-  "permissions": ["identity", "desktopCapture", "storage"],
+  "permissions": ["identity", "desktopCapture", "storage", "activeTab"],
   "browser_action": {
     "default_title": "CITB Rec",
     "default_popup": "popup.html",

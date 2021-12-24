@@ -115,42 +115,49 @@ const speachCommands = () => {
     var playCommands = {
       "*w the box play": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands1 = {
       "*w the woods play": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands2 = {
       "*w the boats play": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands3 = {
       "*w the box plate": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands4 = {
       "*w the woods plate": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands5 = {
       "*w the boats plate": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
     var playCommands6 = {
       "*w the vaults play": () => {
         beep();
+        setTimeout(()=>{},10000);
         play();
       },
     };
