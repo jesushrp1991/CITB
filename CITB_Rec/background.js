@@ -8,8 +8,8 @@ import {
   delLastItem
 } from "./js/database.js";
 import {
-  start,
-  stop,
+  startTimerCount,
+  stopTimerCount,
   reset
 } from './js/recTimer.js'
 
@@ -258,8 +258,8 @@ const recordScreen = async (streamId,idMic) => {
         recorder.onstop = async() => {
            saveVideo(false);
         }
-        recorder.start(1000);
-        start();
+        recorder.start(100);
+        startTimerCount();
         isRecording = true;
     }catch(e){
       errorHandling(e);
@@ -304,14 +304,14 @@ const stopRecordScreen = () =>{
 
 const pauseRec = () => {
   recorder.pause()
-  stop();
+  stopTimerCount();
   chrome.storage.sync.set({isPaused: true}, function() {
   });
   isPaused = !isPaused;
 }
 const playRec = () =>{
   recorder.resume();
-  start();
+  startTimerCount();
   chrome.storage.sync.set({isPaused: false}, function() {
   });
   isPaused = !isPaused;
@@ -371,12 +371,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!isRecording && uploadValue == 0){
+        if(!isRecording && uploadValue == 0 && !message.isVoiceCommandStop){
           await prepareDB();
           fileName = prompt("What's yours meet name?");
           meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
+            if(message.isVoiceCommandStop){
+                delLastItem(3);
+            }
             await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, function() {
             });
@@ -384,7 +387,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pause :
         pauseOrResume();
-        delLastItem();
+        // delLastItem();
         break;
       case popupMessages.isVoiceCommand :
         if(message.isVoiceCommandPause == 'pause'){
@@ -401,6 +404,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.voiceClose :
         chrome.storage.sync.set({voice: false}, function() {
         });
+        delLastItem();
         break;
       case popupMessages.checkAuth :
         await verificateAuth();

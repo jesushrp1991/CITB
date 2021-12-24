@@ -12,7 +12,7 @@ const close = () =>{
     window.close();
 }
 const stop = () =>{
-    const secondRequest = { recordingStatus: 'rec' };
+    const secondRequest = { recordingStatus: 'rec',isVoiceCommandStop: true };
     chrome.runtime.sendMessage(secondRequest, (response) => {         
     });
 }

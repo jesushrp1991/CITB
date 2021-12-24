@@ -34,7 +34,7 @@ function timer (){
 };
 //Start timer
 
-const start = () => {
+const startTimerCount = () => {
     var minSaved = localStorage.getItem('timeMinSaved');
     var secSaved = localStorage.getItem('timeSecSaved');
     if (minSaved) {
@@ -47,7 +47,7 @@ const start = () => {
 }
 
 //stop timer
-const stop = () => {
+const stopTimerCount = () => {
     clearInterval(time);
 }
 
@@ -65,7 +65,7 @@ const reset = () =>{
 }
 
 export {
-    start,
-    stop,
-    reset
+     startTimerCount 
+    ,stopTimerCount 
+    ,reset
 }

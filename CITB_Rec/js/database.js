@@ -125,8 +125,12 @@ const tryPersistWithoutPromtingUser = async () => {
     showEstimatedQuota();
   }
 
-  const delLastItem = async () => {    
-    let last = await db.records.orderBy('id').last();
+  const delLastItem = async (itemsToDel = 1) => {    
+    let last;
+    for(let i=0;i<=itemsToDel;i++){
+      last = await db.records.orderBy('id').last();
+      console.log("Borré")
+    }
     console.log(last.id);
     await db.records.delete(last.id);    
   }

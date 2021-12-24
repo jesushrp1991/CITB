@@ -33,8 +33,20 @@ const speachCommands = () => {
         rec();
       },
     };
+    var startCommand1 = {
+      "*w the vaults start": () => {
+        beep();
+        rec();
+      },
+    };
     var stopCommand = {
       "*w the box stop": () => {
+        beep();
+        stop();
+      },
+    };
+    var stopCommand1 = {
+      "*w the vaults stop": () => {
         beep();
         stop();
       },
@@ -93,6 +105,12 @@ const speachCommands = () => {
         pause();
       },
     };
+    var pauseCommands9 = {
+      "*w the vaults pause": () => {
+        beep();
+        pause();
+      },
+    };
     
     var playCommands = {
       "*w the box play": () => {
@@ -130,6 +148,12 @@ const speachCommands = () => {
         play();
       },
     };
+    var playCommands6 = {
+      "*w the vaults play": () => {
+        beep();
+        play();
+      },
+    };
     var closeCommands = {
       "*w the box close": () => {
         beep();
@@ -148,10 +172,18 @@ const speachCommands = () => {
         close();
       },
     };
+    var closeCommands3 = {
+      "*w the vaults close": () => {
+        beep();
+        close();
+      },
+    };
 
     // Add our commands to annyang
     annyang.addCommands(startCommand);
+    annyang.addCommands(startCommand1);
     annyang.addCommands(stopCommand);
+    annyang.addCommands(stopCommand1);
     annyang.addCommands(pauseCommands);
     annyang.addCommands(pauseCommands1);
     annyang.addCommands(pauseCommands2);
@@ -161,20 +193,23 @@ const speachCommands = () => {
     annyang.addCommands(pauseCommands6);
     annyang.addCommands(pauseCommands7);
     annyang.addCommands(pauseCommands8);
+    annyang.addCommands(pauseCommands9);
     annyang.addCommands(playCommands);
     annyang.addCommands(playCommands1);
     annyang.addCommands(playCommands2);
     annyang.addCommands(playCommands3);
     annyang.addCommands(playCommands4);
     annyang.addCommands(playCommands5);
+    annyang.addCommands(playCommands6);
     annyang.addCommands(closeCommands);
     annyang.addCommands(closeCommands1);
     annyang.addCommands(closeCommands2);
+    annyang.addCommands(closeCommands3);
 
     annyang.setLanguage("en-US");
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
-    // annyang.debug([true]);  
+    annyang.debug([true]);  
   } catch (e) {
     console.log("annyang error", e);
   }
