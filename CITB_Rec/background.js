@@ -1,7 +1,6 @@
 import { environment } from "./config/environment.js";  
 import {
   addDB,
-  delDB,
   selectDB,
   showEstimatedQuota,
   prepareDB,
@@ -25,19 +24,25 @@ const popupMessages = {
 }
 
 const onGAPIFirstLoad = () =>{
-  console.log("GAPI LOADED!!")
+  // console.log("GAPI LOADED!!")
 }
 
-const getLinkFileDrive = async() => {  
+const getLinkFileDrive = async() => {
+    setTimeout(()=>{},5000);
     let result = await gapi.client.drive.files.list({
         // q: "mimeType='application/vnd.google-apps.file' and trashed=false",
         fields: 'nextPageToken, files(id, name)',
         spaces: 'drive',
     })
     let files = result.result.files;
+    console.log("files",files);
+
     let file = files.filter(x => x.name === fileName);
+    console.log("file",file);
+
     let fileId = file.length > 0 ? file[0].id : 0;
-    let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing"
+    let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
+    console.log("shareLink",shareLink);
     chrome.storage.sync.set({shareLink: shareLink}, function() {
     });
     return shareLink;
@@ -65,7 +70,7 @@ const addEventToGoogleCalendar = async () => {
     'resource': newEvent
   });
   request.execute(function(resp) {
-   console.log("respuesta del calendar",resp);
+  //  console.log("respuesta del calendar",resp);
  });
 }
 const verificateAuth = () => {
@@ -74,7 +79,6 @@ const verificateAuth = () => {
     apiKey: environment.API_KEY,
     discoveryDocs: environment.DISCOVERY_DOCS,
   }).then( async () =>{
-    // console.log('gapi initialized')
     chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
       gapi.auth.setToken({
         'access_token': tokenResult,
@@ -102,11 +106,9 @@ const verificateAuth = () => {
     }
   }
   
-  let uploadValue = 0;
+  let uploadValue = -1;
   const startResumableUploadToDrive = (e) => {
     let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
-    // console.log("accessToken",accessToken)
-    // document.getElementById("progress").innerHTML = "Initializing.";
     const f = e.target;
     const resource = {
       fileName: f.fileName,
@@ -122,7 +124,7 @@ const verificateAuth = () => {
         console.log(err);
         return;
       }
-      console.log(res);
+      // console.log("res.status",res.status);
       let msg = "";
       if (res.status == "Uploading") {
         msg =
@@ -133,7 +135,7 @@ const verificateAuth = () => {
         saveUploadProgress(uploadValue);
       }else if(res.status == "Done"){
         addEventToGoogleCalendar();        
-        uploadValue = 0;
+        uploadValue = -1;
         saveUploadProgress(-1);
         msg = res.status;
         // fileName = "CITB Rec";
@@ -146,7 +148,6 @@ const verificateAuth = () => {
   */
 let fileName = "CITB Rec";
 const prepareRecordFile = (finalArray) => {
-    console.log("Hello download")
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
@@ -169,7 +170,6 @@ const prepareRecordFile = (finalArray) => {
     a.click();
     window.URL.revokeObjectURL(url);
     // fileName = "CITB Rec";
-    console.log("FileNAME",fileName)
 }
 const saveVideo = async(localDownload) =>{
   let save = await selectDB();
@@ -180,7 +180,6 @@ const saveVideo = async(localDownload) =>{
   // console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
-    console.log("file",file);
     prepareUploadToDrive(file);
   }else{
     if(finalArray.length != 0 ){
@@ -229,7 +228,6 @@ const recordScreen = async (streamId,idMic) => {
         let sourceDesktop = null;
         if(desktopStream.getAudioTracks().length > 0){
           sourceDesktop = context.createMediaStreamSource(desktopStream);
-          console.log(sourceDesktop)
         }
         const sourceMic = context.createMediaStreamSource(micStream);
         const destination = context.createMediaStreamDestination();
@@ -241,7 +239,6 @@ const recordScreen = async (streamId,idMic) => {
         voiceGain.gain.value = 0.7;
 
         if(sourceDesktop != null){
-          console.log(sourceDesktop);
           sourceDesktop.connect(desktopGain).connect(destination);
         }
         sourceMic.connect(voiceGain).connect(destination);
@@ -320,15 +317,6 @@ const playRec = () =>{
 }
 
 const pauseOrResume = async () => {
-  const records = await selectDB();
-  console.log(records.length, records);
-  console.log('pause/resume',isRecording);
-  console.log(videoChunksArray.length);
-  // videoChunksArray.length = videoChunksArray.length - 5;
-  // console.log(videoChunksArray.length);
-
-  // videoChunksArray.push(event.data);
-  // addDB(videoChunksArray);
   if(!isPaused && isRecording){
     pauseRec();
   }else{
@@ -340,7 +328,7 @@ const verifyAvailableSpaceOnDisk = async () =>{
     let thereAreLowDiskSpace = await showEstimatedQuota();
     // console.log("thereAreLowDiskSpace",thereAreLowDiskSpace);
     if(thereAreLowDiskSpace){
-      console.log("hay que parar");
+      // console.log("hay que parar");
       pauseOrResume();
       //sendMessage to popup to alert the user about insufficient disk space.
     }
@@ -404,7 +392,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!isRecording && uploadValue == 0 && !message.isVoiceCommandStop){
+        if(!isRecording && uploadValue == -1 && !message.isVoiceCommandStop){
           fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, function() {
           });

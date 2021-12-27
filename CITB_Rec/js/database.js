@@ -129,7 +129,6 @@ const tryPersistWithoutPromtingUser = async () => {
     let last;
     for(let i=0;i<=itemsToDel;i++){
       last = await db.records.orderBy('id').last();
-      console.log("Borré")
     }
     console.log(last.id);
     await db.records.delete(last.id);    
