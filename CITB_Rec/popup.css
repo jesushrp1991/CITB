@@ -206,17 +206,17 @@ button {
   /* padding: 5px; */
 }
 
-.CITBDuplo1 {
+.CITBGmail {
   /* background-size: contain;*/
   background-size: 50%;
   background-image: url('./assets/gmail-icon.svg')
   }
 
-.CITBDuplo2 {
+.CITBWhatsApp {
   background-size: 50%;
   background-image: url('./assets/whatsapp.svg')
 }
-.CITBDuplo3 {
+.CITBClassRoom {
   background-size: 50%;
   background-image: url('./assets/classroom.svg')
 }
