@@ -125,15 +125,15 @@ const localDownload = () => {
 }
 
 const getShareLink = () =>{
-    chrome.storage.sync.get('isRecording', function(result) {        
-        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(result.drivelink)}&&tf=cm`
+    chrome.storage.sync.get('shareLink', function(result) {        
+        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(result.shareLink)}&&tf=cm`
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareWhatsapp = () =>{
-    chrome.storage.sync.get('isRecording', function(result) {
-        let url = `https://wa.me?text=${encodeURIComponent(result.drivelink)}`;        
+    chrome.storage.sync.get('shareLink', function(result) {
+        let url = `https://wa.me?text=${encodeURIComponent(result.shareLink)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }

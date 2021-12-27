@@ -38,6 +38,8 @@ const getLinkFileDrive = async() => {
     let file = files.filter(x => x.name === fileName);
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing"
+    chrome.storage.sync.set({shareLink: shareLink}, function() {
+    });
     return shareLink;
 }
 
