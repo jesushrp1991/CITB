@@ -138,6 +138,13 @@ const shareWhatsapp = () =>{
     });
 }
 
+const shareClassRoom = () =>{   
+    chrome.storage.sync.get('shareLink', function(result) {   
+        let url = `https://classroom.google.com/share?url=${encodeURIComponent(result.shareLink)}`;        
+        chrome.tabs.create({active: true, url: url});
+    });
+}
+
 
 const checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
@@ -166,6 +173,9 @@ shareGmailButton.addEventListener('click',getShareLink);
 
 let shareWhatsappButton = document.getElementById("shareWhatsapp");
 shareWhatsappButton.addEventListener('click',shareWhatsapp);
+
+let shareClassRoomButton = document.getElementById("shareClassRoom");
+shareClassRoomButton.addEventListener('click',shareClassRoom);
 
 
 checkAut();
