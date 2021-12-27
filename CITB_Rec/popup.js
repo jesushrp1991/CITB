@@ -125,21 +125,9 @@ const localDownload = () => {
 }
 
 const getShareLink = () =>{
-    chrome.storage.sync.get('isRecording', function(result) {
-        var formattedBody = "Hola! \n te comparto mi grabación hecha con CITB_REC \n" + result.drivelink;
-        var email = prompt("Email to share.");
-        var mailToLink = "mailto:" + email + "?body=" + encodeURIComponent(formattedBody);     
-
-        console.log(mailToLink);
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        a.href = mailToLink;
-        a.click();
-        a.parentNode.removeChild(a);
-        
-        // let url = "https://mail.google.com/mail/u/0/?fs=1&to=someone@example.com&su=SUBJECT&body=BODY&bcc=someone.else@example.com&tf=cm"
-
+    chrome.storage.sync.get('isRecording', function(result) {        
+        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(result.drivelink)}&&tf=cm`
+        chrome.tabs.create({active: true, url: url});
     });
 }
 
