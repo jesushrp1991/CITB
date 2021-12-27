@@ -4,8 +4,7 @@ import {
 import { checkTimer } from './js/timerBar.js';
 
 const sendMessage = (msg) =>{
-    chrome.runtime.sendMessage(msg, (response) => {         
-    });
+    chrome.runtime.sendMessage(msg);
 }
 const sendRecordCommand = () =>{
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
