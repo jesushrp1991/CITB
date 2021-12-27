@@ -145,6 +145,19 @@ const shareClassRoom = () =>{
     });
 }
 
+const shareTwitter = () =>{   
+    chrome.storage.sync.get('shareLink', function(result) {   
+        let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareLink)}`;        
+        chrome.tabs.create({active: true, url: url});
+    });
+}
+const shareWakelet = () =>{   
+    chrome.storage.sync.get('shareLink', function(result) {   
+        let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(result.shareLink)}`;        
+        chrome.tabs.create({active: true, url: url});
+    });
+}
+
 
 const checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
@@ -176,6 +189,12 @@ shareWhatsappButton.addEventListener('click',shareWhatsapp);
 
 let shareClassRoomButton = document.getElementById("shareClassRoom");
 shareClassRoomButton.addEventListener('click',shareClassRoom);
+
+let shareTwitterButton = document.getElementById("shareTwitter");
+shareTwitterButton.addEventListener('click',shareTwitter);
+
+let shareWakeletButton = document.getElementById("shareWakelet");
+shareWakeletButton.addEventListener('click',shareWakelet);
 
 
 checkAut();

@@ -213,13 +213,19 @@ button {
   }
 
 .CITBDuplo2 {
-background-size: 50%;
-background-image: url('./assets/whatsapp.svg')
-
+  background-size: 50%;
+  background-image: url('./assets/whatsapp.svg')
 }
 .CITBDuplo3 {
-background-size: 50%;
-background-image: url('./assets/classroom.svg')
-
+  background-size: 50%;
+  background-image: url('./assets/classroom.svg')
+}
+.CITBTwitter {
+  background-size: 50%;
+  background-image: url('./assets/twitter.svg')
+}
+.CITBWakelet {
+  background-size: 50%;
+  background-image: url('./assets/wakelet.png')
 }
 
