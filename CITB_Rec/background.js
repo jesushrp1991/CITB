@@ -407,7 +407,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           chrome.storage.sync.set({fileName: "undefined"}, function() {
           });
           injectFileName();
-          console.log("SetInterval")
           intervalFileName = setInterval(getFileName,500);
           intervalFileName;
           await prepareDB();
@@ -415,7 +414,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
-            console.log("Else!!!")
             if(intervalFileName != null){
               clearInterval(intervalFileName);
             }

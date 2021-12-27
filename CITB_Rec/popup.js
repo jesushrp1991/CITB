@@ -138,9 +138,16 @@ const getShareLink = () =>{
         a.click();
         a.parentNode.removeChild(a);
         
+        // let url = "https://mail.google.com/mail/u/0/?fs=1&to=someone@example.com&su=SUBJECT&body=BODY&bcc=someone.else@example.com&tf=cm"
+
     });
+}
 
-
+const shareWhatsapp = () =>{
+    chrome.storage.sync.get('isRecording', function(result) {
+        let url = `https://wa.me?text=${encodeURIComponent(result.drivelink)}`;        
+        chrome.tabs.create({active: true, url: url});
+    });
 }
 
 
@@ -166,8 +173,11 @@ buttonVoiceControl.addEventListener('click',activateVoiceControl);
 let buttonLocalDownload = document.getElementById("localDownloadButton");
 buttonLocalDownload.addEventListener('click',localDownload);
 
-let buttonShare = document.getElementById("shareButton");
-buttonShare.addEventListener('click',getShareLink);
+let shareGmailButton = document.getElementById("shareGmail");
+shareGmailButton.addEventListener('click',getShareLink);
+
+let shareWhatsappButton = document.getElementById("shareWhatsapp");
+shareWhatsappButton.addEventListener('click',shareWhatsapp);
 
 
 checkAut();
