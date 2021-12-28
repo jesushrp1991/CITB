@@ -462,11 +462,3 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     return true;
   });
-
-  // chrome.extension.onConnect.addListener(function(port) {
-  //   console.log("Connected .....");
-  //   port.onMessage.addListener(function(msg) {
-  //        console.log("message recieved" + msg);
-  //        port.postMessage(uploadValue);
-  //   });
-  // })
