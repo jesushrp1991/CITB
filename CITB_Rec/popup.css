@@ -87,16 +87,9 @@ button {
   align-items: center;
 }
 
-#progreesBarContainer{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  display: none;
-}
-
 .progress-bar-container{
   padding: 0.01em 16px;
+  max-width: 90%;
 }
 
 .light-grey{
@@ -106,12 +99,17 @@ button {
 
 .round-xlarge {
   border-radius: 16px;
-  width: 90%;
+  margin-top: 20px;
+  margin-left: 15px;
+  margin-right: 15px;
+  position: relative;
 }
 
 .blue{
   color: #fff !important;
   background-color: #2196f3 !important;
+  margin-left: 2px;
+  text-align: center;
 }
 
 /* select */
@@ -194,7 +192,7 @@ button {
   margin: 0;
   position: absolute;
   bottom: 55px;
-  right: 5px;
+  right: 18px;
   opacity: 0;
   transition: all 0.3s ease;
   transform: scale(0);
@@ -241,7 +239,7 @@ button {
   border: solid;
   border-radius: 30px;
   border-color: coral;
-  border-width: 2.5px;
+  border-width: 2px;
   padding-left: 5px;
 }
 
