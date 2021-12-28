@@ -414,7 +414,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             chrome.storage.sync.set({isPaused: false}, function() {
             });
             chrome.tabs.create({active: false}, function(newTab) {
-
               // After the tab has been created, open a window to inject the tab into it.
               chrome.windows.create(
                   {
