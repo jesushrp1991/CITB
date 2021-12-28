@@ -1,4 +1,15 @@
 import { rec,stop, close, play,pause } from "./voiceActions.js";
+const setImgSrc = () =>{
+  let languages  = navigator.language.split("-");
+  alert (languages[0]);
+  if(languages[0] != 'es'){
+    alert ("???");
+    document.getElementById('imgBack').setAttribute("src","./assets/backOptionsES.gif")
+  }else{
+    document.getElementById('imgBack').setAttribute("src","./assets/backOptions.gif")
+  }
+};
+setImgSrc();
 
 const speachCommands = () => {
   try {

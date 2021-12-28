@@ -1,7 +1,7 @@
 body{
-  height: 130px;
-
+  height: 150px;
 }
+
 button {
   height: 45px;
   width: 55px;
@@ -12,15 +12,24 @@ button {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+  /* padding: 5px; */
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .littleButton {
-  height: 35px !important; 
-  width: 45px !important;
+  height: 25px !important; 
+  width: 25px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
 }
 .timer {
   display: block;
   height: 50px;
   width: 60px; 
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
 }
 #recTimerPanel {
   color: #f1f1f1;
@@ -119,7 +128,7 @@ button {
   background-color: #f7fbfd;
   color: rgb(0, 0, 0);
   padding: 5px;
-  width: 250px;
+  width: 350px;
   border: none;
   font-size: 14px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
@@ -169,8 +178,8 @@ button {
 }
 
 .shareButtons {
-  height: 45px;
-  width: 55px;
+  height: 35px;
+  width: 40px;
   /* outline: none;
   border: none; */
   /* border-radius: 2px; */
@@ -184,7 +193,7 @@ button {
   list-style-type: none;
   margin: 0;
   position: absolute;
-  bottom: 45px;
+  bottom: 55px;
   right: 5px;
   opacity: 0;
   transition: all 0.3s ease;
@@ -232,7 +241,22 @@ button {
   border: solid;
   border-radius: 30px;
   border-color: coral;
-  border-width: 1.5px;
+  border-width: 2.5px;
   padding-left: 5px;
 }
 
+
+.divButton {
+  height: 35px;
+  width: 45px;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  padding: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
