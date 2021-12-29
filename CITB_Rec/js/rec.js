@@ -119,17 +119,19 @@ const startRecordScreen = (idMic) =>{
       errorHandling(e);
     }
 }
+const stopTracks = () =>{
+    window.desktopStream.getTracks().forEach(track => track.stop())
+    window.micStream.getTracks().forEach(track => track.stop())
+    window.resultStream.getTracks().forEach(track => track.stop())
+}
 const stopRecordScreen = () =>{
     if(window.isRecording){
         window.meetEndTime = dayjs().format();
         window.recorder.stop();
-        window.desktopStream.getTracks().forEach(track => track.stop())
-        window.micStream.getTracks().forEach(track => track.stop())
-        window.resultStream.getTracks().forEach(track => track.stop())
+        stopTracks();
         reset();
         window.isRecording = false;
-        chrome.storage.sync.set({isRecording: false}, function() {
-        });
+        chrome.storage.sync.set({isRecording: false},() => {});
     }
 }
 

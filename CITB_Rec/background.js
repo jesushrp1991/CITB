@@ -102,16 +102,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
               clearInterval(intervalFileName);
             }
             if(message.isVoiceCommandStop){
-                delLastItem(3);
+              delLastItem(3);
             }
             await stopRecordScreen();
-            chrome.storage.sync.set({isPaused: false}, function() {
+              chrome.storage.sync.set({isPaused: false}, function() {
             });
         }    
         break;
       case popupMessages.pause :
         pauseOrResume();
-        // delLastItem();
         break;
       case popupMessages.isVoiceCommand :
         if(message.isVoiceCommandPause == 'pause'){

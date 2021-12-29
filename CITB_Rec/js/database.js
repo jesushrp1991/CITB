@@ -1,6 +1,7 @@
 import { environment } from "../config/environment.js";
 
     let db = new Dexie("CITBRecords", { autoOpen: true });
+    let queueDB = new Dexie("CITBQueueRecords", { autoOpen: true });
 
     const createDB = async () =>{
         let exitsDB = await Dexie.exists("CITBRecords");
@@ -13,6 +14,31 @@ import { environment } from "../config/environment.js";
                 ++id,
                 record`,
         });
+    }
+    
+    const createRecQueueDB = async () =>{
+        let exitsDB = await Dexie.exists("CITBQueueRecords");
+        if(exitsDB){
+          delQueueDB();
+        }
+        db = new Dexie("CITBQueueRecords", { autoOpen: true });
+        db.version(1).stores({
+            records: `
+                ++id,
+                name,
+                dateStart,
+                dateEnd,
+                driveLink`,
+        });
+    }
+
+    const addRecQueueDB = (name,dateStart,dateEnd,driveLink) =>{
+      try{
+        await db.records.add({name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink});  
+      }catch(error){
+          console.log(error);
+          throw error;
+      }
     }
 
     const addDB = async (chunk) =>{
@@ -27,6 +53,14 @@ import { environment } from "../config/environment.js";
     const delDB = async () => {
         try{
             await db.delete();
+        }catch(error){
+            console.log(error);
+            throw error; //needed to abort the transaction.
+        }
+    }
+    const delQueueDB = async () => {
+        try{
+            await queueDB.delete();
         }catch(error){
             console.log(error);
             throw error; //needed to abort the transaction.
@@ -135,15 +169,17 @@ const tryPersistWithoutPromtingUser = async () => {
   }
 
 export {
-    createDB,
-    addDB,
-    delDB,
-    selectDB,
-    persist,
-    isStoragePersisted,
-    showEstimatedQuota,
-    tryPersistWithoutPromtingUser,
-    initStoragePersistence,
-    prepareDB,
-    delLastItem
+     createDB
+    ,addDB
+    ,delDB
+    ,selectDB 
+    ,persist 
+    ,isStoragePersisted
+    ,showEstimatedQuota
+    ,tryPersistWithoutPromtingUser
+    ,initStoragePersistence
+    ,prepareDB
+    ,delLastItem
+    ,createRecQueueDB
+    ,addRecQueueDB
 }

@@ -1,3 +1,5 @@
+import { checkUploadStatus } from './js/progressBar.js'
+
 const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
     createHTML: (to_escape) => to_escape
 })
@@ -22,3 +24,4 @@ const waitingForRec = () => {
 }
 
 setInterval(waitingForRec,5000);
+checkUploadStatus();

@@ -1,6 +1,6 @@
 import { environment } from "../config/environment.js";  
 import { errorHandling } from './errorHandling.js'
-import { selectDB } from "./database.js";
+import { selectDB,createRecQueueDB } from "./database.js";
 
 const getLinkFileDrive = async() => {
     setTimeout(()=>{},5000);
@@ -151,6 +151,10 @@ const saveVideo = async(localDownload) =>{
   // console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
+    createRecQueueDB();
+    addRecQueueDB(window.fileName,window.meetStartTime,window.meetEndTime); 
+    //Crear alerta para que inicie el proceso de subida
+    //Cuando este subido modificar tabla para incluir  DriveLink
     prepareUploadToDrive(file);
   }else{
     if(finalArray.length != 0 ){
