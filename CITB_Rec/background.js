@@ -86,10 +86,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!window.isRecording && window.uploadValue == -1 && !message.isVoiceCommandStop){
+        if(!window.isRecording && !message.isVoiceCommandStop){
           window.fileName = "CITB Rec";
-          chrome.storage.sync.set({fileName: "undefined"}, function() {
-          });
+          chrome.storage.sync.set({fileName: "undefined"}, () => {});
           injectFileName();
           intervalFileName = setInterval(getFileName,500);
           intervalFileName;
@@ -104,6 +103,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             if(message.isVoiceCommandStop){
               delLastItem(3);
             }
+            chrome.tabs.create({active: false}, function(newTab) {
+              chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
+      
+            });
             await stopRecordScreen();
               chrome.storage.sync.set({isPaused: false}, function() {
             });
@@ -137,8 +140,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.getDriveLink :
         let drivelink = getLinkFileDrive();
-        chrome.storage.sync.set({drivelink: drivelink}, function() {
-        });
+        chrome.storage.sync.set({drivelink: drivelink}, () => {});
         break;
     }
     return true;
@@ -154,5 +156,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     // window.isRecording = false;
     // chrome.storage.sync.set({isRecording: false}, function() {
     // });
+  }
 
-}
+  

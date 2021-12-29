@@ -1,6 +1,14 @@
 import { environment } from "../config/environment.js";  
 import { errorHandling } from './errorHandling.js'
-import { selectDB,createRecQueueDB } from "./database.js";
+import { 
+     selectDB
+    ,createRecQueueDB
+    ,countQueueDB
+    ,getNextQueueFile 
+    ,saveLinktoDB
+    ,delFileInDB
+    ,addRecQueueDB
+} from "./database.js";
 
 const getLinkFileDrive = async() => {
     setTimeout(()=>{},5000);
@@ -24,6 +32,8 @@ const getLinkFileDrive = async() => {
 }
 const addEventToGoogleCalendar = async () => {
     let linkDrive = await getLinkFileDrive();
+    saveDriveLinkToDB(linkDrive);
+    delFileWhenUploadIsComplete();
     let description = "See video here:" + linkDrive;
     let newEvent = {
       "summary": window.fileName,
@@ -109,7 +119,6 @@ const prepareUploadToDrive = (obj) => {
         window.uploadValue = -1;
         saveUploadProgress(-1);
         msg = res.status;
-        // fileName = "CITB Rec";
       }
       console.log(msg);
     });
@@ -152,10 +161,9 @@ const saveVideo = async(localDownload) =>{
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
     createRecQueueDB();
-    addRecQueueDB(window.fileName,window.meetStartTime,window.meetEndTime); 
+    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime); 
     //Crear alerta para que inicie el proceso de subida
     //Cuando este subido modificar tabla para incluir  DriveLink
-    prepareUploadToDrive(file);
   }else{
     if(finalArray.length != 0 ){
       download(finalArray);
@@ -166,7 +174,35 @@ const saveVideo = async(localDownload) =>{
 const saveUploadProgress = (value) =>{
     chrome.storage.sync.set({uploadPercent: value}, function() {
     });
-  }
+}
+
+const saveDriveLinkToDB = (link)=>{
+    console.log("Saving Link to DB")
+    saveLinktoDB(window.fileIDUploadInProgress,link);
+}
+
+const delFileWhenUploadIsComplete = () =>{
+    delFileInDB(window.fileIDUploadInProgress);
+}
+window.fileIDUploadInProgress = -1 ;
+let count
+const uploadQueueDaemon = async() =>{
+    if(window.uploadValue != -1){
+        return;
+    }
+    let lastElemen = await countQueueDB(); //change method name
+    console.log("queueSize",lastElemen,lastElemen.file);
+    if(lastElemen.file != "uploaded"){
+        let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
+        console.log("nextFile",nextFile);
+        window.fileIDUploadInProgress = nextFile.id;
+        chrome.storage.sync.set({newUpload: "newUpload"}, () => {
+            console.log("SET NEW UPLOAD")
+        });
+        prepareUploadToDrive(nextFile.file);
+    }
+}
+setInterval(uploadQueueDaemon,5000);
   
 export {
      getLinkFileDrive

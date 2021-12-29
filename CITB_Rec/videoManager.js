@@ -18,8 +18,11 @@ const createRecordCard = () => {
 }
 
 const waitingForRec = () => {
-    chrome.storage.sync.get('newRecord', (result) => {        
-        createRecordCard();
+    chrome.storage.sync.get('newUpload', (result) => {   
+        if(result.newUpload == "newUpload"){
+            createRecordCard();
+            chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
+        }     
     });
 }
 

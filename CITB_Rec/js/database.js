@@ -16,31 +16,6 @@ import { environment } from "../config/environment.js";
         });
     }
     
-    const createRecQueueDB = async () =>{
-        let exitsDB = await Dexie.exists("CITBQueueRecords");
-        if(exitsDB){
-          delQueueDB();
-        }
-        db = new Dexie("CITBQueueRecords", { autoOpen: true });
-        db.version(1).stores({
-            records: `
-                ++id,
-                name,
-                dateStart,
-                dateEnd,
-                driveLink`,
-        });
-    }
-
-    const addRecQueueDB = (name,dateStart,dateEnd,driveLink) =>{
-      try{
-        await db.records.add({name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink});  
-      }catch(error){
-          console.log(error);
-          throw error;
-      }
-    }
-
     const addDB = async (chunk) =>{
         try{
             await db.records.add({record: chunk});  
@@ -58,25 +33,84 @@ import { environment } from "../config/environment.js";
             throw error; //needed to abort the transaction.
         }
     }
-    const delQueueDB = async () => {
-        try{
-            await queueDB.delete();
-        }catch(error){
-            console.log(error);
-            throw error; //needed to abort the transaction.
-        }
-    }
+    
+    const createRecQueueDB = async () =>{
+      console.log("CREATE QUEUE DB")
+      // let exitsDB = await Dexie.exists("CITBQueueRecords");
+      // if(exitsDB){
+      //   delQueueDB();
+      // }
+      queueDB = new Dexie("CITBQueueRecords", { autoOpen: true });
+      queueDB.version(1).stores({
+        records: `
+            ++id,
+            file,
+            name,
+            dateStart,
+            dateEnd,
+            driveLink`,
+        });
+  }
 
-    const selectDB = async () =>{
-        try{
-            let result = await db.records.orderBy('id').toArray();
-            return result; 
-        }catch(error){
-            console.log(error);
-            throw error;
-        }
-       
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink) =>{
+    console.log("addRecQueueDB",file,name,dateStart)
+    try{
+      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink});  
+    }catch(error){
+        console.log(error);
+        throw error;
     }
+  }
+
+  // const delQueueDB = async () => {
+  //     try{
+  //         await queueDB.delete();
+  //     }catch(error){
+  //         console.log(error);
+  //         throw error; //needed to abort the transaction.
+  //     }
+  // }
+
+  const selectDB = async () =>{
+      try{
+          let result = await db.records.orderBy('id').toArray();
+          return result; 
+      }catch(error){
+          console.log(error);
+          throw error;
+      }
+      
+  }
+  const countQueueDB = async () =>{
+      try{
+          let result = await queueDB.records.orderBy('id').last();
+          return result;
+      }catch(error){
+          console.log(error);
+          throw error;
+      }
+      
+  }
+
+  const getNextQueueFile = async(id) =>{
+    //get first Element FILE fields
+    let first;
+    if(id > -1){
+      first = await queueDB.records.where('id').above(id).first();
+    }else{
+      first = await queueDB.records.orderBy('id').first();
+    }
+    return first;
+  }
+
+  const saveLinktoDB = async(id,link) =>{
+    await queueDB.records.put({id: id, driveLink: link});
+  }
+
+  const delFileInDB = async(id) =>{
+    console.log("CHANGE UPLOAD STATUS TO FILE",id)
+    await queueDB.records.put({id: id, file: "uploaded"});
+  }
 
     
 const persist = async () => {
@@ -182,4 +216,8 @@ export {
     ,delLastItem
     ,createRecQueueDB
     ,addRecQueueDB
+    ,countQueueDB
+    ,getNextQueueFile
+    ,saveLinktoDB
+    ,delFileInDB
 }
