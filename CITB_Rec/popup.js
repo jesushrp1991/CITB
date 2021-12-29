@@ -120,8 +120,21 @@ const populateMicSelect = async () => {
 
 
 const localDownload = () => {
-    const request = { recordingStatus: 'localDownload' };
-    sendMessage(request);
+    chrome.tabs.create({active: false}, function(newTab) {
+        // After the tab has been created, open a window to inject the tab into it.
+        // chrome.windows.create({
+        //     tabId:      newTab.id,
+        //     type:       "panel",
+        //     url:        chrome.extension.getURL('videoManager.html'),
+        //     focused: true
+        // },function(window){
+        //     winID = newWindow.id;
+        // });
+        chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
+
+    });
+    // const request = { recordingStatus: 'localDownload' };
+    // sendMessage(request);
 }
 
 const getShareLink = () =>{

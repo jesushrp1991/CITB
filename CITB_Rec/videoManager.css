@@ -1,0 +1,128 @@
+.card-personalized {
+    margin-left: 15px;
+    width: 75%;
+    height: 75%;
+    border-radius: 10px !important;
+}
+.card-header-personalized{
+    border-radius: 10px 10px 0 0 !important;
+    background-color: transparent !important;
+    border: transparent !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+.time {
+    width: 50px;
+    height: 10px;
+    border-radius: 20px;
+    background-color: black;
+    font-size: 8px;
+    /* text-align: center; */
+}
+.date {
+    width: 50px;
+    height: 10px;
+    border-radius: 20px;
+    background-color: green;
+    font-size: 8px;
+    /* text-align: center; */
+}
+
+.card-text-personalized {
+    font-size: 13px;
+}
+
+.card-body-personalized {
+    background-color: transparent !important;
+    padding-top: 0px !important;
+}
+
+.buttonDownload {
+    height: 45px;
+    width: 55px;
+    outline: none;
+    border: none;
+    border-radius: 2px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-image: url('./assets/COMPARTIR\ COLOR.svg') !important;
+}
+
+.progress-bar-container{
+    padding: 0.01em 16px;
+    height: 14px;
+    max-width: 100%;
+  }
+  
+  .light-grey{
+    color: #000 !important;
+    background-color: #f1f1f1 !important;
+  }
+  
+  .round-xlarge {
+    border-radius: 16px;
+    position: relative;
+  }
+  
+  .blue{
+    color: #fff !important;
+    background-color: #2196f3 !important;
+    text-align: center;
+    font-size: 10px;
+  }
+
+  .rec-name {
+      padding-bottom: 10px !important ;
+  }
+
+  .share-container-personalized {
+    padding-top: 10px !important ;
+    padding-left: 0px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .buttons-containers-personalized {
+    border: solid;
+    border-radius: 30px;
+    border-color: coral;
+  }
+
+  .fake-space {
+    height: 20%;
+  }
+
+  .buttonCITB {
+     height: 10px !important; 
+    /*width: 5px !important; */
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    margin: 3px !important;
+    outline: none;
+    border: none;
+    border-radius: 2px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 60%;
+}
+  .CITBGmail {
+    background-image: url('./assets/gmail-icon.svg')
+    }
+  
+  .CITBWhatsApp {
+    background-image: url('./assets/whatsapp.svg')
+  }
+  .CITBClassRoom {
+    background-image: url('./assets/classroom.svg')
+  }
+  .CITBTwitter {
+    background-image: url('./assets/twitter.svg')
+  }
+  .CITBWakelet {
+    background-image: url('./assets/wakelet.png')
+  }
