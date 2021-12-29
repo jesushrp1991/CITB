@@ -1,16 +1,26 @@
-import { environment } from "./config/environment.js";  
 import {
-  addDB,
-  selectDB,
   showEstimatedQuota,
   prepareDB,
   delLastItem
 } from "./js/database.js";
+
 import {
-  startTimerCount,
-  stopTimerCount,
-  reset
-} from './js/recTimer.js'
+   startRecordScreen
+  ,stopRecordScreen
+  ,pauseOrResume
+  ,playRec
+  ,pauseRec
+} from './js/rec.js'
+
+import {
+  getLinkFileDrive
+  ,verificateAuth
+  ,saveVideo
+} from './js/fileManager.js'
+
+// import {
+//   errorHandling
+// } from './js/errorHandling.js'
 
 const popupMessages = {
   rec:'rec',
@@ -27,331 +37,15 @@ const onGAPIFirstLoad = () =>{
   // console.log("GAPI LOADED!!")
 }
 
-const getLinkFileDrive = async() => {
-    setTimeout(()=>{},5000);
-    let result = await gapi.client.drive.files.list({
-        // q: "mimeType='application/vnd.google-apps.file' and trashed=false",
-        fields: 'nextPageToken, files(id, name)',
-        spaces: 'drive',
-    })
-    let files = result.result.files;
-    console.log("files",files);
-
-    let file = files.filter(x => x.name === fileName);
-    console.log("file",file);
-
-    let fileId = file.length > 0 ? file[0].id : 0;
-    let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
-    console.log("shareLink",shareLink);
-    chrome.storage.sync.set({shareLink: shareLink}, function() {
-    });
-    return shareLink;
-}
-
-
-var meetStartTime ;
-var meetEndTime ;
-
-const addEventToGoogleCalendar = async () => {
-  let linkDrive = await getLinkFileDrive();
-  let description = "See video here:" + linkDrive;
-  let newEvent = {
-    "summary": fileName,
-    "description": description ,
-    "start": {
-      "dateTime": meetStartTime
-    },
-    "end": {
-      "dateTime": meetEndTime
-    }
-  };
-  let request = gapi.client.calendar.events.insert({
-    'calendarId': 'primary',
-    'resource': newEvent
-  });
-  request.execute(function(resp) {
-  //  console.log("respuesta del calendar",resp);
- });
-}
-const verificateAuth = () => {
-  gapi.client.init({
-    // Don't pass client nor scope as these will init auth2, which we don't want
-    apiKey: environment.API_KEY,
-    discoveryDocs: environment.DISCOVERY_DOCS,
-  }).then( async () =>{
-    chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
-      gapi.auth.setToken({
-        'access_token': tokenResult,
-      });
-    })
-  }, function(error) {
-    errorHandling(error);
-  });
-}
-
-/*
-  *   Upload to Drive
-  *
-*/ 
-  const prepareUploadToDrive = (obj) => {
-    // const file = obj.target.files[0];
-    const file = obj;
-    if (file.name != "") {
-      let fr = new FileReader();
-      fr.fileName = file.name;
-      fr.fileSize = file.size;
-      fr.fileType = file.type;
-      fr.readAsArrayBuffer(file);
-      fr.onload = startResumableUploadToDrive;
-    }
-  }
-  
-  let uploadValue = -1;
-  const startResumableUploadToDrive = (e) => {
-    let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
-    const f = e.target;
-    const resource = {
-      fileName: f.fileName,
-      fileSize: f.fileSize,
-      fileType: f.fileType,
-      fileBuffer: f.result,
-      accessToken: accessToken,
-      // folderId: 'CITB_REC'
-    };
-    const upload = new ResumableUploadToGoogleDrive();
-    upload.Do(resource, (res, err)=>{
-      if (err) {
-        console.log(err);
-        return;
-      }
-      // console.log("res.status",res.status);
-      let msg = "";
-      if (res.status == "Uploading") {
-        msg =
-          Math.round(
-            (res.progressNumber.current / res.progressNumber.end) * 100
-          ) + "%";
-        uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
-        saveUploadProgress(uploadValue);
-      }else if(res.status == "Done"){
-        addEventToGoogleCalendar();        
-        uploadValue = -1;
-        saveUploadProgress(-1);
-        msg = res.status;
-        // fileName = "CITB Rec";
-      }
-      console.log(msg);
-    });
-  }
-  /* 
-  ** DESKTOP REC
-  */
-let fileName = "CITB Rec";
-const prepareRecordFile = (finalArray) => {
-    var blob = new Blob(finalArray, {
-        type: "video/webm"
-    });
-    fileName = fileName + " " + Date() + ".webm";
-    var file = new File([blob], fileName);
-    return file;
-  }
-
-  //test only, to save in mi pc
-  const download = (test) => {
-    var blob = new Blob(test, {
-        type: "video/webm"
-    });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
-    a.href = url;
-    a.download = fileName + Date() + ".webm";
-    a.click();
-    window.URL.revokeObjectURL(url);
-    // fileName = "CITB Rec";
-}
-const saveVideo = async(localDownload) =>{
-  let save = await selectDB();
-  let finalArray = [];
-  save.forEach(element => {
-    finalArray.push(element.record[0]);
-  });
-  // console.log("FinalArray",finalArray);
-  if(environment.upLoadToDrive && !localDownload){
-    let file = prepareRecordFile(finalArray);
-    prepareUploadToDrive(file);
-  }else{
-    if(finalArray.length != 0 ){
-      download(finalArray);
-    }
-  }
-}
-let isRecording = false;
-let isPaused = false;
-let recorder;
-let videoChunksArray = [];
-let resultStream;
-let desktopStream;
-let micStream;
-const recordScreen = async (streamId,idMic) => {
-    try{
-        const constraints = {
-            audio:{
-                mandatory: {
-                    chromeMediaSource: 'desktop',
-                    chromeMediaSourceId: streamId,
-                    echoCancellation: true
-                }
-            },
-            video: {
-                optional: [],
-                mandatory: {
-                    chromeMediaSource: 'desktop',
-                    chromeMediaSourceId: streamId,
-                    maxWidth: 2560,
-                    maxHeight: 1440,
-                    maxFrameRate:30
-                }
-            }
-        }
-        const micConstraints = {  
-          video: false,  
-          audio: {  
-              deviceId: { exact: idMic },  
-          },  
-        } 
-        desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
-        micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
-
-        const context = new AudioContext();
-        let sourceDesktop = null;
-        if(desktopStream.getAudioTracks().length > 0){
-          sourceDesktop = context.createMediaStreamSource(desktopStream);
-        }
-        const sourceMic = context.createMediaStreamSource(micStream);
-        const destination = context.createMediaStreamDestination();
-
-        const desktopGain = context.createGain();
-        const voiceGain = context.createGain();
-
-        desktopGain.gain.value = 0.7;
-        voiceGain.gain.value = 0.7;
-
-        if(sourceDesktop != null){
-          sourceDesktop.connect(desktopGain).connect(destination);
-        }
-        sourceMic.connect(voiceGain).connect(destination);
-
-        
-        resultStream = new MediaStream([...desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
-        recorder = new MediaRecorder(resultStream);
-
-        recorder.ondataavailable = event => {
-          // console.log("ON DATA AVAILABLE", videoChunksArray.length);
-            verifyAvailableSpaceOnDisk();
-            if (event.data.size > 0) {
-                videoChunksArray.push(event.data);
-                addDB(videoChunksArray);
-                videoChunksArray = [];
-            }
-        }
-        recorder.onstop = async() => {
-           saveVideo(false);
-        }
-        recorder.start(environment.timeIntervalSaveDB);
-        startTimerCount();
-        isRecording = true;
-    }catch(e){
-      errorHandling(e);
-    }
-}
-const startRecordScreen = (idMic) =>{
-    try{
-      let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
-      let videoCaptureModes;
-      userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
-        chrome.desktopCapture.chooseDesktopMedia(videoCaptureModes, async (streamId) => {
-            if (!streamId) {
-                isRecording = false;
-                chrome.storage.sync.set({isRecording: false}, function() {
-                });
-            } else {
-                isRecording = true;
-                chrome.storage.sync.set({isRecording: true}, function() {
-                });
-                await recordScreen(streamId,idMic);
-            }
-          });
-    }catch(e){
-      errorHandling(error);
-    }
-}
-const stopRecordScreen = () =>{
-    if(isRecording){
-        meetEndTime = dayjs().format();
-        recorder.stop();
-        desktopStream.getTracks().forEach(track => track.stop())
-        micStream.getTracks().forEach(track => track.stop())
-        resultStream.getTracks().forEach(track => track.stop())
-        reset();
-        isRecording = false;
-        chrome.storage.sync.set({isRecording: false}, function() {
-        });
-    }
-}
-
-const pauseRec = () => {
-  recorder.pause()
-  stopTimerCount();
-  chrome.storage.sync.set({isPaused: true}, function() {
-  });
-  isPaused = !isPaused;
-}
-const playRec = () =>{
-  recorder.resume();
-  startTimerCount();
-  chrome.storage.sync.set({isPaused: false}, function() {
-  });
-  isPaused = !isPaused;
-}
-
-const pauseOrResume = async () => {
-  if(!isPaused && isRecording){
-    pauseRec();
-  }else{
-    playRec();
-  }
-}
-
-const verifyAvailableSpaceOnDisk = async () =>{  
-    let thereAreLowDiskSpace = await showEstimatedQuota();
-    // console.log("thereAreLowDiskSpace",thereAreLowDiskSpace);
-    if(thereAreLowDiskSpace){
-      // console.log("hay que parar");
-      pauseOrResume();
-      //sendMessage to popup to alert the user about insufficient disk space.
-    }
-}
-
-const saveUploadProgress = (value) =>{
-  chrome.storage.sync.set({uploadPercent: value}, function() {
-  });
-}
-
-const errorHandling = (error) => {
-    console.log(error);
-    recorder.stop();
-    desktopStream.getTracks().forEach(track => track.stop())
-    micStream.getTracks().forEach(track => track.stop())
-    resultStream.getTracks().forEach(track => track.stop())
-    reset();
-    isRecording = false;
-    chrome.storage.sync.set({isRecording: false}, function() {
-    });
-
-}
-
+window.meetStartTime ;
+window.meetEndTime ;
+window.isRecording = false;
+window.isPaused = false;
+window.recorder;
+window.videoChunksArray = [];
+window.resultStream;
+window.desktopStream;
+window.micStream;
 
 function injectFileName() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -378,7 +72,7 @@ let intervalFileName = null;
 const getFileName = () => {
   chrome.storage.sync.get('fileName', function(result) {
     if(result.fileName != "undefined"){
-      fileName = result.fileName;
+      window.fileName = result.fileName;
       clearInterval(intervalFileName);
     }
   })
@@ -392,8 +86,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!isRecording && uploadValue == -1 && !message.isVoiceCommandStop){
-          fileName = "CITB Rec";
+        if(!window.isRecording && window.uploadValue == -1 && !message.isVoiceCommandStop){
+          window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, function() {
           });
           injectFileName();
@@ -401,7 +95,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           intervalFileName;
           await prepareDB();
           // fileName = prompt("What's yours meet name?");
-          meetStartTime = dayjs().format();
+          window.meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
             if(intervalFileName != null){
@@ -413,18 +107,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, function() {
             });
-            // chrome.tabs.create({active: false}, function(newTab) {
-            //   // After the tab has been created, open a window to inject the tab into it.
-            //   chrome.windows.create(
-            //       {
-            //           tabId:      newTab.id,
-            //           type:       "popup",
-            //           url:        chrome.extension.getURL('videoManager.html'),
-            //           focused: true
-            //       },function(window){
-            //                winID = newWindow.id;
-            //         });
-            // });
         }    
         break;
       case popupMessages.pause :
@@ -462,3 +144,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     return true;
   });
+
+  const errorHandling = (error) => {
+    console.log(error);
+    // window.recorder.stop();
+    // window.desktopStream.getTracks().forEach(track => track.stop())
+    // window.micStream.getTracks().forEach(track => track.stop())
+    // window.resultStream.getTracks().forEach(track => track.stop())
+    // reset();
+    // window.isRecording = false;
+    // chrome.storage.sync.set({isRecording: false}, function() {
+    // });
+
+}
