@@ -8,6 +8,7 @@ import {
     ,saveLinktoDB
     ,delFileInDB
     ,addRecQueueDB
+    ,listQueueDB
 } from "./database.js";
 
 const getLinkFileDrive = async() => {
@@ -191,8 +192,10 @@ const uploadQueueDaemon = async() =>{
         return;
     }
     let lastElemen = await getLastElementQueueDB();
-    console.log("queueSize",lastElemen,lastElemen.file);
-    if(lastElemen.file != "uploaded"){
+    if(lastElemen == undefined){
+        return;
+    }
+    if(lastElemen.file != "uploaded" ){
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
@@ -208,9 +211,27 @@ const uploadQueueDaemon = async() =>{
     }
 }
 setInterval(uploadQueueDaemon,5000);
-  
+
+const listUploadQueue = async() =>{
+    let list = await listQueueDB();
+    console.log("collado",list)
+    let listResult = [];
+    list.forEach((element)=>{
+        let details = {
+             id: element.id 
+            ,name: element.name
+            ,dateStart: element.dateStart
+            ,dateEnd: element.dateEnd 
+            ,driveLink : element.driveLink
+        }
+        listResult.push(details);
+    });
+    return listResult;
+}
+
 export {
      getLinkFileDrive
     ,verificateAuth
     ,saveVideo
+    ,listUploadQueue
 }

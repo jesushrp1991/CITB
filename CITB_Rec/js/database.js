@@ -33,9 +33,19 @@ import { environment } from "../config/environment.js";
             throw error; //needed to abort the transaction.
         }
     }
+
+    const selectDB = async () =>{
+      try{
+          let result = await db.records.orderBy('id').toArray();
+          return result; 
+      }catch(error){
+          console.log(error);
+          throw error;
+      }
+      
+  }
     
     const createRecQueueDB = async () =>{
-      console.log("CREATE QUEUE DB")
       // let exitsDB = await Dexie.exists("CITBQueueRecords");
       // if(exitsDB){
       //   delQueueDB();
@@ -53,7 +63,6 @@ import { environment } from "../config/environment.js";
   }
 
   const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink) =>{
-    console.log("addRecQueueDB",file,name,dateStart)
     try{
       await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink});  
     }catch(error){
@@ -72,18 +81,13 @@ import { environment } from "../config/environment.js";
   }
   delQueueDB();
 
-  const selectDB = async () =>{
-      try{
-          let result = await db.records.orderBy('id').toArray();
-          return result; 
-      }catch(error){
-          console.log(error);
-          throw error;
-      }
-      
-  }
+  
   const getLastElementQueueDB = async () =>{
       try{
+          let exitsDB = await Dexie.exists("CITBQueueRecords");
+          if(!exitsDB){
+            return;
+          }
           let result = await queueDB.records.orderBy('id').last();
           return result;
       }catch(error){
@@ -105,12 +109,26 @@ import { environment } from "../config/environment.js";
   }
 
   const saveLinktoDB = async(id,link) =>{
-    await queueDB.records.put({id: id, driveLink: link});
+    await queueDB.records.update(id,{driveLink: link});
   }
 
   const delFileInDB = async(id) =>{
-    console.log("CHANGE UPLOAD STATUS TO FILE",id)
-    await queueDB.records.put({id: id, file: "uploaded"});
+    await queueDB.records.update(id,{file: "uploaded"});
+  }
+
+  const listQueueDB = async () =>{
+    try{
+        let exitsDB = await Dexie.exists("CITBQueueRecords");
+        if(!exitsDB){
+          return;
+        }
+        let result = await queueDB.records.orderBy('id').reverse().toArray();
+        console.log("COLLADOlistQueueDB",result);
+        return result; 
+    }catch(error){
+        console.log(error);
+        throw error;
+    }  
   }
 
     
@@ -199,7 +217,6 @@ const tryPersistWithoutPromtingUser = async () => {
     for(let i=0;i<=itemsToDel;i++){
       last = await db.records.orderBy('id').last();
     }
-    console.log(last.id);
     await db.records.delete(last.id);    
   }
 
@@ -221,4 +238,5 @@ export {
     ,getNextQueueFile
     ,saveLinktoDB
     ,delFileInDB
+    ,listQueueDB
 }

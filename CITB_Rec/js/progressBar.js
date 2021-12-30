@@ -6,19 +6,27 @@ const hideProgressBar = () =>{
     document.getElementById('progreesBarContainer').style.display = 'none';
 }
 
-const updateProgressBar = (value) => {
-    document.getElementById('progressBar').style.width = value+"%";
-    document.getElementById('progressBar').innerHTML =  value+"%";
+const updateProgressBar = (value,id) => {
+    let idProgressBar = 'progressBar';
+    if(id){
+        idProgressBar = idProgressBar + id
+    }
+    document.getElementById(idProgressBar).style.width = value+"%";
+    document.getElementById(idProgressBar).innerHTML =  value+"%";
 
 }
-const checkUploadStatus = () => {
+const checkUploadStatus = (isFromPageList,id) => {
     setInterval(()=>{
         chrome.storage.sync.get('uploadPercent', function(result) {
             if (result.uploadPercent > 0){
-                updateProgressBar(result.uploadPercent);
+                updateProgressBar(result.uploadPercent,id);
                 displayProgressBar();
             }else{
-                hideProgressBar();
+                if(isFromPageList){
+                    updateProgressBar(100,id);
+                }else{
+                    hideProgressBar();
+                }
             }
         });
     },1500)

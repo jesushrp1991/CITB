@@ -16,6 +16,7 @@ import {
   getLinkFileDrive
   ,verificateAuth
   ,saveVideo
+  ,listUploadQueue
 } from './js/fileManager.js'
 
 // import {
@@ -23,14 +24,15 @@ import {
 // } from './js/errorHandling.js'
 
 const popupMessages = {
-  rec:'rec',
-  pause:'pause',
-  voiceOpen:'voiceOpen',
-  voiceClose:'voiceClose',
-  checkAuth:'checkAuth',
-  localDownload:'localDownload',
-  isVoiceCommand:'voiceCommand',
-  getDriveLink: 'getDriveLink'
+  rec:'rec'
+  ,pause:'pause'
+  ,voiceOpen:'voiceOpen'
+  ,voiceClose:'voiceClose'
+  ,checkAuth:'checkAuth'
+  ,localDownload:'localDownload'
+  ,isVoiceCommand:'voiceCommand'
+  ,getDriveLink: 'getDriveLink'
+  ,listRec: 'listRec'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -144,6 +146,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.getDriveLink :
         let drivelink = getLinkFileDrive();
         chrome.storage.sync.set({drivelink: drivelink}, () => {});
+        break;
+      case popupMessages.listRec :
+        let list = await listUploadQueue();
+        chrome.storage.sync.set({listRec: {list:list}}, () => {
+          sendResponse({status: "ready"});
+        });
+        
         break;
     }
     return true;

@@ -4,9 +4,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
     createHTML: (to_escape) => to_escape
 })
 
-
-const createRecordCard = (details) => {
-    const date =  details.dateStart.substring(1, 10);
+const calculateRecTime = (details) =>{
     const initDate = dayjs(details.dateStart);
     const endDate = dayjs(details.dateEnd);
     let seconds = endDate.diff(initDate,"second",true);
@@ -21,11 +19,18 @@ const createRecordCard = (details) => {
     if(hours < 10){
         hours ='0'+ hours;
     }
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+const createRecordCard = (details) => {
+    const date =  details.dateStart.substring(1, 10);
+    const recTime = calculateRecTime(details);
     fetch(chrome.runtime.getURL('html/card.html')).then(r => r.text()).then(html => {
         html = html.replace("{{cardId}}",details.id);
         html = html.replace("{{recName}}",details.name);
-        html = html.replace("{{recDuration}}",`${hours}:${minutes}:${seconds}`);
+        html = html.replace("{{recDuration}}",recTime);
         html = html.replace("{{recDate}}",date);
+        html = html.replace("{{progressBarId}}","progressBar" + details.id);
         const container = document.createElement("div");
         container.setAttribute('class',"col-4");
         const div = escapeHTMLPolicy.createHTML(html);  
@@ -35,20 +40,30 @@ const createRecordCard = (details) => {
 }
 
 const waitingForRec = () => {
-    chrome.storage.sync.get('newUpload', (result) => {   
-        if(result.newUpload == "newUpload"){
-            chrome.storage.sync.get('newUploadDetails', (result) => {  
-                createRecordCard(result.newUploadDetails);
-                chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
-            }) 
-        }     
-    });
+    setInterval(()=>{
+        chrome.storage.sync.get('newUpload', (result) => {   
+            if(result.newUpload == "newUpload"){
+                chrome.storage.sync.get('newUploadDetails', (result) => {  
+                    createRecordCard(result.newUploadDetails);
+                    chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
+                    checkUploadStatus(true,result.newUploadDetails.id);
+                }) 
+            }     
+        });
+    },5000)
 }
 
 const checkInitialState = () => {
-
+    const request = { recordingStatus: 'listRec'};
+    chrome.runtime.sendMessage(request);
+    setTimeout(()=>{},3000);
+    chrome.storage.sync.get('listRec', (result) => {
+        console.log(result.listRec.list);
+        result.listRec.list.forEach(element => {
+            createRecordCard(element);
+        });
+        waitingForRec();
+    })
 }
 
-setInterval(waitingForRec,5000);
-checkUploadStatus();
 checkInitialState();

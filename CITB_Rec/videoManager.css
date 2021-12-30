@@ -1,7 +1,7 @@
 .card-personalized {
     margin-left: 15px;
-    width: 75%;
-    height: 75%;
+    width: 95%;
+    height: 85%;
     border-radius: 10px !important;
 }
 .card-header-personalized{
@@ -12,24 +12,24 @@
     padding-bottom: 5px !important;
 }
 .time {
-    width: 50px;
-    height: 10px;
+    width:70px;
+    height: 20px;
     border-radius: 20px;
     background-color: black;
-    font-size: 8px;
+    font-size: 12px;
     /* text-align: center; */
 }
 .date {
-    width: 50px;
-    height: 10px;
+    width: 70px;
+    height: 20px;
     border-radius: 20px;
     background-color: green;
-    font-size: 8px;
+    font-size: 12px;
     /* text-align: center; */
 }
 
 .card-text-personalized {
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .card-body-personalized {
