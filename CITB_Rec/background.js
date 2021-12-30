@@ -1,7 +1,8 @@
 import {
-  showEstimatedQuota,
-  prepareDB,
-  delLastItem
+   showEstimatedQuota
+  ,prepareDB
+  ,delLastItem
+  ,getDriverLinkInQueueDB
 } from "./js/database.js";
 
 import {
@@ -82,6 +83,19 @@ const getFileName = () => {
   })
 }
 
+const openRecList = () => {  
+    chrome.tabs.getAllInWindow(undefined, function(tabs) {
+      for (var i = 0, tab; tab = tabs[i]; i++) {
+        if (tab.url && tab.url.includes('videoManager.html')) {
+          console.log("IS my page");          
+          chrome.tabs.update(tab.id, {selected: true});
+          return;
+        }
+      }
+      chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });  
+    });
+  
+}
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -108,10 +122,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             if(message.isVoiceCommandStop){
               delLastItem(3);
             }
-            chrome.tabs.create({active: false}, function(newTab) {
-              chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
-      
-            });
+            openRecList();
             await stopRecordScreen();
               chrome.storage.sync.set({isPaused: false}, function() {
             });
@@ -156,6 +167,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
     }
     return true;
+  });
+
+  chrome.runtime.onConnect.addListener(function(port) {
+    console.assert(port.name === "getDriveLink");
+    port.onMessage.addListener(async(msg) => {
+      console.log(msg)
+      if (msg.getLink){
+        let driveLink = await getDriverLinkInQueueDB(msg.getLink);
+        console.log("backgroundLink",driveLink);
+        port.postMessage({answer: driveLink});
+      }
+    });
   });
 
   const errorHandling = (error) => {

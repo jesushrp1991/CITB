@@ -120,12 +120,12 @@ const populateMicSelect = async () => {
 
 
 const localDownload = () => {
-    chrome.tabs.create({active: false}, function(newTab) {
-        chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
+    // chrome.tabs.create({active: false}, function(newTab) {
+    //     chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
 
-    });
-    // const request = { recordingStatus: 'localDownload' };
-    // sendMessage(request);
+    // });
+    const request = { recordingStatus: 'localDownload' };
+    sendMessage(request);
 }
 
 const getShareLink = () =>{

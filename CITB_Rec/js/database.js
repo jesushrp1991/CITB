@@ -45,7 +45,7 @@ import { environment } from "../config/environment.js";
       
   }
     
-    const createRecQueueDB = async () =>{
+  const createRecQueueDB = async () =>{
       // let exitsDB = await Dexie.exists("CITBQueueRecords");
       // if(exitsDB){
       //   delQueueDB();
@@ -110,6 +110,7 @@ import { environment } from "../config/environment.js";
 
   const saveLinktoDB = async(id,link) =>{
     await queueDB.records.update(id,{driveLink: link});
+    getDriverLinkInQueueDB(id);
   }
 
   const delFileInDB = async(id) =>{
@@ -129,6 +130,24 @@ import { environment } from "../config/environment.js";
         console.log(error);
         throw error;
     }  
+  }
+
+  const getDriverLinkInQueueDB = async (id) => {
+    let exitsDB = await Dexie.exists("CITBQueueRecords");
+    if(!exitsDB){
+      return;
+    }
+    console.log("Search by id",id);
+    let result;
+    // const result = await queueDB.records.where({id: id.toString()}).first();
+    // const result = await queueDB.records.get({id});
+    await queueDB.records.each(element => {  
+      if(element.id == id){
+        console.log("element.driveLink in DB",element.driveLink)
+        result = element.driveLink;
+      }
+    });
+    return result;
   }
 
     
@@ -239,4 +258,5 @@ export {
     ,saveLinktoDB
     ,delFileInDB
     ,listQueueDB
+    ,getDriverLinkInQueueDB
 }

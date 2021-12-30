@@ -22,8 +22,6 @@ const getLinkFileDrive = async() => {
     console.log("files",files);
 
     let file = files.filter(x => x.name === window.fileName);
-    console.log("file",file);
-
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
     console.log("shareLink",shareLink);
@@ -214,15 +212,19 @@ setInterval(uploadQueueDaemon,5000);
 
 const listUploadQueue = async() =>{
     let list = await listQueueDB();
-    console.log("collado",list)
     let listResult = [];
     list.forEach((element)=>{
+        let upload = 'ended';
+        if(element.file != 'uploaded'){
+            upload = 'inProgress';
+        }
         let details = {
              id: element.id 
             ,name: element.name
             ,dateStart: element.dateStart
             ,dateEnd: element.dateEnd 
             ,driveLink : element.driveLink
+            ,upload: upload
         }
         listResult.push(details);
     });
