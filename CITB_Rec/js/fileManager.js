@@ -3,7 +3,7 @@ import { errorHandling } from './errorHandling.js'
 import { 
      selectDB
     ,createRecQueueDB
-    ,countQueueDB
+    ,getLastElementQueueDB
     ,getNextQueueFile 
     ,saveLinktoDB
     ,delFileInDB
@@ -131,7 +131,7 @@ const prepareRecordFile = (finalArray) => {
     var blob = new Blob(finalArray, {
         type: "video/webm"
     });
-    fileName = window.fileName + " " + Date() + ".webm";
+    window.fileName = window.fileName + " " + Date() + ".webm";
     var file = new File([blob], window.fileName);
     return file;
   }
@@ -185,20 +185,25 @@ const delFileWhenUploadIsComplete = () =>{
     delFileInDB(window.fileIDUploadInProgress);
 }
 window.fileIDUploadInProgress = -1 ;
-let count
+
 const uploadQueueDaemon = async() =>{
     if(window.uploadValue != -1){
         return;
     }
-    let lastElemen = await countQueueDB(); //change method name
+    let lastElemen = await getLastElementQueueDB();
     console.log("queueSize",lastElemen,lastElemen.file);
     if(lastElemen.file != "uploaded"){
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
-        chrome.storage.sync.set({newUpload: "newUpload"}, () => {
-            console.log("SET NEW UPLOAD")
-        });
+        chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
+        let details = { id: nextFile.id 
+                        ,name: window.nameToRecList
+                        ,dateStart: nextFile.dateStart
+                        , dateEnd: nextFile.dateEnd 
+                        ,driveLink : nextFile.driveLink
+                    }
+        chrome.storage.sync.set({newUploadDetails: details}, () => {});
         prepareUploadToDrive(nextFile.file);
     }
 }
