@@ -191,12 +191,16 @@ button {
   list-style-type: none;
   margin: 0;
   position: absolute;
-  bottom: 55px;
+  bottom: 45px;
   right: 18px;
   opacity: 0;
   transition: all 0.3s ease;
   transform: scale(0);
   transform-origin: 85% center;
+}
+.duplo-options>ul{
+  display: flex;
+  margin-top: 20px;
 }
 
 .duplo:hover+.duplo-options,
