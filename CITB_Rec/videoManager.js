@@ -82,7 +82,8 @@ const calculateRecTime = (details) =>{
 }
 
 const createRecordCard = (details) => {
-    const date =  details.dateStart.substring(1, 10);
+    let date =  details.dateStart.substring(0, 10);
+    date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
     const recTime = calculateRecTime(details);
     fetch(chrome.runtime.getURL('html/card.html')).then(r => r.text()).then(html => {
         
