@@ -124,7 +124,7 @@ import { environment } from "../config/environment.js";
           return;
         }
         let result = await queueDB.records.orderBy('id').reverse().toArray();
-        console.log("COLLADOlistQueueDB",result);
+        // console.log("COLLADOlistQueueDB",result);
         return result; 
     }catch(error){
         console.log(error);

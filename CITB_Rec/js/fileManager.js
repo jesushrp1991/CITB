@@ -49,15 +49,15 @@ const addEventToGoogleCalendar = (linkDrive) => {
   }
 
   const verificateAuth = () => {
-    console.log("VERIFICATE AUTH");
+    // console.log("VERIFICATE AUTH");
     gapi.client.init({
       // Don't pass client nor scope as these will init auth2, which we don't want
       apiKey: environment.API_KEY,
       discoveryDocs: environment.DISCOVERY_DOCS,
     }).then( (data) =>{
-      console.log("BEFORE IDENTITY SET ",data);
+      // console.log("BEFORE IDENTITY SET ",data);
       chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
-        console.log("TOKEN RESULT", tokenResult);
+        // console.log("TOKEN RESULT", tokenResult);
         gapi.auth.setToken({
           'access_token': tokenResult,
         });

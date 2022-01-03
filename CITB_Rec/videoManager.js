@@ -150,12 +150,10 @@ const createRecordCard = async (details) => {
 // }
 
 const startQueue = () =>{
-    port.postMessage({getList: true});
-
     // port.postMessage({getList: true});
     setInterval(()=>{
         port.postMessage({getList: true});
-    },2000);
+    },1000);
 }
 const clear = () =>{
     let carsList = document.getElementsByClassName('col-4');
@@ -167,7 +165,7 @@ let cantElements = 0;
 let actualUploadElementID;
 let actualInterval = null;
 const queueDaemon = (result) =>{
-    console.log(result,cantElements);
+    // console.log(result,cantElements);
     if(result.length  > cantElements)
     {
         cantElements = result.length ;
