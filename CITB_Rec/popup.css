@@ -87,6 +87,10 @@ button {
   align-items: center;
 }
 
+#progreesBarContainer {
+  display:none;
+}
+
 .progress-bar-container{
   padding: 0.01em 16px;
   max-width: 90%;

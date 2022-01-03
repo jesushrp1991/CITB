@@ -82,7 +82,7 @@ import { environment } from "../config/environment.js";
   delQueueDB();
 
   
-  const getLastElementQueueDB = async () =>{
+  const getLastElementIdQueueDB = async () =>{
       try{
           let exitsDB = await Dexie.exists("CITBQueueRecords");
           if(!exitsDB){
@@ -143,7 +143,6 @@ import { environment } from "../config/environment.js";
     // const result = await queueDB.records.get({id});
     await queueDB.records.each(element => {  
       if(element.id == id){
-        console.log("element.driveLink in DB",element.driveLink)
         result = element.driveLink;
       }
     });
@@ -253,7 +252,7 @@ export {
     ,delLastItem
     ,createRecQueueDB
     ,addRecQueueDB
-    ,getLastElementQueueDB
+    ,getLastElementIdQueueDB
     ,getNextQueueFile
     ,saveLinktoDB
     ,delFileInDB

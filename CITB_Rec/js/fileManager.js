@@ -3,7 +3,7 @@ import { errorHandling } from './errorHandling.js'
 import { 
      selectDB
     ,createRecQueueDB
-    ,getLastElementQueueDB
+    ,getLastElementIdQueueDB
     ,getNextQueueFile 
     ,saveLinktoDB
     ,delFileInDB
@@ -18,30 +18,25 @@ const getLinkFileDrive = async() => {
         fields: 'nextPageToken, files(id, name)',
         spaces: 'drive',
     })
-    let files = result.result.files;
-    console.log("files",files);
-
-    let file = files.filter(x => x.name === window.fileName);
+    let fileList = result.result.files;
+    let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
-    console.log("shareLink",shareLink);
+    console.log("getLinkFileDrive shareLink",shareLink);
     chrome.storage.sync.set({shareLink: shareLink}, function() {
     });
     return shareLink;
 }
-const addEventToGoogleCalendar = async () => {
-    let linkDrive = await getLinkFileDrive();
-    saveDriveLinkToDB(linkDrive);
-    delFileWhenUploadIsComplete();
+const addEventToGoogleCalendar = (linkDrive) => {    
     let description = "See video here:" + linkDrive;
     let newEvent = {
-      "summary": window.fileName,
+      "summary":window.nameToUploads,
       "description": description ,
       "start": {
-        "dateTime": window.meetStartTime
+        "dateTime": window.starTimeUpload
       },
       "end": {
-        "dateTime": window.meetEndTime
+        "dateTime": window.endTimeUpload
       }
     };
     let request = gapi.client.calendar.events.insert({
@@ -52,6 +47,7 @@ const addEventToGoogleCalendar = async () => {
     //  console.log("respuesta del calendar",resp);
    });
   }
+
   const verificateAuth = () => {
     gapi.client.init({
       // Don't pass client nor scope as these will init auth2, which we don't want
@@ -95,11 +91,13 @@ const prepareUploadToDrive = (obj) => {
       fileSize: f.fileSize,
       fileType: f.fileType,
       fileBuffer: f.result,
+      chunkSize: 10485760,
       accessToken: accessToken,
       // folderId: 'CITB_REC'
     };
     const upload = new ResumableUploadToGoogleDrive();
-    upload.Do(resource, (res, err)=>{
+
+    upload.Do(resource, async (res, err)=>{
       if (err) {
         console.log(err);
         return;
@@ -114,7 +112,11 @@ const prepareUploadToDrive = (obj) => {
           window.uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(window.uploadValue);
       }else if(res.status == "Done"){
-        addEventToGoogleCalendar();        
+        let linkDrive = await getLinkFileDrive();
+        console.log("Saving Link to DB",linkDrive)
+        saveLinktoDB(window.fileIDUploadInProgress,linkDrive);
+        delFileInDB(window.fileIDUploadInProgress);
+        addEventToGoogleCalendar(linkDrive);        
         window.uploadValue = -1;
         saveUploadProgress(-1);
         msg = res.status;
@@ -175,36 +177,42 @@ const saveUploadProgress = (value) =>{
     });
 }
 
-const saveDriveLinkToDB = (link)=>{
-    console.log("Saving Link to DB")
-    saveLinktoDB(window.fileIDUploadInProgress,link);
-}
-
-const delFileWhenUploadIsComplete = () =>{
-    delFileInDB(window.fileIDUploadInProgress);
-}
 window.fileIDUploadInProgress = -1 ;
 
+var refreshToken = 0;
 const uploadQueueDaemon = async() =>{
+    refreshToken++;
+    /*
+    ***** El token dura una hora, por si el usuario
+    ***** no abre el popup en 50 min (12 veces * segundo * 50 min = 600)
+    ***** no pierda el upload por error 401
+    */
+    if(refreshToken >= 600){
+      verificateAuth();
+      refreshToken = 0;
+    }
     if(window.uploadValue != -1){
         return;
     }
-    let lastElemen = await getLastElementQueueDB();
-    if(lastElemen == undefined){
+    let lastElemenID = await getLastElementIdQueueDB();
+    if(lastElemenID == undefined){
         return;
     }
-    if(lastElemen.file != "uploaded" ){
+    if(lastElemenID.file != "uploaded" ){
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
         chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
         let details = { id: nextFile.id 
-                        ,name: window.nameToRecList
+                        ,name: nextFile.name
                         ,dateStart: nextFile.dateStart
                         , dateEnd: nextFile.dateEnd 
                         ,driveLink : nextFile.driveLink
                     }
         chrome.storage.sync.set({newUploadDetails: details}, () => {});
+        window.nameToUploads = nextFile.name; 
+        window.starTimeUpload = nextFile.dateStart; 
+        window.endTimeUpload = nextFile.dateEnd; 
         prepareUploadToDrive(nextFile.file);
     }
 }
@@ -213,10 +221,13 @@ setInterval(uploadQueueDaemon,5000);
 const listUploadQueue = async() =>{
     let list = await listQueueDB();
     let listResult = [];
-    list.forEach((element)=>{
+    if(list != undefined){
+      list.forEach((element)=>{
         let upload = 'ended';
-        if(element.file != 'uploaded'){
-            upload = 'inProgress';
+        if(element.id === window.fileIDUploadInProgress && window.uploadValue != -1){
+          upload = 'inProgress';
+        }else if (element.file != 'uploaded'){
+            upload = 'awaiting';
         }
         let details = {
              id: element.id 
@@ -227,7 +238,8 @@ const listUploadQueue = async() =>{
             ,upload: upload
         }
         listResult.push(details);
-    });
+      });
+    }
     return listResult;
 }
 

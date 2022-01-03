@@ -20,10 +20,6 @@ import {
   ,listUploadQueue
 } from './js/fileManager.js'
 
-// import {
-//   errorHandling
-// } from './js/errorHandling.js'
-
 const popupMessages = {
   rec:'rec'
   ,pause:'pause'
@@ -49,7 +45,6 @@ window.videoChunksArray = [];
 window.resultStream;
 window.desktopStream;
 window.micStream;
-window.nameToRecList;
 
 function injectFileName() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -77,7 +72,6 @@ const getFileName = () => {
   chrome.storage.sync.get('fileName', function(result) {
     if(result.fileName != "undefined"){
       window.fileName = result.fileName;
-      window.nameToRecList = result.fileName;
       clearInterval(intervalFileName);
     }
   })
@@ -106,7 +100,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){
           window.fileName = "CITB Rec";
-          window.nameToRecList  = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
           injectFileName();
           intervalFileName = setInterval(getFileName,500);
@@ -162,8 +155,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         let list = await listUploadQueue();
         chrome.storage.sync.set({listRec: {list:list}}, () => {
           sendResponse({status: "ready"});
-        });
-        
+        });        
         break;
     }
     return true;
@@ -177,20 +169,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         let driveLink = await getDriverLinkInQueueDB(msg.getLink);
         console.log("backgroundLink",driveLink);
         port.postMessage({answer: driveLink});
+      }else if (msg.getList){
+        console.log("getList",msg.getList);
+        let list = await listUploadQueue();
+        console.log("GetList",list);
+        port.postMessage({lista: list});
+        console.log("sendPostMessage");
       }
     });
   });
 
-  const errorHandling = (error) => {
-    console.log(error);
-    // window.recorder.stop();
-    // window.desktopStream.getTracks().forEach(track => track.stop())
-    // window.micStream.getTracks().forEach(track => track.stop())
-    // window.resultStream.getTracks().forEach(track => track.stop())
-    // reset();
-    // window.isRecording = false;
-    // chrome.storage.sync.set({isRecording: false}, function() {
-    // });
-  }
 
   
