@@ -10,6 +10,7 @@ const environment = {
     videoCaptureModesForMac : ['tab','audio'],
     lowDiskSpaceAlert : 50,
     timeIntervalSaveDB : 100, 
+    backendLogURL: 'https://apicitb.tk/api/log/savelog',
 
 }
 
