@@ -79,6 +79,9 @@ button {
 .voiceControl {
   background-image: url('./assets/COMANDOS\ COLOR.svg');
 }
+.buttonRecList {
+  background-image: url('./assets/records.png');
+}
 
 .buttonsBorder {
   display: flex;

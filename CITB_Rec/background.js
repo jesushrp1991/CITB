@@ -30,6 +30,7 @@ const popupMessages = {
   ,isVoiceCommand:'voiceCommand'
   ,getDriveLink: 'getDriveLink'
   ,listRec: 'listRec'
+  ,showRecList: 'showRecList'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -156,6 +157,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         chrome.storage.sync.set({listRec: {list:list}}, () => {
           sendResponse({status: "ready"});
         });        
+        break;
+      case popupMessages.showRecList :
+        openRecList();
         break;
     }
     return true;

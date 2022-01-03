@@ -168,6 +168,11 @@ const checkAut = () => {
     sendMessage(request);
 }
 
+const showRecList = () => {
+    const request = { recordingStatus: 'showRecList' };
+    sendMessage(request);
+}
+
 let buttonRec = document.getElementById("recButton");
 buttonRec.addEventListener('click',sendRecordCommand);
 
@@ -184,6 +189,9 @@ buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
 let buttonLocalDownload = document.getElementById("localDownloadButton");
 buttonLocalDownload.addEventListener('click',localDownload);
+
+let buttonRecList = document.getElementById("recListButton");
+buttonRecList.addEventListener('click',showRecList);
 
 let shareGmailButton = document.getElementById("shareGmail");
 shareGmailButton.addEventListener('click',getShareLink);
