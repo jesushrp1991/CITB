@@ -2,6 +2,16 @@ import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
 var port = chrome.runtime.connect({name: "getDriveLink"});
+
+const baseUrlPerHost = {
+    whatsapp: 'https://wa.me?text=',
+    twitter: 'https://twitter.com/intent/tweet?text=',
+    classroom: 'https://classroom.google.com/share?url=',
+    gmail: 'https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=',
+    wakelet: 'https://wakelet.com/save?self=1&media=',
+
+};
+
 port.onMessage.addListener(async (msg) => {
     if (msg.answer){
         getKindShare(msg.answer)
@@ -19,42 +29,54 @@ const reply_click = (event) =>{
     console.log("numb",numb)
     port.postMessage({getLink: numb});
 }
+
+const getShareType = () => {
+    const linkTypes = Object.keys(baseUrlPerHost);
+    console.log("linkTypes",linkTypes);
+    let finalType = "";
+    linkTypes.forEach(type => {
+        if (id.includes(type)) {
+            finalType = type;
+        }
+    })
+    return finalType;
+}
+
+
 const getKindShare = (link) =>{
     console.log(link,id);
-    if(id.includes('gmail'))
-        getShareLink(link);
-    if(id.includes('classroom'))
-        shareClassRoom(link);
-    if(id.includes('twitter'))
-        shareTwitter(link);
-    if(id.includes('whatsapp'))
-        shareWhatsapp();
-    if(id.includes('wakelet'))
-        shareWakelet(link);    
-}
-const getShareLink = (link) =>{
-    chrome.storage.sync.get('shareLink', function(result) {        
-        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(link)}&&tf=cm`
-        chrome.tabs.create({active: true, url: url});
-    });
+    const type = getShareType();
+    const baseUrl = baseUrlPerHost[type];
+    shareLink(link, baseUrl);
+    // if(id.includes('gmail')) {
+    //     const baseUrl = baseUrlPerHost.gmail;
+    //     shareLink(link, baseUrl);
+    // }
+        
+    // if(id.includes('classroom')) {
+    //     const baseUrl = baseUrlPerHost.classroom;
+    //     shareLink(link, baseUrl);
+    // }
+        
+    // if(id.includes('twitter')) {
+    //     const baseUrl = baseUrlPerHost.twitter;
+    //     shareLink(link, baseUrl);
+    // }
+        
+    // if(id.includes('whatsapp')) {
+    //     const baseUrl = baseUrlPerHost.whatsapp;
+    //     shareLink(link, baseUrl);
+    // }
+        
+    // if(id.includes('wakelet')) {
+    //     const baseUrl = baseUrlPerHost.wakelet;
+    //     shareLink(link, baseUrl);
+    // }
 }
 
-const shareWhatsapp = (link) =>{
-    let url = `https://wa.me?text=${encodeURIComponent(link)}`;        
-    chrome.tabs.create({active: true, url: url});
-}
-
-const shareClassRoom = (link) =>{    
-    let url = `https://classroom.google.com/share?url=${encodeURIComponent(link)}`;        
-    chrome.tabs.create({active: true, url: url});
-}
-
-const shareTwitter = (link) =>{ 
-    let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(link)}`;        
-    chrome.tabs.create({active: true, url: url});
-}
-const shareWakelet = (link) =>{     
-    let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(link)}`;        
+const shareLink = (link, baseUrl) => { 
+    console.log(link, baseUrl);
+    const url = `${baseUrl}${encodeURIComponent(link)}`;
     chrome.tabs.create({active: true, url: url});
 }
 
@@ -128,6 +150,8 @@ const createRecordCard = async (details) => {
 // }
 
 const startQueue = () =>{
+    port.postMessage({getList: true});
+
     // port.postMessage({getList: true});
     setInterval(()=>{
         port.postMessage({getList: true});
