@@ -206,14 +206,14 @@ const uploadQueueDaemon = async() =>{
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
-        chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
-        let details = { id: nextFile.id 
-                        ,name: nextFile.name
-                        ,dateStart: nextFile.dateStart
-                        , dateEnd: nextFile.dateEnd 
-                        ,driveLink : nextFile.driveLink
-                    }
-        chrome.storage.sync.set({newUploadDetails: details}, () => {});
+        // chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
+        // let details = { id: nextFile.id 
+        //                 ,name: nextFile.name
+        //                 ,dateStart: nextFile.dateStart
+        //                 , dateEnd: nextFile.dateEnd 
+        //                 ,driveLink : nextFile.driveLink
+        //             }
+        // chrome.storage.sync.set({newUploadDetails: details}, () => {});
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
         window.endTimeUpload = nextFile.dateEnd; 
@@ -227,11 +227,14 @@ const listUploadQueue = async() =>{
     let listResult = [];
     if(list != undefined){
       list.forEach((element)=>{
-        let upload = 'ended';
-        if(element.id === window.fileIDUploadInProgress && window.uploadValue != -1){
+        let upload;
+        console.log(element.id,window.fileIDUploadInProgress,element.file)
+        if(element.id === window.fileIDUploadInProgress){
           upload = 'inProgress';
-        }else if (element.file != 'uploaded'){
-            upload = 'awaiting';
+        }else if (element.file == 'uploaded' ){
+            upload = 'uploaded'
+        }else{
+          upload = 'awaiting';
         }
         let details = {
              id: element.id 

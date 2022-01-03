@@ -49,7 +49,7 @@ window.micStream;
 
 const injectFileName = () =>{
   chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-    console.log(tabs);
+    // console.log(tabs);
     const url = tabs[0].url;
     if (!url.includes("http")) {
       window.fileName = prompt("What's yours meet name?","CITB Rec");
