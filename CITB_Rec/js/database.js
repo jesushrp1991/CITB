@@ -143,7 +143,6 @@ import { environment } from "../config/environment.js";
     // const result = await queueDB.records.get({id});
     await queueDB.records.each(element => {  
       if(element.id == id){
-        console.log("element.driveLink in DB",element.driveLink)
         result = element.driveLink;
       }
     });

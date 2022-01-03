@@ -1,11 +1,12 @@
-import { checkUploadStatus } from './js/progressBar.js'
+import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
 var port = chrome.runtime.connect({name: "getDriveLink"});
 port.onMessage.addListener(function(msg) {
     if (msg.answer){
-        console.log("msg.answer",msg.answer)
         getKindShare(msg.answer)
+    }else if (msg.lista){
+        queueDaemon(msg.lista);
     }
   });
 
@@ -109,44 +110,95 @@ const createRecordCard = (details) => {
     });
 }
 
-const waitingForRec = () => {
+// const waitingForRec = () => {
+//     setInterval(()=>{
+//         chrome.storage.sync.get('newUpload', (result) => {   
+//             if(result.newUpload == "newUpload"){
+//                 chrome.storage.sync.get('newUploadDetails', (result) => {  
+//                     createRecordCard(result.newUploadDetails);
+//                     chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
+//                     checkUploadStatus(true,result.newUploadDetails.id);
+//                     console.log("Desde Interval");
+//                 }) 
+//             }     
+//         });
+//     },5000)
+// }
+
+const startQueue = () =>{
+    // port.postMessage({getList: true});
     setInterval(()=>{
-        chrome.storage.sync.get('newUpload', (result) => {   
-            if(result.newUpload == "newUpload"){
-                chrome.storage.sync.get('newUploadDetails', (result) => {  
-                    createRecordCard(result.newUploadDetails);
-                    chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
-                    checkUploadStatus(true,result.newUploadDetails.id);
-                    console.log("Desde Interval");
-                }) 
-            }     
-        });
-    },5000)
+        port.postMessage({getList: true});
+    },2000);
+}
+const clear = () =>{
+    let carsList = document.getElementsByClassName('col-4');
+    for (let i = 0; i < carsList.length; i++) {
+        carsList[i].remove();
+    }
+}
+let cantElements = 0;
+let actualUploadElementID;
+let actualInterval = null;
+const queueDaemon = (result) =>{
+    // console.log(result,cantElements);
+    if(result.length  > cantElements)
+    {
+        cantElements = result.length ;
+        clear();
+        console.log("ANTES",result);
+        result.forEach(element => {
+            console.log("FOREACH");
+            // console.log(element,actualInterval,actualUploadElementID);
+            if(element.upload == 'inProgress'){
+                console.log("PROGRESS");
+                if(actualUploadElementID != element.id){
+                    if(actualInterval != null){
+                        clearInterval(actualInterval);
+                    }
+                    actualUploadElementID = element.id; 
+                    createRecordCard(element);
+                    actualInterval = checkUploadStatus(true,actualUploadElementID);
+                }                
+            }else if(element.upload == 'awaiting') {
+                console.log("awaiting");
+                createRecordCard(element);
+                updateProgressBar(0,element.id);
+            }else{
+                console.log("ENDED");
+                createRecordCard(element);
+                updateProgressBar(100,element.id);
+            }
+        })
+    }
 }
 
-const checkInitialState = () => {
-    console.log("INITIAL STATE")
-    const request = { recordingStatus: 'listRec'};
-    chrome.runtime.sendMessage(request);
-    setTimeout(()=>{},3000);
-    let isRunningRec = false;
-    chrome.storage.sync.get('listRec', (result) => {
-        if(result.listRec){
-            result.listRec.list.forEach(element => {
-                if( element.upload == 'inProgress' ){
-                    console.log("Estado Inicial")
-                    createRecordCard(element);
-                    chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
-                    checkUploadStatus(true,element.id);               
-                    isRunningRec = true;
-                }else{
-                    createRecordCard(element);
-                }
-            });
-        }        
-        if(!isRunningRec)
-            waitingForRec();
-    })
-}
+startQueue();
 
-checkInitialState();
+// const checkInitialState = () => {
+//     console.log("INITIAL STATE")
+//     const request = { recordingStatus: 'listRec'};
+//     chrome.runtime.sendMessage(request);
+//     setTimeout(()=>{},3000);
+//     let isRunningRec = false;
+//     chrome.storage.sync.get('listRec', (result) => {
+//         if(result.listRec){
+//             result.listRec.list.forEach(element => {
+//                 if( element.upload == 'inProgress' ){
+//                     console.log("Estado Inicial")
+//                     createRecordCard(element);
+//                     chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
+//                     checkUploadStatus(true,element.id);               
+//                     isRunningRec = true;
+//                 }else{
+//                     createRecordCard(element);
+//                 }
+//             });
+//         }        
+//         if(!isRunningRec)
+//             waitingForRec();
+//     })
+// }
+
+// checkInitialState();
+

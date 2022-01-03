@@ -16,23 +16,28 @@ const updateProgressBar = (value,id) => {
 
 }
 const checkUploadStatus = (isFromPageList,id) => {
-    setInterval(()=>{
-        chrome.storage.sync.get('uploadPercent', function(result) {
-            if (result.uploadPercent > 0){
-                updateProgressBar(result.uploadPercent,id);
-                displayProgressBar();
-            }else{
-                if(isFromPageList){
-                    updateProgressBar(100,id);
-                }else{
-                    hideProgressBar();
-                }
-            }
-        });
-    },1500)
+    let interval = setInterval(()=>{
+                    chrome.storage.sync.get('uploadPercent', function(result) {
+                        if (result.uploadPercent > 0){
+                            updateProgressBar(result.uploadPercent,id);
+                            displayProgressBar();
+                        }else{
+                            if (result.uploadPercent == -1){
+                                updateProgressBar(100,id);
+                            }else if (isFromPageList){
+                                updateProgressBar(2,id);
+                            }else{
+                                hideProgressBar();
+                            }
+                        }
+                    });
+                },1500);
+    return interval;
+
 }
 
 export {
-    checkUploadStatus
+    checkUploadStatus,
+    updateProgressBar
 }
 

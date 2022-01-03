@@ -221,10 +221,13 @@ setInterval(uploadQueueDaemon,5000);
 const listUploadQueue = async() =>{
     let list = await listQueueDB();
     let listResult = [];
-    list.forEach((element)=>{
+    if(list != undefined){
+      list.forEach((element)=>{
         let upload = 'ended';
-        if(element.file != 'uploaded'){
-            upload = 'inProgress';
+        if(element.id === window.fileIDUploadInProgress && window.uploadValue != -1){
+          upload = 'inProgress';
+        }else if (element.file != 'uploaded'){
+            upload = 'awaiting';
         }
         let details = {
              id: element.id 
@@ -235,7 +238,8 @@ const listUploadQueue = async() =>{
             ,upload: upload
         }
         listResult.push(details);
-    });
+      });
+    }
     return listResult;
 }
 

@@ -20,10 +20,6 @@ import {
   ,listUploadQueue
 } from './js/fileManager.js'
 
-// import {
-//   errorHandling
-// } from './js/errorHandling.js'
-
 const popupMessages = {
   rec:'rec'
   ,pause:'pause'
@@ -159,8 +155,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         let list = await listUploadQueue();
         chrome.storage.sync.set({listRec: {list:list}}, () => {
           sendResponse({status: "ready"});
-        });
-        
+        });        
         break;
     }
     return true;
@@ -174,20 +169,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         let driveLink = await getDriverLinkInQueueDB(msg.getLink);
         console.log("backgroundLink",driveLink);
         port.postMessage({answer: driveLink});
+      }else if (msg.getList){
+        console.log("getList",msg.getList);
+        let list = await listUploadQueue();
+        console.log("GetList",list);
+        port.postMessage({lista: list});
+        console.log("sendPostMessage");
       }
     });
   });
 
-  const errorHandling = (error) => {
-    console.log(error);
-    // window.recorder.stop();
-    // window.desktopStream.getTracks().forEach(track => track.stop())
-    // window.micStream.getTracks().forEach(track => track.stop())
-    // window.resultStream.getTracks().forEach(track => track.stop())
-    // reset();
-    // window.isRecording = false;
-    // chrome.storage.sync.set({isRecording: false}, function() {
-    // });
-  }
 
   
