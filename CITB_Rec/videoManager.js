@@ -9,7 +9,6 @@ const baseUrlPerHost = {
     classroom: 'https://classroom.google.com/share?url=',
     gmail: 'https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=',
     wakelet: 'https://wakelet.com/save?self=1&media=',
-
 };
 
 port.onMessage.addListener(async (msg) => {
@@ -32,7 +31,6 @@ const reply_click = (event) =>{
 
 const getShareType = () => {
     const linkTypes = Object.keys(baseUrlPerHost);
-    console.log("linkTypes",linkTypes);
     let finalType = "";
     linkTypes.forEach(type => {
         if (id.includes(type)) {
@@ -48,30 +46,6 @@ const getKindShare = (link) =>{
     const type = getShareType();
     const baseUrl = baseUrlPerHost[type];
     shareLink(link, baseUrl);
-    // if(id.includes('gmail')) {
-    //     const baseUrl = baseUrlPerHost.gmail;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('classroom')) {
-    //     const baseUrl = baseUrlPerHost.classroom;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('twitter')) {
-    //     const baseUrl = baseUrlPerHost.twitter;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('whatsapp')) {
-    //     const baseUrl = baseUrlPerHost.whatsapp;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('wakelet')) {
-    //     const baseUrl = baseUrlPerHost.wakelet;
-    //     shareLink(link, baseUrl);
-    // }
 }
 
 const shareLink = (link, baseUrl) => { 

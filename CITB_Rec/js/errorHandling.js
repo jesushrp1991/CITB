@@ -8,7 +8,7 @@ const errorHandling = (error) => {
         error: inf.toString() + "source: CITB_REC",  
         header: navigator.userAgent  
     }      
-    fetch(enviroment.backendLogURL, {  
+    fetch(environment.backendLogURL, {  
         method: 'POST',  
         headers: {  
             'Accept': 'application/json',  

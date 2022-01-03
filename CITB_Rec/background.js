@@ -49,22 +49,32 @@ window.micStream;
 
 function injectFileName() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    var currTab = tabs[0];
-    if (currTab) { // Sanity check
-      chrome.tabs.insertCSS(currTab.id,{file:"./css/alertify.min.css"});
-      chrome.tabs.insertCSS(currTab.id, {file:"./css/default.min.css"});
-      
-      chrome.tabs.executeScript(
-        currTab.id,
-        // {code: "document.body.style.backgroundColor='red'"}
-        {file:"./js/external/alertify.min.js"}
-      )
-      chrome.tabs.executeScript(
-        currTab.id,
-        // {code: "document.body.style.backgroundColor='red'"}
-        {file:"./js/content_script.js"}
-      )
+    console.log(tabs);
+    const url = tabs[0].url;
+    if (!url.includes("http")) {
+      prompt("What's yours meet name?", fileName);
+      window.fileName = fileName;
+      clearInterval(intervalFileName);
+      return;
+    }else {
+      var currTab = tabs[0];
+      if (currTab) { // Sanity check
+        chrome.tabs.insertCSS(currTab.id,{file:"./css/alertify.min.css"});
+        chrome.tabs.insertCSS(currTab.id, {file:"./css/default.min.css"});
+        
+        chrome.tabs.executeScript(
+          currTab.id,
+          // {code: "document.body.style.backgroundColor='red'"}
+          {file:"./js/external/alertify.min.js"}
+        )
+        chrome.tabs.executeScript(
+          currTab.id,
+          // {code: "document.body.style.backgroundColor='red'"}
+          {file:"./js/content_script.js"}
+        )
+      }
     }
+    
   });
 }
 let intervalFileName = null;
