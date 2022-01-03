@@ -82,7 +82,7 @@ import { environment } from "../config/environment.js";
   delQueueDB();
 
   
-  const getLastElementQueueDB = async () =>{
+  const getLastElementIdQueueDB = async () =>{
       try{
           let exitsDB = await Dexie.exists("CITBQueueRecords");
           if(!exitsDB){
@@ -253,7 +253,7 @@ export {
     ,delLastItem
     ,createRecQueueDB
     ,addRecQueueDB
-    ,getLastElementQueueDB
+    ,getLastElementIdQueueDB
     ,getNextQueueFile
     ,saveLinktoDB
     ,delFileInDB

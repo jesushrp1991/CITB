@@ -49,7 +49,6 @@ window.videoChunksArray = [];
 window.resultStream;
 window.desktopStream;
 window.micStream;
-window.nameToRecList;
 
 function injectFileName() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -77,7 +76,6 @@ const getFileName = () => {
   chrome.storage.sync.get('fileName', function(result) {
     if(result.fileName != "undefined"){
       window.fileName = result.fileName;
-      window.nameToRecList = result.fileName;
       clearInterval(intervalFileName);
     }
   })
@@ -106,7 +104,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){
           window.fileName = "CITB Rec";
-          window.nameToRecList  = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
           injectFileName();
           intervalFileName = setInterval(getFileName,500);
