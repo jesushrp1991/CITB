@@ -2,11 +2,11 @@ import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
 var port = chrome.runtime.connect({name: "getDriveLink"});
-port.onMessage.addListener(function(msg) {
+port.onMessage.addListener(async (msg) => {
     if (msg.answer){
         getKindShare(msg.answer)
     }else if (msg.lista){
-        queueDaemon(msg.lista);
+        await queueDaemon(msg.lista);
     }
   });
 
@@ -81,34 +81,35 @@ const calculateRecTime = (details) =>{
     return `${hours}:${minutes}:${seconds}`;
 }
 
-const createRecordCard = (details) => {
+const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
     const recTime = calculateRecTime(details);
-    fetch(chrome.runtime.getURL('html/card.html')).then(r => r.text()).then(html => {
+    const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
+    let html = await urlContent.text();
         
-        html = html.replace("{{cardId}}",details.id);
-        html = html.replace("{{recName}}",details.name);
-        html = html.replace("{{recDuration}}",recTime);
-        html = html.replace("{{recDate}}",date);
-        html = html.replace("{{progressBarId}}","progressBar" + details.id);
-        html = html.replace("{{gmailcardId}}","gmail" + details.id);
-        html = html.replace("{{classRoomcardId}}","classroom" + details.id);
-        html = html.replace("{{twittercardId}}","twitter" + details.id);
-        html = html.replace("{{whatsAppcardId}}","whatsapp" + details.id);
-        html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
+    html = html.replace("{{cardId}}",details.id);
+    html = html.replace("{{recName}}",details.name);
+    html = html.replace("{{recDuration}}",recTime);
+    html = html.replace("{{recDate}}",date);
+    html = html.replace("{{progressBarId}}","progressBar" + details.id);
+    html = html.replace("{{gmailcardId}}","gmail" + details.id);
+    html = html.replace("{{classRoomcardId}}","classroom" + details.id);
+    html = html.replace("{{twittercardId}}","twitter" + details.id);
+    html = html.replace("{{whatsAppcardId}}","whatsapp" + details.id);
+    html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
 
-        const container = document.createElement("div");
-        container.setAttribute('class',"col-4");
-        const div = escapeHTMLPolicy.createHTML(html);  
-        container.innerHTML = div;
-        document.getElementById('citbCardRecContainer').appendChild(container);
-        document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
-        document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
-        document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
-        document.getElementById("whatsapp" + details.id).addEventListener("click", reply_click);
-        document.getElementById("wakelet" + details.id).addEventListener("click", reply_click);
-    });
+    const container = document.createElement("div");
+    container.setAttribute('class',"col-4");
+    const div = escapeHTMLPolicy.createHTML(html);  
+    container.innerHTML = div;
+    document.getElementById('citbCardRecContainer').appendChild(container);
+    document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
+    document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
+    document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
+    document.getElementById("whatsapp" + details.id).addEventListener("click", reply_click);
+    document.getElementById("wakelet" + details.id).addEventListener("click", reply_click);
+    return;
 }
 
 // const waitingForRec = () => {
@@ -142,13 +143,13 @@ let cantElements = 0;
 let actualUploadElementID;
 let actualInterval = null;
 const queueDaemon = (result) =>{
-    // console.log(result,cantElements);
+    console.log(result,cantElements);
     if(result.length  > cantElements)
     {
         cantElements = result.length ;
         clear();
         console.log("ANTES",result);
-        result.forEach(element => {
+        result.forEach(async (element) => {
             console.log("FOREACH");
             // console.log(element,actualInterval,actualUploadElementID);
             if(element.upload == 'inProgress'){
@@ -158,16 +159,16 @@ const queueDaemon = (result) =>{
                         clearInterval(actualInterval);
                     }
                     actualUploadElementID = element.id; 
-                    createRecordCard(element);
+                    await createRecordCard(element);
                     actualInterval = checkUploadStatus(true,actualUploadElementID);
                 }                
             }else if(element.upload == 'awaiting') {
                 console.log("awaiting");
-                createRecordCard(element);
+                await createRecordCard(element);
                 updateProgressBar(0,element.id);
             }else{
                 console.log("ENDED");
-                createRecordCard(element);
+                await createRecordCard(element);
                 updateProgressBar(100,element.id);
             }
         })
