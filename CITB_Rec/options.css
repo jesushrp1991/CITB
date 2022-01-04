@@ -23,12 +23,18 @@
   background-position: center;
 }
 .spain {
-  padding-left: 200%;
   background-image: url('./assets/spain.png')
 }
-
+.flag-container{
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+}
+.flag-content {
+  width: 50px;
+  display: inline-block;
+}
 .uk{
-  padding-left: 10%;
   background-image: url('./assets/uk.png')
 }
 
