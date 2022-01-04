@@ -1,3 +1,4 @@
+import { environment } from "../config/environment.js";
 import { rec,stop, close, play,pause } from "./voiceActions.js";
 const setImgSrc = (languages) =>{
   if(languages == null){
@@ -14,12 +15,12 @@ setImgSrc(null);
 
 document.addEventListener('keydown', function(event) {
   if (event.ctrlKey && event.key === 'c') { 
-
+    let text;
+    currentIdiom == 'es' ? text = environment.voiceHelpTextES : text = environment.voiceHelpText
     alertify.alert(
       'Voice Commands CITB Rec', 
-      function(){ 
-        alertify.success(''); 
-      });
+      text
+    );
   }
 });
 
@@ -305,13 +306,17 @@ const speachCommands = (languages) => {
 };
 speachCommands(null);
 
+let currentIdiom = navigator.language.split("-");
+currentIdiom = currentIdiom[0];
+
 const changeLanguages = () =>{
   let id = event.srcElement.id;
   let option;
   id == 'spainButton' ? option = 'es' : option = 'en';
+  currentIdiom = option;
   annyang.abort();
   speachCommands(option)
-  setImgSrc(option);
+  setImgSrc(option);  
 }
 document.getElementById('spainButton').addEventListener("click",changeLanguages)
 document.getElementById('ukButton').addEventListener("click",changeLanguages)
