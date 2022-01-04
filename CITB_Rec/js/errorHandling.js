@@ -1,5 +1,7 @@
 import { environment } from "../config/environment.js";  
-import { reset } from '.recTimer.js';
+import {
+    reset
+} from './recTimer.js'
 const errorHandling = (error) => {
     console.log(error);
     let inf = JSON.stringify(error,null,3);  

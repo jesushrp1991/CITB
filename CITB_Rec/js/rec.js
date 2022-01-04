@@ -27,6 +27,7 @@ import {
 }
 
   const recordScreen = async (streamId,idMic) => {
+    console.log("recprdScreem", streamId, idMic);
     try{
         const constraints = {
             audio:{
@@ -47,36 +48,43 @@ import {
                 }
             }
         }
-        const micConstraints = {  
-          video: false,  
-          audio: {  
-              deviceId: { exact: idMic },  
-          },  
-        } 
         window.desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
-        window.micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
 
-        const context = new AudioContext();
-        let sourceDesktop = null;
-        if(window.desktopStream.getAudioTracks().length > 0){
-          sourceDesktop = context.createMediaStreamSource(window.desktopStream);
+        if (idMic != undefined && idMic != null && idMic != '') {
+          const micConstraints = {  
+            video: false,  
+            audio: {  
+                deviceId: { exact: idMic },  
+            },  
+          } 
+          window.micStream = await navigator.mediaDevices.getUserMedia(micConstraints);
+          const context = new AudioContext();
+          let sourceDesktop = null;
+          if(window.desktopStream.getAudioTracks().length > 0){
+            sourceDesktop = context.createMediaStreamSource(window.desktopStream);
+          }
+          const sourceMic = context.createMediaStreamSource(window.micStream);
+          const destination = context.createMediaStreamDestination();
+  
+          const desktopGain = context.createGain();
+          const voiceGain = context.createGain();
+  
+          desktopGain.gain.value = 0.7;
+          voiceGain.gain.value = 0.7;
+  
+          if(sourceDesktop != null){
+            sourceDesktop.connect(desktopGain).connect(destination);
+          }
+          sourceMic.connect(voiceGain).connect(destination);
+  
+          
+          window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
+        }else {
+          window.resultStream = window.desktopStream;
         }
-        const sourceMic = context.createMediaStreamSource(window.micStream);
-        const destination = context.createMediaStreamDestination();
+      
 
-        const desktopGain = context.createGain();
-        const voiceGain = context.createGain();
-
-        desktopGain.gain.value = 0.7;
-        voiceGain.gain.value = 0.7;
-
-        if(sourceDesktop != null){
-          sourceDesktop.connect(desktopGain).connect(destination);
-        }
-        sourceMic.connect(voiceGain).connect(destination);
-
-        
-        window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])
+       
         window.recorder = new MediaRecorder(window.resultStream);
 
         window.recorder.ondataavailable = event => {
@@ -121,7 +129,9 @@ const startRecordScreen = (idMic) =>{
 }
 const stopTracks = () =>{
     window.desktopStream.getTracks().forEach(track => track.stop())
-    window.micStream.getTracks().forEach(track => track.stop())
+    if (window.micStream != undefined) {
+      window.micStream.getTracks().forEach(track => track.stop())
+    }
     window.resultStream.getTracks().forEach(track => track.stop())
 }
 const stopRecordScreen = () =>{
