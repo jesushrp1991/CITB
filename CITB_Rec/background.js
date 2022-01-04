@@ -115,7 +115,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           intervalFileName = setInterval(getFileName,500);
           intervalFileName;
           await prepareDB();
-          // fileName = prompt("What's yours meet name?");
           window.meetStartTime = dayjs().format();
           await startRecordScreen(message.idMic);
         }else{
@@ -177,17 +176,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   chrome.runtime.onConnect.addListener(function(port) {
     console.assert(port.name === "getDriveLink");
     port.onMessage.addListener(async(msg) => {
-      // console.log(msg)
       if (msg.getLink){
         let driveLink = await getDriverLinkInQueueDB(msg.getLink);
-        // console.log("backgroundLink",driveLink);
         port.postMessage({answer: driveLink});
       }else if (msg.getList){
-        // console.log("getList",msg.getList);
         let list = await listUploadQueue();
-        // console.log("GetList",list);
         port.postMessage({lista: list});
-        // console.log("sendPostMessage");
       }
     });
   });

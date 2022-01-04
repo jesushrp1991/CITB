@@ -1,7 +1,34 @@
+ .imgOptions{
+    height: 100vh;
+    background-image: url(./assets/backOptions.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+ }
  img{
-  width: 50%;
-  height: 100%;
+  width: 40%;
+  height: 90%;
   display:block;
   margin:auto;
 } 
+.flag{
+  height: 45px;
+  width: 45px;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+.spain {
+  padding-left: 200%;
+  background-image: url('./assets/spain.png')
+}
+
+.uk{
+  padding-left: 10%;
+  background-image: url('./assets/uk.png')
+}
 
