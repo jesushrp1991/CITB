@@ -106,7 +106,7 @@ import {
       errorHandling(e);
     }
 }
-const startRecordScreen = (idMic) =>{
+const startRecordScreen = (idMic,cb) =>{
     try{
       let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
       let videoCaptureModes;
@@ -120,6 +120,7 @@ const startRecordScreen = (idMic) =>{
                 window.isRecording = true;
                 chrome.storage.sync.set({isRecording: true}, function() {
                 });
+                cb();
                 await recordScreen(streamId,idMic);
             }
           });

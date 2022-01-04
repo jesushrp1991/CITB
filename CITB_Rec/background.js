@@ -100,7 +100,13 @@ const openRecList = () => {
     });
   
 }
-
+const getRecName = async() =>{
+  injectFileName();
+  intervalFileName = setInterval(getFileName,500);
+  intervalFileName;
+  await prepareDB();
+  window.meetStartTime = dayjs().format();
+}
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
@@ -111,12 +117,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if(!window.isRecording && !message.isVoiceCommandStop){
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
-          injectFileName();
-          intervalFileName = setInterval(getFileName,500);
-          intervalFileName;
-          await prepareDB();
-          window.meetStartTime = dayjs().format();
-          await startRecordScreen(message.idMic);
+          startRecordScreen(message.idMic,getRecName);
+          
         }else{
             if(intervalFileName != null){
               clearInterval(intervalFileName);
