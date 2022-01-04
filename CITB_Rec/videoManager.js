@@ -20,19 +20,15 @@ port.onMessage.addListener(async (msg) => {
     }
   });
 
-const reply_click = (event) =>{    
-    // alert(event.srcElement.id)
+const reply_click = (event) =>{   
     id = event.srcElement.id;
-    console.log(id);
     var numb = id.match(/\d/g);
     numb = numb.join("");
-    console.log("numb",numb)
     port.postMessage({getLink: numb});
 }
 
 const getShareType = () => {
     const linkTypes = Object.keys(baseUrlPerHost);
-    console.log("linkTypes",linkTypes);
     let finalType = "";
     linkTypes.forEach(type => {
         if (id.includes(type)) {
@@ -44,14 +40,12 @@ const getShareType = () => {
 
 
 const getKindShare = (link) =>{
-    console.log(link,id);
     const type = getShareType();
     const baseUrl = baseUrlPerHost[type];
     shareLink(link, baseUrl);
 }
 
 const shareLink = (link, baseUrl) => { 
-    console.log(link, baseUrl);
     const url = `${baseUrl}${encodeURIComponent(link)}`;
     chrome.tabs.create({active: true, url: url});
 }
@@ -99,6 +93,7 @@ const createRecordCard = async (details) => {
 
     const container = document.createElement("div");
     container.setAttribute('class',"col-4");
+    container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
     document.getElementById('citbCardRecContainer').appendChild(container);
@@ -110,96 +105,42 @@ const createRecordCard = async (details) => {
     return;
 }
 const startQueue = () =>{
-    // port.postMessage({getList: true});
     setInterval(()=>{
         port.postMessage({getList: true});
     },1000);
 }
-const clear = () =>{
-    let carsList = document.getElementsByClassName('col-4');
-    for (let i = 0; i < carsList.length; i++) {
-        carsList[i].remove();
-    }
-}
-let cantElements = 0;
+
 let actualUploadElementID;
 let actualInterval = null;
 
-
-let lastResults;
-const compare = (currentResults,lastResults) => {
-    result = [];
-    for (let index = 0; index < lastResults.length; index++) {
-        if(lastResults[index] != currentResults[index])
-            result.push(index);        
-    }
-    if(currentResults.length > lastResults.length){
-        result.push(currentResults[length-1]);
-    }
-    return push;
-}
-
-const newQueueDaemon = (result) =>{
-    var currentResults = result.reduce((prev, current) => {
-        prev[current.id] = current.upload;
-        return prev;
-    }, []);
-    
-    let changedElement = compare(currentResults,lastResults);
-    if(changedElement.length > 0){
-        for (let index = 0; index < changedElement.length; index++) {
-            const element = array[index];
-            
-        }
-    }
-    lastResults = currentResults;
-}
 const queueDaemon = (result) =>{
-    console.log(result);
-    // var test = result.reduce((map, obj) => {
-    //     map[obj.id] = obj.upload;
-    //     return map;
-    // }, {});
-    var test1 = result.reduce((prev, current) => {
-        prev[current.id] = current.upload;
-        return prev;
-    }, []);
-    // let test2 = new Map(result.map(obj => [obj.id, obj.upload]));
-
-    // console.log(test);
-    console.log(test1);
-    // console.log(test2);
-
-
-    if(result.length  > cantElements)
-    {
-        cantElements = result.length ;
-        clear();
-        console.log("ANTES",result);
         result.forEach(async (element) => {
-            console.log("FOREACH");
-            // console.log(element,actualInterval,actualUploadElementID);
             if(element.upload == 'inProgress'){
-                console.log("PROGRESS");
                 if(actualUploadElementID != element.id){
                     if(actualInterval != null){
                         clearInterval(actualInterval);
                     }
                     actualUploadElementID = element.id; 
-                    await createRecordCard(element);
+                    let card = document.getElementById(element.id);
+                    if(card == null){
+                        await createRecordCard(element);
+                    } 
                     actualInterval = checkUploadStatus(true,actualUploadElementID);
                 }                
             }else if(element.upload == 'awaiting') {
-                console.log("awaiting");
-                await createRecordCard(element);
+                let card = document.getElementById(element.id);
+                if(card == null){
+                    await createRecordCard(element);
+                } 
                 updateProgressBar(0,element.id);
             }else{
-                console.log("ENDED");
-                await createRecordCard(element);
+                let card = document.getElementById(element.id);
+                if(card == null){
+                    await createRecordCard(element);
+                } 
                 updateProgressBar(100,element.id);
             }
-        })
-    }
+        });
 }
 
 startQueue();
