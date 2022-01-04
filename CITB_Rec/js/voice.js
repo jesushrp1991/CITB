@@ -18,7 +18,7 @@ document.addEventListener('keydown', function(event) {
     let text;
     currentIdiom == 'es' ? text = environment.voiceHelpTextES : text = environment.voiceHelpText
     alertify.alert(
-      'Voice Commands CITB Rec', 
+      'CITB Rec', 
       text
     );
   }
