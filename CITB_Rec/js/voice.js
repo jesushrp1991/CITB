@@ -1,13 +1,16 @@
 import { rec,stop, close, play,pause } from "./voiceActions.js";
-const setImgSrc = () =>{
-  let languages  = navigator.language.split("-");
-  if(languages[0] == 'es'){
-    document.getElementById('imgBack').setAttribute("src","./assets/backOptionsES.gif")
+const setImgSrc = (languages) =>{
+  if(languages == null){
+   languages  = navigator.language.split("-");
+   languages = languages[0]
+  }
+  if(languages == 'es'){
+    document.getElementById('imgBack').setAttribute("class","imgOptionsEs");
   }else{
-    document.getElementById('imgBack').setAttribute("src","./assets/backOptions.gif")
+    document.getElementById('imgBack').setAttribute("class","imgOptions");
   }
 };
-setImgSrc();
+setImgSrc(null);
 
 document.addEventListener('keydown', function(event) {
   if (event.ctrlKey && event.key === 'c') { 
@@ -20,7 +23,7 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-const speachCommands = () => {
+const speachCommands = (languages) => {
   try {
     const beep = (frequency) => {
       if (frequency == undefined || frequency == null || frequency == 0) {
@@ -284,20 +287,35 @@ const speachCommands = () => {
         annyang.setLanguage("es-ES");
     }
 
-
-    let languages  = navigator.language.split("-");
-    languages[0] == 'es' 
+    if(languages == null){
+      languages  = navigator.language.split("-");
+      languages = languages[0];
+    }
+    
+    languages == 'es' 
       ? addSpanishCommands()
       : addEnglishCommands()
 
     // Start listening. You can call this here, or attach this call to an event, button, etc.
     annyang.start({ autoRestart: true, continuous: true });
-    annyang.debug([true]);  
+    // annyang.debug([true]);  
   } catch (e) {
     console.log("annyang error", e);
   }
 };
-speachCommands();
+speachCommands(null);
+
+const changeLanguages = () =>{
+  let id = event.srcElement.id;
+  let option;
+  id == 'spainButton' ? option = 'es' : option = 'en';
+  annyang.abort();
+  speachCommands(option)
+  setImgSrc(option);
+}
+document.getElementById('spainButton').addEventListener("click",changeLanguages)
+document.getElementById('ukButton').addEventListener("click",changeLanguages)
+
 
 setInterval(()=>{
   chrome.storage.sync.get('voice', function(result) {

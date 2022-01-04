@@ -5,6 +5,13 @@
     background-position: center;
     background-repeat: no-repeat;
  }
+ .imgOptionsEs{
+    height: 100vh;
+    background-image: url(./assets/backOptionsES.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+ }
  img{
   width: 40%;
   height: 90%;
