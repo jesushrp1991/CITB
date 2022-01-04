@@ -110,6 +110,24 @@
     background-position: center;
     background-size: 60%;
 }
+.buttonCITB:hover {
+     height: 10px !important; 
+    /*width: 5px !important; */
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    margin: 3px !important;
+    outline: none;
+    border: none;
+    border-radius: 2px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 99%;
+    cursor: pointer;
+}
   .CITBGmail {
     background-image: url('./assets/gmail-icon.svg')
     }

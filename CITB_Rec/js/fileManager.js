@@ -49,15 +49,15 @@ const addEventToGoogleCalendar = (linkDrive) => {
   }
 
   const verificateAuth = () => {
-    console.log("VERIFICATE AUTH");
+    // console.log("VERIFICATE AUTH");
     gapi.client.init({
       // Don't pass client nor scope as these will init auth2, which we don't want
       apiKey: environment.API_KEY,
       discoveryDocs: environment.DISCOVERY_DOCS,
     }).then( (data) =>{
-      console.log("BEFORE IDENTITY SET ",data);
+      // console.log("BEFORE IDENTITY SET ",data);
       chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
-        console.log("TOKEN RESULT", tokenResult);
+        // console.log("TOKEN RESULT", tokenResult);
         gapi.auth.setToken({
           'access_token': tokenResult,
         });
@@ -206,14 +206,6 @@ const uploadQueueDaemon = async() =>{
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
-        chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
-        let details = { id: nextFile.id 
-                        ,name: nextFile.name
-                        ,dateStart: nextFile.dateStart
-                        , dateEnd: nextFile.dateEnd 
-                        ,driveLink : nextFile.driveLink
-                    }
-        chrome.storage.sync.set({newUploadDetails: details}, () => {});
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
         window.endTimeUpload = nextFile.dateEnd; 
@@ -227,11 +219,14 @@ const listUploadQueue = async() =>{
     let listResult = [];
     if(list != undefined){
       list.forEach((element)=>{
-        let upload = 'ended';
-        if(element.id === window.fileIDUploadInProgress && window.uploadValue != -1){
+        let upload;
+        console.log(element.id,window.fileIDUploadInProgress,element.file)
+        if(element.id === window.fileIDUploadInProgress){
           upload = 'inProgress';
-        }else if (element.file != 'uploaded'){
-            upload = 'awaiting';
+        }else if (element.file == 'uploaded' ){
+            upload = 'uploaded'
+        }else{
+          upload = 'awaiting';
         }
         let details = {
              id: element.id 

@@ -47,13 +47,12 @@ window.resultStream;
 window.desktopStream;
 window.micStream;
 
-function injectFileName() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    console.log(tabs);
+const injectFileName = () =>{
+  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+    // console.log(tabs);
     const url = tabs[0].url;
     if (!url.includes("http")) {
-      prompt("What's yours meet name?", fileName);
-      window.fileName = fileName;
+      window.fileName = prompt("What's yours meet name?","CITB Rec");
       clearInterval(intervalFileName);
       return;
     }else {
@@ -178,17 +177,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   chrome.runtime.onConnect.addListener(function(port) {
     console.assert(port.name === "getDriveLink");
     port.onMessage.addListener(async(msg) => {
-      console.log(msg)
+      // console.log(msg)
       if (msg.getLink){
         let driveLink = await getDriverLinkInQueueDB(msg.getLink);
-        console.log("backgroundLink",driveLink);
+        // console.log("backgroundLink",driveLink);
         port.postMessage({answer: driveLink});
       }else if (msg.getList){
-        console.log("getList",msg.getList);
+        // console.log("getList",msg.getList);
         let list = await listUploadQueue();
-        console.log("GetList",list);
+        // console.log("GetList",list);
         port.postMessage({lista: list});
-        console.log("sendPostMessage");
+        // console.log("sendPostMessage");
       }
     });
   });
