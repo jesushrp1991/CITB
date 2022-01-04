@@ -206,14 +206,6 @@ const uploadQueueDaemon = async() =>{
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
-        // chrome.storage.sync.set({newUpload: "newUpload"}, () => {});
-        // let details = { id: nextFile.id 
-        //                 ,name: nextFile.name
-        //                 ,dateStart: nextFile.dateStart
-        //                 , dateEnd: nextFile.dateEnd 
-        //                 ,driveLink : nextFile.driveLink
-        //             }
-        // chrome.storage.sync.set({newUploadDetails: details}, () => {});
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
         window.endTimeUpload = nextFile.dateEnd; 

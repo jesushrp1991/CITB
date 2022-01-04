@@ -48,30 +48,6 @@ const getKindShare = (link) =>{
     const type = getShareType();
     const baseUrl = baseUrlPerHost[type];
     shareLink(link, baseUrl);
-    // if(id.includes('gmail')) {
-    //     const baseUrl = baseUrlPerHost.gmail;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('classroom')) {
-    //     const baseUrl = baseUrlPerHost.classroom;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('twitter')) {
-    //     const baseUrl = baseUrlPerHost.twitter;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('whatsapp')) {
-    //     const baseUrl = baseUrlPerHost.whatsapp;
-    //     shareLink(link, baseUrl);
-    // }
-        
-    // if(id.includes('wakelet')) {
-    //     const baseUrl = baseUrlPerHost.wakelet;
-    //     shareLink(link, baseUrl);
-    // }
 }
 
 const shareLink = (link, baseUrl) => { 
@@ -133,22 +109,6 @@ const createRecordCard = async (details) => {
     document.getElementById("wakelet" + details.id).addEventListener("click", reply_click);
     return;
 }
-
-// const waitingForRec = () => {
-//     setInterval(()=>{
-//         chrome.storage.sync.get('newUpload', (result) => {   
-//             if(result.newUpload == "newUpload"){
-//                 chrome.storage.sync.get('newUploadDetails', (result) => {  
-//                     createRecordCard(result.newUploadDetails);
-//                     chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
-//                     checkUploadStatus(true,result.newUploadDetails.id);
-//                     console.log("Desde Interval");
-//                 }) 
-//             }     
-//         });
-//     },5000)
-// }
-
 const startQueue = () =>{
     // port.postMessage({getList: true});
     setInterval(()=>{
@@ -164,8 +124,53 @@ const clear = () =>{
 let cantElements = 0;
 let actualUploadElementID;
 let actualInterval = null;
+
+
+let lastResults;
+const compare = (currentResults,lastResults) => {
+    result = [];
+    for (let index = 0; index < lastResults.length; index++) {
+        if(lastResults[index] != currentResults[index])
+            result.push(index);        
+    }
+    if(currentResults.length > lastResults.length){
+        result.push(currentResults[length-1]);
+    }
+    return push;
+}
+
+const newQueueDaemon = (result) =>{
+    var currentResults = result.reduce((prev, current) => {
+        prev[current.id] = current.upload;
+        return prev;
+    }, []);
+    
+    let changedElement = compare(currentResults,lastResults);
+    if(changedElement.length > 0){
+        for (let index = 0; index < changedElement.length; index++) {
+            const element = array[index];
+            
+        }
+    }
+    lastResults = currentResults;
+}
 const queueDaemon = (result) =>{
-    // console.log(result,cantElements);
+    console.log(result);
+    // var test = result.reduce((map, obj) => {
+    //     map[obj.id] = obj.upload;
+    //     return map;
+    // }, {});
+    var test1 = result.reduce((prev, current) => {
+        prev[current.id] = current.upload;
+        return prev;
+    }, []);
+    // let test2 = new Map(result.map(obj => [obj.id, obj.upload]));
+
+    // console.log(test);
+    console.log(test1);
+    // console.log(test2);
+
+
     if(result.length  > cantElements)
     {
         cantElements = result.length ;
@@ -198,31 +203,4 @@ const queueDaemon = (result) =>{
 }
 
 startQueue();
-
-// const checkInitialState = () => {
-//     console.log("INITIAL STATE")
-//     const request = { recordingStatus: 'listRec'};
-//     chrome.runtime.sendMessage(request);
-//     setTimeout(()=>{},3000);
-//     let isRunningRec = false;
-//     chrome.storage.sync.get('listRec', (result) => {
-//         if(result.listRec){
-//             result.listRec.list.forEach(element => {
-//                 if( element.upload == 'inProgress' ){
-//                     console.log("Estado Inicial")
-//                     createRecordCard(element);
-//                     chrome.storage.sync.set({newUpload: "uploadInProgress"}, () => {});
-//                     checkUploadStatus(true,element.id);               
-//                     isRunningRec = true;
-//                 }else{
-//                     createRecordCard(element);
-//                 }
-//             });
-//         }        
-//         if(!isRunningRec)
-//             waitingForRec();
-//     })
-// }
-
-// checkInitialState();
 
