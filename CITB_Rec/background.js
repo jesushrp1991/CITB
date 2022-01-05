@@ -58,14 +58,8 @@ const injectFileName = () =>{
     }else {
       var currTab = tabs[0];
       if (currTab) { // Sanity check
-        chrome.tabs.insertCSS(currTab.id,{file:"./css/alertify.min.css"});
-        chrome.tabs.insertCSS(currTab.id, {file:"./css/default.min.css"});
-        
-        chrome.tabs.executeScript(
-          currTab.id,
-          // {code: "document.body.style.backgroundColor='red'"}
-          {file:"./js/external/alertify.min.js"}
-        )
+        // chrome.tabs.insertCSS(currTab.id,{file:"./css/material.min.css"});
+        chrome.tabs.insertCSS(currTab.id, {file:"./css/popup.css"});
         chrome.tabs.executeScript(
           currTab.id,
           // {code: "document.body.style.backgroundColor='red'"}
