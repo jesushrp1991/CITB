@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8"/>
     <link href="options.css" rel="stylesheet" type="text/css">
-    <link href="./css/alertify.min.css" rel="stylesheet" type="text/css">
-    <link href="./css/default.min.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="./css/material.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/popup.css" rel="stylesheet" type="text/css">
     <title>
       CITB REC
     </title>
@@ -19,6 +18,37 @@
           <button class="flag uk btn-outline-light" id="ukButton"></button>
         </div>
       </div>  
+    </div>
+    <!-- popup -->
+    <div id="fabClass" class="fab">
+      <form class="cntt-wrapper">
+        <div id="fab-hdr">
+          <span id="xClose" class="close-button topright">x</span>
+          <h3>Classroom mode Mic</h3>
+        </div>
+        <div class="cntt">
+          <button id="classModalIcon" class="CITBClassButton active"></button>
+          <div
+            class="
+              mdl-textfield mdl-js-textfield
+              mdl-textfield--floating-label
+              textFields
+            "
+          >
+            <p id="infoText"></p>
+            <label for="text1" class="mdl-selectfield__label"></label>
+            <br />
+          </div>
+          <div class="btn-wrapper">
+            <button
+              id="submit"
+              class="mdl-button mdl-js-button mdl-button--primary"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
     <script src="./js/external/annyang.min.js" defer></script>
     <script src="./js/voice.js" defer type="module"></script>

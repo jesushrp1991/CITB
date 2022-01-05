@@ -1,5 +1,9 @@
 import { environment } from "../config/environment.js";
 import { rec,stop, close, play,pause } from "./voiceActions.js";
+
+let currentIdiom = navigator.language.split("-");
+currentIdiom = currentIdiom[0];
+
 const setImgSrc = (languages) =>{
   if(languages == null){
    languages  = navigator.language.split("-");
@@ -17,12 +21,19 @@ document.addEventListener('keydown', function(event) {
   if (event.ctrlKey && event.key === 'c') { 
     let text;
     currentIdiom == 'es' ? text = environment.voiceHelpTextES : text = environment.voiceHelpText
-    alertify.alert(
-      'CITB Rec', 
-      text
-    );
+
+    document.getElementById('infoText').innerHTML = text;
+    document.getElementById('fabClass').setAttribute("class","fab active");
   }
 });
+
+const closeModal = () =>{
+  event.preventDefault();
+  document.getElementById('fabClass').setAttribute("class","fab");
+}
+document.getElementById('submit').addEventListener("click",closeModal);
+document.getElementById('xClose').addEventListener("click",closeModal);
+
 
 const speachCommands = (languages) => {
   try {
@@ -305,9 +316,6 @@ const speachCommands = (languages) => {
   }
 };
 speachCommands(null);
-
-let currentIdiom = navigator.language.split("-");
-currentIdiom = currentIdiom[0];
 
 const changeLanguages = () =>{
   let id = event.srcElement.id;
