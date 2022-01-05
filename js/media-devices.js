@@ -790,7 +790,7 @@ function monkeyPatchMediaDevices() {
   }  
   
   const userMediaArgsIsAudio = (args) => {  
-    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != nil && args[0].audio.mandatory.sourceId != ''
+    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != null && args[0].audio.mandatory.sourceId != ''
   } 
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
