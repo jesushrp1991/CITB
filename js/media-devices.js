@@ -790,7 +790,7 @@ function monkeyPatchMediaDevices() {
   }  
   
   const userMediaArgsIsAudio = (args) => {  
-    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null  
+    return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != nil && args[0].audio.mandatory.sourceId != ''
   } 
 
   window.enumerateDevicesFn = MediaDevices.prototype.enumerateDevices;
@@ -942,6 +942,8 @@ function monkeyPatchMediaDevices() {
     successCallBack,
     failureCallBack
   ) {
+    console.log("GET USER MEDIA");
+
     try {
       if(window.isExtentionActive){
         
@@ -988,6 +990,8 @@ function monkeyPatchMediaDevices() {
     //frame.close();
   }
   MediaDevices.prototype.getUserMedia = async function () {
+    console.log("GET USER MEDIA",arguments) ;
+
     try {
       const args = arguments;
       if(window.isExtentionActive){
@@ -1005,10 +1009,10 @@ function monkeyPatchMediaDevices() {
         } else if (userMediaArgsIsAudio(args)){
             const baseAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
             return setUpAudio(baseAudioMediaStream);
-          }
+        }
       }
       const res = await getUserMediaFn.call(navigator.mediaDevices, ...arguments);
-    return res;
+      return res;
     } catch (error) {
       logErrors(error,"prototype getUserMedia ln 531")
     }
