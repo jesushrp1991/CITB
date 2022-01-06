@@ -27,12 +27,12 @@ import {
 }
 
   const recordScreen = async (streamId,idMic) => {
-    console.log("recprdScreem", streamId, idMic);
     try{
         const constraints = {
             audio:{
                 mandatory: {
-                    chromeMediaSource: 'desktop',
+                    // chromeMediaSource: 'desktop',
+                    chromeMediaSource: 'tab',
                     chromeMediaSourceId: streamId,
                     echoCancellation: true
                 }
@@ -40,7 +40,8 @@ import {
             video: {
                 optional: [],
                 mandatory: {
-                    chromeMediaSource: 'desktop',
+                    // chromeMediaSource: 'desktop',
+                    chromeMediaSource: 'tab',
                     chromeMediaSourceId: streamId,
                     maxWidth: 2560,
                     maxHeight: 1440,
@@ -48,8 +49,27 @@ import {
                 }
             }
         }
+        // const constraints = {
+        //     audio:{
+        //         mandatory: {
+        //             chromeMediaSource: 'desktop',
+        //             chromeMediaSourceId: streamId,
+        //             echoCancellation: true
+        //         }
+        //     },
+        //     video: {
+        //         optional: [],
+        //         mandatory: {
+        //             chromeMediaSource: 'desktop',
+        //             chromeMediaSourceId: streamId,
+        //             maxWidth: 2560,
+        //             maxHeight: 1440,
+        //             maxFrameRate:30
+        //         }
+        //     }
+        // }
         window.desktopStream = await navigator.mediaDevices.getUserMedia(constraints);
-
+        console.log(window.desktopStream);
         if (idMic != undefined && idMic != null && idMic != '') {
           const micConstraints = {  
             video: false,  
@@ -103,27 +123,33 @@ import {
         startTimerCount();
         window.isRecording = true;
     }catch(e){
+      console.log(e);
       errorHandling(e);
     }
 }
-const startRecordScreen = (idMic,cb) =>{
+const startRecordScreen = async(idMic,cb,idStreamForMac) =>{
     try{
-      let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
-      let videoCaptureModes;
-      userAgentData? videoCaptureModes = environment.videoCaptureModesForMac : videoCaptureModes = environment.videoCaptureModes;
-        chrome.desktopCapture.chooseDesktopMedia(videoCaptureModes, async (streamId) => {
+      if(idStreamForMac){        
+        window.isRecording = true;
+        chrome.storage.sync.set({isRecording: true}, ()=>{});
+        cb();
+        await recordScreen(idStreamForMac,idMic);              
+          
+      }else{
+        chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => {
             if (!streamId) {
                 window.isRecording = false;
-                chrome.storage.sync.set({isRecording: false}, function() {
+                chrome.storage.sync.set({isRecording: false}, ()=> {
                 });
             } else {
                 window.isRecording = true;
-                chrome.storage.sync.set({isRecording: true}, function() {
-                });
+                chrome.storage.sync.set({isRecording: true}, ()=> {});
                 cb();
                 await recordScreen(streamId,idMic);
             }
           });
+      }
+        
     }catch(e){
       errorHandling(e);
     }

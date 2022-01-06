@@ -6,7 +6,8 @@ import { checkTimer } from './js/timerBar.js';
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
 }
-const sendRecordCommand = () =>{
+
+const rec = (idStreamForMac) =>{
     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
         buttonRec.setAttribute('class','buttonRecOff');
         buttonStop.setAttribute('class','stopButtonOff littleButton');
@@ -23,8 +24,22 @@ const sendRecordCommand = () =>{
         buttonStop.disabled = false;
         buttonPlayPause.disabled = false;
     }
-    const request = { recordingStatus: 'rec' , idMic: select.value };
+    const request = { recordingStatus: 'rec' , idMic: select.value ,idStream : idStreamForMac};
     sendMessage(request);
+}
+const sendRecordCommand = () =>{
+    let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
+    if(!userAgentData){//quitar Negacion
+        chrome.tabs.getSelected(null, function(tab) {
+            chrome.tabCapture.getMediaStreamId({targetTabId: tab.id}, (stream)=>{
+                rec(stream);
+            });
+        });
+    }else{
+        rec()
+    }
+    
+    
 }
 
 const getCurrentState = () =>{
