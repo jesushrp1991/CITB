@@ -117,7 +117,7 @@ const prepareUploadToDrive = (obj) => {
         saveUploadProgress(window.uploadValue);
       }else if(res.status == "Done"){
         let linkDrive = await getLinkFileDrive();
-        console.log("Saving Link to DB",linkDrive)
+        // console.log("Saving Link to DB",linkDrive)
         saveLinktoDB(window.fileIDUploadInProgress,linkDrive);
         delFileInDB(window.fileIDUploadInProgress);
         addEventToGoogleCalendar(linkDrive);        
@@ -125,7 +125,7 @@ const prepareUploadToDrive = (obj) => {
         saveUploadProgress(-1);
         msg = res.status;
       }
-      console.log(msg);
+      // console.log(msg);
     });
   }
   /* 
@@ -220,7 +220,7 @@ const listUploadQueue = async() =>{
     if(list != undefined){
       list.forEach((element)=>{
         let upload;
-        console.log(element.id,window.fileIDUploadInProgress,element.file)
+        // console.log(element.id,window.fileIDUploadInProgress,element.file)
         if(element.id === window.fileIDUploadInProgress){
           upload = 'inProgress';
         }else if (element.file == 'uploaded' ){

@@ -137,7 +137,7 @@ import { environment } from "../config/environment.js";
     if(!exitsDB){
       return;
     }
-    console.log("Search by id",id);
+    // console.log("Search by id",id);
     let result;
     // const result = await queueDB.records.where({id: id.toString()}).first();
     // const result = await queueDB.records.get({id});

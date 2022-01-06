@@ -29,7 +29,7 @@ const rec = (isTabForMac) =>{
 }
 const sendRecordCommand = () =>{
     let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
-    if(!userAgentData){//quitar Negacion  para mac!!!
+    if(userAgentData){//quitar Negacion  para mac!!!
         chrome.tabs.getSelected(null, function(tab) {
                 rec(tab.id);
         });

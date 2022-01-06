@@ -30,8 +30,7 @@ import {
     try{
         let isMac = navigator.userAgentData.platform.toLowerCase().includes('mac');
         let mediaSource;
-        !isMac ?  mediaSource = 'tab' :  mediaSource = 'desktop';//Quitar Negacion para mac!!!
-
+        isMac ?  mediaSource = 'tab' :  mediaSource = 'desktop';
         const constraints = {
           audio:{
               mandatory: {
@@ -120,8 +119,8 @@ const startRecordScreen = async(idMic,cb,isTabForMac) =>{
         window.isRecording = true;
         chrome.storage.sync.set({isRecording: true}, ()=> {});
         cb();
-        chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac}, async (streamId)=>{
-          await recordScreen(streamId,idMic);
+        chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  (streamId)=>{
+           recordScreen(streamId,idMic);
         });
       }else{
         chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => {
@@ -182,62 +181,6 @@ const pauseOrResume = async () => {
     playRec();
   }
 }
-
-// const test = (idStream) => {
-//   console.log(idStream)
-//               chrome.tabCapture.getMediaStreamId({targetTabId: idStream}, async (streamId)=>{
-//                   const constraints = {
-//                     audio:{
-//                         mandatory: {
-//                             chromeMediaSource: 'tab',
-//                             chromeMediaSourceId: streamId,
-//                             echoCancellation: true
-//                         }
-//                     },
-//                     video: {
-//                         optional: [],
-//                         mandatory: {
-//                             chromeMediaSource: 'tab',
-//                             chromeMediaSourceId: streamId,
-//                             maxWidth: 2560,
-//                             maxHeight: 1440,
-//                             maxFrameRate:30
-//                         }
-//                     }
-//                   }
-//                   let stream = await navigator.mediaDevices.getUserMedia(constraints);
-//                   var context = new AudioContext();
-//                   context.createMediaStreamSource(stream).connect(context.destination);
-//                   console.log(stream);   
-//                   let recorder = new MediaRecorder(stream);
-//                   let videoChunksArray = [];
-//                   recorder.ondataavailable = event => {
-//                       if (event.data.size > 0) {
-//                           videoChunksArray.push(event.data);
-//                       }
-//                   }
-//                   recorder.onstop = async() => {
-//                   var blob = new Blob(videoChunksArray, {
-//                       type: "video/webm"
-//                   });
-//                   var url = URL.createObjectURL(blob);
-//                   var a = document.createElement("a");
-//                   document.body.appendChild(a);
-//                   a.style = "display: none";
-//                   a.href = url;
-//                   a.download = window.fileName + Date() + ".webm";
-//                   a.click();
-//                   window.URL.revokeObjectURL(url);
-//                   }
-//                   recorder.start();
-//                   setTimeout(()=>{
-//                     recorder.stop();
-//                   },20000);
-                  
-//                 }
-//               );        
-// }
-
 export {
      recordScreen
     ,startRecordScreen
