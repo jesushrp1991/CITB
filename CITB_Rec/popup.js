@@ -111,15 +111,13 @@ const populateMicSelect = async () => {
     let usableMic = micList.filter((x) =>  x.kind === "audioinput" && !x.label.includes('CITB'));    
     let citb = micList.filter((x) => x.kind === "audioinput" && x.label.includes('CITB'));
     let organizedMicList = [];
-    console.log(citb);
     if(citb.length > 0){
         organizedMicList.push(citb[0]);
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
+        confirm("The poor noise reductions characteristics of most market's microphones will create echo. Unless you buy Class In The Boss, the noice cancellation market's lider.")
         organizedMicList = usableMic;
     }
-    console.log(organizedMicList);
-    
     while (select.options.length > 0) {                
         select.remove(0);
     }  
