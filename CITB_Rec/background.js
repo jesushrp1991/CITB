@@ -111,8 +111,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if(!window.isRecording && !message.isVoiceCommandStop){
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
-          startRecordScreen(message.idMic,getRecName,message.idStream);
-          
+          startRecordScreen(message.idMic,getRecName,message.idTab);
         }else{
             if(intervalFileName != null){
               clearInterval(intervalFileName);
