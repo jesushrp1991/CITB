@@ -11,6 +11,43 @@ import {
     ,listQueueDB
 } from "./database.js";
 
+const copyDriveFileToFolder = (destFolderId,originalDocID,oldFolderId,fileName) => {
+    
+  const cloned = (await gapi.client.drive.files.copy({
+      fileId: originalDocID
+     })).result
+     
+     // Move copy to new folder
+     await gapi.client.drive.files.update({
+      fileId: cloned.id,
+      addParents: destFolderId,
+      removeParents: oldFolderId,
+      resource: { name: fileName },
+      fields: 'id, parents'
+     });
+}
+
+const createDriveFolder = (name) =>{
+  var fileMetadata = {
+    'name' : name,
+    'mimeType' : 'application/vnd.google-apps.folder',
+    'parents': 'root'
+  };
+  gapi.client.drive.files.create({
+    resource: fileMetadata,
+  }).then((response) => {
+    switch(response.status){
+      case 200:
+        var file = response.result;
+        console.log('Created Folder Id: ', file.id);
+        break;
+      default:
+        console.log('Error creating the folder, '+response);
+        break;
+      }
+  });
+}
+
 const getDriveFileList = async () => {
   let result = await gapi.client.drive.files.list({
     q: "trashed=false",
@@ -27,8 +64,7 @@ const getLinkFileDrive = async() => {
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
     // console.log("getLinkFileDrive shareLink",shareLink);
-    chrome.storage.sync.set({shareLink: shareLink}, () =>{
-    });
+    chrome.storage.sync.set({shareLink: shareLink}, () =>{});
     return shareLink;
 }
 const addEventToGoogleCalendar = (linkDrive) => {    
