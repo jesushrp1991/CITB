@@ -88,7 +88,20 @@
     buttonDiv.addEventListener('click',saveName);
     headerClose.addEventListener('click',saveName);
 
+    document.addEventListener('ready',() => {
+        $(window).keydown(function(event){
+          if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+          }
+        });
+      });
 
-
+    document.addEventListener('keydown', (event) => {
+        if (event.keyCode === 13) { 
+            event.preventDefault();
+            return false;
+        }
+    });
 
 
