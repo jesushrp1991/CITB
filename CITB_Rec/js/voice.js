@@ -17,7 +17,7 @@ const setImgSrc = (languages) =>{
 };
 setImgSrc(null);
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', (event) => {
   if (event.ctrlKey && event.key === 'c') { 
     let text;
     currentIdiom == 'es' ? text = environment.voiceHelpTextES : text = environment.voiceHelpText
