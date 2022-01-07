@@ -112,10 +112,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){
+          // set icon
+          // chrome.browserAction.setIcon({path: "./assets/rec.gif"});
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
           startRecordScreen(message.idMic,getRecName,message.idTab);
         }else{
+            //clean icon
+            // chrome.browserAction.setIcon({path: "./assets/recOff.png"});
             if(intervalFileName != null){
               clearInterval(intervalFileName);
             }

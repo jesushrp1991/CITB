@@ -115,8 +115,12 @@ const populateMicSelect = async () => {
         organizedMicList.push(citb[0]);
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
-        confirm("The poor noise reductions characteristics of most market's microphones will create echo. Unless you buy Class In The Boss, the noice cancellation market's lider.")
         organizedMicList = usableMic;
+        // confirm("The poor noise reductions characteristics of most market's microphones will create echo. Unless you buy Class In The Boss, the noice cancellation market's lider.")
+        document.getElementById('modal').style.display = 'block';
+        setInterval(()=>{
+            document.getElementById('modal').style.display = 'none';
+        },5000);
     }
     while (select.options.length > 0) {                
         select.remove(0);

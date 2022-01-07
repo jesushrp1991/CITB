@@ -269,3 +269,25 @@ button {
   margin-left: 5px;
   margin-right: 5px;
 }
+
+
+.imgModal {
+  height : 72px;
+  width : 430px;
+  background-image: url('./assets/alertpopup.png');
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  z-index: 999;
+}
+
+.modal {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  /* width: 50%; */
+}
+.closeModal {
+  margin-left:90%
+}
