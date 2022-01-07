@@ -45,7 +45,7 @@ import { environment } from "../config/environment.js";
       
   }
     
-  const createRecQueueDB = async () =>{
+  const createRecQueueDB = () =>{
       // let exitsDB = await Dexie.exists("CITBQueueRecords");
       // if(exitsDB){
       //   delQueueDB();
@@ -58,13 +58,15 @@ import { environment } from "../config/environment.js";
             name,
             dateStart,
             dateEnd,
-            driveLink`,
+            driveLink,
+            msDuration
+            `,
         });
   }
 
-  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink) =>{
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration) =>{
     try{
-      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink});  
+      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration});  
     }catch(error){
         console.log(error);
         throw error;
@@ -103,7 +105,7 @@ import { environment } from "../config/environment.js";
     if(id > -1){
       first = await queueDB.records.where('id').above(id).first();
     }else{
-      first = await queueDB.records.orderBy('id').first();
+      first = await queueDB.records.orderBy('id').last();
     }
     return first;
   }
@@ -148,7 +150,19 @@ import { environment } from "../config/environment.js";
     });
     return result;
   }
-
+const searchBylinkQueueDB = async (link) =>{
+  let exitsDB = await Dexie.exists("CITBQueueRecords");
+  if(!exitsDB){
+    return;
+  }
+  let result = false;
+  await queueDB.records.each(element => {  
+    if(element.driveLink == link){
+      result = true;
+    }
+  });
+  return result;
+}
     
 const persist = async () => {
     return await navigator.storage && navigator.storage.persist &&
@@ -258,4 +272,5 @@ export {
     ,delFileInDB
     ,listQueueDB
     ,getDriverLinkInQueueDB
+    ,searchBylinkQueueDB
 }

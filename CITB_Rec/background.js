@@ -3,6 +3,9 @@ import {
   ,prepareDB
   ,delLastItem
   ,getDriverLinkInQueueDB
+  ,addRecQueueDB
+  ,createRecQueueDB
+  ,searchBylinkQueueDB
 } from "./js/database.js";
 
 import {
@@ -18,6 +21,7 @@ import {
   ,verificateAuth
   ,saveVideo
   ,listUploadQueue
+  ,getDriveFileList
 } from './js/fileManager.js'
 
 const popupMessages = {
@@ -85,7 +89,6 @@ const openRecList = () => {
     chrome.tabs.getAllInWindow(undefined, function(tabs) {
       for (var i = 0, tab; tab = tabs[i]; i++) {
         if (tab.url && tab.url.includes('videoManager.html')) {
-          console.log("IS my page");          
           chrome.tabs.update(tab.id, {selected: true});
           return;
         }
@@ -177,6 +180,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       }else if (msg.getList){
         let list = await listUploadQueue();
         port.postMessage({lista: list});
+      }else if (msg.getDriveFiles){
+        createRecQueueDB();
+        let list = await getDriveFileList();
+        for (const element of list) {
+          let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
+          let exists = await searchBylinkQueueDB(shareLink);
+          console.log("exits",exists);
+          if(!exists){
+            let dateStart = element.createdTime;
+            let msDuration = element.videoMediaMetadata.durationMillis;
+            await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration);
+          }
+        }
       }
     });
   });

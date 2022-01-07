@@ -14,7 +14,7 @@ import {
 const getDriveFileList = async () => {
   let result = await gapi.client.drive.files.list({
     q: "trashed=false",
-    fields: 'nextPageToken, files(id, name)',
+    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata)',
     spaces: 'drive',
   })
   return result.result.files;  
@@ -26,7 +26,7 @@ const getLinkFileDrive = async() => {
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
-    console.log("getLinkFileDrive shareLink",shareLink);
+    // console.log("getLinkFileDrive shareLink",shareLink);
     chrome.storage.sync.set({shareLink: shareLink}, function() {
     });
     return shareLink;
@@ -170,7 +170,7 @@ const saveVideo = async(localDownload) =>{
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
     createRecQueueDB();
-    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime); 
+    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null); 
     //Crear alerta para que inicie el proceso de subida
     //Cuando este subido modificar tabla para incluir  DriveLink
   }else{
@@ -216,7 +216,7 @@ const uploadQueueDaemon = async() =>{
         prepareUploadToDrive(nextFile.file);
     }
 }
-setInterval(uploadQueueDaemon,5000);
+setInterval(uploadQueueDaemon,environment.timerUploadQueueDaemon);
 
 const listUploadQueue = async() =>{
     let list = await listQueueDB();
@@ -224,7 +224,6 @@ const listUploadQueue = async() =>{
     if(list != undefined){
       list.forEach((element)=>{
         let upload;
-        // console.log(element.id,window.fileIDUploadInProgress,element.file)
         if(element.id === window.fileIDUploadInProgress){
           upload = 'inProgress';
         }else if (element.file == 'uploaded' ){
@@ -239,6 +238,7 @@ const listUploadQueue = async() =>{
             ,dateEnd: element.dateEnd 
             ,driveLink : element.driveLink
             ,upload: upload
+            ,msDuration: element.msDuration
         }
         listResult.push(details);
       });
@@ -251,4 +251,5 @@ export {
     ,verificateAuth
     ,saveVideo
     ,listUploadQueue
+    ,getDriveFileList
 }

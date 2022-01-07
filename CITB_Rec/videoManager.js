@@ -60,9 +60,15 @@ const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
 })
 
 const calculateRecTime = (details) =>{
-    const initDate = dayjs(details.dateStart);
-    const endDate = dayjs(details.dateEnd);
-    let seconds = endDate.diff(initDate,"second",true);
+    let seconds;
+    if(details.msDuration){
+         seconds = parseInt(details.msDuration/1000);
+    }else{
+        const initDate = dayjs(details.dateStart);
+        const endDate = dayjs(details.dateEnd);
+        seconds = endDate.diff(initDate,"second",true);
+    }
+    
     let minutes = Math.floor(seconds/60);
     let hours = Math.floor(minutes/60);
     if(seconds < 10){
@@ -80,7 +86,7 @@ const calculateRecTime = (details) =>{
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
-    const recTime = calculateRecTime(details);
+    const recTime = calculateRecTime(details);    
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
         
@@ -100,7 +106,9 @@ const createRecordCard = async (details) => {
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
-    document.getElementById('citbCardRecContainer').appendChild(container);
+    // document.getElementById('citbCardRecContainer').appendChild(container);
+    let cardContainer = document.getElementById('citbCardRecContainer');
+    cardContainer.insertBefore(container,cardContainer.firstChild);
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
     document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
     document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
@@ -147,5 +155,10 @@ const queueDaemon = (result) =>{
         });
 }
 
+const getDriveFiles = () => {
+    port.postMessage({getDriveFiles: true});
+}
+
+getDriveFiles();
 startQueue();
 
