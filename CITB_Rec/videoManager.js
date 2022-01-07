@@ -45,7 +45,12 @@ const getKindShare = (link) =>{
 }
 
 const shareLink = (link, baseUrl) => { 
-    const url = `${baseUrl}${encodeURIComponent(link)}`;
+    let url;
+    if(baseUrl.includes('mail.google')){
+        url = `${baseUrl}${encodeURIComponent(link)}&&tf=cm`;
+    }else{
+        url = `${baseUrl}${encodeURIComponent(link)}`;
+    }
     chrome.tabs.create({active: true, url: url});
 }
 

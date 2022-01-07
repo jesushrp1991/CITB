@@ -11,14 +11,18 @@ import {
     ,listQueueDB
 } from "./database.js";
 
+const getDriveFileList = async () => {
+  let result = await gapi.client.drive.files.list({
+    q: "trashed=false",
+    fields: 'nextPageToken, files(id, name)',
+    spaces: 'drive',
+  })
+  return result.result.files;  
+}
+
 const getLinkFileDrive = async() => {
-    setTimeout(()=>{},5000);
-    let result = await gapi.client.drive.files.list({
-        // q: "mimeType='application/vnd.google-apps.file' and trashed=false",
-        fields: 'nextPageToken, files(id, name)',
-        spaces: 'drive',
-    })
-    let fileList = result.result.files;
+    // setTimeout(()=>{},5000);
+    let fileList = await getDriveFileList();
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
