@@ -162,14 +162,14 @@ const stopRecordScreen = () =>{
 const pauseRec = () => {
   window.recorder.pause()
   stopTimerCount();
-  chrome.storage.sync.set({isPaused: true}, function() {
+  chrome.storage.sync.set({isPaused: true}, () => {
   });
   window.isPaused = !window.isPaused;
 }
 const playRec = () =>{
   window.recorder.resume();
   startTimerCount();
-  chrome.storage.sync.set({isPaused: false}, function() {
+  chrome.storage.sync.set({isPaused: false}, () => {
   });
   window.isPaused = !window.isPaused;
 }

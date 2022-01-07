@@ -17,7 +17,7 @@ const updateProgressBar = (value,id) => {
 }
 const checkUploadStatus = (isFromPageList,id) => {
     let interval = setInterval(()=>{
-                    chrome.storage.sync.get('uploadPercent', function(result) {
+                    chrome.storage.sync.get('uploadPercent', (result) => {
                         if (result.uploadPercent > 0){
                             updateProgressBar(result.uploadPercent,id);
                             displayProgressBar();

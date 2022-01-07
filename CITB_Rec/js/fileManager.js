@@ -27,7 +27,7 @@ const getLinkFileDrive = async() => {
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
     // console.log("getLinkFileDrive shareLink",shareLink);
-    chrome.storage.sync.set({shareLink: shareLink}, function() {
+    chrome.storage.sync.set({shareLink: shareLink}, () =>{
     });
     return shareLink;
 }
@@ -47,7 +47,7 @@ const addEventToGoogleCalendar = (linkDrive) => {
       'calendarId': 'primary',
       'resource': newEvent
     });
-    request.execute(function(resp) {
+    request.execute((resp) => {
     //  console.log("respuesta del calendar",resp);
    });
   }
@@ -60,13 +60,13 @@ const addEventToGoogleCalendar = (linkDrive) => {
       discoveryDocs: environment.DISCOVERY_DOCS,
     }).then( (data) =>{
       // console.log("BEFORE IDENTITY SET ",data);
-      chrome.identity.getAuthToken({interactive: true}, function(tokenResult) {
+      chrome.identity.getAuthToken({interactive: true}, (tokenResult) => {
         // console.log("TOKEN RESULT", tokenResult);
         gapi.auth.setToken({
           'access_token': tokenResult,
         });
       })
-    }, function(error) {
+    }, (error) => {
       console.log("ERROR ERROR", error);
       errorHandling(error);
     });
@@ -181,8 +181,7 @@ const saveVideo = async(localDownload) =>{
 }
 
 const saveUploadProgress = (value) =>{
-    chrome.storage.sync.set({uploadPercent: value}, function() {
-    });
+    chrome.storage.sync.set({uploadPercent: value}, () => {});
 }
 
 window.fileIDUploadInProgress = -1 ;

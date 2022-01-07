@@ -41,7 +41,7 @@ const speachCommands = (languages) => {
       if (frequency == undefined || frequency == null || frequency == 0) {
         frequency = 1760;
       }
-      const rampDownTimeNum = function () {
+      const rampDownTimeNum = () => {
         return parseFloat(1);
       };
 
@@ -331,7 +331,7 @@ document.getElementById('ukButton').addEventListener("click",changeLanguages)
 
 
 setInterval(()=>{
-  chrome.storage.sync.get('voice', function(result) {
+  chrome.storage.sync.get('voice', (result) => {
     if(!result.voice){
       annyang.abort();
       window.close();

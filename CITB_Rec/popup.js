@@ -30,8 +30,8 @@ const rec = (isTabForMac) =>{
 const sendRecordCommand = () =>{
     let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
     if(userAgentData){//quitar Negacion  para mac!!!
-        chrome.tabs.getSelected(null, function(tab) {
-                rec(tab.id);
+        chrome.tabs.getSelected(null, (tab) => {
+            rec(tab.id);
         });
     }else{
         rec()
@@ -42,7 +42,7 @@ const sendRecordCommand = () =>{
 
 const getCurrentState = () =>{
     let isRec = false;
-    chrome.storage.sync.get('isRecording', function(result) {
+    chrome.storage.sync.get('isRecording', (result) => {
         if (result.isRecording ){
             isRec = result.isRecording;
             buttonRec.setAttribute('class','buttonRecOn') 
@@ -59,7 +59,7 @@ const getCurrentState = () =>{
             buttonPlayPause.disabled = true;
         }
     });
-    chrome.storage.sync.get('isPaused', function(result) {
+    chrome.storage.sync.get('isPaused', (result) => {
         if(!isRec){
             buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
         }else{
@@ -71,7 +71,7 @@ const getCurrentState = () =>{
             }
         }
     });
-    chrome.storage.sync.get('voice', function(result) {
+    chrome.storage.sync.get('voice', (result) => {
         if(result.voice){
             buttonVoiceControl.setAttribute('class','voiceControl')
         }else{
@@ -131,7 +131,7 @@ const populateMicSelect = async () => {
 
 
 const localDownload = () => {
-    // chrome.tabs.create({active: false}, function(newTab) {
+    // chrome.tabs.create({active: false}, (newTab) => {
     //     chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
 
     // });
@@ -140,34 +140,34 @@ const localDownload = () => {
 }
 
 const getShareLink = () =>{
-    chrome.storage.sync.get('shareLink', function(result) {        
+    chrome.storage.sync.get('shareLink', (result) => {        
         let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(result.shareLink)}&&tf=cm`
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareWhatsapp = () =>{
-    chrome.storage.sync.get('shareLink', function(result) {
+    chrome.storage.sync.get('shareLink', (result) => {
         let url = `https://wa.me?text=${encodeURIComponent(result.shareLink)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareClassRoom = () =>{   
-    chrome.storage.sync.get('shareLink', function(result) {   
+    chrome.storage.sync.get('shareLink', (result) => {   
         let url = `https://classroom.google.com/share?url=${encodeURIComponent(result.shareLink)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareTwitter = () =>{   
-    chrome.storage.sync.get('shareLink', function(result) {   
+    chrome.storage.sync.get('shareLink', (result) => {   
         let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareLink)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 const shareWakelet = () =>{   
-    chrome.storage.sync.get('shareLink', function(result) {   
+    chrome.storage.sync.get('shareLink', (result) => {   
         let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(result.shareLink)}`;        
         chrome.tabs.create({active: true, url: url});
     });

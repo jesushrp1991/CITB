@@ -4,11 +4,11 @@ let min = 0;
 let time;
 let milli ,seconds, minute;
 
-function timer (){
+const timer = () => {
         ms++;
         if(ms >= 100){
             let timer= {minute:minute,seconds:seconds};
-            chrome.storage.sync.set({timerCounter: timer}, function() {
+            chrome.storage.sync.set({timerCounter: timer}, () => {
             });
             sec++
             ms = 0
@@ -58,8 +58,7 @@ const reset = () =>{
     min = 0;
     clearInterval(time);
     let timer= {minute:0,seconds:0};
-    chrome.storage.sync.set({timerCounter: timer}, function() {
-    });
+    chrome.storage.sync.set({timerCounter: timer}, () => {});
     localStorage.removeItem('timeMinSaved');
     localStorage.removeItem('timeSecSaved');
 }

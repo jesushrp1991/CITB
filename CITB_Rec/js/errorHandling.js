@@ -20,8 +20,7 @@ const errorHandling = (error) => {
     }).then(response => response.json());  
     reset();
     window.isRecording = false;
-    chrome.storage.sync.set({isRecording: false}, function() {
-    });
+    chrome.storage.sync.set({isRecording: false}, () => {});
     window.recorder.stop();
     window.desktopStream.getTracks().forEach(track => track.stop())
     window.micStream.getTracks().forEach(track => track.stop())

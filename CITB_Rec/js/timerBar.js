@@ -6,7 +6,7 @@ const updateTimerBar = (value) => {
 }
 const checkTimer = () => {
     setInterval(()=>{
-        chrome.storage.sync.get('timerCounter', function(result) {
+        chrome.storage.sync.get('timerCounter', (result) => {
             if (Object.keys(result).length !== 0 &&  result.timerCounter.seconds > 0){
                 updateTimerBar(result);
             }else{

@@ -89,7 +89,7 @@
     headerClose.addEventListener('click',saveName);
 
     document.addEventListener('ready',() => {
-        $(window).keydown(function(event){
+        $(window).keydown((event) =>{
           if(event.keyCode == 13) {
             event.preventDefault();
             return false;

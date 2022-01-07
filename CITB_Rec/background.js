@@ -77,7 +77,7 @@ const injectFileName = () =>{
 let intervalFileName = null;
 
 const getFileName = () => {
-  chrome.storage.sync.get('fileName', function(result) {
+  chrome.storage.sync.get('fileName', (result) => {
     if(result.fileName != "undefined"){
       window.fileName = result.fileName;
       clearInterval(intervalFileName);
@@ -86,7 +86,7 @@ const getFileName = () => {
 }
 
 const openRecList = () => {  
-    chrome.tabs.getAllInWindow(undefined, function(tabs) {
+    chrome.tabs.getAllInWindow(undefined,(tabs) => {
       for (var i = 0, tab; tab = tabs[i]; i++) {
         if (tab.url && tab.url.includes('videoManager.html')) {
           chrome.tabs.update(tab.id, {selected: true});
@@ -124,8 +124,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             }
             openRecList();
             await stopRecordScreen();
-              chrome.storage.sync.set({isPaused: false}, function() {
-            });
+              chrome.storage.sync.set({isPaused: false}, () => {});
         }    
         break;
       case popupMessages.pause :
@@ -140,11 +139,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         delLastItem();
         break;
       case popupMessages.voiceOpen :
-        chrome.storage.sync.set({voice: true}, function() {
+        chrome.storage.sync.set({voice: true},() =>{
         });
         break;
       case popupMessages.voiceClose :
-        chrome.storage.sync.set({voice: false}, function() {
+        chrome.storage.sync.set({voice: false},() =>{
         });
         delLastItem();
         break;
@@ -171,7 +170,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     return true;
   });
 
-  chrome.runtime.onConnect.addListener(function(port) {
+  chrome.runtime.onConnect.addListener( (port) => {
     console.assert(port.name === "getDriveLink");
     port.onMessage.addListener(async(msg) => {
       if (msg.getLink){
@@ -186,7 +185,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         for (const element of list) {
           let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
           let exists = await searchBylinkQueueDB(shareLink);
-          console.log("exits",exists);
           if(!exists){
             let dateStart = element.createdTime;
             let msDuration = element.videoMediaMetadata.durationMillis;

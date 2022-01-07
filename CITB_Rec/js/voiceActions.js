@@ -28,7 +28,7 @@ const pause = () =>{
     });
 }
 
-window.addEventListener("beforeunload", function(event) { 
+window.addEventListener("beforeunload", (event) => { 
     close();
  });
 
