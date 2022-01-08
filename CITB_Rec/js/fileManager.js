@@ -11,7 +11,7 @@ import {
     ,listQueueDB
 } from "./database.js";
 
-const copyDriveFileToFolder = (destFolderId,originalDocID,oldFolderId,fileName) => {
+const copyDriveFileToFolder = async (destFolderId,originalDocID,oldFolderId,fileName) => {
     
   const cloned = (await gapi.client.drive.files.copy({
       fileId: originalDocID
