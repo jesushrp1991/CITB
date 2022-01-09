@@ -87,12 +87,15 @@ const createFolderCard = async(details) => {
     const urlContent = await fetch(chrome.runtime.getURL('html/folder.html'))
     let html = await urlContent.text();
     html = html.replace("{{nombre}}",details.name);
+    html = html.replace("{{idSrc}}",details.id);
+    html = html.replace("{{idP}}",details.id);
 
     const container = document.createElement("div");
     container.setAttribute('class',"col-1 dropzone");
     container.setAttribute('id',details.id);
     container.style.marginLeft = '20px';
     const div = escapeHTMLPolicy.createHTML(html);  
+    
     container.innerHTML = div;
     let folderContainer = document.getElementById('citbFolderContainer');
     folderContainer.insertBefore(container,folderContainer.firstChild);
@@ -140,7 +143,6 @@ const dragElement = (element) => {
         event.target.style.opacity = "";
         
         let id = {idFile:dragged.id, idFolder:event.target.id}
-        console.log(id);
         port.postMessage({moveFile: true ,id:id});
       }    
   }, false);
@@ -234,7 +236,6 @@ const addFolder = () =>{
     let name = prompt ("Nombre");
     if(name){
         port.postMessage({addFolder: true, name : name});
-        createFolderCard({id:9999,name:name});
     }    
 }
 

@@ -215,7 +215,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             }
           }
         }else if(msg.addFolder){
-          createDriveFolder(msg.name);
+          let result = await createDriveFolder(msg.name);
+          let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
+          await addRecQueueDB("folder",msg.name,null,null,shareLink,null);
         }else if (msg.moveFile){
           let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
           destFolderId =  destFolderId.match(/[-\w]{25,}/);

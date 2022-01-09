@@ -19,25 +19,28 @@ const moveDriveFileToFolder = async (destFolderId,originalDocID) => {
   });
 }
 
-const createDriveFolder = (name) =>{
+const createDriveFolder = async (name) =>{
   var fileMetadata = {
     'name' : name,
     'mimeType' : 'application/vnd.google-apps.folder',
     'parents': 'root'
   };
-  gapi.client.drive.files.create({
-    resource: fileMetadata,
-  }).then((response) => {
-    switch(response.status){
-      case 200:
-        var file = response.result;
-        console.log('Created Folder Id: ', file.id);
-        break;
-      default:
-        console.log('Error creating the folder, '+response);
-        break;
-      }
-  });
+  let result;
+ await  gapi.client.drive.files.create({
+          resource: fileMetadata,
+        }).then((response) => {
+          switch(response.status){
+            case 200:
+              var file = response.result;
+              // console.log('Created Folder Id: ', file.id);
+              result = file;
+              break;
+            default:
+              console.log('Error creating the folder, '+response);
+              break;
+            }
+        });
+  return result;
 }
 
 const getDriveFileList = async () => {
