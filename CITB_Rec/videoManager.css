@@ -1,3 +1,7 @@
+.dragCard{
+  position: absolute !important;
+  z-index: 999;
+}
 .card-personalized {
     margin-left: 15px;
     width: 95%;
@@ -63,7 +67,7 @@
   
   .round-xlarge {
     border-radius: 16px;
-    position: relative;
+    /* position: relative; */
   }
   
   .blue{
@@ -146,20 +150,4 @@
   }
 
 
-  #ctxmenu {
-    position: fixed;
-    background:ghostwhite;
-    color: black;
-    cursor: pointer;
-    border: 1px black solid
-  }
-  
-  #ctxmenu > p {
-    padding: 0 1rem;
-    margin: 0
-  }
-  
-  #ctxmenu > p:hover {
-    background: black;
-    color: ghostwhite
-  }
+ 

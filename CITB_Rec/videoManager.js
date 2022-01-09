@@ -97,6 +97,47 @@ const createFolderCard = async(details) => {
     let folderContainer = document.getElementById('citbFolderContainer');
     folderContainer.insertBefore(container,folderContainer.firstChild);
 }
+function dragElement(elmnt) {
+    console.log("Entro!!", elmnt)
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById(elmnt.id)) {
+      // if present, the header is where you move the DIV from:
+      document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+    } else {
+      // otherwise, move the DIV from anywhere inside the DIV:
+      elmnt.onmousedown = dragMouseDown;
+    }
+  
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    }
+  
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // set the element's new position:
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+  
+    function closeDragElement() {
+      // stop moving when mouse button is released:
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
 
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
@@ -117,26 +158,15 @@ const createRecordCard = async (details) => {
     html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-4");
+    container.setAttribute('class',"col-4 dragCard");
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
     let cardContainer = document.getElementById('citbCardRecContainer');
     cardContainer.insertBefore(container,cardContainer.firstChild);
 
-    oncontextmenu = (e) => {
-        e.preventDefault();
-        let menu  = document.createElement("div");        
-        // let menuName = "ctxmenu"+details.id 
-        menu.id = "ctxmenu";
-        // menu.id = menuName;
-        menu.style = `top:${e.pageY-10}px;left:${e.pageX-40}px;z-index:100`
-        menu.onmouseleave = () => menu.outerHTML = ''
-        menu.innerHTML = "<p>Option1</p><p>Option2</p><p>Option3</p><p>Option4</p><p onclick='alert(`Thank you!`)'>Upvote</p>"
-        document.getElementById(details.id).appendChild(menu);        
-    }    
-    document.getElementById(details.id).addEventListener('contextmenu',oncontextmenu);
-    
+    dragElement(document.getElementById(details.id));
+
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
     document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
     document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
