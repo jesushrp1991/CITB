@@ -22,6 +22,7 @@ import {
   ,saveVideo
   ,listUploadQueue
   ,getDriveFileList
+  ,createDriveFolder
 } from './js/fileManager.js'
 
 const popupMessages = {
@@ -104,6 +105,19 @@ const getRecName = async() =>{
   await prepareDB();
   window.meetStartTime = dayjs().format();
 }
+
+let iconRecChange;
+const recIcon = () =>{
+  iconRecChange = setInterval(()=>{
+                    chrome.browserAction.setIcon({path: "./assets/recOn.svg"});
+                    setTimeout(()=>{
+                      chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
+                    },500);
+                    
+                  },1000);
+  iconRecChange;
+}
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
@@ -111,15 +125,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!window.isRecording && !message.isVoiceCommandStop){
-          // set icon
-          // chrome.browserAction.setIcon({path: "./assets/rec.gif"});
+        if(!window.isRecording && !message.isVoiceCommandStop){         
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
           startRecordScreen(message.idMic,getRecName,message.idTab);
+          recIcon();
         }else{
-            //clean icon
-            // chrome.browserAction.setIcon({path: "./assets/recOff.png"});
+            clearInterval(iconRecChange);
+            chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
             if(intervalFileName != null){
               clearInterval(intervalFileName);
             }
@@ -128,7 +141,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             }
             openRecList();
             await stopRecordScreen();
-              chrome.storage.sync.set({isPaused: false}, () => {});
+            chrome.storage.sync.set({isPaused: false}, () => {});
         }    
         break;
       case popupMessages.pause :
@@ -174,9 +187,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     return true;
   });
 
-
-
-  chrome.runtime.onConnect.addListener( (port) => {
+  chrome.runtime.onConnect.addListener( async(port) => {
     // console.assert(port.name === "getDriveLink");
     if(port.name == 'getDriveLink'){
       port.onMessage.addListener(async(msg) => {
@@ -190,14 +201,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           createRecQueueDB();
           let list = await getDriveFileList();
           for (const element of list) {
+
             let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
             let exists = await searchBylinkQueueDB(shareLink);
-            if(!exists){
+
+            if(!exists && element.mimeType == 'video/webm'){
               let dateStart = element.createdTime;
               let msDuration = element.videoMediaMetadata.durationMillis;
               await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration);
+            }else if(!exists && element.mimeType == "application/vnd.google-apps.folder"){
+              await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null);
             }
           }
+        }else if(msg.addFolder){
+          createDriveFolder(msg.name);
         }
       });
     }else if (port.name == 'portTimer'){

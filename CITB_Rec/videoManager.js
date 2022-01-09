@@ -83,6 +83,21 @@ const calculateRecTime = (details) =>{
     return `${hours}:${minutes}:${seconds}`;
 }
 
+const createFolderCard = async(details) => {
+    const urlContent = await fetch(chrome.runtime.getURL('html/folder.html'))
+    let html = await urlContent.text();
+    html = html.replace("{{nombre}}",details.name);
+
+    const container = document.createElement("div");
+    container.setAttribute('class',"col-1");
+    container.setAttribute('id',details.id);
+    container.style.marginLeft = '20px';
+    const div = escapeHTMLPolicy.createHTML(html);  
+    container.innerHTML = div;
+    let folderContainer = document.getElementById('citbFolderContainer');
+    folderContainer.insertBefore(container,folderContainer.firstChild);
+}
+
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
@@ -126,8 +141,14 @@ let actualUploadElementID;
 let actualInterval = null;
 
 const queueDaemon = (result) =>{
+        console.log(result)
         result.forEach(async (element) => {
-            if(element.upload == 'inProgress'){
+            if(element.upload == 'folder'){
+                let folder = document.getElementById(element.id);
+                if(folder == null){
+                    createFolderCard(element);
+                }
+            }else if(element.upload == 'inProgress'){
                 if(actualUploadElementID != element.id){
                     if(actualInterval != null){
                         clearInterval(actualInterval);
@@ -159,6 +180,13 @@ const getDriveFiles = () => {
     port.postMessage({getDriveFiles: true});
 }
 
+const addFolder = () =>{
+    let name = prompt ("Nombre");
+    port.postMessage({addFolder: true, name : name});
+    createFolderCard({id:9999,name:name});
+}
+
+document.getElementById('addFolder').addEventListener('click',addFolder);
+
 getDriveFiles();
 startQueue();
-

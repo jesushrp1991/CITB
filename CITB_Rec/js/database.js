@@ -93,7 +93,7 @@ import { environment } from "../config/environment.js";
           let result;
           let firsResult = false;
           await queueDB.records.each(element => {  
-            if(element.file != "uploaded"){
+            if(element.file != "uploaded" && element.file != "folder" ){
               if(!firsResult){
                 result = element;
                 firsResult = true;

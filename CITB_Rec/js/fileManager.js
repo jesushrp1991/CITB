@@ -51,7 +51,7 @@ const createDriveFolder = (name) =>{
 const getDriveFileList = async () => {
   let result = await gapi.client.drive.files.list({
     q: "trashed=false",
-    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata)',
+    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType)',
     spaces: 'drive',
   })
   return result.result.files;  
@@ -240,8 +240,9 @@ const uploadQueueDaemon = async() =>{
     if(lastElemenID == undefined){
         return;
     }
-    if(lastElemenID.file != "uploaded" ){
-        let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
+    if(lastElemenID.file != "uploaded" && lastElemenID.file != "folder" ){
+        // let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
+        let nextFile = lastElemenID;
         window.fileIDUploadInProgress = nextFile.id;
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
@@ -257,7 +258,10 @@ const listUploadQueue = async() =>{
     if(list != undefined){
       list.forEach((element)=>{
         let upload;
-        if(element.id === window.fileIDUploadInProgress){
+        if(element.file &&  element.file == 'folder'){
+          upload = 'folder'
+        }
+        else if(element.id === window.fileIDUploadInProgress){
           upload = 'inProgress';
         }else if (element.file == 'uploaded' ){
             upload = 'uploaded'
@@ -285,4 +289,5 @@ export {
     ,saveVideo
     ,listUploadQueue
     ,getDriveFileList
+    ,createDriveFolder
 }
