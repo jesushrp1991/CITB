@@ -149,6 +149,7 @@ const dragElement = (element) => {
 }
 
 const createRecordCard = async (details) => {
+    console.log(details)
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
     const recTime = calculateRecTime(details);    
@@ -165,6 +166,7 @@ const createRecordCard = async (details) => {
     html = html.replace("{{twittercardId}}","twitter" + details.id);
     html = html.replace("{{whatsAppcardId}}","whatsapp" + details.id);
     html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
+    html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
 
     const container = document.createElement("div");
     container.setAttribute('class',"col-4");

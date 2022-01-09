@@ -47,7 +47,8 @@ const getDriveFileList = async () => {
   let result = await gapi.client.drive.files.list({
     q: "trashed=false",
     //q: "trashed=false and parents='root'",//para buscar por padres    
-    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType)',
+    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType,thumbnailLink)',
+    // fields: 'nextPageToken, files',//All metadarta
     spaces: 'drive',
   })
   return result.result.files;  
@@ -272,6 +273,7 @@ const listUploadQueue = async() =>{
             ,driveLink : element.driveLink
             ,upload: upload
             ,msDuration: element.msDuration
+            ,thumbnailLink: element.thumbnailLink
         }
         listResult.push(details);
       });

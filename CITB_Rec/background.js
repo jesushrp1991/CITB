@@ -176,10 +176,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         chrome.storage.sync.set({drivelink: drivelink}, () => {});
         break;
       case popupMessages.listRec :
+        alert("AQUIIII")
         let list = await listUploadQueue();
-        chrome.storage.sync.set({listRec: {list:list}}, () => {
-          sendResponse({status: "ready"});
-        });        
+        chrome.storage.sync.set({listRec: {list:list}}, () => {});        
         break;
       case popupMessages.showRecList :
         openRecList();
@@ -209,15 +208,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             if(!exists && element.mimeType == 'video/webm'){
               let dateStart = element.createdTime;
               let msDuration = element.videoMediaMetadata.durationMillis;
-              await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration);
+              await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration,element.thumbnailLink);
             }else if(!exists && element.mimeType == "application/vnd.google-apps.folder"){
-              await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null);
+              await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null,null);
             }
           }
         }else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
           let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
-          await addRecQueueDB("folder",msg.name,null,null,shareLink,null);
+          await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
         }else if (msg.moveFile){
           let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
           destFolderId =  destFolderId.match(/[-\w]{25,}/);

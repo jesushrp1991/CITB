@@ -12,7 +12,7 @@
 .card-personalized {
     margin-left: 15px;
     width: 95%;
-    height: 85%;
+    height: 93%;
     border-radius: 10px !important;
 }
 .card-header-personalized{
@@ -157,4 +157,19 @@
   }
 
 
- 
+  .wrapper {
+    position: relative;
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+  }
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+  }
+  .thumbnail {
+    /* height: 85px !important; */
+    /* width: 55px !important; */
+  }

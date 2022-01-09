@@ -59,14 +59,15 @@ import { environment } from "../config/environment.js";
             dateStart,
             dateEnd,
             driveLink,
-            msDuration
+            msDuration,
+            thumbnailLink
             `,
         });
   }
 
-  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration) =>{
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink) =>{
     try{
-      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration});  
+      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration,thumbnailLink:thumbnailLink});  
     }catch(error){
         console.log(error);
         throw error;
