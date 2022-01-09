@@ -97,7 +97,6 @@ const addEventToGoogleCalendar = (linkDrive) => {
     }).then( (data) =>{
       // console.log("BEFORE IDENTITY SET ",data);
       chrome.identity.getAuthToken({interactive: true}, (tokenResult) => {
-        // console.log("TOKEN RESULT", tokenResult);
         gapi.auth.setToken({
           'access_token': tokenResult,
         });
@@ -235,7 +234,7 @@ const uploadQueueDaemon = async() =>{
       refreshToken = 0;
     }
     if(window.uploadValue != -1){
-        return;
+      return;
     }
     let lastElemenID = await getLastElementIdQueueDB();
     if(lastElemenID == undefined){
@@ -243,7 +242,6 @@ const uploadQueueDaemon = async() =>{
     }
     if(lastElemenID.file != "uploaded" ){
         let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
-        console.log("nextFile",nextFile);
         window.fileIDUploadInProgress = nextFile.id;
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 

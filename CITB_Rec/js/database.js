@@ -86,11 +86,20 @@ import { environment } from "../config/environment.js";
   
   const getLastElementIdQueueDB = async () =>{
       try{
-          let exitsDB = await Dexie.exists("CITBQueueRecords");
+          const exitsDB = await Dexie.exists("CITBQueueRecords");
           if(!exitsDB){
             return;
           }
-          let result = await queueDB.records.orderBy('id').last();
+          let result;
+          let firsResult = false;
+          await queueDB.records.each(element => {  
+            if(element.file != "uploaded"){
+              if(!firsResult){
+                result = element;
+                firsResult = true;
+              }
+            }
+          });
           return result;
       }catch(error){
           console.log(error);
