@@ -89,7 +89,7 @@ const createFolderCard = async(details) => {
     html = html.replace("{{nombre}}",details.name);
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-1");
+    container.setAttribute('class',"col-1 dropzone");
     container.setAttribute('id',details.id);
     container.style.marginLeft = '20px';
     const div = escapeHTMLPolicy.createHTML(html);  
@@ -97,50 +97,55 @@ const createFolderCard = async(details) => {
     let folderContainer = document.getElementById('citbFolderContainer');
     folderContainer.insertBefore(container,folderContainer.firstChild);
 }
-function dragElement(elmnt) {
 
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id)) {
-      // if present, the header is where you move the DIV from:
-      document.getElementById(elmnt.id).onmousedown = dragMouseDown;
-    } else {
-      // otherwise, move the DIV from anywhere inside the DIV:
-      elmnt.onmousedown = dragMouseDown;
-    }
-  
-    function dragMouseDown(e) {
-      document.getElementById(elmnt.id).setAttribute('class','col-4 dragCard');
+var dragged;
+const dragElement = (element) => {
 
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
-  
-    function elementDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      // set the element's new position:
-      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    }
-  
-    function closeDragElement(e) {
-        console.log(e.target);
-      // stop moving when mouse button is released:
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
-  }
+    document.addEventListener("drag", (event) => {
+    }, false);
+
+    document.addEventListener("dragstart", (event) => {
+        event.dataTransfer.setData('text/plain',null)
+        dragged = event.target;
+        event.target.style.opacity = .5;
+    }, false);
+
+    document.addEventListener("dragend", (event) => {
+        event.target.style.opacity = "";
+    }, false);
+
+    document.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        if ( event.target.className.includes("dropzone")) {
+        }
+    }, false);
+
+    document.addEventListener("dragenter", (event) => {
+        if ( event.target.className.includes("dropzone")) {
+            event.target.style.opacity = .5;
+        }
+    }, false);
+
+    document.addEventListener("dragleave", (event) => {
+        if ( event.target.className.includes("dropzone")) {
+            event.target.style.opacity = "";
+        }
+  }, false);
+
+  document.addEventListener("drop", (event) => {
+      event.preventDefault();
+      if ( event.target.className.includes("dropzone")) {
+        let node = document.getElementById(dragged.id);
+        node.parentNode.removeChild(node);
+        event.target.style.opacity = "";
+        
+        let id = {idFile:dragged.id, idFolder:event.target.id}
+        console.log(id);
+        port.postMessage({moveFile: true ,id});
+      }    
+  }, false);
+}
+
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
@@ -166,9 +171,10 @@ const createRecordCard = async (details) => {
     container.innerHTML = div;
     let cardContainer = document.getElementById('citbCardRecContainer');
     cardContainer.insertBefore(container,cardContainer.firstChild);
+    
 
     dragElement(document.getElementById(details.id));
-
+    document.getElementById(details.id).setAttribute("draggable",true);
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
     document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
     document.getElementById("twitter" + details.id).addEventListener("click", reply_click);

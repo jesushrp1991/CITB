@@ -23,6 +23,7 @@ import {
   ,listUploadQueue
   ,getDriveFileList
   ,createDriveFolder
+  ,copyDriveFileToFolder
 } from './js/fileManager.js'
 
 const popupMessages = {
@@ -215,6 +216,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           }
         }else if(msg.addFolder){
           createDriveFolder(msg.name);
+        }else if (msg.moveFile){
+
         }
       });
     }else if (port.name == 'portTimer'){

@@ -11,8 +11,7 @@ import {
     ,listQueueDB
 } from "./database.js";
 
-const copyDriveFileToFolder = async (destFolderId,originalDocID,oldFolderId,fileName) => {
-    
+const copyDriveFileToFolder = async (destFolderId,originalDocID,oldFolderId,fileName) => {    
   const cloned = (await gapi.client.drive.files.copy({
       fileId: originalDocID
      })).result
@@ -51,6 +50,7 @@ const createDriveFolder = (name) =>{
 const getDriveFileList = async () => {
   let result = await gapi.client.drive.files.list({
     q: "trashed=false",
+    //q: "trashed=false and parents='root'",//para buscar por padres    
     fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType)',
     spaces: 'drive',
   })
@@ -290,4 +290,5 @@ export {
     ,listUploadQueue
     ,getDriveFileList
     ,createDriveFolder
+    ,copyDriveFileToFolder
 }

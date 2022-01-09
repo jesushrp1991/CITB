@@ -2,6 +2,13 @@
   position: absolute !important;
   z-index: 999;
 }
+.dropzone {
+  /* width: 200px;
+  height: 20px;
+  background: blueviolet;
+  margin-bottom: 10px;
+  padding: 10px; */
+}
 .card-personalized {
     margin-left: 15px;
     width: 95%;
