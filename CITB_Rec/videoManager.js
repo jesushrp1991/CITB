@@ -121,9 +121,22 @@ const createRecordCard = async (details) => {
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
-    // document.getElementById('citbCardRecContainer').appendChild(container);
     let cardContainer = document.getElementById('citbCardRecContainer');
     cardContainer.insertBefore(container,cardContainer.firstChild);
+
+    oncontextmenu = (e) => {
+        e.preventDefault();
+        let menu  = document.createElement("div");        
+        // let menuName = "ctxmenu"+details.id 
+        menu.id = "ctxmenu";
+        // menu.id = menuName;
+        menu.style = `top:${e.pageY-10}px;left:${e.pageX-40}px;z-index:100`
+        menu.onmouseleave = () => menu.outerHTML = ''
+        menu.innerHTML = "<p>Option1</p><p>Option2</p><p>Option3</p><p>Option4</p><p onclick='alert(`Thank you!`)'>Upvote</p>"
+        document.getElementById(details.id).appendChild(menu);        
+    }    
+    document.getElementById(details.id).addEventListener('contextmenu',oncontextmenu);
+    
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
     document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
     document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
@@ -141,7 +154,6 @@ let actualUploadElementID;
 let actualInterval = null;
 
 const queueDaemon = (result) =>{
-        console.log(result)
         result.forEach(async (element) => {
             if(element.upload == 'folder'){
                 let folder = document.getElementById(element.id);
@@ -187,6 +199,8 @@ const addFolder = () =>{
 }
 
 document.getElementById('addFolder').addEventListener('click',addFolder);
+
+
 
 getDriveFiles();
 startQueue();
