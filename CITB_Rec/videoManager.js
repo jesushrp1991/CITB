@@ -98,7 +98,7 @@ const createFolderCard = async(details) => {
     folderContainer.insertBefore(container,folderContainer.firstChild);
 }
 function dragElement(elmnt) {
-    console.log("Entro!!", elmnt)
+
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     if (document.getElementById(elmnt.id)) {
       // if present, the header is where you move the DIV from:
@@ -109,6 +109,8 @@ function dragElement(elmnt) {
     }
   
     function dragMouseDown(e) {
+      document.getElementById(elmnt.id).setAttribute('class','col-4 dragCard');
+
       e = e || window.event;
       e.preventDefault();
       // get the mouse cursor position at startup:
@@ -132,13 +134,13 @@ function dragElement(elmnt) {
       elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
   
-    function closeDragElement() {
+    function closeDragElement(e) {
+        console.log(e.target);
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
     }
   }
-
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
@@ -158,7 +160,7 @@ const createRecordCard = async (details) => {
     html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-4 dragCard");
+    container.setAttribute('class',"col-4");
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
@@ -224,8 +226,10 @@ const getDriveFiles = () => {
 
 const addFolder = () =>{
     let name = prompt ("Nombre");
-    port.postMessage({addFolder: true, name : name});
-    createFolderCard({id:9999,name:name});
+    if(name){
+        port.postMessage({addFolder: true, name : name});
+        createFolderCard({id:9999,name:name});
+    }    
 }
 
 document.getElementById('addFolder').addEventListener('click',addFolder);
