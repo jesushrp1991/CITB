@@ -23,7 +23,7 @@ import {
   ,listUploadQueue
   ,getDriveFileList
   ,createDriveFolder
-  ,copyDriveFileToFolder
+  ,moveDriveFileToFolder
 } from './js/fileManager.js'
 
 const popupMessages = {
@@ -217,7 +217,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }else if(msg.addFolder){
           createDriveFolder(msg.name);
         }else if (msg.moveFile){
-
+          let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
+          destFolderId =  destFolderId.match(/[-\w]{25,}/);
+          let originalDocID = await getDriverLinkInQueueDB(msg.id.idFile);
+          originalDocID =  originalDocID.match(/[-\w]{25,}/);
+          moveDriveFileToFolder(destFolderId[0],originalDocID[0]);
         }
       });
     }else if (port.name == 'portTimer'){

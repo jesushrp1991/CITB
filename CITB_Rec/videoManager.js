@@ -141,7 +141,7 @@ const dragElement = (element) => {
         
         let id = {idFile:dragged.id, idFolder:event.target.id}
         console.log(id);
-        port.postMessage({moveFile: true ,id});
+        port.postMessage({moveFile: true ,id:id});
       }    
   }, false);
 }

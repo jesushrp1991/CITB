@@ -11,19 +11,12 @@ import {
     ,listQueueDB
 } from "./database.js";
 
-const copyDriveFileToFolder = async (destFolderId,originalDocID,oldFolderId,fileName) => {    
-  const cloned = (await gapi.client.drive.files.copy({
-      fileId: originalDocID
-     })).result
-     
-     // Move copy to new folder
-     await gapi.client.drive.files.update({
-      fileId: cloned.id,
+const moveDriveFileToFolder = async (destFolderId,originalDocID) => {    
+  await gapi.client.drive.files.update({
+      fileId: originalDocID,
       addParents: destFolderId,
-      removeParents: oldFolderId,
-      resource: { name: fileName },
-      fields: 'id, parents'
-     });
+      enforceSingleParent:true
+  });
 }
 
 const createDriveFolder = (name) =>{
@@ -290,5 +283,5 @@ export {
     ,listUploadQueue
     ,getDriveFileList
     ,createDriveFolder
-    ,copyDriveFileToFolder
+    ,moveDriveFileToFolder
 }
