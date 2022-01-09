@@ -174,29 +174,40 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     return true;
   });
 
+
+
   chrome.runtime.onConnect.addListener( (port) => {
-    console.assert(port.name === "getDriveLink");
-    port.onMessage.addListener(async(msg) => {
-      if (msg.getLink){
-        let driveLink = await getDriverLinkInQueueDB(msg.getLink);
-        port.postMessage({answer: driveLink});
-      }else if (msg.getList){
-        let list = await listUploadQueue();
-        port.postMessage({lista: list});
-      }else if (msg.getDriveFiles){
-        createRecQueueDB();
-        let list = await getDriveFileList();
-        for (const element of list) {
-          let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
-          let exists = await searchBylinkQueueDB(shareLink);
-          if(!exists){
-            let dateStart = element.createdTime;
-            let msDuration = element.videoMediaMetadata.durationMillis;
-            await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration);
+    // console.assert(port.name === "getDriveLink");
+    if(port.name == 'getDriveLink'){
+      port.onMessage.addListener(async(msg) => {
+        if (msg.getLink){
+          let driveLink = await getDriverLinkInQueueDB(msg.getLink);
+          port.postMessage({answer: driveLink});
+        }else if (msg.getList){
+          let list = await listUploadQueue();
+          port.postMessage({lista: list});
+        }else if (msg.getDriveFiles){
+          createRecQueueDB();
+          let list = await getDriveFileList();
+          for (const element of list) {
+            let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
+            let exists = await searchBylinkQueueDB(shareLink);
+            if(!exists){
+              let dateStart = element.createdTime;
+              let msDuration = element.videoMediaMetadata.durationMillis;
+              await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration);
+            }
           }
         }
-      }
-    });
+      });
+    }else if (port.name == 'portTimer'){
+      port.onMessage.addListener(async(msg) => {
+        if (msg.getTimer){
+          let getTimer = window.timer;
+          port.postMessage({answer: getTimer});
+        }
+      });
+    }
   });
 
 
