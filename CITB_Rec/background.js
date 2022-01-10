@@ -26,6 +26,8 @@ import {
   ,moveDriveFileToFolder
 } from './js/fileManager.js'
 
+import { createListForFrontend } from './js/tools.js'
+
 const popupMessages = {
   rec:'rec'
   ,pause:'pause'
@@ -188,7 +190,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   });
 
   chrome.runtime.onConnect.addListener( async(port) => {
-    // console.assert(port.name === "getDriveLink");
     if(port.name == 'getDriveLink'){
       port.onMessage.addListener(async(msg) => {
         if (msg.getLink){
@@ -198,46 +199,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           let list = await listUploadQueue();
           port.postMessage({lista: list});
         }else if (msg.getDriveFiles){
-          // createRecQueueDB();
-          console.log("msg.folderId",msg.folderId);
-          let list = await getDriveFileList(msg.folderId);
-          let listResult = [];
-          for (const element of list) {
-
-            let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
-            // let exists = await searchBylinkQueueDB(shareLink);
-            if(element.mimeType == 'video/webm'){
-              // let dateStart = element.createdTime;
-              // let msDuration = element.videoMediaMetadata.durationMillis;
-              // await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration,element.thumbnailLink);
-              let details = {
-                id: element.id 
-               ,name: element.name
-               ,dateStart: element.createdTime
-               ,dateEnd: null
-               ,driveLink : shareLink
-               ,upload: "uploaded"
-               ,msDuration: element.videoMediaMetadata.durationMillis
-               ,thumbnailLink: element.thumbnailLink
-              }
-              listResult.push(details);
-
-            }else if(element.mimeType == "application/vnd.google-apps.folder"){
-              // await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null,null);
-              let details = {
-                id: element.id 
-               ,name: element.name
-               ,dateStart: element.createdTime
-               ,dateEnd: null
-               ,driveLink : shareLink
-               ,upload: "folder"
-               ,msDuration: null
-               ,thumbnailLink: null
-              }
-              listResult.push(details);
-            }
-          }
-          port.postMessage({currentList: listResult});
+          let folderId ;
+          msg.folderId == 'root' ? folderId = window.folderId : folderId = msg.folderId;
+          let list = await getDriveFileList(folderId);
+          let listResult = createListForFrontend(list,null);          
+          let listFolder = await getDriveFileList('root');
+          let listFoldersResult = createListForFrontend(listFolder,'root')
+          port.postMessage({currentList: listResult.concat(listFoldersResult)});
         }else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
           let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";

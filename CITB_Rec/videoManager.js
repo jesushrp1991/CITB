@@ -1,7 +1,6 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
-var folderId = 'root';
 var port = chrome.runtime.connect({name: "getDriveLink"});
 
 const baseUrlPerHost = {
@@ -24,8 +23,12 @@ port.onMessage.addListener(async (msg) => {
 
 const reply_click = (event) =>{   
     id = event.srcElement.id;
+    console.log(id);
+
     var numb = id.match(/\d/g);
     numb = numb.join("");
+
+    console.log(numb);
     port.postMessage({getLink: numb});
 }
 
@@ -86,9 +89,16 @@ const calculateRecTime = (details) =>{
     return `${hours}:${minutes}:${seconds}`;
 }
 
+var folderId = 'root';
 const  folder_click = (event) =>{
+    let container = document.getElementById('citbCardRecContainer');
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     let id = event.srcElement.id;
-    alert(`FOLDER CLICK ${event.srcElement.id}`)
+    folderId = id;
+    port.postMessage({getDriveFiles: true ,folderId: folderId });
+    // alert(`FOLDER CLICK ${event.srcElement.id}`)
 }
 const createFolderCard = async(details) => {
     const urlContent = await fetch(chrome.runtime.getURL('html/folder.html'))
@@ -210,7 +220,11 @@ let actualInterval = null;
 
 const queueDaemon = (result) =>{
         result.forEach(async (element) => {
-            if(element.upload == 'folder'){
+            let result = document.getElementById(element.id);
+            if(result){
+                //nada...
+            }
+            else if(element.upload == 'folder'){
                 let folder = document.getElementById(element.id);
                 if(folder == null){
                     createFolderCard(element);
