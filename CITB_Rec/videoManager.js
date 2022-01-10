@@ -4,17 +4,15 @@ var id;
 var port = chrome.runtime.connect({name: "getDriveLink"});
 
 const baseUrlPerHost = {
-    whatsapp: 'https://wa.me?text=',
-    twitter: 'https://twitter.com/intent/tweet?text=',
-    classroom: 'https://classroom.google.com/share?url=',
+    whats: 'https://wa.me?text=',
+    twitt: 'https://twitter.com/intent/tweet?text=',
+    class: 'https://classroom.google.com/share?url=',
     gmail: 'https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=',
-    wakelet: 'https://wakelet.com/save?self=1&media=',
+    wakel: 'https://wakelet.com/save?self=1&media=',
 };
 
 port.onMessage.addListener(async (msg) => {
-    if (msg.answer){
-        getKindShare(msg.answer)
-    }else if (msg.lista){
+    if (msg.lista){
         await queueDaemon(msg.lista);
     }else if (msg.currentList){
         await queueDaemon(msg.currentList);
@@ -23,13 +21,8 @@ port.onMessage.addListener(async (msg) => {
 
 const reply_click = (event) =>{   
     id = event.srcElement.id;
-    console.log(id);
-
-    var numb = id.match(/\d/g);
-    numb = numb.join("");
-
-    console.log(numb);
-    port.postMessage({getLink: numb});
+    let driveID = "https://drive.google.com/file/d/" + id.slice(5) +  "/view?usp=sharing";
+    getKindShare(driveID);
 }
 
 const getShareType = () => {
@@ -42,7 +35,6 @@ const getShareType = () => {
     })
     return finalType;
 }
-
 
 const getKindShare = (link) =>{
     const type = getShareType();
@@ -187,10 +179,10 @@ const createRecordCard = async (details) => {
     html = html.replace("{{recDate}}",date);
     html = html.replace("{{progressBarId}}","progressBar" + details.id);
     html = html.replace("{{gmailcardId}}","gmail" + details.id);
-    html = html.replace("{{classRoomcardId}}","classroom" + details.id);
-    html = html.replace("{{twittercardId}}","twitter" + details.id);
-    html = html.replace("{{whatsAppcardId}}","whatsapp" + details.id);
-    html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
+    html = html.replace("{{classRoomcardId}}","class" + details.id);
+    html = html.replace("{{twittercardId}}","twitt" + details.id);
+    html = html.replace("{{whatsAppcardId}}","whats" + details.id);
+    html = html.replace("{{wakeletcardId}}","wakel" + details.id);
     if(details.thumbnailLink){
         html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
     }else{
@@ -209,10 +201,10 @@ const createRecordCard = async (details) => {
     dragElement(document.getElementById(details.id));
     document.getElementById(details.id).setAttribute("draggable",true);
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
-    document.getElementById("classroom" + details.id).addEventListener("click", reply_click);
-    document.getElementById("twitter" + details.id).addEventListener("click", reply_click);
-    document.getElementById("whatsapp" + details.id).addEventListener("click", reply_click);
-    document.getElementById("wakelet" + details.id).addEventListener("click", reply_click);
+    document.getElementById("class" + details.id).addEventListener("click", reply_click);
+    document.getElementById("twitt" + details.id).addEventListener("click", reply_click);
+    document.getElementById("whats" + details.id).addEventListener("click", reply_click);
+    document.getElementById("wakel" + details.id).addEventListener("click", reply_click);
     return;
 }
 const startQueue = () =>{
