@@ -166,7 +166,11 @@ const createRecordCard = async (details) => {
     html = html.replace("{{twittercardId}}","twitter" + details.id);
     html = html.replace("{{whatsAppcardId}}","whatsapp" + details.id);
     html = html.replace("{{wakeletcardId}}","wakelet" + details.id);
-    html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
+    if(details.thumbnailLink){
+        html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
+    }else{
+        html = html.replace("{{thumbnailLink}}", '/assets/defaultThumbnail.jpg');
+    }
 
     const container = document.createElement("div");
     container.setAttribute('class',"col-4");
