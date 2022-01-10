@@ -144,8 +144,9 @@ const localDownload = () => {
 }
 
 const getShareLink = () =>{
-    chrome.storage.sync.get('shareLink', (result) => {        
-        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(result.shareLink)}&&tf=cm`
+    chrome.storage.sync.get('shareLink', (result) => {  
+        let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
+        let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(link)}&&tf=cm`
         chrome.tabs.create({active: true, url: url});
     });
 }

@@ -11,6 +11,7 @@ const updateProgressBar = (value,id) => {
     if(id){
         idProgressBar = idProgressBar + id
     }
+    console.log(idProgressBar,value);
     document.getElementById(idProgressBar).style.width = value+"%";
     document.getElementById(idProgressBar).innerHTML =  value+"%";
 

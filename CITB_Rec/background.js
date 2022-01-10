@@ -109,18 +109,6 @@ const getRecName = async() =>{
   window.meetStartTime = dayjs().format();
 }
 
-let iconRecChange;
-const recIcon = () =>{
-  iconRecChange = setInterval(()=>{
-                    chrome.browserAction.setIcon({path: "./assets/recOn.svg"});
-                    setTimeout(()=>{
-                      chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
-                    },500);
-                    
-                  },1000);
-  iconRecChange;
-}
-
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
@@ -132,9 +120,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
           startRecordScreen(message.idMic,getRecName,message.idTab);
-          recIcon();
         }else{
-            clearInterval(iconRecChange);
+            clearInterval(window.iconRecChange);
             chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
             if(intervalFileName != null){
               clearInterval(intervalFileName);

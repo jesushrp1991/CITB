@@ -1,6 +1,8 @@
 import { environment } from "../config/environment.js";  
-import { errorHandling } from './errorHandling.js'
-import { saveVideo } from './fileManager.js'
+import { errorHandling } from './errorHandling.js';
+import { saveVideo } from './fileManager.js';
+import { recIcon } from './tools.js'
+
 
 import {
     startTimerCount,
@@ -121,6 +123,7 @@ const startRecordScreen = async(idMic,cb,isTabForMac) =>{
         cb();
         chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  (streamId)=>{
            recordScreen(streamId,idMic);
+           recIcon();
         });
       }else{
         chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => {
@@ -133,6 +136,7 @@ const startRecordScreen = async(idMic,cb,isTabForMac) =>{
                 chrome.storage.sync.set({isRecording: true}, ()=> {});
                 cb();
                 await recordScreen(streamId,idMic);
+                recIcon();
             }
           });
       }

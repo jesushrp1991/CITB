@@ -63,18 +63,17 @@ const searchDefaultFolder = async() =>{
   }else{
     window.folderId = await createDriveFolder('CITB_Records');    
   }
-  console.log("window.folderId",window.folderId)
 }
 
 const getLinkFileDrive = async() => {
-    // setTimeout(()=>{},5000);
     let fileList = await getDriveFileList('root');
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
-    let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
-    // console.log("getLinkFileDrive shareLink",shareLink);
-    chrome.storage.sync.set({shareLink: shareLink}, () =>{});
-    return shareLink;
+    // let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
+    // chrome.storage.sync.set({shareLink: shareLink}, () =>{});
+    // return shareLink;
+    chrome.storage.sync.set({shareLink: fileId}, () =>{});
+    return fileId;
 }
 const addEventToGoogleCalendar = (linkDrive) => {    
     let description = "See video here:" + linkDrive;
@@ -156,12 +155,12 @@ const prepareUploadToDrive = (obj) => {
         return;
       }
       // console.log("res.status",res.status);
-      let msg = "";
+      // let msg = "";
       if (res.status == "Uploading") {
-        msg =
-          Math.round(
-            (res.progressNumber.current / res.progressNumber.end) * 100
-          ) + "%";
+        // msg =
+        //   Math.round(
+        //     (res.progressNumber.current / res.progressNumber.end) * 100
+        //   ) + "%";
           window.uploadValue =  Math.round((res.progressNumber.current / res.progressNumber.end) * 100);
         saveUploadProgress(window.uploadValue);
       }else if(res.status == "Done"){
@@ -172,7 +171,7 @@ const prepareUploadToDrive = (obj) => {
         addEventToGoogleCalendar(linkDrive);        
         window.uploadValue = -1;
         saveUploadProgress(-1);
-        msg = res.status;
+        // msg = res.status;
       }
       // console.log(msg);
     });

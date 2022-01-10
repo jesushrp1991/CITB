@@ -40,6 +40,18 @@ const createListForFrontend = (list,base) =>{
     return listResult;
 }
 
+
+const recIcon = () =>{
+    window.iconRecChange = setInterval(()=>{
+        chrome.browserAction.setIcon({path: "./assets/recOn.svg"});
+        setTimeout(()=>{
+            chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
+        },500);        
+    },1000);
+    window.iconRecChange;
+}
+
 export {
     createListForFrontend
+    ,recIcon
 }

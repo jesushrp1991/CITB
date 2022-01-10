@@ -228,16 +228,19 @@ const queueDaemon = (result) =>{
                     createFolderCard(element);
                 }
             }else if(element.upload == 'inProgress'){
+                console.log("upload",element.id)
                 if(actualUploadElementID != element.id){
                     if(actualInterval != null){
                         clearInterval(actualInterval);
                     }
                     actualUploadElementID = element.id; 
                     let card = document.getElementById(element.id);
+                    console.log(card)
                     if(card == null){
                         await createRecordCard(element);
                     } 
-                    actualInterval = checkUploadStatus(true,actualUploadElementID);
+                    console.log("CHECL UPLOADSTATUS")
+                    actualInterval = checkUploadStatus(true,element.id);
                 }                
             }else if(element.upload == 'awaiting') {
                 let card = document.getElementById(element.id);
