@@ -43,10 +43,10 @@ const createDriveFolder = async (name) =>{
   return result;
 }
 
-const getDriveFileList = async () => {
+const getDriveFileList = async (folder) => {
   let result = await gapi.client.drive.files.list({
-    q: "trashed=false",
-    //q: "trashed=false and parents='root'",//para buscar por padres    
+    // q: "trashed=false",
+    q: `trashed=false and parents='${folder}'`,//para buscar por padres    
     fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType,thumbnailLink)',
     // fields: 'nextPageToken, files',//All metadarta
     spaces: 'drive',
@@ -56,7 +56,7 @@ const getDriveFileList = async () => {
 
 const getLinkFileDrive = async() => {
     // setTimeout(()=>{},5000);
-    let fileList = await getDriveFileList();
+    let fileList = await getDriveFileList('root');//revisar
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
     let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";

@@ -1,47 +1,62 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
-<g id="XMLID_16_">
-	<polygon id="XMLID_17_" style="fill:#1E2E3B;" points="160,65 140,35 0,35 0,105 160,115 320,105 320,65 	"/>
-	<rect id="XMLID_18_" y="105" style="fill:#78B9EB;" width="320" height="180"/>
-	<polygon id="XMLID_19_" style="fill:#5A8BB0;" points="320,285 0,285 320,105 	"/>
-	<g id="XMLID_20_">
-		<circle id="XMLID_61_" style="fill:#EEEEEF;" cx="320" cy="285" r="80"/>
-		<path id="XMLID_60_" style="fill:#DEDDE0;" d="M320,205c44.183,0,80,35.817,80,80s-35.817,80-80,80"/>
-	</g>
-	<polygon id="XMLID_58_" style="fill:#91DC5A;" points="365,300 365,270 335,270 335,240 305,240 305,270 275,270 275,300 305,300 
-		305,330 335,330 335,300 	"/>
-	<polygon id="XMLID_21_" style="fill:#4B925E;" points="335,270 335,240 320,240 320,330 335,330 335,300 365,300 365,270 	"/>
-</g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;stroke:#B2B2B2;stroke-width:4;stroke-miterlimit:10;}
+	.st1{fill:#FFFFFF;}
+	.st2{fill:#C6C6C6;}
+	.st3{fill:#4EB056;}
+	.st4{fill:#009FE3;}
+	.st5{fill:#E94E1B;}
+	.st6{fill:#DC3336;}
+	.st7{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5.5495;stroke-miterlimit:10;}
+	.st8{fill:#F4C312;}
+	.st9{fill:#E71D73;}
+	.st10{fill:#547DBE;}
+	.st11{fill:#EDEDED;}
+	.st12{fill:#DADADA;}
+	.st13{clip-path:url(#SVGID_2_);fill:#DADADA;}
+	.st14{clip-path:url(#SVGID_4_);fill:#DADADA;}
+	.st15{fill:#8085C0;}
+	.st16{fill:#BE1622;}
+	.st17{clip-path:url(#SVGID_6_);fill:#DADADA;}
+	.st18{clip-path:url(#SVGID_8_);fill:#DADADA;}
+	.st19{clip-path:url(#SVGID_10_);fill:#DADADA;}
+	.st20{clip-path:url(#SVGID_12_);fill:#DADADA;}
+	.st21{clip-path:url(#SVGID_14_);fill:#DADADA;}
+	.st22{clip-path:url(#SVGID_16_);fill:#DADADA;}
+	.st23{fill:#C6C6C6;stroke:#C6C6C6;stroke-width:3;stroke-miterlimit:10;}
+	.st24{clip-path:url(#SVGID_18_);fill:#DADADA;}
+	.st25{fill:#4EB056;stroke:#4EB056;stroke-width:3;stroke-miterlimit:10;}
+	.st26{clip-path:url(#SVGID_20_);fill:#DADADA;}
+	.st27{clip-path:url(#SVGID_22_);fill:#DADADA;}
+	.st28{clip-path:url(#SVGID_24_);fill:#DADADA;}
+	.st29{fill:#006633;}
+	.st30{fill:#2D2E83;}
+	.st31{opacity:0.7;}
+	.st32{opacity:0.5;}
+	.st33{opacity:0.3;}
+	.st34{opacity:0.1;}
+	.st35{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st36{fill:none;stroke:#FFFFFF;stroke-width:18.9043;stroke-miterlimit:10;}
+	.st37{fill:none;stroke:#FFFFFF;stroke-width:18.6817;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st38{fill:#7D4E24;}
+	.st39{clip-path:url(#SVGID_26_);}
+	.st40{fill:#B5212E;}
+	.st41{fill:#F3C327;}
+	.st42{fill:none;}
+	.st43{clip-path:url(#SVGID_28_);}
+	.st44{clip-path:url(#SVGID_30_);}
+	.st45{fill:#BE2138;}
+	.st46{fill:#2B3175;}
+	.st47{font-family:'ArgentumSans-Bold';}
+	.st48{font-size:141.7904px;}
+</style>
+<path class="st10" d="M405,169.8H263.5c-15.2-15.3-33.1-33.2-47.3-47.4H95c-17.1,0-30.9,13.8-30.9,30.9v47.4v122.6v47.4
+	c0,17.1,13.8,30.9,30.9,30.9H405c17.1,0,30.9-13.8,30.9-30.9v-47.4v-111v-11.6C435.8,183.6,422,169.8,405,169.8z"/>
+<circle class="st1" cx="355.3" cy="323.5" r="53.5"/>
 <g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
+	<text transform="matrix(1 0 0 1 319.041 369.7521)" class="st10 st47 st48">+</text>
 </g>
 </svg>

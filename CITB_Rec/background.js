@@ -198,31 +198,61 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           let list = await listUploadQueue();
           port.postMessage({lista: list});
         }else if (msg.getDriveFiles){
-          createRecQueueDB();
-          let list = await getDriveFileList();
+          // createRecQueueDB();
+          console.log("msg.folderId",msg.folderId);
+          let list = await getDriveFileList(msg.folderId);
+          let listResult = [];
           for (const element of list) {
 
             let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
-            let exists = await searchBylinkQueueDB(shareLink);
+            // let exists = await searchBylinkQueueDB(shareLink);
+            if(element.mimeType == 'video/webm'){
+              // let dateStart = element.createdTime;
+              // let msDuration = element.videoMediaMetadata.durationMillis;
+              // await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration,element.thumbnailLink);
+              let details = {
+                id: element.id 
+               ,name: element.name
+               ,dateStart: element.createdTime
+               ,dateEnd: null
+               ,driveLink : shareLink
+               ,upload: "uploaded"
+               ,msDuration: element.videoMediaMetadata.durationMillis
+               ,thumbnailLink: element.thumbnailLink
+              }
+              listResult.push(details);
 
-            if(!exists && element.mimeType == 'video/webm'){
-              let dateStart = element.createdTime;
-              let msDuration = element.videoMediaMetadata.durationMillis;
-              await addRecQueueDB("uploaded",element.name,dateStart,null,shareLink,msDuration,element.thumbnailLink);
-            }else if(!exists && element.mimeType == "application/vnd.google-apps.folder"){
-              await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null,null);
+            }else if(element.mimeType == "application/vnd.google-apps.folder"){
+              // await addRecQueueDB("folder",element.name,element.createdTime,null,shareLink,null,null);
+              let details = {
+                id: element.id 
+               ,name: element.name
+               ,dateStart: element.createdTime
+               ,dateEnd: null
+               ,driveLink : shareLink
+               ,upload: "folder"
+               ,msDuration: null
+               ,thumbnailLink: null
+              }
+              listResult.push(details);
             }
           }
+          port.postMessage({currentList: listResult});
         }else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
           let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
           await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
         }else if (msg.moveFile){
-          let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
-          destFolderId =  destFolderId.match(/[-\w]{25,}/);
-          let originalDocID = await getDriverLinkInQueueDB(msg.id.idFile);
-          originalDocID =  originalDocID.match(/[-\w]{25,}/);
-          moveDriveFileToFolder(destFolderId[0],originalDocID[0]);
+          if(msg.id.idFolder.includes("https")){
+            let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
+            destFolderId =  destFolderId.match(/[-\w]{25,}/);
+            let originalDocID = await getDriverLinkInQueueDB(msg.id.idFile);
+            originalDocID =  originalDocID.match(/[-\w]{25,}/);
+            moveDriveFileToFolder(destFolderId[0],originalDocID[0]);
+          }else{
+            moveDriveFileToFolder(msg.id.idFolder,msg.id.idFile);
+          }
+          
         }
       });
     }else if (port.name == 'portTimer'){

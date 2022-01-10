@@ -1,6 +1,7 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
+var folderId = 'root';
 var port = chrome.runtime.connect({name: "getDriveLink"});
 
 const baseUrlPerHost = {
@@ -16,6 +17,8 @@ port.onMessage.addListener(async (msg) => {
         getKindShare(msg.answer)
     }else if (msg.lista){
         await queueDaemon(msg.lista);
+    }else if (msg.currentList){
+        await queueDaemon(msg.currentList);
     }
   });
 
@@ -83,6 +86,10 @@ const calculateRecTime = (details) =>{
     return `${hours}:${minutes}:${seconds}`;
 }
 
+const  folder_click = (event) =>{
+    let id = event.srcElement.id;
+    alert(`FOLDER CLICK ${event.srcElement.id}`)
+}
 const createFolderCard = async(details) => {
     const urlContent = await fetch(chrome.runtime.getURL('html/folder.html'))
     let html = await urlContent.text();
@@ -99,6 +106,9 @@ const createFolderCard = async(details) => {
     container.innerHTML = div;
     let folderContainer = document.getElementById('citbFolderContainer');
     folderContainer.insertBefore(container,folderContainer.firstChild);
+
+    document.getElementById(details.id).addEventListener("click", folder_click);
+
 }
 
 var dragged;
@@ -149,7 +159,6 @@ const dragElement = (element) => {
 }
 
 const createRecordCard = async (details) => {
-    console.log(details)
     let date =  details.dateStart.substring(0, 10);
     date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
     const recTime = calculateRecTime(details);    
@@ -235,7 +244,7 @@ const queueDaemon = (result) =>{
 }
 
 const getDriveFiles = () => {
-    port.postMessage({getDriveFiles: true});
+    port.postMessage({getDriveFiles: true ,folderId: folderId });
 }
 
 const addFolder = () =>{
