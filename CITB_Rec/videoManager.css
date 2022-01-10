@@ -169,7 +169,6 @@
     transform: translate(-50%, -50%);
     width: 50px;
   }
-  .thumbnail {
-    /* height: 85px !important; */
-    /* width: 55px !important; */
-  }
+ .folderSelected {
+  border: 1px solid #ccc;  
+ }
