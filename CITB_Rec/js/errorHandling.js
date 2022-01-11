@@ -1,7 +1,6 @@
 import { environment } from "../config/environment.js";  
-import {
-    reset
-} from './recTimer.js'
+import { reset } from './recTimer.js';
+import { recIcon } from './tools.js';
 const errorHandling = (error) => {
     console.log(error);
     let inf = JSON.stringify(error,null,3);  
@@ -25,8 +24,7 @@ const errorHandling = (error) => {
     window.desktopStream.getTracks().forEach(track => track.stop())
     window.micStream.getTracks().forEach(track => track.stop())
     window.resultStream.getTracks().forEach(track => track.stop())
-   
-
+    recIcon();
 }
 
 export {

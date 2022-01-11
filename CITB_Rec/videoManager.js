@@ -13,9 +13,21 @@ const baseUrlPerHost = {
 
 port.onMessage.addListener(async (msg) => {
     if (msg.lista){
-        await queueDaemon(msg.lista);
+        queueDaemon(msg.lista);
     }else if (msg.currentList){
-        await queueDaemon(msg.currentList);
+        msg.currentList.forEach(async (element) => {
+            let result = document.getElementById(element.id);
+            if(result){
+                //nada...
+            }
+            else if(element.upload == 'folder'){
+               createFolderCard(element);
+            }
+            else{
+                await createRecordCard(element);
+                updateProgressBar(100,element.id);
+            }
+        });
     }
   });
 
@@ -172,7 +184,6 @@ const createRecordCard = async (details) => {
     const recTime = calculateRecTime(details);    
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
-        
     html = html.replace("{{cardId}}",details.id);
     html = html.replace("{{recName}}",details.name);
     html = html.replace("{{recDuration}}",recTime);
@@ -210,7 +221,7 @@ const createRecordCard = async (details) => {
 const startQueue = () =>{
     setInterval(()=>{
         port.postMessage({getList: true});
-    },1000);
+    },3000);
 }
 
 let actualUploadElementID;
@@ -218,35 +229,28 @@ let actualInterval = null;
 
 const queueDaemon = (result) =>{
         result.forEach(async (element) => {
-            let result = document.getElementById(element.id);
-            if(result){
-                //nada...
-            }
-            else if(element.upload == 'folder'){
+            if(element.upload == "folder"){
                 let folder = document.getElementById(element.id);
                 if(folder == null){
                     createFolderCard(element);
                 }
-            }else if(element.upload == 'inProgress'){
-                console.log("upload",element.id)
+            }else if(element.upload == "inProgress"){
                 if(actualUploadElementID != element.id){
                     if(actualInterval != null){
                         clearInterval(actualInterval);
                     }
                     actualUploadElementID = element.id; 
                     let card = document.getElementById(element.id);
-                    console.log(card)
                     if(card == null){
                         await createRecordCard(element);
-                    } 
-                    console.log("CHECL UPLOADSTATUS")
+                    }                   
                     actualInterval = checkUploadStatus(true,element.id);
                 }                
-            }else if(element.upload == 'awaiting') {
+            }else if(element.upload == "awaiting") {
                 let card = document.getElementById(element.id);
                 if(card == null){
                     await createRecordCard(element);
-                } 
+                }               
                 updateProgressBar(0,element.id);
             }else{
                 let card = document.getElementById(element.id);
@@ -271,7 +275,16 @@ const addFolder = () =>{
 
 document.getElementById('addFolder').addEventListener('click',addFolder);
 
-
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+      if (request.greeting){
+        let element = document.getElementById(request.greeting);
+        element.parentElement.removeChild(element);
+        getDriveFiles();
+      }
+    }
+  );
+  
 
 getDriveFiles();
 startQueue();

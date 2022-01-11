@@ -1,6 +1,6 @@
-const createListForFrontend = (list,base) =>{
+const createListForFrontend = (list,carpetaBase) =>{
     let listResult = [];
-    if(base == 'root'){
+    if(carpetaBase == 'root'){
         for (const element of list) {            
             if(element.mimeType == "application/vnd.google-apps.folder"){
                 let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";                
@@ -22,15 +22,24 @@ const createListForFrontend = (list,base) =>{
         for (const element of list) {
             if(element.mimeType == 'video/webm'){
                 let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
+                let durationMillis;
+                let thumbnail;
+                element.videoMediaMetadata ?
+                     durationMillis = element.videoMediaMetadata.durationMillis
+                    : durationMillis = 128000; //ficticial duration.
+                element.thumbnailLink ?
+                     thumbnail= element.thumbnailLink
+                    :thumbnail= null;
+                
                 let details = {
-                id: element.id 
-                ,name: element.name
-                ,dateStart: element.createdTime
-                ,dateEnd: null
-                ,driveLink : shareLink
-                ,upload: "uploaded"
-                ,msDuration: element.videoMediaMetadata.durationMillis
-                ,thumbnailLink: element.thumbnailLink
+                    id: element.id 
+                    ,name: element.name
+                    ,dateStart: element.createdTime
+                    ,dateEnd: null
+                    ,driveLink : shareLink
+                    ,upload: "uploaded"
+                    ,msDuration: durationMillis
+                    ,thumbnailLink: thumbnail
                 }
                 listResult.push(details);
     

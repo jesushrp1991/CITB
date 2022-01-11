@@ -127,8 +127,17 @@ import { environment } from "../config/environment.js";
 
   const delFileInDB = async(id) =>{
     await queueDB.records.update(id,{file: "uploaded"});
+    removeRecordQueueDB(id);
   }
 
+  const removeRecordQueueDB = (primaryKey) => {
+    primaryKey = parseInt(primaryKey);
+    queueDB.records.where('id').equals(primaryKey).delete().then((deleteCount) => {
+      chrome.runtime.sendMessage({greeting: primaryKey}, (response) => {});
+    }).catch((error) => {
+        console.error ("Error: " + error);
+    });
+  }
   const listQueueDB = async () =>{
     try{
         let exitsDB = await Dexie.exists("CITBQueueRecords");
@@ -283,4 +292,5 @@ export {
     ,listQueueDB
     ,getDriverLinkInQueueDB
     ,searchBylinkQueueDB
+    ,removeRecordQueueDB
 }

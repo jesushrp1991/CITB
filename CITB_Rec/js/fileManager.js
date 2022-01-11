@@ -9,6 +9,7 @@ import {
     ,delFileInDB
     ,addRecQueueDB
     ,listQueueDB
+    ,removeRecordQueueDB
 } from "./database.js";
 
 const moveDriveFileToFolder = async (destFolderId,originalDocID) => {    
@@ -265,7 +266,8 @@ const listUploadQueue = async() =>{
     let list = await listQueueDB();
     let listResult = [];
     if(list != undefined){
-      list.forEach((element)=>{
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
         let upload;
         if(element.file &&  element.file == 'folder'){
           upload = 'folder'
@@ -274,6 +276,8 @@ const listUploadQueue = async() =>{
           upload = 'inProgress';
         }else if (element.file == 'uploaded' ){
             upload = 'uploaded'
+            // removeRecordQueueDB(element.id);
+            // continue;
         }else{
           upload = 'awaiting';
         }
@@ -288,7 +292,7 @@ const listUploadQueue = async() =>{
             ,thumbnailLink: element.thumbnailLink
         }
         listResult.push(details);
-      });
+      }
     }
     return listResult;
 }
