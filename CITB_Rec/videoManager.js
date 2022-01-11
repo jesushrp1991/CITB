@@ -180,7 +180,7 @@ const dragElement = (element) => {
 
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
-    date = moment(date, "YYYY/MM/DD").format("MM/DD/YYYY");
+    date = moment(date, "YYYY/MM/DD").format("MM-DD-YYYY");
     const recTime = calculateRecTime(details);    
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
@@ -201,7 +201,7 @@ const createRecordCard = async (details) => {
     }
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-4");
+    container.setAttribute('class',"col-3");
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;

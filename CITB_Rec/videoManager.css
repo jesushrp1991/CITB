@@ -11,42 +11,45 @@
 }
 .card-personalized {
     margin-left: 15px;
-    width: 95%;
-    height: 93%;
-    border-radius: 10px !important;
+    /* width: 95%;
+    height: 93%; */
+    width: 270px;
+    height: 325px;
+    border-radius: 20px !important;
+    background-color: #FFFFFF !important;
 }
 .card-header-personalized{
-    border-radius: 10px 10px 0 0 !important;
-    background-color: transparent !important;
+    border-radius: 20px 20px 0 0 !important;
     border: transparent !important;
-    padding-top: 5px !important;
+    padding-top: 15px !important;
     padding-bottom: 5px !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+    background-color: #FFFFFF !important;
 }
 .time {
-    width:70px;
-    height: 20px;
-    border-radius: 20px;
-    background-color: black;
-    font-size: 12px;
+    width:50px;
+    height: 15px;
+    border-radius: 10px;
+    background-color: #000000;
+    font-size: 10px;
     /* text-align: center; */
 }
 .date {
     width: 70px;
-    height: 20px;
+    height: 15px;
     border-radius: 20px;
-    background-color: green;
-    font-size: 12px;
+    background-color: #4CB057;
+    font-size: 10px;
     /* text-align: center; */
 }
 
-.card-text-personalized {
-    font-size: 16px;
+.card-body-personalized {
+    font-size: 18px;
+    padding: 15px !important;
+    padding-top: 5px !important;
 }
 
-.card-body-personalized {
-    background-color: transparent !important;
-    padding-top: 0px !important;
-}
 
 .buttonDownload {
     height: 45px;
@@ -59,6 +62,10 @@
     background-size: contain;
     background-position: center;
     background-image: url('./assets/COMPARTIR\ COLOR.svg') !important;
+}
+
+.progress-bar-wrapper{
+  padding-top: 20px;
 }
 
 .progress-bar-container{
@@ -79,13 +86,17 @@
   
   .blue{
     color: #fff !important;
-    background-color: #2196f3 !important;
+    background-color: #547DBE !important;
     text-align: center;
     font-size: 10px;
   }
 
   .rec-name {
-      padding-bottom: 10px !important ;
+      padding-bottom: 35px !important ;
+      height: 25px;
+      text-overflow: ellipsis !important; 
+      white-space: nowrap;
+      overflow: hidden;
   }
 
   .share-container-personalized {
@@ -97,7 +108,9 @@
   .buttons-containers-personalized {
     border: solid;
     border-radius: 30px;
-    border-color: coral;
+    border-color: #E94E1B;
+    /* width: 300px;
+    height: 30px; */
   }
 
   .fake-space {
@@ -136,7 +149,7 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
-    background-size: 99%;
+    background-size: 90%;
     cursor: pointer;
 }
   .CITBGmail {
@@ -164,8 +177,8 @@
   }
   .play {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 87%;
+    top: 87%;
     transform: translate(-50%, -50%);
     width: 50px;
   }

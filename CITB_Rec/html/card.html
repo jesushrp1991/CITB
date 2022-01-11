@@ -1,4 +1,4 @@
-    <div class="card  bg-light mb-3 card-personalized">
+    <div class="card  mb-3 card-personalized">
       <div class="card-header-personalized card-header d-flex justify-content-between flex-row text-white">
         <div class="time d-flex align-items-center justify-content-center">
           {{recDuration}}
@@ -7,15 +7,16 @@
             {{recDate}}
         </div>
       </div>
-      <div class="card-body text-black card-body-personalized card-text-personalized">
-        <div class="wrapper">
-          <img class="play" src="../assets/playThubmnail.svg">
-          <img class="card-img-top " src="{{thumbnailLink}}" alt="Drive Video">
-        </div>
+      <div class="card-body text-black card-body-personalized">
         <div class="rec-name">
           {{recName}}
         </div>
-        <div id ="progreesBarContainer" >
+        <div class="wrapper">
+          <!-- <img class="play" src="../assets/playThubmnail.svg"> -->
+          <img class="play" src="../assets/test2.jpg">
+          <img class="card-img-top" src="{{thumbnailLink}}" alt="Drive Video">
+        </div>
+        <div id ="progreesBarContainer" class="progress-bar-wrapper" >
           <div class="light-grey round-xlarge">
             <div id={{progressBarId}} class="progress-bar-container blue round-xlarge" style="width:100%">100%</div>
           </div>
