@@ -1,21 +1,54 @@
+.citb-image{
+  width: 10%; 
+  height: 45px;
+  padding-left: 20px;
+}
+
+.search{
+  padding-left: 20px;
+}
+.search-button {
+  width: 90px;
+  border-radius: 20px !important;
+  background-color: transparent !important;
+  border:#547DBE solid 3px !important;
+  color:#547DBE !important;
+}
+
 .dragCard{
   position: absolute !important;
   z-index: 999;
 }
 .dropzone {
-  /* width: 200px;
-  height: 20px;
-  background: blueviolet;
-  margin-bottom: 10px;
-  padding: 10px; */
+  
+}
+.img-folder{
+  width: 150px; 
+  height: 130px;
+  background-image: url('./assets/folder.svg');
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+.folder-name{
+  position: absolute;
+  left: 28.5%;
+  top: 90%;
+  transform: translate(-50%, -50%);
+}
+
+#citbCardRecContainer{
+  padding-top: 30px;
 }
 .card-personalized {
     margin-left: 15px;
     /* width: 95%;
     height: 93%; */
     width: 270px;
-    height: 325px;
+    height: 310px;
     border-radius: 20px !important;
+    border:#BDBDBC solid 3px !important;
     background-color: #FFFFFF !important;
 }
 .card-header-personalized{

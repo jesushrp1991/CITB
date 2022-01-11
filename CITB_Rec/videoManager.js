@@ -118,7 +118,7 @@ const createFolderCard = async(details) => {
     html = html.replace("{{idP}}",details.id);
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-1 dropzone");
+    container.setAttribute('class',"col-2 dropzone");
     container.setAttribute('id',details.id);
     container.style.marginLeft = '20px';
     const div = escapeHTMLPolicy.createHTML(html);  
