@@ -4,16 +4,16 @@
 
      favDiv = document.createElement("div");
     favDiv.setAttribute("id", "fabVideo");
-    favDiv.setAttribute("class", "fab active");
+    favDiv.setAttribute("class", "fab-citb active");
 
      form = document.createElement("form");
-    form.setAttribute("class", "cntt-wrapper");
+    form.setAttribute("class", "cntt-wrapper-citb");
 
      divHeader = document.createElement("div");
     divHeader.setAttribute("id", "fab-hdr-video");
 
      headerClose = document.createElement("span");
-    headerClose.setAttribute("class", "close-button topright");
+    headerClose.setAttribute("class", "close-button-citb topright-citb");
     headerClose.innerText = "x";
 
      h3Header = document.createElement("h3");
@@ -24,27 +24,27 @@
     button.textContent = "X";
 
      contentDiv = document.createElement("div");
-    contentDiv.setAttribute("class", "cntt");
+    contentDiv.setAttribute("class", "cntt-citb");
 
      classIcon = document.createElement("button");
     classIcon.setAttribute("id", "classModalIcon");
-    classIcon.setAttribute("class", "CITBClassButton active");
+    classIcon.setAttribute("class", "CITBClassButton");
 
      textFieldsDiv = document.createElement("div");
     textFieldsDiv.setAttribute("class", "");
 
      textBox = document.createElement("input");
     textBox.setAttribute("id", "text1");
-    textBox.setAttribute("class", "textbox");
+    textBox.setAttribute("class", "textbox-citb");
     textBox.setAttribute("type", "text");
 
      textLabel = document.createElement("label");
     textLabel.setAttribute("for", "text1");
-    textLabel.setAttribute("class", "labelName");
+    textLabel.setAttribute("class", "labelName-citb");
     textLabel.innerHTML = "What's yours meet name?";
 
      buttonDiv1 = document.createElement("div");
-    buttonDiv1.setAttribute("class", "btn-wrapper");
+    buttonDiv1.setAttribute("class", "btn-wrapper-citb");
 
      buttonDiv = document.createElement("button");
     buttonDiv.setAttribute("id", "submitVideo");
@@ -66,8 +66,8 @@
     
     contentDiv.appendChild(buttonDiv1);
     buttonDiv1.appendChild(buttonDiv);
-    favDiv.setAttribute('class', 'fab active');
-    overlayDiv.setAttribute('class','dark-overlay');
+    favDiv.setAttribute('class', 'fab-citb active');
+    overlayDiv.setAttribute('class','dark-overlay-citb');
     document.body.appendChild(overlayDiv);
     document.body.appendChild(favDiv);
 
@@ -87,6 +87,9 @@
     
     buttonDiv.addEventListener('click',saveName);
     headerClose.addEventListener('click',saveName);
+    classIcon.addEventListener('click',(event)=>{
+      event.preventDefault();
+    });
 
     document.addEventListener('ready',() => {
         $(window).keydown((event) =>{
@@ -103,5 +106,3 @@
             return false;
         }
     });
-
-

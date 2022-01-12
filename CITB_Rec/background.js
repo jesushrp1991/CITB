@@ -155,6 +155,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         delLastItem();
         break;
       case popupMessages.checkAuth :
+        injectFileName();
         await verificateAuth();
         break;
       case popupMessages.localDownload :
