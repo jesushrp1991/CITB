@@ -94,20 +94,23 @@ const calculateRecTime = (details) =>{
 }
 
 var folderId = 'root';
+let lastSelectedFolderId = null;
 const  folder_click = (event) =>{
-    let container = document.getElementById('citbCardRecContainer');
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
-    let foldersContainer = document.getElementById('citbFolderContainer');
-    Array.from(foldersContainer.children).map((child)=>{
-        child.setAttribute('class','dropzone');
-    })
-
+    // let container = document.getElementById('citbCardRecContainer');
+    // while (container.firstChild) {
+    //     container.removeChild(container.firstChild);
+    // }
+    // let foldersContainer = document.getElementById('citbFolderContainer');
+    // Array.from(foldersContainer.children).map((child)=>{
+    //     child.setAttribute('class','dropzone');
+    // })
     let id = event.srcElement.id;
     document.getElementById(id).setAttribute('class','dropzone folderSelected');
-    folderId = id;
-    port.postMessage({getDriveFiles: true ,folderId: folderId });
+    if(lastSelectedFolderId != id && lastSelectedFolderId != null){
+        document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
+        lastSelectedFolderId = id;
+    }
+    port.postMessage({getDriveFiles: true ,folderId: id });
     // alert(`FOLDER CLICK ${event.srcElement.id}`)
 }
 const createFolderCard = async(details) => {
