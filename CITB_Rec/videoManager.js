@@ -96,10 +96,10 @@ const calculateRecTime = (details) =>{
     minutes = Math.round(minutes);
     seconds = Math.round(seconds);
     if(minutes < 10){
-        minutes = '0'+minutes;
+        minutes = '0' + minutes;
     }
     if(seconds < 10){
-        seconds = seconds + '0'
+        seconds = '0' + seconds
     }
     return `${minutes}:${seconds}`;
 }

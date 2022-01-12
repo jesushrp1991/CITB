@@ -271,14 +271,11 @@ const saveVideo = async(localDownload) =>{
       // print out the result image blob
       thumbnailGeneratedLink = URL.createObjectURL(cover);
       window.thumbnailForFileInProgress = thumbnailGeneratedLink;
+      window.durationForFileInProgress = duration;
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
-      console.log("FUERA ANTES",thumbnailGeneratedLink);
-
     addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,duration,thumbnailGeneratedLink); 
-    console.log("FUERA DESPUES",thumbnailGeneratedLink);
-
     //Crear alerta para que inicie el proceso de subida
     //Cuando este subido modificar tabla para incluir  DriveLink
   }else{
