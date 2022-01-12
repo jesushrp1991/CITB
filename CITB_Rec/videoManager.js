@@ -209,7 +209,7 @@ const createRecordCard = async (details) => {
     }
 
     const container = document.createElement("div");
-    container.setAttribute('class',"col-lg-3 col-md-4 col-sm-12");
+    container.setAttribute('class',"col-lg-3 col-xxl-2 col-md-4 col-sm-12");
     container.setAttribute('id',details.id);
     const div = escapeHTMLPolicy.createHTML(html);  
     container.innerHTML = div;
