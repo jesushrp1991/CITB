@@ -108,6 +108,39 @@ const calculateRecTime = (details) =>{
 var folderId = 'root';
 let lastSelectedFolderId = null;
 let isFirstTimeFolderSelected = true;
+
+var mouseDownTimeout;
+const folder_mouseDown = (event) => {
+    mouseDownTimeout = setTimeout(() => {
+        let folderID = event.srcElement.id;
+        console.log(event.srcElement.parentNode.childNodes);
+        event.srcElement.parentNode.classList.add("folderToRemove");
+
+        event.srcElement.parentNode.childNodes.forEach(node => {
+            const classes = node.classList;
+            console.log(classes);
+            if (classes != undefined) {
+                if (node.classList.contains("removeFolder")) {
+                    node.setAttribute("id", "removeFolder" + folderID);
+                    node.addEventListener("click", removeFolder)
+                }
+            }
+            
+        })
+        fromMouseUp = true;
+    },1000)
+}
+var fromMouseUp = false;
+const folder_mouseUp = (event) => {
+    setTimeout(() => {
+        fromMouseUp = false;
+    },200)
+    clearTimeout(mouseDownTimeout);
+}
+const removeFolder = (event) => {
+    let folderID = event.srcElement.id.replace('removeFolder', '');
+    console.log("AQUI TENDRIAMOS QUE BORRAR LA CARPETA", folderID);
+}
 const  folder_click = (event) =>{
     let container = document.getElementById('citbCardRecContainer');
     while (container.firstChild) {
@@ -118,7 +151,11 @@ const  folder_click = (event) =>{
     //     child.setAttribute('class','dropzone');
     // })
     let folderID = event.srcElement.id;
-    document.getElementById(folderID).setAttribute('class','dropzone folderSelected');
+    document.getElementById(folderID).classList.add('folderSelected');
+    if (!fromMouseUp){
+        document.getElementById(folderID).classList.remove('folderToRemove');
+
+    }
     if(lastSelectedFolderId != folderID ){
         if(!isFirstTimeFolderSelected){
             document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
@@ -148,6 +185,9 @@ const createFolderCard = async(details) => {
     folderContainer.insertBefore(container,folderContainer.firstChild);
 
     document.getElementById(details.id).addEventListener("click", folder_click);
+    document.getElementById(details.id).addEventListener("mousedown", folder_mouseDown);
+    document.getElementById(details.id).addEventListener("mouseup", folder_mouseUp);
+
 
 }
 

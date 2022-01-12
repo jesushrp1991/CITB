@@ -16,6 +16,27 @@
   border: #547dbe solid 2px !important;
   color: #547dbe !important;
 }
+.folderToRemove{
+  background-color: #dc3444ad !important;
+}
+.folderToRemove>.removeFolder{
+  display: inherit !important;
+}
+
+.removeFolder {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  /* background-color: #e94d1b; */
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  text-align: center;
+  font-size: 50px;
+  line-height: 25px;
+  color: white;
+}
 
 .dragCard {
   position: absolute !important;
