@@ -138,6 +138,7 @@ const folder_mouseUp = (event) => {
     clearTimeout(mouseDownTimeout);
 }
 const removeFolder = (event) => {
+    event.stopPropagation();
     event.preventDefault();
     let folderID = event.srcElement.id.replace('removeFolder', '');
     console.log("AQUI TENDRIAMOS QUE BORRAR LA CARPETA", folderID);
