@@ -23,6 +23,7 @@
 }
 .dropzone {
   position: relative;
+  width: 150px;
   transition: transform 0.2s; /* Animation */
 }
 .dropzone:hover {
