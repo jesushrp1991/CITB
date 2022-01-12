@@ -95,6 +95,7 @@ const calculateRecTime = (details) =>{
 
 var folderId = 'root';
 let lastSelectedFolderId = null;
+let isFirstTimeFolderSelected = true;
 const  folder_click = (event) =>{
     // let container = document.getElementById('citbCardRecContainer');
     // while (container.firstChild) {
@@ -106,8 +107,11 @@ const  folder_click = (event) =>{
     // })
     let id = event.srcElement.id;
     document.getElementById(id).setAttribute('class','dropzone folderSelected');
-    if(lastSelectedFolderId != id && lastSelectedFolderId != null){
-        document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
+    if(lastSelectedFolderId != id ){
+        if(!isFirstTimeFolderSelected){
+            document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
+        }
+        isFirstTimeFolderSelected = false;
         lastSelectedFolderId = id;
     }
     port.postMessage({getDriveFiles: true ,folderId: id });
