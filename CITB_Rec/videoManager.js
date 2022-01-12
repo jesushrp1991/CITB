@@ -168,6 +168,7 @@ const dragElement = (element) => {
   document.addEventListener("drop", (event) => {
       event.preventDefault();
       if ( event.target.className.includes("dropzone")) {
+        console.log(dragged);
         let node = document.getElementById(dragged.id);
         node.parentNode.removeChild(node);
         event.target.style.opacity = "";
