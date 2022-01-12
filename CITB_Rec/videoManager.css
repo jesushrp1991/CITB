@@ -43,10 +43,9 @@
   overflow-y: hidden;
 }
 .folder-name{
-  position: absolute;
-  left: 50%;
-  top: 90%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  text-align: center;
+  margin-top: -20px;
 }
 
 #citbCardRecContainer{
