@@ -153,6 +153,7 @@ const prepareUploadToDrive = (obj) => {
     upload.Do(resource, async (res, err)=>{
       if (err) {
         console.log(err);
+        errorHandling(err);
         return;
       }
       // console.log("res.status",res.status);
