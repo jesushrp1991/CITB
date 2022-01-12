@@ -97,24 +97,25 @@ var folderId = 'root';
 let lastSelectedFolderId = null;
 let isFirstTimeFolderSelected = true;
 const  folder_click = (event) =>{
-    // let container = document.getElementById('citbCardRecContainer');
-    // while (container.firstChild) {
-    //     container.removeChild(container.firstChild);
-    // }
+    let container = document.getElementById('citbCardRecContainer');
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     // let foldersContainer = document.getElementById('citbFolderContainer');
     // Array.from(foldersContainer.children).map((child)=>{
     //     child.setAttribute('class','dropzone');
     // })
-    let id = event.srcElement.id;
-    document.getElementById(id).setAttribute('class','dropzone folderSelected');
-    if(lastSelectedFolderId != id ){
+    let folderID = event.srcElement.id;
+    document.getElementById(folderID).setAttribute('class','dropzone folderSelected');
+    if(lastSelectedFolderId != folderID ){
         if(!isFirstTimeFolderSelected){
             document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
         }
         isFirstTimeFolderSelected = false;
-        lastSelectedFolderId = id;
+        lastSelectedFolderId = folderID;
     }
-    port.postMessage({getDriveFiles: true ,folderId: id });
+    console.log(folderID);
+    port.postMessage({getDriveFiles: true ,folderId: folderID });
     // alert(`FOLDER CLICK ${event.srcElement.id}`)
 }
 const createFolderCard = async(details) => {
@@ -187,13 +188,16 @@ const dragElement = (element) => {
 }
 
 const createRecordCard = async (details) => {
+    console.log(details);
     let date =  details.dateStart.substring(0, 10);
+    let time = details.dateStart.substring(11, 19);
     date = moment(date, "YYYY/MM/DD").format("MM-DD-YYYY");
     const recTime = calculateRecTime(details);    
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
     html = html.replace("{{cardId}}",details.id);
     html = html.replace("{{recName}}",details.name);
+    html = html.replace("{{dateHour}}",time);
     html = html.replace("{{recDuration}}",recTime);
     html = html.replace("{{recDate}}",date);
     html = html.replace("{{progressBarId}}","progressBar" + details.id);
