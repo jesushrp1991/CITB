@@ -13,7 +13,7 @@
   width: 90px;
   border-radius: 20px !important;
   background-color: transparent !important;
-  border:#547DBE solid 3px !important;
+  border:#547DBE solid 2px !important;
   color:#547DBE !important;
 }
 
@@ -58,7 +58,7 @@
     width: 270px;
     height: 310px;
     border-radius: 20px !important;
-    border:#BDBDBC solid 3px !important;
+    border:#BDBDBC solid 2px !important;
     background-color: #FFFFFF !important;
     transition: transform .2s; /* Animation */
 }
