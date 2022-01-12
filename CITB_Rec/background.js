@@ -122,7 +122,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           startRecordScreen(message.idMic,getRecName,message.idTab);
         }else{
             clearInterval(window.iconRecChange);
-            chrome.browserAction.setIcon({path: "./assets/recOff.svg"});
             if(intervalFileName != null){
               clearInterval(intervalFileName);
             }
@@ -132,6 +131,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             openRecList();
             await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, () => {});
+            chrome.browserAction.setIcon({path: "./assets/icon.png"});
         }    
         break;
       case popupMessages.pause :
@@ -155,7 +155,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         delLastItem();
         break;
       case popupMessages.checkAuth :
-        injectFileName();
         await verificateAuth();
         break;
       case popupMessages.localDownload :

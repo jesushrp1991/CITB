@@ -154,7 +154,7 @@ const prepareUploadToDrive = (obj) => {
       if (err) {
         console.log(err);
         errorHandling(err);
-        return;
+        return; 
       }
       // console.log("res.status",res.status);
       // let msg = "";
