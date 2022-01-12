@@ -190,8 +190,7 @@ const dragElement = (element) => {
         console.log(dragged);
         let node = document.getElementById(dragged.id);
         node.parentNode.removeChild(node);
-        event.target.style.opacity = "";
-        
+        event.target.style.opacity = "";        
         let id = {idFile:dragged.id, idFolder:event.target.id}
         port.postMessage({moveFile: true ,id:id});
       }    
@@ -292,6 +291,7 @@ const getDriveFiles = () => {
 const addFolder = () =>{
     let name = prompt ("Nombre");
     if(name){
+        createFolderCard({id:"fake", name: name});
         port.postMessage({addFolder: true, name : name});
     }    
 }

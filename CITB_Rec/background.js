@@ -195,8 +195,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           port.postMessage({currentList: listResult.concat(listFoldersResult)});
         }else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
-          let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
-          await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
+          // let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
+          let listFoldersResult = createListForFrontend([result],'root')
+          port.postMessage({currentList: listFoldersResult});
+          // await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
         }else if (msg.moveFile){
           if(msg.id.idFolder.includes("https")){
             let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
