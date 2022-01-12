@@ -29,7 +29,7 @@ const createListForFrontend = (list,carpetaBase) =>{
                     : durationMillis = 128000; //ficticial duration.
                 element.thumbnailLink ?
                      thumbnail= element.thumbnailLink
-                    :thumbnail= null;
+                    :thumbnail= window.thumbnailForFileInProgress;
                 
                 let details = {
                     id: element.id 
