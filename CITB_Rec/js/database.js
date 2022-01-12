@@ -66,7 +66,6 @@ import { environment } from "../config/environment.js";
   }
 
   const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink) =>{
-    console.log("ADDRECQUEUEDB", thumbnailLink);
     try{
       let exitsDB = await Dexie.exists("CITBQueueRecords");
       if(!exitsDB){

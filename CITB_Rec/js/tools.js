@@ -24,9 +24,14 @@ const createListForFrontend = (list,carpetaBase) =>{
                 let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
                 let durationMillis;
                 let thumbnail;
-                element.videoMediaMetadata ?
-                     durationMillis = element.videoMediaMetadata.durationMillis
-                    : durationMillis = window.durationForFileInProgress;
+                if( element.videoMediaMetadata ){
+                    durationMillis = element.videoMediaMetadata.durationMillis
+                }else{
+                    const initDate = dayjs(window.meetStartTime);
+                    const endDate = dayjs(window.meetEndTime);
+                    let millisecond = endDate.diff(initDate,"millisecond",true);
+                    durationMillis = millisecond;
+                }
                 element.thumbnailLink ?
                      thumbnail= element.thumbnailLink
                     :thumbnail= window.thumbnailForFileInProgress;

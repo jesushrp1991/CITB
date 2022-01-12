@@ -79,6 +79,7 @@ const calculateRecTime = (details) =>{
         const initDate = dayjs(details.dateStart);
         const endDate = dayjs(details.dateEnd);
         minutes = endDate.diff(initDate,"minute",true);
+        seconds = endDate.diff(initDate,"second",true);
     }
     
     // let minutes = Math.floor(seconds/60);
@@ -198,7 +199,6 @@ const dragElement = (element) => {
 }
 
 const createRecordCard = async (details) => {
-    console.log(details);
     let date =  details.dateStart.substring(0, 10);
     let time = details.dateStart.substring(11, 19);
     date = moment(date, "YYYY/MM/DD").format("MM-DD-YYYY");

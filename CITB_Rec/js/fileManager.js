@@ -207,7 +207,6 @@ const prepareRecordFile = (finalArray) => {
     // window.fileName = "CITB Rec";
 }
 function getVideoCover(file, seekTo = 0.0) {
-  console.log("getting video cover for file: ", file);
   return new Promise((resolve, reject) => {
       // load the file to a video player
       var duration = 0;
@@ -231,7 +230,7 @@ function getVideoCover(file, seekTo = 0.0) {
           }, 200);
           // extract video thumbnail once seeking is complete
           videoPlayer.addEventListener('seeked', () => {
-              console.log('video is now paused at %ss.', seekTo);
+              // console.log('video is now paused at %ss.', seekTo);
               // define a canvas to have the same dimension as the video
               const canvas = document.createElement("canvas");
               canvas.width = videoPlayer.videoWidth;
@@ -267,11 +266,11 @@ const saveVideo = async(localDownload) =>{
       // get the frame at 1.5 seconds of the video file
       const videoData = await getVideoCover(file, 1)
       const cover = videoData.blob;
-      duration = videoData.duration;
+      // duration = videoData.duration;
       // print out the result image blob
       thumbnailGeneratedLink = URL.createObjectURL(cover);
       window.thumbnailForFileInProgress = thumbnailGeneratedLink;
-      window.durationForFileInProgress = duration;
+      // window.durationForFileInProgress = duration;
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
