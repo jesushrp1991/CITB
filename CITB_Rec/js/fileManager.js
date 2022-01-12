@@ -210,6 +210,7 @@ function getVideoCover(file, seekTo = 0.0) {
   console.log("getting video cover for file: ", file);
   return new Promise((resolve, reject) => {
       // load the file to a video player
+      var duration = 0;
       const videoPlayer = document.createElement('video');
       videoPlayer.setAttribute('src', URL.createObjectURL(file));
       videoPlayer.load();
@@ -219,6 +220,7 @@ function getVideoCover(file, seekTo = 0.0) {
       // load metadata of the video to get video duration and dimensions
       videoPlayer.addEventListener('loadedmetadata', () => {
           // seek to user defined timestamp (in seconds) if possible
+          duration = videoPlayer.duration;
           if (videoPlayer.duration < seekTo) {
               reject("video is too short.");
               return;
@@ -240,7 +242,7 @@ function getVideoCover(file, seekTo = 0.0) {
               // return the canvas image as a blob
               ctx.canvas.toBlob(
                   blob => {
-                      resolve(blob);
+                      resolve({blob:blob, duration:duration});
                   },
                   "image/jpeg",
                   0.75 /* quality */
@@ -260,9 +262,12 @@ const saveVideo = async(localDownload) =>{
     let file = prepareRecordFile(finalArray);
     createRecQueueDB();
     var thumbnailGeneratedLink;
+    var duration;
     try {
       // get the frame at 1.5 seconds of the video file
-      const cover = await getVideoCover(file, 1);
+      const videoData = await getVideoCover(file, 1)
+      const cover = videoData.blob;
+      duration = videoData.duration;
       // print out the result image blob
       thumbnailGeneratedLink = URL.createObjectURL(cover);
       window.thumbnailForFileInProgress = thumbnailGeneratedLink;
@@ -271,7 +276,7 @@ const saveVideo = async(localDownload) =>{
       }
       console.log("FUERA ANTES",thumbnailGeneratedLink);
 
-    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,null,thumbnailGeneratedLink); 
+    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,duration,thumbnailGeneratedLink); 
     console.log("FUERA DESPUES",thumbnailGeneratedLink);
 
     //Crear alerta para que inicie el proceso de subida
