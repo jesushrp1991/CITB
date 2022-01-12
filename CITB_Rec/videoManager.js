@@ -70,27 +70,38 @@ const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
 })
 
 const calculateRecTime = (details) =>{
-    let seconds;
+    let seconds,minutes;
     if(details.msDuration){
          seconds = parseInt(details.msDuration/1000);
+         minutes = seconds/60;
+         seconds = seconds % 60;
     }else{
         const initDate = dayjs(details.dateStart);
         const endDate = dayjs(details.dateEnd);
-        seconds = endDate.diff(initDate,"second",true);
+        minutes = endDate.diff(initDate,"minute",true);
     }
     
-    let minutes = Math.floor(seconds/60);
-    let hours = Math.floor(minutes/60);
-    if(seconds < 10){
-        seconds ='0'+ seconds;
-    }
+    // let minutes = Math.floor(seconds/60);
+    // let hours = Math.floor(minutes/60);
+    // if(seconds < 10){
+    //     seconds ='0'+ seconds;
+    // }
+    // if(minutes < 10){
+    //     minutes ='0'+ minutes;
+    // }
+    // if(hours < 10){
+    //     hours ='0'+ hours;
+    // }
+    // return `${hours}:${minutes}:${seconds}`;
+    minutes = Math.round(minutes);
+    seconds = Math.round(seconds);
     if(minutes < 10){
-        minutes ='0'+ minutes;
+        minutes = '0'+minutes;
     }
-    if(hours < 10){
-        hours ='0'+ hours;
+    if(seconds < 10){
+        seconds = seconds + '0'
     }
-    return `${hours}:${minutes}:${seconds}`;
+    return `${minutes}:${seconds}`;
 }
 
 var folderId = 'root';
