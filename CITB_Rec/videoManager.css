@@ -154,11 +154,10 @@
   }
 
   .buttons-containers-personalized {
-    border: solid;
+    border: 2px solid;
     border-radius: 30px;
     border-color: #E94E1B;
-    /* width: 300px;
-    height: 30px; */
+    margin-top: 5px;
   }
 
   .fake-space {
@@ -166,39 +165,17 @@
   }
 
   .buttonCITB {
-     height: 10px !important; 
-    /*width: 5px !important; */
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    margin: 3px !important;
-    outline: none;
-    border: none;
-    border-radius: 2px;
+    height: 22px !important;
+    width: 20px;
+    margin: 5px;
     background-color: transparent;
     background-repeat: no-repeat;
-    background-size: contain;
     background-position: center;
-    background-size: 60%;
+    background-size: contain;
+    transition: transform .2s;
 }
 .buttonCITB:hover {
-     height: 10px !important; 
-    /*width: 5px !important; */
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    margin: 3px !important;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-size: 90%;
-    cursor: pointer;
+  transform: scale(2);
 }
   .CITBGmail {
     background-image: url('./assets/gmail-icon.svg')
