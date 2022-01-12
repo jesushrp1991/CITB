@@ -1,38 +1,37 @@
-.citb-image{
-  width: auto; 
+.citb-image {
+  width: auto;
   height: 45px;
   padding-left: 20px;
   margin-bottom: 10px;
   margin-top: 10px;
 }
 
-.search{
+.search {
   padding-left: 20px;
 }
 .search-button {
   width: 90px;
   border-radius: 20px !important;
   background-color: transparent !important;
-  border:#547DBE solid 3px !important;
-  color:#547DBE !important;
+  border: #547dbe solid 2px !important;
+  color: #547dbe !important;
 }
 
-.dragCard{
+.dragCard {
   position: absolute !important;
   z-index: 999;
 }
 .dropzone {
   position: relative;
-  transition: transform .2s; /* Animation */
-
+  transition: transform 0.2s; /* Animation */
 }
 .dropzone:hover {
   transform: scale(1.05);
 }
-.img-folder{
-  width: 150px; 
+.img-folder {
+  width: 150px;
   height: 130px;
-  background-image: url('./assets/folder.svg');
+  background-image: url("./assets/folder.svg");
   background-color: transparent;
   background-repeat: no-repeat;
   background-size: contain;
@@ -42,196 +41,171 @@
   flex-wrap: nowrap;
   overflow-y: hidden;
 }
-.folder-name{
+.folder-name {
   position: relative;
   text-align: center;
   margin-top: -20px;
 }
 
-#citbCardRecContainer{
+#citbCardRecContainer {
   padding-top: 30px;
 }
 .card-personalized {
-    margin-left: 15px;
-    /* width: 95%;
+  margin-left: 15px;
+  /* width: 95%;
     height: 93%; */
-    width: 270px;
-    height: 310px;
-    border-radius: 20px !important;
-    border:#BDBDBC solid 3px !important;
-    background-color: #FFFFFF !important;
-    transition: transform .2s; /* Animation */
+  width: 270px;
+  height: 310px;
+  border-radius: 20px !important;
+  border: #bdbdbc solid 2px !important;
+  background-color: #ffffff !important;
+  transition: transform 0.2s; /* Animation */
 }
 
-.card-personalized:hover{
+.card-personalized:hover {
   transform: scale(1.05);
 }
-.card-header-personalized{
-    border-radius: 20px 20px 0 0 !important;
-    border: transparent !important;
-    padding-top: 15px !important;
-    padding-bottom: 5px !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-    background-color: #FFFFFF !important;
+.card-header-personalized {
+  border-radius: 20px 20px 0 0 !important;
+  border: transparent !important;
+  padding-top: 15px !important;
+  padding-bottom: 5px !important;
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+  background-color: #ffffff !important;
 }
 .time {
-    width:50px;
-    height: 15px;
-    border-radius: 10px;
-    background-color: #000000;
-    font-size: 10px;
-    /* text-align: center; */
+  width: 50px;
+  height: 15px;
+  border-radius: 10px;
+  background-color: #000000;
+  font-size: 10px;
+  /* text-align: center; */
 }
 .date {
-    width: 70px;
-    height: 15px;
-    border-radius: 20px;
-    background-color: #4CB057;
-    font-size: 10px;
-    /* text-align: center; */
+  width: 70px;
+  height: 15px;
+  border-radius: 20px;
+  background-color: #4cb057;
+  font-size: 10px;
+  /* text-align: center; */
 }
 
 .card-body-personalized {
-    font-size: 18px;
-    padding: 15px !important;
-    padding-top: 5px !important;
+  font-size: 18px;
+  padding: 15px !important;
+  padding-top: 5px !important;
 }
-
 
 .buttonDownload {
-    height: 45px;
-    width: 55px;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-image: url('./assets/COMPARTIR\ COLOR.svg') !important;
+  height: 45px;
+  width: 55px;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url("./assets/COMPARTIR\ COLOR.svg") !important;
 }
 
-.progress-bar-wrapper{
+.progress-bar-wrapper {
   padding-top: 20px;
 }
 
-.progress-bar-container{
-    padding: 0.01em 16px;
-    height: 14px;
-    max-width: 100%;
-  }
-  
-  .light-grey{
-    color: #000 !important;
-    background-color: #f1f1f1 !important;
-  }
-  
-  .round-xlarge {
-    border-radius: 16px;
-    /* position: relative; */
-  }
-  
-  .blue{
-    color: #fff !important;
-    background-color: #547DBE !important;
-    text-align: center;
-    font-size: 10px;
-  }
+.progress-bar-container {
+  padding: 0.01em 16px;
+  height: 14px;
+  max-width: 100%;
+}
 
-  .rec-name {
-      padding-bottom: 35px !important ;
-      height: 25px;
-      text-overflow: ellipsis !important; 
-      white-space: nowrap;
-      overflow: hidden;
-  }
+.light-grey {
+  color: #000 !important;
+  background-color: #f1f1f1 !important;
+}
 
-  .share-container-personalized {
-    padding-top: 10px !important ;
-    padding-left: 0px !important;
-    padding-bottom: 10px !important;
-  }
+.round-xlarge {
+  border-radius: 16px;
+  /* position: relative; */
+}
 
-  .buttons-containers-personalized {
-    border: solid;
-    border-radius: 30px;
-    border-color: #E94E1B;
-    /* width: 300px;
-    height: 30px; */
-  }
+.blue {
+  color: #fff !important;
+  background-color: #547dbe !important;
+  text-align: center;
+  font-size: 10px;
+}
 
-  .fake-space {
-    height: 20%;
-  }
+.rec-name {
+  padding-bottom: 35px !important ;
+  height: 25px;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
-  .buttonCITB {
-     height: 10px !important; 
-    /*width: 5px !important; */
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    margin: 3px !important;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-size: 60%;
+.share-container-personalized {
+  padding-top: 10px !important ;
+  padding-left: 0px !important;
+  padding-bottom: 10px !important;
+}
+
+.buttons-containers-personalized {
+  border: 2px solid;
+  border-radius: 30px;
+  border-color: #e94e1b;
+  margin-top: 5px;
+}
+
+.fake-space {
+  height: 20%;
+}
+
+.buttonCITB {
+  height: 22px !important;
+  width: 20px;
+  margin: 5px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: transform 0.2s;
 }
 .buttonCITB:hover {
-     height: 10px !important; 
-    /*width: 5px !important; */
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    margin: 3px !important;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-size: 90%;
-    cursor: pointer;
+  transform: scale(2);
 }
-  .CITBGmail {
-    background-image: url('./assets/gmail-icon.svg')
-    }
-  
-  .CITBWhatsApp {
-    background-image: url('./assets/whatsapp.svg')
-  }
-  .CITBClassRoom {
-    background-image: url('./assets/classroom.svg')
-  }
-  .CITBTwitter {
-    background-image: url('./assets/twitter.svg')
-  }
-  .CITBWakelet {
-    background-image: url('./assets/wakelet.png')
-  }
+.CITBGmail {
+  background-image: url("./assets/gmail-icon.svg");
+}
 
+.CITBWhatsApp {
+  background-image: url("./assets/whatsapp.svg");
+}
+.CITBClassRoom {
+  background-image: url("./assets/classroom.svg");
+}
+.CITBTwitter {
+  background-image: url("./assets/twitter.svg");
+}
+.CITBWakelet {
+  background-image: url("./assets/wakelet.png");
+}
 
-  .wrapper {
-    position: relative;
-    /* padding-top: 10px;
+.wrapper {
+  position: relative;
+  /* padding-top: 10px;
     padding-bottom: 10px; */
-  }
-  .play {
-    position: absolute;
-    color: white;
-    right: 10px;
-    bottom: 10px;
-    background-color: #000000bf;
-    padding: 5px;
-    border-radius: 10px;
-  }
- .folderSelected {
-  border: 1px solid #ccc;  
- }
+}
+.play {
+  position: absolute;
+  color: white;
+  right: 10px;
+  bottom: 10px;
+  background-color: #000000bf;
+  padding: 5px;
+  border-radius: 10px;
+}
+.folderSelected {
+  background-color: #547dbe57;
+}
