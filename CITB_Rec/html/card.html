@@ -1,7 +1,7 @@
     <div class="card  mb-3 card-personalized">
       <div class="card-header-personalized card-header d-flex justify-content-between flex-row text-white">
         <div class="time d-flex align-items-center justify-content-center">
-          {{recDuration}}
+          {{dateHour}}
         </div>
         <div class="date d-flex align-items-center justify-content-center">
             {{recDate}}
@@ -13,7 +13,7 @@
         </div>
         <div class="wrapper">
           <!-- <img class="play" src="../assets/playThubmnail.svg"> -->
-          <img class="play" src="../assets/test2.jpg">
+          <div class="play">{{recDuration}}</div>
           <img class="card-img-top" src="{{thumbnailLink}}" alt="Drive Video">
         </div>
         <div id ="progreesBarContainer" class="progress-bar-wrapper" >
