@@ -60,14 +60,14 @@ const searchDefaultFolder = async() =>{
   let file = fileList.filter(x => x.name === 'CITB_Records');
 
   if(file.length > 0){
-    window.folderId = file[0].id
+    window.defautCITBFolderID = file[0].id
   }else{
-    window.folderId = await createDriveFolder('CITB_Records');    
+    window.defautCITBFolderID = await createDriveFolder('CITB_Records');    
   }
 }
 
 const getLinkFileDrive = async() => {
-    let fileList = await getDriveFileList('root');
+    let fileList = await getDriveFileList(window.defautCITBFolderID);
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
     // let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
@@ -77,7 +77,7 @@ const getLinkFileDrive = async() => {
     return fileId;
 }
 const addEventToGoogleCalendar = (linkDrive) => {    
-    let description = "See video here:" + linkDrive;
+    let description = "See video here: " + "https://drive.google.com/file/d/" + linkDrive +  "/view?usp=sharing";
     let newEvent = {
       "summary":window.nameToUploads,
       "description": description ,
@@ -88,6 +88,7 @@ const addEventToGoogleCalendar = (linkDrive) => {
         "dateTime": window.endTimeUpload
       }
     };
+    console.log("newEvent",newEvent)
     let request = gapi.client.calendar.events.insert({
       'calendarId': 'primary',
       'resource': newEvent
@@ -146,7 +147,7 @@ const prepareUploadToDrive = (obj) => {
       fileBuffer: f.result,
       chunkSize: 10485760,
       accessToken: accessToken,
-      folderId: window.folderId
+      folderId: window.defautCITBFolderID
     };
     const upload = new ResumableUploadToGoogleDrive();
 

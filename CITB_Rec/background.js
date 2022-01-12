@@ -187,7 +187,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           port.postMessage({lista: list});
         }else if (msg.getDriveFiles){
           let folderId ;
-          msg.folderId == 'root' ? folderId = window.folderId : folderId = msg.folderId;
+          msg.folderId == 'root' ? folderId = window.defautCITBFolderID : folderId = msg.folderId;
           let list = await getDriveFileList(folderId);
           let listResult = createListForFrontend(list,null);          
           let listFolder = await getDriveFileList('root');
