@@ -27,6 +27,7 @@ const createListForFrontend = (list,carpetaBase) =>{
                 element.videoMediaMetadata ?
                      durationMillis = element.videoMediaMetadata.durationMillis
                     : durationMillis = 128000; //ficticial duration.
+                console.log("TOOLSwindow.thumbnailForFileInProgress",window.thumbnailForFileInProgress)
                 element.thumbnailLink ?
                      thumbnail= element.thumbnailLink
                     :thumbnail= window.thumbnailForFileInProgress;

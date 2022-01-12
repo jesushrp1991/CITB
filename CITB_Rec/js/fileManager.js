@@ -265,7 +265,7 @@ const saveVideo = async(localDownload) =>{
       const cover = await getVideoCover(file, 1);
       // print out the result image blob
       thumbnailGeneratedLink = URL.createObjectURL(cover);
-      console.log(cover,thumbnailGeneratedLink);
+      window.thumbnailForFileInProgress = thumbnailGeneratedLink;
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
@@ -315,8 +315,6 @@ const uploadQueueDaemon = async() =>{
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
         window.endTimeUpload = nextFile.dateEnd; 
-        window.thumbnailForFileInProgress = nextFile.thumbnail;
-        console.log("FILEMANAGER", nextFile.thumbnail);
         prepareUploadToDrive(nextFile.file);
     }
 }
