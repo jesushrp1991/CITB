@@ -23,6 +23,11 @@
 }
 .dropzone {
   position: relative;
+  transition: transform .2s; /* Animation */
+
+}
+.dropzone:hover {
+  transform: scale(1.05);
 }
 .img-folder{
   width: 150px; 
@@ -56,6 +61,11 @@
     border-radius: 20px !important;
     border:#BDBDBC solid 3px !important;
     background-color: #FFFFFF !important;
+    transition: transform .2s; /* Animation */
+}
+
+.card-personalized:hover{
+  transform: scale(1.05);
 }
 .card-header-personalized{
     border-radius: 20px 20px 0 0 !important;
