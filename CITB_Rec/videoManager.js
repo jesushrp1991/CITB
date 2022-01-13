@@ -21,10 +21,7 @@ port.onMessage.addListener(async (msg) => {
         msg.currentList.forEach(async (element) => {
             let result = document.getElementById(element.id);
             deleteElementById("fake");
-            if(element.name == 'CITB_Records' && isFirstRender){
-               createFolderCard(element);
-            }
-            else if(result){
+            if(result){
                 //nada...
             }
             else if(element.upload == 'folder'){
@@ -37,7 +34,8 @@ port.onMessage.addListener(async (msg) => {
         });
     }
     else if (msg.deletedFile){
-        isFirstRender = true;
+        document.getElementById(idCITBFolder).setAttribute('class','dropzone folderSelected');
+        lastSelectedFolderId = idCITBFolder;
         port.postMessage({getDriveFiles: true ,folderId: idCITBFolder });
     }
   });
