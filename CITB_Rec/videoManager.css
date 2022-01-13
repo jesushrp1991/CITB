@@ -231,3 +231,21 @@
 .folderSelected {
   background-color: #547dbe57;
 }
+
+.disableFolder {
+  pointer-events:none;
+}
+
+.loading-indicator {
+  background-image: url("./assets/loading.gif");
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: none;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #0000005c;
+}

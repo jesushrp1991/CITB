@@ -24,9 +24,9 @@ port.onMessage.addListener(async (msg) => {
         queueDaemon(msg.lista);
     }
     else if (msg.currentList){
+        deleteElementById("fake");
         msg.currentList.forEach(async (element) => {
             let result = document.getElementById(element.id);
-            deleteElementById("fake");
             if(result){
                 //nada...
             }
@@ -38,6 +38,7 @@ port.onMessage.addListener(async (msg) => {
                 updateProgressBar(100,element.id);
             }
         });
+        enableClick();
     }
     else if (msg.deletedFile){
         document.getElementById(idCITBFolder).setAttribute('class','dropzone folderSelected');
@@ -179,19 +180,37 @@ const deleteElementById = (id) =>{
     }
 }
 
+const disableClick = () =>{
+    // let div = document.getElementById('citbFolderContainer').children;
+    // Array.from(div).forEach((element) => {
+    //     document.getElementById(element.id).setAttribute('class','disableFolder');
+    // });
+    document.getElementById('loading').style.display = 'block';
+}
+const enableClick = () =>{
+    // let div = document.getElementById('citbFolderContainer').children;
+    // Array.from(div).forEach((element) => {
+    //     document.getElementById(element.id).setAttribute('class','dropzone');
+    // });
+    document.getElementById('loading').style.display = 'none';
+}
+
 const  folder_click = (event) =>{
+    let folderID = event.srcElement.id;
+    if(lastSelectedFolderId == folderID ){
+        return;
+    }
+
     if(!isFirstRender && idCITBFolder){
         document.getElementById(idCITBFolder).setAttribute('class','dropzone');
     }
     let container = document.getElementById('citbCardRecContainer');
-    while (container.firstChild) {
+    while (container.firstChild){
         container.removeChild(container.firstChild);
     }
-    let folderID = event.srcElement.id;
     document.getElementById(folderID).classList.add('folderSelected');
     if (!fromMouseUp){
         document.getElementById(folderID).classList.remove('folderToRemove');
-
     }
     if(lastSelectedFolderId != folderID ){
         if(!isFirstTimeFolderSelected){
@@ -200,8 +219,8 @@ const  folder_click = (event) =>{
         isFirstTimeFolderSelected = false;
         lastSelectedFolderId = folderID;
     }
+    disableClick();
     port.postMessage({getDriveFiles: true ,folderId: folderID });
-    // alert(`FOLDER CLICK ${event.srcElement.id}`)
 }
 
 
@@ -213,7 +232,6 @@ const createFolderCard = async(details) => {
     html = html.replace("{{idP}}",details.id);
 
     const container = document.createElement("div");
-    console.log("isFirstRender",isFirstRender)
     if(isFirstRender && details.name == 'CITB_Records'){
         container.setAttribute('class',"dropzone folderSelected");
         isFirstRender = false;
