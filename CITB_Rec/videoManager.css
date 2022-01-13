@@ -62,6 +62,7 @@
 #citbFolderContainer {
   flex-wrap: nowrap;
   overflow-y: hidden;
+  max-height: 23vh
 }
 .folder-name {
   position: relative;
@@ -71,6 +72,8 @@
 
 #citbCardRecContainer {
   padding-top: 30px;
+  max-height: 68vh;
+  overflow-y: scroll;
 }
 .card-personalized {
   margin-left: 15px;
