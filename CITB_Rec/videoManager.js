@@ -1,4 +1,5 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
+import { compareWhitCache } from './js/tools.js'
 
 var id;
 let isFirstRender = true;

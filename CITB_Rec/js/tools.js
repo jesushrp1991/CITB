@@ -65,7 +65,35 @@ const recIcon = () =>{
     window.iconRecChange;
 }
 
+
+const compareWhitCache = (newArray) => {
+    //window.cache;
+    let cache = window.cache;
+    //list of new objets
+    let newObjects = cache.filter(o1 => !newArray.some(o2=> o1.id === o2.id));
+    let deletedObjects = newArray.filter(o1 => !cache.some(o2=> o1.id === o2.id));
+
+    return [...newObjects,...deletedObjects];
+}
+
+const addToCache = (newArray,idFolder) => {
+    let cache = window.cache;
+    
+    let exits = false;
+    cache.forEach((element,index) => {
+        if(element.id == idFolder){
+            cache[index].files = newArray;
+            exits = true;
+        } 
+    });
+    if(!exits){
+        cache.push({id:idFolder,files:newArray});
+    }
+    window.cache = cache;
+}
+
 export {
     createListForFrontend
     ,recIcon
+    ,compareWhitCache
 }
