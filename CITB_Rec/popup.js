@@ -153,27 +153,31 @@ const getShareLink = () =>{
 
 const shareWhatsapp = () =>{
     chrome.storage.sync.get('shareLink', (result) => {
-        let url = `https://wa.me?text=${encodeURIComponent(result.shareLink)}`;        
+        let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
+        let url = `https://wa.me?text=${encodeURIComponent(link)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareClassRoom = () =>{   
     chrome.storage.sync.get('shareLink', (result) => {   
-        let url = `https://classroom.google.com/share?url=${encodeURIComponent(result.shareLink)}`;        
+        let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
+        let url = `https://classroom.google.com/share?url=${encodeURIComponent(link)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 
 const shareTwitter = () =>{   
     chrome.storage.sync.get('shareLink', (result) => {   
-        let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(result.shareLink)}`;        
+        let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
+        let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(link)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
 const shareWakelet = () =>{   
     chrome.storage.sync.get('shareLink', (result) => {   
-        let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(result.shareLink)}`;        
+        let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
+        let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(link)}`;        
         chrome.tabs.create({active: true, url: url});
     });
 }
