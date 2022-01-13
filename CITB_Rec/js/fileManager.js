@@ -109,7 +109,6 @@ const addEventToGoogleCalendar = (linkDrive) => {
         "dateTime": window.endTimeUpload
       }
     };
-    console.log("newEvent",newEvent)
     let request = gapi.client.calendar.events.insert({
       'calendarId': 'primary',
       'resource': newEvent
