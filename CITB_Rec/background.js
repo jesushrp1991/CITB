@@ -24,6 +24,7 @@ import {
   ,getDriveFileList
   ,createDriveFolder
   ,moveDriveFileToFolder
+  ,deleteFileOrFolder
 } from './js/fileManager.js'
 
 import { createListForFrontend } from './js/tools.js'
@@ -182,10 +183,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if (msg.getLink){
           let driveLink = await getDriverLinkInQueueDB(msg.getLink);
           port.postMessage({answer: driveLink});
-        }else if (msg.getList){
+        }
+        else if (msg.getList){
           let list = await listUploadQueue();
           port.postMessage({lista: list});
-        }else if (msg.getDriveFiles){
+        }
+        else if (msg.getDriveFiles){
           let folderId ;
           msg.folderId == 'root' ? folderId = window.defautCITBFolderID : folderId = msg.folderId;
           let list = await getDriveFileList(folderId);
@@ -193,13 +196,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           let listFolder = await getDriveFileList('root');
           let listFoldersResult = createListForFrontend(listFolder,'root')
           port.postMessage({currentList: listResult.concat(listFoldersResult)});
-        }else if(msg.addFolder){
+        }
+        else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
           // let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
           let listFoldersResult = createListForFrontend([result],'root')
           port.postMessage({currentList: listFoldersResult});
           // await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
-        }else if (msg.moveFile){
+        }
+        else if (msg.moveFile){
           if(msg.id.idFolder.includes("https")){
             let destFolderId = await getDriverLinkInQueueDB(msg.id.idFolder);
             destFolderId =  destFolderId.match(/[-\w]{25,}/);
@@ -209,7 +214,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           }else{
             moveDriveFileToFolder(msg.id.idFolder,msg.id.idFile);
           }
-          
+        }
+        else if (msg.deleteFile){
+          let response = await deleteFileOrFolder(msg.folderId);
+          if(response){
+            port.postMessage({deletedFile: true});
+          }
         }
       });
     }else if (port.name == 'portTimer'){

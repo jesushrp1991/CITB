@@ -20,6 +20,16 @@ const moveDriveFileToFolder = async (destFolderId,originalDocID) => {
   });
 }
 
+const deleteFileOrFolder = async (file_id) => {
+  let result; 
+  await gapi.client.drive.files.delete({
+      fileId: file_id,
+  }).then((response)=>{
+    result = response;
+  });   
+  return result
+}
+
 const createDriveFolder = async (name) =>{
   var fileMetadata = {
     'name' : name,
@@ -365,4 +375,5 @@ export {
     ,getDriveFileList
     ,createDriveFolder
     ,moveDriveFileToFolder
+    ,deleteFileOrFolder
 }

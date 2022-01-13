@@ -1,6 +1,8 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
 
 var id;
+let isFirstRender = true;
+let idCITBFolder;
 var port = chrome.runtime.connect({name: "getDriveLink"});
 
 const baseUrlPerHost = {
@@ -14,10 +16,15 @@ const baseUrlPerHost = {
 port.onMessage.addListener(async (msg) => {
     if (msg.lista){
         queueDaemon(msg.lista);
-    }else if (msg.currentList){
+    }
+    else if (msg.currentList){
         msg.currentList.forEach(async (element) => {
             let result = document.getElementById(element.id);
-            if(result){
+            deleteElementById("fake");
+            if(element.name == 'CITB_Records' && isFirstRender){
+               createFolderCard(element);
+            }
+            else if(result){
                 //nada...
             }
             else if(element.upload == 'folder'){
@@ -28,6 +35,10 @@ port.onMessage.addListener(async (msg) => {
                 updateProgressBar(100,element.id);
             }
         });
+    }
+    else if (msg.deletedFile){
+        isFirstRender = true;
+        port.postMessage({getDriveFiles: true ,folderId: idCITBFolder });
     }
   });
 
@@ -81,19 +92,6 @@ const calculateRecTime = (details) =>{
         minutes = endDate.diff(initDate,"minute",true);
         seconds = endDate.diff(initDate,"second",true);
     }
-    
-    // let minutes = Math.floor(seconds/60);
-    // let hours = Math.floor(minutes/60);
-    // if(seconds < 10){
-    //     seconds ='0'+ seconds;
-    // }
-    // if(minutes < 10){
-    //     minutes ='0'+ minutes;
-    // }
-    // if(hours < 10){
-    //     hours ='0'+ hours;
-    // }
-    // return `${hours}:${minutes}:${seconds}`;
     minutes = Math.round(minutes);
     seconds = Math.round(seconds);
     if(minutes < 10){
@@ -113,12 +111,10 @@ var mouseDownTimeout;
 const folder_mouseDown = (event) => {
     mouseDownTimeout = setTimeout(() => {
         let folderID = event.srcElement.id;
-        console.log(event.srcElement.parentNode.childNodes);
         event.srcElement.parentNode.classList.add("folderToRemove");
 
         event.srcElement.parentNode.childNodes.forEach(node => {
             const classes = node.classList;
-            console.log(classes);
             if (classes != undefined) {
                 if (node.classList.contains("removeFolder")) {
                     node.setAttribute("id", "removeFolder" + folderID);
@@ -141,8 +137,23 @@ const removeFolder = (event) => {
     event.stopPropagation();
     event.preventDefault();
     let folderID = event.srcElement.id.replace('removeFolder', '');
-    console.log("AQUI TENDRIAMOS QUE BORRAR LA CARPETA", folderID);
+    let userConfirm = confirm("Si borra esta carpeta borrará todos los archivos dentro de la misma, ¿desea continuar?");
+    if(userConfirm){
+        port.postMessage({deleteFile: true ,folderId: folderID });
+        deleteElementById(folderID);
+    }
+    else{
+        document.getElementById(idCITBFolder).click();
+    }
 }
+
+const deleteElementById = (id) =>{
+    let node = document.getElementById(id);
+    if(node){
+        node.parentNode.removeChild(node);
+    }
+}
+
 const  folder_click = (event) =>{
     if(!isFirstRender && idCITBFolder){
         document.getElementById(idCITBFolder).setAttribute('class','dropzone');
@@ -164,13 +175,11 @@ const  folder_click = (event) =>{
         isFirstTimeFolderSelected = false;
         lastSelectedFolderId = folderID;
     }
-    console.log(folderID);
     port.postMessage({getDriveFiles: true ,folderId: folderID });
     // alert(`FOLDER CLICK ${event.srcElement.id}`)
 }
 
-let isFirstRender = true;
-let idCITBFolder;
+
 const createFolderCard = async(details) => {
     const urlContent = await fetch(chrome.runtime.getURL('html/folder.html'))
     let html = await urlContent.text();
@@ -179,6 +188,7 @@ const createFolderCard = async(details) => {
     html = html.replace("{{idP}}",details.id);
 
     const container = document.createElement("div");
+    console.log("isFirstRender",isFirstRender)
     if(isFirstRender && details.name == 'CITB_Records'){
         container.setAttribute('class',"dropzone folderSelected");
         isFirstRender = false;
@@ -240,9 +250,7 @@ const dragElement = (element) => {
   document.addEventListener("drop", (event) => {
       event.preventDefault();
       if ( event.target.className.includes("dropzone")) {
-        console.log(dragged, dragged.id);
-        let node = document.getElementById(dragged.id);
-        node.parentNode.removeChild(node);
+        deleteElementById(dragged.id);
         event.target.style.opacity = "";        
         let id = {idFile:dragged.id, idFolder:event.target.id}
         port.postMessage({moveFile: true ,id:id});
