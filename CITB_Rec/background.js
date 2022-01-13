@@ -25,6 +25,7 @@ import {
   ,createDriveFolder
   ,moveDriveFileToFolder
   ,deleteFileOrFolder
+  ,searchDrive
 } from './js/fileManager.js'
 
 import { createListForFrontend } from './js/tools.js'
@@ -221,7 +222,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             port.postMessage({deletedFile: true});
           }
         }
+        else if (msg.searchDriveFiles){
+          let list = await searchDrive();
+          let listFolders = createListForFrontend(list,'root'); 
+          let listFiles = createListForFrontend(list,null);
+          let allFiles = [...listFolders,...listFiles];
+          let result = allFiles.filter(x => x.name.includes(msg.searchTerm));
+          port.postMessage({searchList: result});
+        }
       });
+
     }else if (port.name == 'portTimer'){
       port.onMessage.addListener(async(msg) => {
         if (msg.getTimer){

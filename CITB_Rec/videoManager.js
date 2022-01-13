@@ -14,6 +14,11 @@ const baseUrlPerHost = {
     wakel: 'https://wakelet.com/save?self=1&media=',
 };
 
+const drawScreen = (list) =>{
+    //algoritm to draw whit cache, compare and decide.
+    //Esta en la libreta!!!
+}
+
 port.onMessage.addListener(async (msg) => {
     if (msg.lista){
         queueDaemon(msg.lista);
@@ -38,6 +43,27 @@ port.onMessage.addListener(async (msg) => {
         document.getElementById(idCITBFolder).setAttribute('class','dropzone folderSelected');
         lastSelectedFolderId = idCITBFolder;
         port.postMessage({getDriveFiles: true ,folderId: idCITBFolder });
+    }
+    else if (msg.searchList){
+        console.log(msg.searchList)
+        //deleteall
+        let container = document.getElementById('citbFolderContainer');
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        let containerRec = document.getElementById('citbCardRecContainer');
+        while (containerRec.firstChild) {
+            containerRec.removeChild(containerRec.firstChild);
+        }
+        msg.searchList.forEach(async (element) => {
+            if(element.upload == 'folder'){
+                createFolderCard(element);
+                }
+                else{
+                    await createRecordCard(element);
+                    updateProgressBar(100,element.id);
+                }
+        });
     }
   });
 
@@ -367,6 +393,21 @@ chrome.runtime.onMessage.addListener(
     }
   );
   
+const search = () =>{
+    let searchTerm = document.getElementById('form1').value;
+    port.postMessage({searchDriveFiles: true ,searchTerm: searchTerm });
+}
+document.getElementById('searchButton').addEventListener('click',search);
+
+const updateValue = () =>{
+    let value = document.getElementById('form1').value;
+    if(value == ""){
+        isFirstRender = true;
+        getDriveFiles();
+    }  
+}
+document.getElementById('form1').addEventListener('input', updateValue);
+
 
 getDriveFiles();
 startQueue();

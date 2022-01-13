@@ -64,6 +64,17 @@ const getDriveFileList = async (folder) => {
   })
   return result.result.files;  
 }
+const searchDrive = async () => {
+  let result = await gapi.client.drive.files.list({
+    q: "trashed=false",
+    fields: 'nextPageToken, files(id, name, createdTime, videoMediaMetadata,mimeType,thumbnailLink)',
+    // fields: 'nextPageToken, files',//All metadarta
+    spaces: 'drive',
+  })
+  return result.result.files;  
+}
+
+
 
 const searchDefaultFolder = async() =>{
   let fileList = await getDriveFileList('root');
@@ -376,4 +387,5 @@ export {
     ,createDriveFolder
     ,moveDriveFileToFolder
     ,deleteFileOrFolder
+    ,searchDrive
 }
