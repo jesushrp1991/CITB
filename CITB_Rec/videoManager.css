@@ -236,7 +236,7 @@
 }
 
 .loading-indicator {
-  background-image: url("./assets/loading.gif");
+  background-image: url("./assets/loading.svg");
   position: fixed;
   top: 0;
   right: 0;
