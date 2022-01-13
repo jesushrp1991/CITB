@@ -181,17 +181,9 @@ const deleteElementById = (id) =>{
 }
 
 const disableClick = () =>{
-    // let div = document.getElementById('citbFolderContainer').children;
-    // Array.from(div).forEach((element) => {
-    //     document.getElementById(element.id).setAttribute('class','disableFolder');
-    // });
     document.getElementById('loading').style.display = 'block';
 }
 const enableClick = () =>{
-    // let div = document.getElementById('citbFolderContainer').children;
-    // Array.from(div).forEach((element) => {
-    //     document.getElementById(element.id).setAttribute('class','dropzone');
-    // });
     document.getElementById('loading').style.display = 'none';
 }
 

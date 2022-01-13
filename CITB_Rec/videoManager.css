@@ -232,10 +232,6 @@
   background-color: #547dbe57;
 }
 
-.disableFolder {
-  pointer-events:none;
-}
-
 .loading-indicator {
   background-image: url("./assets/loading.gif");
   position: fixed;
