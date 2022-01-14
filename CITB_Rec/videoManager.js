@@ -133,7 +133,61 @@ var folderId = 'root';
 let lastSelectedFolderId = null;
 let isFirstTimeFolderSelected = true;
 
+const closestsChildClass = (element, className) => {
+    var finalElement;
+    element.childNodes.forEach(node => {
+        const classes = node.classList;
+        if (classes != undefined) {
+            if (node.classList.contains(className)) {
+                if (finalElement == null) {
+                    finalElement = node;
+                }
+            }
+        }
+        
+    })
+    return finalElement;
+}
+
 var mouseDownTimeout;
+const file_mouseDown = (event) => {
+    setTimeout(() => {
+        Array.from(document.getElementsByClassName("CITBRecFile")).forEach(element => {
+            element.classList.remove("folderToRemove");
+            const cardContainer = closestsChildClass(element, "card-personalized");
+            cardContainer.classList.remove("folderToRemove");
+    
+        })
+    },500)
+
+    
+    mouseDownTimeout = setTimeout(() => {
+        
+        const baseElement = event.srcElement.closest(".CITBRecFile");
+        const cardContainer = closestsChildClass(baseElement, "card-personalized");
+        cardContainer.classList.add("folderToRemove");
+        console.log(baseElement);
+
+        let folderID = baseElement.id;
+        baseElement.classList.add("folderToRemove");
+        const childElement = baseElement.getElementsByClassName("removeFolder")[0];
+        childElement.setAttribute("id", "removeFolder" + folderID);
+        childElement.addEventListener("click", removeFile)
+           
+        fromMouseUp = true;
+    },1000)
+}
+var fromMouseUp = false;
+const file_mouseUp = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setTimeout(() => {
+        fromMouseUp = false;
+    },200)
+    clearTimeout(mouseDownTimeout);
+}
+
+
 const folder_mouseDown = (event) => {
     mouseDownTimeout = setTimeout(() => {
         let folderID = event.srcElement.id;
@@ -165,6 +219,13 @@ const removeFolder = (event) => {
     window.folderID = event.srcElement.id.replace('removeFolder', '');
     // let userConfirm = confirm("Si borra esta carpeta borrará todos los archivos dentro de la misma, ¿desea continuar?");
     document.getElementById('popupDelete').setAttribute('class','fab-citb active');
+    
+}
+const removeFile = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    window.folderID = event.srcElement.id.replace('removeFolder', '');
+    console.log("VOY A BORRAR EL FICHERO",  window.folderID)
     
 }
 const executeRemoveFolder = (event) =>{
@@ -328,7 +389,11 @@ const createRecordCard = async (details) => {
     
 
     dragElement(document.getElementById(details.id));
+    document.getElementById(details.id).classList.add("CITBRecFile");
     document.getElementById(details.id).setAttribute("draggable",true);
+    document.getElementById(details.id).addEventListener("mousedown", file_mouseDown);
+    document.getElementById(details.id).addEventListener("mouseup", file_mouseUp);
+
     document.getElementById("gmail" + details.id).addEventListener("click", reply_click);
     document.getElementById("class" + details.id).addEventListener("click", reply_click);
     document.getElementById("twitt" + details.id).addEventListener("click", reply_click);
