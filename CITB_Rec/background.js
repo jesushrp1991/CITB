@@ -63,6 +63,9 @@ const injectFileName = () =>{
     const url = tabs[0].url;
     if (!url.includes("http")) {
       window.fileName = prompt("What's yours meet name?","CITB Rec");
+      if(window.fileName == null){
+        window.fileName = 'CITB Rec'
+      }
       clearInterval(intervalFileName);
       return;
     }else {
@@ -133,7 +136,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             openRecList();
             await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, () => {});
-            chrome.browserAction.setIcon({path: "./assets/icon.png"});
+            setTimeout(()=>{
+              chrome.browserAction.setIcon({path: "./assets/icon.png"});
+            },3000);
         }    
         break;
       case popupMessages.pause :
