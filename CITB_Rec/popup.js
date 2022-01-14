@@ -29,7 +29,7 @@ const rec = (isTabForMac) =>{
 }
 const sendRecordCommand = () =>{
     let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
-    if(userAgentData){
+    if(!userAgentData){//quit negation to stop fake folder
         chrome.tabs.getSelected(null, (tab) => {
             rec(tab.id);
         });
@@ -193,6 +193,13 @@ const showRecList = () => {
     sendMessage(request);
 }
 
+const recNewTab = () =>{
+    chrome.tabs.getSelected(null, (tab) => {
+        const request = { recordingStatus: 'finalRecMac' , idMic: select.value ,idTab : tab.id};
+        sendMessage(request);
+    });
+}
+
 let buttonRec = document.getElementById("recButton");
 buttonRec.addEventListener('click',sendRecordCommand);
 
@@ -227,6 +234,9 @@ shareTwitterButton.addEventListener('click',shareTwitter);
 
 let shareWakeletButton = document.getElementById("shareWakelet");
 shareWakeletButton.addEventListener('click',shareWakelet);
+
+let tabRecButton = document.getElementById("tabRecControlButton");
+tabRecButton.addEventListener('click',recNewTab);
 
 
 checkAut();

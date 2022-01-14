@@ -30,9 +30,14 @@ import {
  
   const recordScreen = async (streamId,idMic) => { 
     try{ 
+        if(window.MacTabChange){
+          window.recorder.stop(); 
+          stopTracks(); 
+          window.MacTabChange = false;
+        }
         let isMac = navigator.userAgentData.platform.toLowerCase().includes('mac'); 
         let mediaSource; 
-        isMac ?  mediaSource = 'tab' :  mediaSource = 'desktop'; 
+        !isMac ?  mediaSource = 'tab' :  mediaSource = 'desktop'; 
         const constraints = { 
           audio:{ 
               mandatory: { 
@@ -53,7 +58,7 @@ import {
           } 
         } 
         window.desktopStream = await navigator.mediaDevices.getUserMedia(constraints); 
-        if(isMac){ 
+        if(!isMac){ 
           var context = new AudioContext(); 
           context.createMediaStreamSource(window.desktopStream).connect(context.destination); 
         } 
@@ -105,7 +110,9 @@ import {
             } 
         } 
         window.recorder.onstop = async() => { 
-           saveVideo(false); 
+          if(window.finalRecMac){
+            saveVideo(false);
+          }
         } 
         window.recorder.start(environment.timeIntervalSaveDB); 
         startTimerCount(); 
@@ -123,7 +130,9 @@ const startRecordScreen = async(idMic,cb,isTabForMac) =>{
         cb(); 
         chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  (streamId)=>{ 
            recordScreen(streamId,idMic); 
-           recIcon(); 
+           if(!window.MacTabChange){
+              recIcon(); 
+           }
         }); 
       }else{ 
         chrome.desktopCapture.chooseDesktopMedia(environment.videoCaptureModes, async (streamId) => { 

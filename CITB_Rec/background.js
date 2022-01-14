@@ -41,6 +41,7 @@ const popupMessages = {
   ,getDriveLink: 'getDriveLink'
   ,listRec: 'listRec'
   ,showRecList: 'showRecList'
+  ,finalRecMac: 'finalRecMac'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -117,6 +118,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       prompt("Insufficient disk space");      
     }
     switch(message.recordingStatus){
+      case popupMessages.finalRecMac:
+        window.MacTabChange = true;
+        startRecordScreen(message.idMic,()=>{},message.idTab);
+      break;
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){         
           window.fileName = "CITB Rec";
@@ -131,6 +136,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
               delLastItem(3);
             }
             openRecList();
+            window.finalRecMac = true;
             await stopRecordScreen();
             chrome.storage.sync.set({isPaused: false}, () => {});
             chrome.browserAction.setIcon({path: "./assets/icon.png"});
