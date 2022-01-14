@@ -162,15 +162,16 @@ const folder_mouseUp = (event) => {
 const removeFolder = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    let folderID = event.srcElement.id.replace('removeFolder', '');
-    let userConfirm = confirm("Si borra esta carpeta borrará todos los archivos dentro de la misma, ¿desea continuar?");
-    if(userConfirm){
-        port.postMessage({deleteFile: true ,folderId: folderID });
-        deleteElementById(folderID);
-    }
-    else{
-        document.getElementById(idCITBFolder).click();
-    }
+    window.folderID = event.srcElement.id.replace('removeFolder', '');
+    // let userConfirm = confirm("Si borra esta carpeta borrará todos los archivos dentro de la misma, ¿desea continuar?");
+    document.getElementById('popupDelete').setAttribute('class','fab-citb active');
+    
+}
+const executeRemoveFolder = (event) =>{
+    event.preventDefault();    
+    port.postMessage({deleteFile: true ,folderId: window.folderID });
+    deleteElementById(window.folderID);
+    document.getElementById('popupDelete').setAttribute('class','fab-citb');
 }
 
 const deleteElementById = (id) =>{
@@ -384,11 +385,21 @@ const getDriveFiles = () => {
 }
 
 const addFolder = () =>{
-    let name = prompt ("Nombre");
+    // let name = prompt ("Nombre");
+    document.getElementById('fabVideo').setAttribute('class','fab-citb active');
+    
+}
+
+const setNameNewFolder = (event) =>{
+    event.preventDefault();
+    let name  = document.getElementById('text1').value;
+    console.log(name);
     if(name){
         createFolderCard({id:"fake", name: name});
         port.postMessage({addFolder: true, name : name});
     }    
+    document.getElementById('text1').value = '';
+    document.getElementById('fabVideo').setAttribute('class','fab-citb');
 }
 
 document.getElementById('addFolder').addEventListener('click',addFolder);
@@ -418,6 +429,23 @@ const updateValue = () =>{
 }
 document.getElementById('form1').addEventListener('input', updateValue);
 
+document.getElementById('submitVideo').addEventListener('click', setNameNewFolder);
+
+document.getElementById('formPopup').addEventListener('click', (event)=>{
+    event.preventDefault();
+});
+
+document.getElementById('close-x').addEventListener('click', ()=>{
+    document.getElementById('text1').value = '';
+    document.getElementById('fabVideo').setAttribute('class','fab-citb');
+});
+
+document.getElementById('close-x-delete').addEventListener('click', ()=>{
+    document.getElementById('popupDelete').setAttribute('class','fab-citb');
+    document.getElementById(idCITBFolder).click();
+});
+
+document.getElementById('submitDeletePopup').addEventListener('click',executeRemoveFolder)
 
 getDriveFiles();
 startQueue();

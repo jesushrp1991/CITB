@@ -29,7 +29,54 @@
     </div>
     <div class="row p-3" id="citbCardRecContainer">
     </div>
+
     <div id="loading" class='loading-indicator'></div>
+
+    <div id="fabVideo" class="fab-citb">
+      <form id="formPopup" class="cntt-wrapper-citb">
+        <div id="fab-hdr-video">
+          <span id="close-x" class="close-button-citb topright-citb">x</span>
+          <h3>CITB</h3>
+        </div>
+        <div class="cntt-citb">
+          <button id="classModalIcon" class="CITBClassButton"></button>
+          <div class="">
+            <label for="text1" class="labelName-citb">What's yours meet name?</label
+            ><input id="text1" class="textbox-citb" type="text" /><br />
+          </div>
+          <div class="btn-wrapper-citb">
+            <button
+              id="submitVideo"
+              class="mdl-button mdl-js-button mdl-button--primary"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="popupDelete" class="fab-citb">
+      <form id="formDeletePopup" class="cntt-wrapper-citb">
+        <div id="fab-hdr-video">
+          <span id="close-x-delete" class="close-button-citb topright-citb">x</span>
+          <h3>CITB</h3>
+        </div>
+        <div class="cntt-citb">
+          <button id="classModalIcon" class="CITBClassButton"></button>
+          <div class="">
+            <label for="text1" class="description-delete">Si borra esta carpeta se perderan todos los archivos dentro de la misma,¿desea continuar?</label>
+          </div>
+          <div class="btn-wrapper-citb">
+            <button
+              id="submitDeletePopup"
+              class="buttonCITBOK"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
     <!-- Optional JavaScript -->
     <script src="./videoManager.js" type="module"></script>
     <script src="./js/external/dayjs.min.js"></script> 
