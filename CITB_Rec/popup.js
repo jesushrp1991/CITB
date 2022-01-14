@@ -107,7 +107,14 @@ const activateVoiceControl = () =>{
 
 let select = document.getElementById('miclist');
 const populateMicSelect = async () => {
-    let micList = await navigator.mediaDevices.enumerateDevices();
+    let micList;
+    try {
+        await navigator.mediaDevices.getUserMedia({audio: true})
+        micList = await navigator.mediaDevices.enumerateDevices();
+    } catch (error) {
+        activateVoiceControl();
+    }
+    micList = await navigator.mediaDevices.enumerateDevices();
     let usableMic = micList.filter((x) =>  x.kind === "audioinput" && !x.label.includes('CITB'));    
     let citb = micList.filter((x) => x.kind === "audioinput" && x.label.includes('CITB'));
     let organizedMicList = [];
