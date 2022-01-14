@@ -33,7 +33,7 @@ import {
         let isMac = navigator.userAgentData.platform.toLowerCase().includes('mac'); 
         let mediaSource; 
         let  constraints,constraintsTabAudio,constraintsDesktopVideo;
-        if(!isMac){
+        if(isMac){
           //MAC!!!
 
           chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  async(stream)=>{ 
@@ -71,9 +71,8 @@ import {
                 } 
             } 
           };
-          console.log(constraintsTabAudio);
           window.desktopStream = await navigator.mediaDevices.getUserMedia(constraintsTabAudio); 
-          if(!isMac){ 
+          if(isMac){ //Innecesario
             var context = new AudioContext(); 
             context.createMediaStreamSource(window.desktopStream).connect(context.destination); 
           } 
@@ -114,7 +113,6 @@ import {
           } 
         
           window.recorder = new MediaRecorder(window.resultStream);
-          console.log("FINAL",window.recorder)
           window.recorder.ondataavailable = event => { 
             // console.log("ON DATA AVAILABLE", videoChunksArray.length); 
               verifyAvailableSpaceOnDisk(); 
