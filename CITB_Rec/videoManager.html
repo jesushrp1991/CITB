@@ -12,6 +12,10 @@
             <img src="./assets/CITB_Records.jpeg" alt="" class="citb-image">
         </div>
         <div class="col-2">
+              <!-- Button trigger modal -->
+              <!-- <button type="button" class="btn btn-primary" id="open-modal">
+                Launch demo modal
+              </button> -->
             <img id='addFolder' src="./assets/addFolder.svg" alt="" style="width: 20%; ">
         </div>
     </div>
@@ -64,7 +68,7 @@
         <div class="cntt-citb">
           <button id="classModalIcon" class="CITBClassButton"></button>
           <div class="">
-            <label for="text1" class="description-delete">Si borra esta carpeta se perderan todos los archivos dentro de la misma,desea continuar?</label>
+            <label for="text1" class="description-delete">Esta acción no se podrá deshacer. Desea continuar</label>
           </div>
           <div class="btn-wrapper-citb">
             <button
@@ -77,6 +81,29 @@
         </div>
       </form>
     </div>
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true"
+    role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" aria-label="Close" id="secundary-close-modal">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="close-modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show" id="backdrop" style="display: none;"></div> -->
     <!-- Optional JavaScript -->
     <script src="./videoManager.js" type="module"></script>
     <script src="./js/external/dayjs.min.js"></script> 

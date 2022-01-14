@@ -162,11 +162,9 @@ const file_mouseDown = (event) => {
 
     
     mouseDownTimeout = setTimeout(() => {
-        
         const baseElement = event.srcElement.closest(".CITBRecFile");
         const cardContainer = closestsChildClass(baseElement, "card-personalized");
         cardContainer.classList.add("folderToRemove");
-        console.log(baseElement);
 
         let folderID = baseElement.id;
         baseElement.classList.add("folderToRemove");
@@ -225,8 +223,8 @@ const removeFile = (event) => {
     event.stopPropagation();
     event.preventDefault();
     window.folderID = event.srcElement.id.replace('removeFolder', '');
-    console.log("VOY A BORRAR EL FICHERO",  window.folderID)
-    
+    document.getElementById('popupDelete').setAttribute('class','fab-citb active');
+
 }
 const executeRemoveFolder = (event) =>{
     event.preventDefault();    
@@ -511,6 +509,23 @@ document.getElementById('close-x-delete').addEventListener('click', ()=>{
 });
 
 document.getElementById('submitDeletePopup').addEventListener('click',executeRemoveFolder)
+
+
+//TEST NEW MODAL
+// document.getElementById('open-modal').addEventListener('click',()=>{
+    
+//     document.getElementById("backdrop").style.display = "block"
+//     document.getElementById("exampleModal").style.display = "block"
+//     document.getElementById("exampleModal").classList.add("show")
+// })
+
+// const closeModal = () =>{
+//     document.getElementById("backdrop").style.display = "none"
+//     document.getElementById("exampleModal").style.display = "none"
+//     document.getElementById("exampleModal").classList.remove("show")
+// }
+// document.getElementById('secundary-close-modal').addEventListener('click',closeModal);
+// document.getElementById('close-modal').addEventListener('click',closeModal);
 
 getDriveFiles();
 startQueue();

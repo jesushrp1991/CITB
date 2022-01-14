@@ -525,3 +525,11 @@ display: block !important;
   border-radius: 10px !important;
   padding: 0px !important;
 }
+
+.bg-danger {
+  background-image: url('./assets/deleteIcon.png');
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+}
