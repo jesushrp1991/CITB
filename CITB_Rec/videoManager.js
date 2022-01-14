@@ -248,13 +248,16 @@ const enableClick = () =>{
 }
 
 const  folder_click = (event) =>{
+    document.getElementById('form1').value = '';
     let folderID = event.srcElement.id;
     if(lastSelectedFolderId == folderID ){
         return;
     }
 
     if(!isFirstRender && idCITBFolder){
-        document.getElementById(idCITBFolder).setAttribute('class','dropzone');
+        let element = document.getElementById(idCITBFolder);
+        if(element)
+            document.getElementById(idCITBFolder).setAttribute('class','dropzone');
     }
     let container = document.getElementById('citbCardRecContainer');
     while (container.firstChild){
@@ -265,8 +268,9 @@ const  folder_click = (event) =>{
         document.getElementById(folderID).classList.remove('folderToRemove');
     }
     if(lastSelectedFolderId != folderID ){
-        if(!isFirstTimeFolderSelected){
-            document.getElementById(lastSelectedFolderId).setAttribute('class','dropzone');
+        let element = document.getElementById(lastSelectedFolderId);
+        if(!isFirstTimeFolderSelected && element){
+            element.setAttribute('class','dropzone');
         }
         isFirstTimeFolderSelected = false;
         lastSelectedFolderId = folderID;
