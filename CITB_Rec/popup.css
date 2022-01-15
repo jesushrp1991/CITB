@@ -37,6 +37,9 @@
 .button-rec{
   width: 328px !important;
   height: 40px !important;
+  transition: opacity 0.2s, visibility 0.2s;
+  opacity: 1;
+  visibility: innherit ;
 }
 
 .select-mic{
@@ -71,7 +74,8 @@
 }
 
 .button-hide {
-  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 .button-active {
