@@ -7,7 +7,10 @@ const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
 }
 const rec = (isTabForMac) =>{
-    const request = { recordingStatus: 'rec' , idMic: select.value ,idTab : isTabForMac};
+    let idMic;
+    let checkboxMic = document.getElementById('checkboxMic');
+    checkboxMic.checked ? idMic = select.value : idMic = null
+    const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac};
     sendMessage(request);
 }
 const sendRecordCommand = () =>{
