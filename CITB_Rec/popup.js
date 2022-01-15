@@ -3,9 +3,9 @@
 // } from './js/progressBar.js'
 // import { checkTimer } from './js/timerBar.js';
 
-// const sendMessage = (msg) =>{
-//     chrome.runtime.sendMessage(msg);
-// }
+const sendMessage = (msg) =>{
+    chrome.runtime.sendMessage(msg);
+}
 
 // const rec = (isTabForMac) =>{
 //     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
@@ -195,10 +195,10 @@
 //     sendMessage(request);
 // }
 
-// const showRecList = () => {
-//     const request = { recordingStatus: 'showRecList' };
-//     sendMessage(request);
-// }
+const showRecList = () => {
+    const request = { recordingStatus: 'showRecList' };
+    sendMessage(request);
+}
 
 // let buttonRec = document.getElementById("recButton");
 // buttonRec.addEventListener('click',sendRecordCommand);
@@ -217,8 +217,8 @@
 // let buttonLocalDownload = document.getElementById("localDownloadButton");
 // buttonLocalDownload.addEventListener('click',localDownload);
 
-// let buttonRecList = document.getElementById("recListButton");
-// buttonRecList.addEventListener('click',showRecList);
+let buttonRecList = document.getElementById("recListButton");
+buttonRecList.addEventListener('click',showRecList);
 
 // let shareGmailButton = document.getElementById("shareGmail");
 // shareGmailButton.addEventListener('click',getShareLink);

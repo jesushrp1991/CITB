@@ -12,28 +12,28 @@
   </head>
   <body>
     <div class="container">
-      <div class="row justify-content-center">
+      <div class="row p-2 justify-content-center">
         <div class="header-icon"></div>
       </div>        
       <div class="row row p-2">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h5 class="card-title">Escoger que desea grabar</h5>
+            <h5 class="card-title">Elige fuente de video</h5>
             <div div class="row">
-              <div class="col-6 justify-content-center">
-                <div class="row">
-                  <div class="icons tab-icon"></div>
+              <div class="col-6">
+                <div class="row justify-content-center">
+                  <div class="icons tab-icon select-icon"></div>
                 </div>
                 <div class="row justify-content-center">
-                  <h7>Grabar Tab</h7>
+                  <h7>Grabar pestaña</h7>
                 </div>
               </div>
-              <div class="col-6 justify-content-center">
-                <div class="row">
-                  <div class="icons screen-icon"></div>
+              <div class="col-6">
+                <div class="row justify-content-center">
+                  <div class="icons screen-icon select-icon selected-icon"></div>
                 </div>
                 <div class="row justify-content-center">
-                  <h7>Grabar Escritorio</h7>
+                  <h7>Grabar escritorio</h7>
                 </div>
               </div>
             </div>
@@ -43,17 +43,20 @@
       <div class="row row p-2">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h5 class="card-title">Escoger medio de narración</h5>
+            <h5 class="card-title">Elige fuente de audio</h5>
             <div div class="row">
-              <div class="col-4 justify-content-center">
-                <div class="row justify-content-center">
-                  <input type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
-                </div>
+              <div class="col-4 align-items-center justify-content-center">
                 <div class="row justify-content-center">
                   <h7>On/Off</h7>
                 </div>
+                <div class="row justify-content-center">
+                  <input type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
+                </div>
               </div>
               <div class="col-8 justify-content-center">
+                <div class="row justify-content-center">
+                  <h7>Escoger micrófono</h7>
+                </div>
                 <div class="row justify-content-center">
                   <select class="custom-select custom-select-sm select-mic">
                     <option selected>Select mic</option>
@@ -61,9 +64,6 @@
                     <option value="2">BitBox Bluethoot mic</option>
                     <option value="3">Defaul system microphone</option>
                   </select>
-                </div>
-                <div class="row justify-content-center">
-                  <h7>Escoger micrófono</h7>
                 </div>
               </div>
             </div>
@@ -83,7 +83,7 @@
                   <h7>Voice commands</h7>
                 </div>
               </div>
-              <div class="col justify-content-center">
+              <div id="recListButton" class="col justify-content-center">
                 <div class="row justify-content-center">
                   <div class="list-rec-icon icons"></div>
                 </div>
@@ -95,11 +95,8 @@
           </div>
         </div>
       </div>
-      <div class="row row p-2 justify-content-center button-active">
-        <button id="button-rec" class="btn-danger rounded-lg button-rec">Record</button>
-      </div>
-      <div id="panelTimer" class="row row p-2 rec-timer-hide">
-        <div class="col justify-content-center align-items-center">
+      <div id="panelTimer" class="row row p-2 rec-timer-hide panel-timer-container">
+        <div class="col justify-content-center">
           <div class="timer">
             <h4 id="recTimerPanel">08:56</h4>
           </div>
@@ -110,6 +107,9 @@
         <div class="col justify-content-center">
           <div class="stop-icon icons"></div>
         </div>
+      </div>
+      <div class="row p-2 justify-content-center button-active">
+        <button id="button-rec" class="btn-danger rounded-lg button-rec">Record</button>
       </div>
     </div>
     <script src="popup.js" type="module"></script>
