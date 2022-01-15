@@ -1,7 +1,7 @@
 // import {
 //     checkUploadStatus
 // } from './js/progressBar.js'
-// import { checkTimer } from './js/timerBar.js';
+import { checkTimer } from './js/timerBar.js';
 
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
@@ -21,46 +21,30 @@ const sendRecordCommand = () =>{
     }
 }
 
-// const getCurrentState = () =>{
-//     let isRec = false;
-//     chrome.storage.sync.get('isRecording', (result) => {
-//         if (result.isRecording ){
-//             isRec = result.isRecording;
-//             buttonRec.setAttribute('class','buttonRecOn') 
-//             buttonStop.setAttribute('class','stopButton littleButton');
-//             buttonRec.disabled = true;
-//             buttonStop.disabled = false;
-//             buttonPlayPause.disabled = false;
-//         }else{
-//             buttonRec.setAttribute('class','buttonRecOff');
-//             buttonStop.setAttribute('class','stopButtonOff littleButton') ;
-//             buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
-//             buttonRec.disabled = false;
-//             buttonStop.disabled = true;
-//             buttonPlayPause.disabled = true;
-//         }
-//     });
-//     chrome.storage.sync.get('isPaused', (result) => {
-//         if(!isRec){
-//             buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
-//         }else{
-//             if(result.isPaused ){
-//                 console.log("Is paused")
-//                 buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
-//             }else{
-//                 buttonPlayPause.setAttribute('class','buttonPause littleButton');
-//             }
-//         }
-//     });
-//     chrome.storage.sync.get('voice', (result) => {
-//         if(result.voice){
-//             buttonVoiceControl.setAttribute('class','voiceControl')
-//         }else{
-//             buttonVoiceControl.setAttribute('class','voiceControlOff');
-//         }
-//     })
+const getCurrentState = () =>{
+    chrome.storage.sync.get('isRecording', (result) => {
+        if (result.isRecording ){
+            displayRecordingMode();
+        }else{
+            displayNotRecordingMode();
+        }
+    });
+    chrome.storage.sync.get('isPaused', (result) => {        
+        if(result.isPaused ){
+            buttonPlayPause.setAttribute('class','play-icon icons');
+        }else{
+            buttonPlayPause.setAttribute('class','pause-icon icons');
+        }        
+    });
+    chrome.storage.sync.get('voice', (result) => {
+        if(result.voice){
+            buttonVoiceControl.setAttribute('class','voiceControl icons')
+        }else{
+            buttonVoiceControl.setAttribute('class','voiceControlOff icons');
+        }
+    })
 
-// }
+}
 
 
 const playPause = () =>{
@@ -183,22 +167,27 @@ const showRecList = () => {
 let buttonRec = document.getElementById('button-rec');
 let newTimerPanel = document.getElementById('panelTimer');
 
-buttonRec.addEventListener('click',() =>{
+const displayRecordingMode = () =>{
     buttonRec.classList.remove('button-active');
     buttonRec.classList.add('button-hide');
     newTimerPanel.classList.remove('rec-timer-hide');
     newTimerPanel.classList.add('rec-timer-active');
+}
+buttonRec.addEventListener('click',() =>{
+    displayRecordingMode();
     sendRecordCommand();
 })
 
-let buttonStop = document.getElementById("stopButton");
-buttonStop.disabled = true;
-buttonStop.addEventListener('click',()=>{
+const displayNotRecordingMode = () =>{
     buttonRec.classList.remove('button-hide');
     buttonRec.classList.add('button-active');
     newTimerPanel.classList.remove('rec-timer-active');
     newTimerPanel.classList.add('rec-timer-hide');
-    sendRecordCommand();
+}
+let buttonStop = document.getElementById("stopButton");
+buttonStop.addEventListener('click',()=>{
+    displayNotRecordingMode()
+;    sendRecordCommand();
 });
 
 let buttonPlayPause = document.getElementById("playPauseButton");
@@ -232,11 +221,10 @@ buttonRecList.addEventListener('click',showRecList);
 
 checkAut();
 populateMicSelect();
-// checkTimer();
+checkTimer();
 // checkUploadStatus();
-// getCurrentState();
-
-// setInterval(getCurrentState,2000);
+getCurrentState();
+setInterval(getCurrentState,2000);
 
 //mock new popup
 
