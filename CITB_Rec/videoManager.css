@@ -122,19 +122,6 @@
   padding-top: 5px !important;
 }
 
-.buttonDownload {
-  height: 45px;
-  width: 55px;
-  outline: none;
-  border: none;
-  border-radius: 2px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-image: url("./assets/COMPARTIR\ COLOR.svg") !important;
-}
-
 .progress-bar-wrapper {
   padding-top: 20px;
 }

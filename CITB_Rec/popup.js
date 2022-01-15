@@ -106,10 +106,6 @@ const populateMicSelect = async () => {
 
 
 // const localDownload = () => {
-//     // chrome.tabs.create({active: false}, (newTab) => {
-//     //     chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });
-
-//     // });
 //     const request = { recordingStatus: 'localDownload' };
 //     sendMessage(request);
 // }

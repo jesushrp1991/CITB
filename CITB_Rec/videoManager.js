@@ -512,7 +512,14 @@ document.getElementById('close-x-delete').addEventListener('click', ()=>{
     document.getElementById(idCITBFolder).click();
 });
 
-document.getElementById('submitDeletePopup').addEventListener('click',executeRemoveFolder)
+document.getElementById('submitDeletePopup').addEventListener('click',executeRemoveFolder);
+
+const localDownload = () => {
+    const request = { recordingStatus: 'localDownload' };
+    chrome.runtime.sendMessage(request);
+}
+let buttonLocalDownload = document.getElementById("localDownloadButton");
+buttonLocalDownload.addEventListener('click',localDownload);
 
 
 //TEST NEW MODAL
