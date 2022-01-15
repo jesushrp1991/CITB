@@ -6,39 +6,20 @@
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
 }
-
-// const rec = (isTabForMac) =>{
-//     if(buttonRec.getAttribute('class') ==  'buttonRecOn' ){
-//         buttonRec.setAttribute('class','buttonRecOff');
-//         buttonStop.setAttribute('class','stopButtonOff littleButton');
-//         buttonPlayPause.setAttribute('class','buttonPauseDisable littleButton');
-//         buttonRec.disabled = false;
-//         buttonStop.disabled = true;
-//         buttonPlayPause.disabled = true;
-//     }else{
-        
-//         buttonRec.setAttribute('class','buttonRecOn') ;
-//         buttonStop.setAttribute('class','stopButton littleButton') ;
-//         buttonPlayPause.setAttribute('class','buttonPause littleButton');
-//         buttonRec.disabled = true;
-//         buttonStop.disabled = false;
-//         buttonPlayPause.disabled = false;
-//     }
-//     const request = { recordingStatus: 'rec' , idMic: select.value ,idTab : isTabForMac};
-//     sendMessage(request);
-// }
-// const sendRecordCommand = () =>{
-//     let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
-//     if(userAgentData){
-//         chrome.tabs.getSelected(null, (tab) => {
-//             rec(tab.id);
-//         });
-//     }else{
-//         rec()
-//     }
-    
-    
-// }
+const rec = (isTabForMac) =>{
+    const request = { recordingStatus: 'rec' , idMic: select.value ,idTab : isTabForMac};
+    sendMessage(request);
+}
+const sendRecordCommand = () =>{
+    let userAgentData = navigator.userAgentData.platform.toLowerCase().includes('mac');
+    if(userAgentData){
+        chrome.tabs.getSelected(null, (tab) => {
+            rec(tab.id);
+        });
+    }else{
+        rec()
+    }
+}
 
 // const getCurrentState = () =>{
 //     let isRec = false;
@@ -82,63 +63,62 @@ const sendMessage = (msg) =>{
 // }
 
 
-// const playPause = () =>{
-//     const request = { recordingStatus: 'pause' };
-//     if(buttonPlayPause.getAttribute('class').includes('buttonPauseOff')){
-//         buttonPlayPause.setAttribute('class','buttonPause littleButton')
-//     }else{
-//         buttonPlayPause.setAttribute('class','buttonPauseOff littleButton');
-//     }
-//     sendMessage(request);
-// }
+const playPause = () =>{
+    const request = { recordingStatus: 'pause' };
+    if(buttonPlayPause.getAttribute('class').includes('pause-icon')){
+        buttonPlayPause.setAttribute('class','play-icon icons')
+    }else{
+        buttonPlayPause.setAttribute('class','pause-icon icons');
+    }
+    sendMessage(request);
+}
 
-// const activateVoiceControl = () =>{
-//     const request = { recordingStatus: 'voiceOpen' };
-//     if(buttonVoiceControl.getAttribute('class') ==  'voiceControlOff' ){
-//         buttonVoiceControl.setAttribute('class','voiceControl')
-//         sendMessage(request);
-//         chrome.runtime.openOptionsPage(()=>{});
-//     }else{
-//         const request = { recordingStatus: 'voiceClose' };
-//         sendMessage(request);
-//         buttonVoiceControl.setAttribute('class','voiceControlOff');
-//     }
-// }
+const activateVoiceControl = () =>{
+    const request = { recordingStatus: 'voiceOpen' };
+    if(buttonVoiceControl.getAttribute('class').includes('voiceControlOff')){
+        buttonVoiceControl.setAttribute('class','voiceControl icons')
+        sendMessage(request);
+        chrome.runtime.openOptionsPage(()=>{});
+    }else{
+        const request = { recordingStatus: 'voiceClose' };
+        sendMessage(request);
+        buttonVoiceControl.setAttribute('class','voiceControlOff icons');
+    }
+}
 
-// let select = document.getElementById('miclist');
-// const populateMicSelect = async () => {
-//     let micList;
-//     try {
-//         await navigator.mediaDevices.getUserMedia({audio: true})
-//         micList = await navigator.mediaDevices.enumerateDevices();
-//     } catch (error) {
-//         activateVoiceControl();
-//     }
-//     micList = await navigator.mediaDevices.enumerateDevices();
-//     let usableMic = micList.filter((x) =>  x.kind === "audioinput" && !x.label.includes('CITB'));    
-//     let citb = micList.filter((x) => x.kind === "audioinput" && x.label.includes('CITB'));
-//     let organizedMicList = [];
-//     if(citb.length > 0){
-//         organizedMicList.push(citb[0]);
-//         organizedMicList = organizedMicList.concat(usableMic);
-//     }else{
-//         organizedMicList = usableMic;
-//         // confirm("The poor noise reductions characteristics of most market's microphones will create echo. Unless you buy Class In The Boss, the noice cancellation market's lider.")
-//         document.getElementById('modal').style.display = 'block';
-//         setInterval(()=>{
-//             document.getElementById('modal').style.display = 'none';
-//         },5000);
-//     }
-//     while (select.options.length > 0) {                
-//         select.remove(0);
-//     }  
-//     organizedMicList.forEach(element => {
-//         var option = document.createElement("option");
-//         option.text = element.label;
-//         option.value = element.deviceId;
-//         select.add(option);
-//     });
-// }
+let select = document.getElementById('miclist');
+const populateMicSelect = async () => {
+    let micList;
+    try {
+        await navigator.mediaDevices.getUserMedia({audio: true})
+        micList = await navigator.mediaDevices.enumerateDevices();
+    } catch (error) {
+        activateVoiceControl();
+    }
+    micList = await navigator.mediaDevices.enumerateDevices();
+    let usableMic = micList.filter((x) =>  x.kind === "audioinput" && !x.label.includes('CITB'));    
+    let citb = micList.filter((x) => x.kind === "audioinput" && x.label.includes('CITB'));
+    let organizedMicList = [];
+    if(citb.length > 0){
+        organizedMicList.push(citb[0]);
+        organizedMicList = organizedMicList.concat(usableMic);
+    }else{
+        organizedMicList = usableMic;
+        document.getElementById('modal').style.display = 'block';
+        setInterval(()=>{
+            document.getElementById('modal').style.display = 'none';
+        },5000);
+    }
+    while (select.options.length > 0) {                
+        select.remove(0);
+    }  
+    organizedMicList.forEach(element => {
+        var option = document.createElement("option");
+        option.text = element.label;
+        option.value = element.deviceId;
+        select.add(option);
+    });
+}
 
 
 // const localDownload = () => {
@@ -190,29 +170,43 @@ const sendMessage = (msg) =>{
 // }
 
 
-// const checkAut = () => {
-//     const request = { recordingStatus: 'checkAuth' };
-//     sendMessage(request);
-// }
+const checkAut = () => {
+    const request = { recordingStatus: 'checkAuth' };
+    sendMessage(request);
+}
 
 const showRecList = () => {
     const request = { recordingStatus: 'showRecList' };
     sendMessage(request);
 }
 
-// let buttonRec = document.getElementById("recButton");
-// buttonRec.addEventListener('click',sendRecordCommand);
+let buttonRec = document.getElementById('button-rec');
+let newTimerPanel = document.getElementById('panelTimer');
 
-// let buttonStop = document.getElementById("stopButton");
-// buttonStop.disabled = true;
-// buttonStop.addEventListener('click',sendRecordCommand);
+buttonRec.addEventListener('click',() =>{
+    buttonRec.classList.remove('button-active');
+    buttonRec.classList.add('button-hide');
+    newTimerPanel.classList.remove('rec-timer-hide');
+    newTimerPanel.classList.add('rec-timer-active');
+    sendRecordCommand();
+})
 
-// let buttonPlayPause = document.getElementById("playPauseButton");
-// buttonPlayPause.disabled = true;
-// buttonPlayPause.addEventListener('click',playPause);
+let buttonStop = document.getElementById("stopButton");
+buttonStop.disabled = true;
+buttonStop.addEventListener('click',()=>{
+    buttonRec.classList.remove('button-hide');
+    buttonRec.classList.add('button-active');
+    newTimerPanel.classList.remove('rec-timer-active');
+    newTimerPanel.classList.add('rec-timer-hide');
+    sendRecordCommand();
+});
 
-// let buttonVoiceControl = document.getElementById("voiceControlButton");
-// buttonVoiceControl.addEventListener('click',activateVoiceControl);
+let buttonPlayPause = document.getElementById("playPauseButton");
+buttonPlayPause.disabled = true;
+buttonPlayPause.addEventListener('click',playPause);
+
+let buttonVoiceControl = document.getElementById("voiceControlButton");
+buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
 // let buttonLocalDownload = document.getElementById("localDownloadButton");
 // buttonLocalDownload.addEventListener('click',localDownload);
@@ -236,8 +230,8 @@ buttonRecList.addEventListener('click',showRecList);
 // shareWakeletButton.addEventListener('click',shareWakelet);
 
 
-// checkAut();
-// populateMicSelect();
+checkAut();
+populateMicSelect();
 // checkTimer();
 // checkUploadStatus();
 // getCurrentState();
@@ -245,17 +239,9 @@ buttonRecList.addEventListener('click',showRecList);
 // setInterval(getCurrentState,2000);
 
 //mock new popup
-let newTimerPanel = document.getElementById('panelTimer');
-let newButtonRec = document.getElementById('button-rec');
 
-newButtonRec.addEventListener('click',() =>{
-    newButtonRec.classList.remove('button-active');
-    newButtonRec.classList.add('button-hide');
-    newTimerPanel.classList.remove('rec-timer-hide');
-    newTimerPanel.classList.add('rec-timer-active');
-    let time = 0;
-    setInterval(timer,10)
-})
+
+
 
 let ms = 0;
 let sec = 0;
