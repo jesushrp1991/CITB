@@ -12,6 +12,7 @@ const baseUrlPerHost = {
     class: 'https://classroom.google.com/share?url=',
     gmail: 'https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=',
     wakel: 'https://wakelet.com/save?self=1&media=',
+    drive: 'https://drive.google.com/file/d/',
 };
 
 const drawScreen = (list) =>{
@@ -95,7 +96,10 @@ const shareLink = (link, baseUrl) => {
     let url;
     if(baseUrl.includes('mail.google')){
         url = `${baseUrl}${encodeURIComponent(link)}&&tf=cm`;
-    }else{
+    }else if(baseUrl.includes('drive')){
+        url = link; 
+    }
+    else{
         url = `${baseUrl}${encodeURIComponent(link)}`;
     }
     chrome.tabs.create({active: true, url: url});
@@ -375,6 +379,7 @@ const createRecordCard = async (details) => {
     html = html.replace("{{twittercardId}}","twitt" + details.id);
     html = html.replace("{{whatsAppcardId}}","whats" + details.id);
     html = html.replace("{{wakeletcardId}}","wakel" + details.id);
+    html = html.replace("{{drive}}","drive" + details.id);
     if(details.thumbnailLink){
         html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
     }else{
@@ -401,6 +406,7 @@ const createRecordCard = async (details) => {
     document.getElementById("twitt" + details.id).addEventListener("click", reply_click);
     document.getElementById("whats" + details.id).addEventListener("click", reply_click);
     document.getElementById("wakel" + details.id).addEventListener("click", reply_click);
+    document.getElementById("drive" + details.id).addEventListener("click", reply_click);
     return;
 }
 const startQueue = () =>{

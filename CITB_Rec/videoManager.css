@@ -122,6 +122,18 @@
   padding-top: 5px !important;
 }
 
+.drive-icon {
+  height: 40px;
+  width: 40px;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url("./assets/drive.svg") !important;
+}
 .progress-bar-wrapper {
   padding-top: 20px;
 }
