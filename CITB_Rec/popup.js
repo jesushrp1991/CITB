@@ -1,8 +1,6 @@
-// import {
-//     checkUploadStatus
-// } from './js/progressBar.js'
 import { checkTimer } from './js/timerBar.js';
 
+window.recMode = 'recordTabs';
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
 }
@@ -10,7 +8,7 @@ const rec = (isTabForMac) =>{
     let idMic;
     let checkboxMic = document.getElementById('checkboxMic');
     checkboxMic.checked ? idMic = select.value : idMic = null
-    const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac};
+    const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: window.recMode};
     sendMessage(request);
 }
 const sendRecordCommand = () =>{
@@ -107,52 +105,6 @@ const populateMicSelect = async () => {
     });
 }
 
-
-// const localDownload = () => {
-//     const request = { recordingStatus: 'localDownload' };
-//     sendMessage(request);
-// }
-
-// const getShareLink = () =>{
-//     chrome.storage.sync.get('shareLink', (result) => {  
-//         let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
-//         let url = `https://mail.google.com/mail/u/0/?fs=1&su=CITB%20Record&body=${encodeURIComponent(link)}&&tf=cm`
-//         chrome.tabs.create({active: true, url: url});
-//     });
-// }
-
-// const shareWhatsapp = () =>{
-//     chrome.storage.sync.get('shareLink', (result) => {
-//         let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
-//         let url = `https://wa.me?text=${encodeURIComponent(link)}`;        
-//         chrome.tabs.create({active: true, url: url});
-//     });
-// }
-
-// const shareClassRoom = () =>{   
-//     chrome.storage.sync.get('shareLink', (result) => {   
-//         let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
-//         let url = `https://classroom.google.com/share?url=${encodeURIComponent(link)}`;        
-//         chrome.tabs.create({active: true, url: url});
-//     });
-// }
-
-// const shareTwitter = () =>{   
-//     chrome.storage.sync.get('shareLink', (result) => {   
-//         let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
-//         let url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(link)}`;        
-//         chrome.tabs.create({active: true, url: url});
-//     });
-// }
-// const shareWakelet = () =>{   
-//     chrome.storage.sync.get('shareLink', (result) => {   
-//         let link =  "https://drive.google.com/file/d/" + result.shareLink +  "/view?usp=sharing"      
-//         let url = `https://wakelet.com/save?self=1&media=${encodeURIComponent(link)}`;        
-//         chrome.tabs.create({active: true, url: url});
-//     });
-// }
-
-
 const checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     sendMessage(request);
@@ -196,66 +148,24 @@ buttonPlayPause.addEventListener('click',playPause);
 let buttonVoiceControl = document.getElementById("voiceControlButton");
 buttonVoiceControl.addEventListener('click',activateVoiceControl);
 
-// let buttonLocalDownload = document.getElementById("localDownloadButton");
-// buttonLocalDownload.addEventListener('click',localDownload);
-
 let buttonRecList = document.getElementById("recListButton");
 buttonRecList.addEventListener('click',showRecList);
 
-// let shareGmailButton = document.getElementById("shareGmail");
-// shareGmailButton.addEventListener('click',getShareLink);
+let recordTabs = document.getElementById("recordTabs");
+recordTabs.addEventListener('click',()=>{
+    window.recMode = 'recordTabs'
+});
 
-// let shareWhatsappButton = document.getElementById("shareWhatsapp");
-// shareWhatsappButton.addEventListener('click',shareWhatsapp);
+let recordScreen = document.getElementById("recordScreen");
+recordScreen.addEventListener('click',()=>{
+    window.recMode = 'recordScreen'
+});
 
-// let shareClassRoomButton = document.getElementById("shareClassRoom");
-// shareClassRoomButton.addEventListener('click',shareClassRoom);
-
-// let shareTwitterButton = document.getElementById("shareTwitter");
-// shareTwitterButton.addEventListener('click',shareTwitter);
-
-// let shareWakeletButton = document.getElementById("shareWakelet");
-// shareWakeletButton.addEventListener('click',shareWakelet);
 
 
 checkAut();
 populateMicSelect();
 checkTimer();
-// checkUploadStatus();
 getCurrentState();
 setInterval(getCurrentState,2000);
 
-//mock new popup
-
-
-
-
-let ms = 0;
-let sec = 0;
-let min = 0;
-let time;
-let milli ,seconds, minute;
-window.timer;
-const timer = () => {
-        ms++;
-        if(ms >= 100){
-            let timer= {minute:minute,seconds:seconds};
-            window.timer = timer;
-            sec++
-            ms = 0
-        }
-        if(sec === 60){
-            min++
-            sec = 0
-        }
-        if(min === 60){
-            ms, sec, min = 0;
-        }
-
-        //Doing some string interpolation
-         milli = ms < 10 ? `0`+ ms : ms;
-         seconds = sec < 10 ? `0`+ sec : sec;
-         minute = min < 10 ? `0` + min : min;
-
-        document.getElementById('recTimerPanel').innerHTML =  `${minute}:${seconds}`;
-};

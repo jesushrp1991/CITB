@@ -28,7 +28,8 @@ import {
     } 
 } 
  
-  const recordScreen = async (streamId,idMic) => { 
+  const recordScreen = async (streamId,idMic,recMode) => { 
+    console.log("recMode",recMode)
     try{ 
         let isMac = navigator.userAgentData.platform.toLowerCase().includes('mac'); 
         let mediaSource; 
@@ -115,14 +116,14 @@ import {
       errorHandling(e); 
     } 
 } 
-const startRecordScreen = async(idMic,cb,isTabForMac) =>{ 
+const startRecordScreen = async(idMic,cb,isTabForMac,recMode) =>{ 
     try{ 
       if(isTabForMac){         
         window.isRecording = true; 
         chrome.storage.sync.set({isRecording: true}, ()=> {}); 
         cb(); 
         chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  (streamId)=>{ 
-           recordScreen(streamId,idMic); 
+           recordScreen(streamId,idMic,recMode); 
            recIcon(); 
         }); 
       }else{ 
@@ -135,7 +136,7 @@ const startRecordScreen = async(idMic,cb,isTabForMac) =>{
                 window.isRecording = true; 
                 chrome.storage.sync.set({isRecording: true}, ()=> {}); 
                 cb(); 
-                await recordScreen(streamId,idMic); 
+                await recordScreen(streamId,idMic,recMode); 
                 recIcon(); 
             } 
           }); 
