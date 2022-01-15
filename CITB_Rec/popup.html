@@ -1,66 +1,116 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <title>CITB Rec</title>
+    <link href="./css/bootstrap-toggle.min.css" rel="stylesheet">
     <link href="popup.css" rel="stylesheet" type="text/css">
+    <script src="./js/external/jquery-3.5.1.slim.min.js" ></script>
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <script src="./js/external/bootstrap.bundle.min.js"></script>
+    <script src="./js/external/bootstrap-toggle.min.js"></script>
   </head>
   <body>
-    <div class="buttonsBorder">
-      <button type="button" id="recButton" class="buttonRecOff">
-      </button>
-      <button type="button" id="recTimerPanel" class="recTimerPanelOff timer">
-      </button>
-      <button type="button" id="playPauseButton" class="buttonPauseDisable littleButton">
-      </button>
-      <button type="button" id="stopButton" class="stopButtonOff littleButton">
-      </button>
-      <button type="button" id="localDownloadButton" class="buttonDownload">
-      </button>
-      <button type="button" id="recListButton" class="buttonRecList">
-      </button>
-      <div class="duplo-container buttonShare divButton" id="shareButton">        
-          <div class="duplo shareButtons">
-            <i class="fas fa-question"></i>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="header-icon"></div>
+      </div>        
+      <div class="row row p-2">
+        <div class="card" style="width: 22rem;">
+          <div class="card-body">
+            <h5 class="card-title">Escoger que desea grabar</h5>
+            <div div class="row">
+              <div class="col-6 justify-content-center">
+                <div class="row">
+                  <div class="icons tab-icon"></div>
+                </div>
+                <div class="row justify-content-center">
+                  <h7>Grabar Tab</h7>
+                </div>
+              </div>
+              <div class="col-6 justify-content-center">
+                <div class="row">
+                  <div class="icons screen-icon"></div>
+                </div>
+                <div class="row justify-content-center">
+                  <h7>Grabar Escritorio</h7>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="duplo-options ">
-            <ul class="buttonsContainerBorder">
-              <li>
-                <div id="shareGmail" class=" shareButtons CITBGmail">
+        </div>
+      </div>
+      <div class="row row p-2">
+        <div class="card" style="width: 22rem;">
+          <div class="card-body">
+            <h5 class="card-title">Escoger medio de narración</h5>
+            <div div class="row">
+              <div class="col-4 justify-content-center">
+                <div class="row justify-content-center">
+                  <input type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
                 </div>
-              </li>
-              <li>
-                <div id="shareClassRoom" data-url="..." class="shareButtons CITBClassRoom">
+                <div class="row justify-content-center">
+                  <h7>On/Off</h7>
                 </div>
-              </li>   
-              <li>
-                <div id="shareTwitter" class="shareButtons CITBTwitter">
+              </div>
+              <div class="col-8 justify-content-center">
+                <div class="row justify-content-center">
+                  <select class="custom-select custom-select-sm select-mic">
+                    <option selected>Select mic</option>
+                    <option value="1">CITB Microphone</option>
+                    <option value="2">BitBox Bluethoot mic</option>
+                    <option value="3">Defaul system microphone</option>
+                  </select>
                 </div>
-              </li>  
-              <li>
-                <div id="shareWhatsapp" class=" shareButtons CITBWhatsApp">
+                <div class="row justify-content-center">
+                  <h7>Escoger micrófono</h7>
                 </div>
-              </li>           
-              <li>
-                <div id="shareWakelet" class="shareButtons CITBWakelet">
-                </div>
-              </li>        
-            </ul>
+              </div>
+            </div>
           </div>
-         
+        </div>
       </div>
-      <button type="button" id="voiceControlButton" class="voiceControlOff">
-      </button>
-    </div>   
-    <div id ="progreesBarContainer" >
-      <div class="light-grey round-xlarge">
-        <div id="progressBar" class="progress-bar-container blue round-xlarge" style="width:0%"></div>
+      <div class="row row p-2">
+        <div class="card" style="width: 22rem;">
+          <div class="card-body">
+            <h5 class="card-title last-options">Otras Opciones</h5>
+            <div div class="row">
+              <div class="col justify-content-center">
+                <div class="row justify-content-center">
+                  <div class="voice-command-icon icons"></div>
+                </div>
+                <div class="row justify-content-center">
+                  <h7>Voice commands</h7>
+                </div>
+              </div>
+              <div class="col justify-content-center">
+                <div class="row justify-content-center">
+                  <div class="list-rec-icon icons"></div>
+                </div>
+                <div class="row justify-content-center">
+                  <h7>Grabaciones</h7>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="box">
-      <select name="mics" id="miclist">
-      </select>
-    </div> 
-    <div class="modal" id="modal">
-      <div class="imgModal"></div>
+      <div class="row row p-2 justify-content-center button-active">
+        <button id="button-rec" class="btn-danger rounded-lg button-rec">Record</button>
+      </div>
+      <div id="panelTimer" class="row row p-2 rec-timer-hide">
+        <div class="col justify-content-center align-items-center">
+          <div class="timer">
+            <h4 id="recTimerPanel">08:56</h4>
+          </div>
+        </div>
+        <div class="col justify-content-center">
+          <div class="play-pause-icon icons"></div>
+        </div>
+        <div class="col justify-content-center">
+          <div class="stop-icon icons"></div>
+        </div>
+      </div>
     </div>
     <script src="popup.js" type="module"></script>
   </body>

@@ -1,293 +1,85 @@
-body{
-  height: 150px;
+.tab-icon {
+  background-image: url('./assets/newpopup/tab.svg');
 }
-
-button {
-  height: 45px;
-  width: 55px;
-  outline: none;
-  border: none;
-  border-radius: 2px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  /* padding: 5px; */
-  margin-left: 5px;
-  margin-right: 5px;
+.screen-icon {
+  background-image: url('./assets/newpopup/screen.svg');
 }
-.littleButton {
-  height: 25px !important; 
-  width: 25px !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-}
-.timer {
-  display: block;
-  height: 50px;
-  width: 60px; 
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-}
-#recTimerPanel {
-  color: #f1f1f1;
-}
-#inf {
-  margin: 10px 0 10px 0;
-}
-.buttonRecOn {
-  background-image: url('./assets/REC\ COLOR.svg')
-}
-.recTimerPanel {
-  background-image: url('./assets/RELOJ\ GRIS.svg')
-
-}
-.recTimerPanelOff {
-  background-image: url('./assets/RELOJ\ NEGRO.svg')
-
-}
-.buttonPause{
-  background-image: url('./assets/PAUSE\ NEGRO.svg')
-}
-.buttonPauseOff{
-  background-image: url('./assets/PLAY\ NEGRO.svg')
-}
-.buttonPauseDisable{
-  background-image: url('./assets/PAUSE\ GRIS.svg')
-}
-.stopButton{
-  background-image: url('./assets/STOP\ NEGRO.svg')
-}
-.stopButtonOff{
-  background-image: url('./assets/STOP\ GRIS.svg')
-}
-.buttonRecOff {
-  background-image: url('./assets/REC\ GRIS.svg')
-}
-.buttonDownload {
-  background-image: url('./assets/GUARDAR\ COLOR.svg');
-}
-.buttonShare {
-  background-image: url('./assets/COMPARTIR\ COLOR.svg');
-
-}
-.voiceControlOff {
-  background-image: url('./assets/COMANDOS\ GRIS.svg');
-}
-.voiceControl {
+.voice-command-icon {
   background-image: url('./assets/COMANDOS\ COLOR.svg');
 }
-.buttonRecList {
+.list-rec-icon {
   background-image: url('./assets/records.png');
 }
-
-.buttonsBorder {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+.play-pause-icon {
+  background-image: url('./assets/PLAY\ NEGRO.svg');
 }
-
-#progreesBarContainer {
-  display:none;
+.stop-icon {
+  background-image: url('./assets/STOP\ NEGRO.svg');
 }
-
-.progress-bar-container{
-  padding: 0.01em 16px;
-  max-width: 90%;
-}
-
-.light-grey{
-  color: #000 !important;
-  background-color: #f1f1f1 !important;
-}
-
-.round-xlarge {
-  border-radius: 16px;
-  margin-top: 20px;
-  margin-left: 15px;
-  margin-right: 15px;
-  position: relative;
-}
-
-.blue{
-  color: #fff !important;
-  background-color: #2196f3 !important;
-  margin-left: 2px;
-  text-align: center;
-}
-
-/* select */
-
-.box {
-  position: absolute; 
-  top: 85%;
-  left: 50%; 
-  transform: translate(-50%, -50%);
-  border-radius: 5px;
-}
-
-.box select {
-  background-color: #f7fbfd;
-  color: rgb(0, 0, 0);
-  padding: 5px;
-  width: 350px;
-  border: none;
-  font-size: 14px;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  -webkit-appearance: button;
-  appearance: button;
-  outline: none;
-}
-
-.box::before {
-  content: "\f13a";
-  font-family: FontAwesome;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20%;
-  height: 100%;
-  text-align: center;
-  font-size: 28px;
-  line-height: 45px;
-  color: rgba(255, 255, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-}
-
-.box:hover::before {
-  color: rgba(255, 255, 255, 0.6);
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.box select option {
-  padding: 30px;
-}
-
-
-/*
-* ********Share Button*********
-*******************************
-*******************************
-*/
-
-.duplo-container {
-  /* position: fixed;
-  bottom: 50px;
-  right: 50px; */
-  z-index: 999;
-  cursor: pointer;
-}
-
-.shareButtons {
-  height: 35px;
-  width: 40px;
-  /* outline: none;
-  border: none; */
-  /* border-radius: 2px; */
+.header-icon{
+  background-image: url('./assets/newpopup/CITB_Records.jpeg');
+  width: 180px;
+  height: 50px;
   background-color: transparent;
   background-repeat: no-repeat;
-  background-size: contain;
   background-position: center;
+  background-size: contain;
+}
+.icons{
+  width: 100%;
+  height: 60px ;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
-.duplo-options {
-  list-style-type: none;
-  margin: 0;
-  position: absolute;
-  bottom: 45px;
-  right: 18px;
-  opacity: 0;
-  transition: all 0.3s ease;
-  transform: scale(0);
-  transform-origin: 85% center;
-}
-.duplo-options>ul{
-  display: flex;
-  margin-top: 20px;
+.button-rec{
+  width: 328px !important;
+  height: 40px !important;
 }
 
-.duplo:hover+.duplo-options,
-.duplo-options:hover {
-  opacity: 1;
-  transform: scale(1);
+.select-mic{
+  margin-top: 2px;
+  width: 200px !important;
 }
 
-.duplo-options li {
-  /* display: flex; */
+.card-title{
+  padding-left: 55px;
+}
+.last-options{
+  padding-left: 95px;
+}
+.card-body{
+  padding: 10px !important;
+}
+
+.timer {
+  background-color: black;
+  border-radius: 10px;
+  height: 40px;
+  width: 120px; 
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 15px;
+}
+
+.timer h4{
+  color: white;
+  padding-left: 30px;
+  padding-top: 5px;
+}
+
+.button-hide {
+  display: none !important;
+}
+
+.button-active {
   display: block;
-  float:left;
-  /* justify-content: flex-end; */
-  /* padding: 5px; */
 }
-
-.CITBGmail {
-  background-size: 50%;
-  background-image: url('./assets/gmail-icon.svg')
-  }
-
-.CITBWhatsApp {
-  background-size: 50%;
-  background-image: url('./assets/whatsapp.svg')
+.rec-timer-active {
+  display: block;
 }
-.CITBClassRoom {
-  background-size: 50%;
-  background-image: url('./assets/classroom.svg')
-}
-.CITBTwitter {
-  background-size: 50%;
-  background-image: url('./assets/twitter.svg')
-}
-.CITBWakelet {
-  background-size: 50%;
-  background-image: url('./assets/wakelet.png')
-}
-
-.buttonsContainerBorder {
-  border: solid;
-  border-radius: 30px;
-  border-color: coral;
-  border-width: 2px;
-  padding-left: 5px;
-}
-
-
-.divButton {
-  height: 35px;
-  width: 45px;
-  outline: none;
-  border: none;
-  border-radius: 2px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  padding: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-
-.imgModal {
-  height : 72px;
-  width : 430px;
-  background-image: url('./assets/alertpopup.png');
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  z-index: 999;
-}
-
-.modal {
-  display: none;
-  margin-left: auto;
-  margin-right: auto;
-  /* width: 50%; */
-}
-.closeModal {
-  margin-left:90%
+.rec-timer-hide {
+  display: none !important;
 }
