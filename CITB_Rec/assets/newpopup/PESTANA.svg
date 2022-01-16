@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 311.8 240.9" style="enable-background:new 0 0 311.8 240.9;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#868685;}
+	.st1{font-family:'AntartidaRounded-Medium';}
+	.st2{font-size:38.22px;}
+	.st3{fill:#009DE0;}
+	.st4{fill:none;stroke:#FFFFFF;stroke-width:9;stroke-miterlimit:10;}
+	.st5{fill:#FFFFFF;}
+	.st6{fill:none;stroke:#FFFFFF;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st7{fill:#B33A3A;}
+</style>
+<g>
+	<text transform="matrix(1 0 0 1 24.6413 232.3387)" class="st0 st1 st2">Grabar pestaña</text>
+	<circle class="st3" cx="155.9" cy="99.1" r="95.1"/>
+	<g>
+		<path class="st4" d="M201.4,151.1h-92.5c-6.6,0-12-5.4-12-12V64.3c0-6.6,5.4-12,12-12h92.5c6.6,0,12,5.4,12,12v74.7
+			C213.4,145.7,208,151.1,201.4,151.1z"/>
+		<g>
+			<circle class="st5" cx="109.8" cy="63" r="3"/>
+			<circle class="st5" cx="119.6" cy="63" r="3"/>
+			<circle class="st5" cx="129.4" cy="63" r="3"/>
+		</g>
+		<line class="st4" x1="95.9" y1="74" x2="213.4" y2="74"/>
+	</g>
+</g>
+</svg>
