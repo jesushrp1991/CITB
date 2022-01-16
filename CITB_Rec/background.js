@@ -65,6 +65,8 @@ const injectFileName = () =>{
       window.fileName = prompt("What's yours meet name?","CITB Rec");
       if(window.fileName == null){
         window.fileName = 'CITB Rec'
+      }else{
+        startRecordScreen(window.idMic,window.idTab,window.recMode);
       }
       clearInterval(intervalFileName);
       return;
@@ -88,6 +90,7 @@ let intervalFileName = null;
 const getFileName = () => {
   chrome.storage.sync.get('fileName', (result) => {
     if(result.fileName != "undefined"){
+      startRecordScreen(window.idMic,window.idTab,window.recMode);
       window.fileName = result.fileName;
       clearInterval(intervalFileName);
     }
@@ -124,7 +127,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         if(!window.isRecording && !message.isVoiceCommandStop){         
           window.fileName = "CITB Rec";
           chrome.storage.sync.set({fileName: "undefined"}, () => {});
-          startRecordScreen(message.idMic,getRecName,message.idTab,message.recMode);
+          window.idMic = message.idMic;
+          window.idTab = message.idTab;
+          window.recMode = message.recMode;
+          getRecName();
         }else{
             clearInterval(window.iconRecChange);
             if(intervalFileName != null){

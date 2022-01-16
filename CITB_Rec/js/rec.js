@@ -300,12 +300,12 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
     errorHandling(e);  
   }  
 }  
-const startRecordScreen = async(idMic,cb,isTabForMac,recMode) =>{  
+const startRecordScreen = async(idMic,isTabForMac,recMode) =>{  
   console.log("recMode=>",recMode,isTabForMac);
   try{  
     if(isTabForMac){
       if(recMode == 'recordTabs'){
-        cb(); 
+        // cb(); 
         window.isRecording = true;  
         chrome.storage.sync.set({isRecording: true}, ()=> {});
         await recordScreen(null,idMic,isTabForMac,recMode);
@@ -321,7 +321,7 @@ const startRecordScreen = async(idMic,cb,isTabForMac,recMode) =>{
           } else {  
               window.isRecording = true;  
               chrome.storage.sync.set({isRecording: true}, ()=> {});  
-              cb();  
+              // cb();  
               await recordScreen(streamId,idMic,isTabForMac,recMode);  
               recIcon();  
           }  
@@ -340,7 +340,7 @@ const startRecordScreen = async(idMic,cb,isTabForMac,recMode) =>{
           } else {  
               window.isRecording = true;  
               chrome.storage.sync.set({isRecording: true}, ()=> {});  
-              cb();  
+              // cb();  
               await recordScreen(streamId,idMic);  
               recIcon();  
           }  
