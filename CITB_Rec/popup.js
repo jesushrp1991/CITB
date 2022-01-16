@@ -89,10 +89,10 @@ const populateMicSelect = async () => {
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
         organizedMicList = usableMic;
-        document.getElementById('modal').style.display = 'block';
-        setInterval(()=>{
-            document.getElementById('modal').style.display = 'none';
-        },5000);
+        // document.getElementById('modal').style.display = 'block';
+        // setInterval(()=>{
+        //     document.getElementById('modal').style.display = 'none';
+        // },5000);
     }
     while (select.options.length > 0) {                
         select.remove(0);
