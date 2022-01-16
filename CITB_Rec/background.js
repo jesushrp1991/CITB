@@ -165,7 +165,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.voiceClose :
         chrome.storage.sync.set({voice: false},() =>{
         });
-        delLastItem();
         break;
       case popupMessages.checkAuth :
         await verificateAuth();
