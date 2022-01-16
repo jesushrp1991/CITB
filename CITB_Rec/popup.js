@@ -152,12 +152,18 @@ let buttonRecList = document.getElementById("recListButton");
 buttonRecList.addEventListener('click',showRecList);
 
 let recordTabs = document.getElementById("recordTabs");
+let recordScreen = document.getElementById("recordScreen");
+
+
 recordTabs.addEventListener('click',()=>{
+    recordTabs.classList.add('selected-icon');
+    recordScreen.classList.remove('selected-icon');
     window.recMode = 'recordTabs'
 });
 
-let recordScreen = document.getElementById("recordScreen");
 recordScreen.addEventListener('click',()=>{
+    recordScreen.classList.add('selected-icon');
+    recordTabs.classList.remove('selected-icon');
     window.recMode = 'recordScreen'
 });
 
