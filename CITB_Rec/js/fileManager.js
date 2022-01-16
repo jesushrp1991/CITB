@@ -165,7 +165,7 @@ const prepareUploadToDrive = (obj) => {
       fileSize: f.fileSize,
       fileType: f.fileType,
       fileBuffer: f.result,
-      chunkSize: 10485760,
+      chunkSize: 5*1024*1024,
       accessToken: accessToken,
       folderId: window.defautCITBFolderID
     };
