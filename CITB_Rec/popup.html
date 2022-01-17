@@ -12,10 +12,10 @@
   </head>
   <body>
     <div class="container">
-      <div class="row p-2 justify-content-center">
+      <div class="row p-1 justify-content-center">
         <div class="header-icon"></div>
       </div>        
-      <div class="row row p-2">
+      <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
             <h5 class="card-title">Elige fuente de video</h5>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="row row p-2">
+      <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
             <h5 class="card-title">Elige fuente de audio</h5>
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-      <div class="row row p-2">
+      <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
             <h5 class="card-title last-options">Otras Opciones</h5>
@@ -85,7 +85,7 @@
           </div>
         </div>
       </div>
-      <div id="panelTimer" class="row row p-2 rec-timer-hide panel-timer-container">
+      <div id="panelTimer" class="row p-2 rec-timer-hide panel-timer-container">
         <div class="col justify-content-center">
           <div class="timer">
             <h4 id="recTimerPanel">00:00</h4>
@@ -100,6 +100,9 @@
       </div>
       <div class="row p-2 justify-content-center button-active">
         <button id="button-rec" class="btn-danger rounded-lg button-rec">Record</button>
+      </div>
+      <div id="citbMissingAlert" class="row p-1">
+        <div class="citb-missing-alert"></div>
       </div>
     </div>
     <script src="popup.js" type="module"></script>
