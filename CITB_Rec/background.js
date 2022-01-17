@@ -29,6 +29,8 @@ import {
   ,getCalendarList
 } from './js/fileManager.js'
 
+import { filterModifiableCalendars } from './js/tools.js'
+
 import { createListForFrontend } from './js/tools.js'
 
 const popupMessages = {
@@ -126,12 +128,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){         
-          window.fileName = "CITB Rec";
-          chrome.storage.sync.set({fileName: "undefined"}, () => {});
+          // window.fileName = "CITB Rec";
+          // chrome.storage.sync.set({fileName: "undefined"}, () => {});
           window.idMic = message.idMic;
           window.idTab = message.idTab;
           window.recMode = message.recMode;
-          getRecName();
+          chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
+          // getRecName();
         }else{
             clearInterval(window.iconRecChange);
             if(intervalFileName != null){
@@ -242,10 +245,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           port.postMessage({searchList: result});
         }
         else if (msg.requestCalendarList){
-          console.log("Recibiendo Peticion de Calendar",msg)
           let list = await getCalendarList();
-          console.log("List of calendars",list)
+          list = filterModifiableCalendars(list);
           port.postMessage({calendarList: list});
+        }
+        else if (msg.okRec){
+          window.fileName = msg.fileName;
+          window.calendarId = msg.calendarId;
+          chrome.storage.sync.set({fileName: msg.fileName}, () => {});
+          await prepareDB();
+          window.meetStartTime = dayjs().format();
+          startRecordScreen(window.idMic,window.idTab,window.recMode);
         }
       });
 

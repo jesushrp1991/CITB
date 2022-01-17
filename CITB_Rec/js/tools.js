@@ -92,8 +92,19 @@ const addToCache = (newArray,idFolder) => {
     window.cache = cache;
 }
 
+const filterModifiableCalendars = (calendarList) =>{
+    let result = [];
+    calendarList.forEach(element => {
+        if(element.accessRole == 'owner'){
+            result.push(element);
+        }
+    });
+    return result;
+}
+
 export {
     createListForFrontend
     ,recIcon
     ,compareWhitCache
+    ,filterModifiableCalendars
 }

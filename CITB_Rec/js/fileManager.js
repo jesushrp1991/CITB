@@ -97,7 +97,7 @@ const getLinkFileDrive = async() => {
     chrome.storage.sync.set({shareLink: fileId}, () =>{});
     return fileId;
 }
-const addEventToGoogleCalendar = (linkDrive) => {    
+const addEventToGoogleCalendar = (linkDrive) => {
     let description = "See video here: " + "https://drive.google.com/file/d/" + linkDrive +  "/view?usp=sharing";
     let newEvent = {
       "summary":window.nameToUploads,
@@ -110,7 +110,8 @@ const addEventToGoogleCalendar = (linkDrive) => {
       }
     };
     let request = gapi.client.calendar.events.insert({
-      'calendarId': 'primary',
+      // 'calendarId': 'primary',
+      'calendarId': window.calendarId,
       'resource': newEvent
     });
     request.execute((resp) => {
@@ -197,7 +198,9 @@ const prepareUploadToDrive = (obj) => {
         // console.log("Saving Link to DB",linkDrive)
         saveLinktoDB(window.fileIDUploadInProgress,linkDrive);
         delFileInDB(window.fileIDUploadInProgress);
-        addEventToGoogleCalendar(linkDrive);        
+        if(window.calendarId){
+          addEventToGoogleCalendar(linkDrive);        
+        }
         window.uploadValue = -1;
         saveUploadProgress(-1);
         // msg = res.status;
