@@ -1,0 +1,150 @@
+.tab-icon {
+  background-image: url('./assets/newpopup/PESTANA.svg');
+}
+.screen-icon {
+  background-image: url('./assets/newpopup/ESCRITORIO.svg');
+}
+.voiceControlOff {
+  background-image: url('./assets/COMANDOS\ GRIS.svg');
+}
+.voiceControl {
+  background-image: url('./assets/COMANDOS\ COLOR.svg');
+}
+.list-rec-icon {
+  background-image: url('./assets/records.png');
+}
+.play-icon {
+  background-image: url('./assets/PLAY\ NEGRO.svg');
+}
+.pause-icon {
+  background-image: url('./assets/PAUSE\ NEGRO.svg');
+}
+.stop-icon {
+  background-image: url('./assets/STOP\ NEGRO.svg');
+}
+.header-icon{
+  background-image: url('./assets/newpopup/CITB\ REC.png');
+  width: 180px;
+  height: 50px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.icons{
+  width: 60px;
+  height: 50px ;
+  padding-left: 3px;
+  padding-right: 3px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  cursor: pointer;
+}
+.tab-screen-icons{
+  width: 120px;
+  height: 90px ;
+  padding-left: 3px;
+  padding-right: 3px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90%;
+  cursor: pointer;
+}
+.select-icon:hover {
+  /* border-style: solid;
+  border-width: 2px;
+  border-color: red; */
+  background-color: #547dbe57;
+}
+.selected-icon {
+  /* border-style: solid;
+  border-width: 2px;
+  border-color: red; */
+  background-color: #547dbe57;
+}
+
+.button-rec{
+  width: 100% !important;
+  height: 40px !important;
+  transition: opacity 0.5s, 
+  visibility 0.5s;
+  opacity: 1;
+  visibility: innherit ;
+}
+
+.select-mic{
+  width: 200px !important;
+  margin-top: 5px;
+}
+
+.card-title{
+  padding-left: 55px;
+}
+.last-options{
+  padding-left: 95px;
+}
+.card-body{
+  padding: 10px !important;
+}
+
+.timer {
+  background-color: black;
+  border-radius: 10px;
+  height: 40px;
+  width: 120px; 
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 5px;
+}
+
+.timer h4{
+  color: white;
+  padding-left: 30px;
+  padding-top: 5px;
+}
+
+.button-hide {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.button-active {
+  display: block;
+}
+.rec-timer-active {
+  display: block;
+}
+.rec-timer-hide {
+  display: none !important;
+}
+
+.panel-timer-container {
+  position: absolute;
+  top: 89%;
+}
+
+.toggle-off.btn-xs{
+  padding-left:12px;
+  background-color: #d9dcdf;
+}
+
+#citbMissingAlert {
+  position: absolute;
+  visibility: hidden;
+}
+
+.citb-missing-alert {
+  width: 340px;
+  height: 50px ;
+  padding-left: 3px;
+  padding-right: 3px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 95%;
+  cursor: pointer;
+  background-image: url('./assets/alertpopup.png');
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- <meta charset="ISO-8859-1"> -->
+    <link href="./videoManager.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <title>CITB Rec</title>
+  <body>
+    <div class="row">
+        <div class="col-10">
+            <img src="./assets/CITB_Records.png" alt="" class="citb-image">
+        </div>
+        <div class="col-2">
+              <!-- Button trigger modal -->
+              <!-- <button type="button" class="btn btn-primary" id="open-modal">
+                Launch demo modal
+              </button> -->
+            <img id='addFolder' src="./assets/addFolder.svg" alt="" style="width: 20%; ">
+            <img id='localDownloadButton' src="./assets/GUARDAR COLOR.svg" style="width: 20%; ">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+          <div class="form-outline search">
+            <input type="search" id="form1" class="form-control" placeholder="Buscar video o carpeta." aria-label="Search" />
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" id="searchButton" class="btn btn-primary search-button">Buscar</button>
+        </div>
+    </div>
+    <div class="row p-4" id="citbFolderContainer">
+    </div>
+    <div class="row p-3" id="citbCardRecContainer">
+    </div>
+
+    <div id="loading" class='loading-indicator'></div>
+
+    <div id="fabVideo" class="fab-citb">
+      <form id="formPopup" class="cntt-wrapper-citb">
+        <div id="fab-hdr-video">
+          <span id="close-x" class="close-button-citb topright-citb">x</span>
+          <h3>CITB</h3>
+        </div>
+        <div class="cntt-citb">
+          <button id="classModalIcon" class="CITBClassButton"></button>
+          <div class="">
+            <label for="text1" class="labelName-citb">Nombre de la carpeta</label
+            ><input id="text1" class="textbox-citb" type="text" /><br />
+          </div>
+          <div class="btn-wrapper-citb">
+            <button
+              id="submitVideo"
+              class="mdl-button mdl-js-button mdl-button--primary"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="popupDelete" class="fab-citb">
+      <form id="formDeletePopup" class="cntt-wrapper-citb">
+        <div id="fab-hdr-video">
+          <span id="close-x-delete" class="close-button-citb topright-citb">x</span>
+          <h3>CITB</h3>
+        </div>
+        <div class="cntt-citb">
+          <button id="classModalIcon" class="CITBClassButton"></button>
+          <div class="">
+            <label for="text1" class="description-delete">Esta acción no se podrá deshacer. Desea continuar</label>
+          </div>
+          <div class="btn-wrapper-citb">
+            <button
+              id="submitDeletePopup"
+              class="buttonCITBOK"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true"
+    role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" aria-label="Close" id="secundary-close-modal">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="close-modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show" id="backdrop" style="display: none;"></div> -->
+    <!-- Optional JavaScript -->
+    <script src="./videoManager.js" type="module"></script>
+    <script src="./js/external/dayjs.min.js"></script> 
+    <script src="./js/external/moment.min.js"></script> 
+  </body>
+</html>
