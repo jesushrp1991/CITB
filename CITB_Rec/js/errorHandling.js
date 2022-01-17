@@ -5,9 +5,6 @@ const errorHandling = (error) => {
     setTimeout(()=>{
         chrome.browserAction.setIcon({path: "./assets/icon.png"});
     },3000);
-    if(intervalFileName != null){
-        clearInterval(intervalFileName);
-    }
     reset();
     window.isRecording = false;
     chrome.storage.sync.set({isRecording: false}, () => {});

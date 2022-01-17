@@ -60,46 +60,6 @@ window.resultStream;
 window.desktopStream;
 window.micStream;
 
-const injectFileName = () =>{
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-    // console.log(tabs);
-    const url = tabs[0].url;
-    if (!url.includes("http")) {
-      window.fileName = prompt("What's yours meet name?","CITB Rec");
-      if(window.fileName == null){
-        window.fileName = 'CITB Rec'
-      }else{
-        startRecordScreen(window.idMic,window.idTab,window.recMode);
-      }
-      clearInterval(intervalFileName);
-      return;
-    }else {
-      var currTab = tabs[0];
-      if (currTab) { // Sanity check
-        // chrome.tabs.insertCSS(currTab.id,{file:"./css/material.min.css"});
-        chrome.tabs.insertCSS(currTab.id, {file:"./css/popup.css"});
-        chrome.tabs.executeScript(
-          currTab.id,
-          // {code: "document.body.style.backgroundColor='red'"}
-          {file:"./js/content_script.js"}
-        )
-      }
-    }
-    
-  });
-}
-let intervalFileName = null;
-
-const getFileName = () => {
-  chrome.storage.sync.get('fileName', (result) => {
-    if(result.fileName != "undefined"){
-      startRecordScreen(window.idMic,window.idTab,window.recMode);
-      window.fileName = result.fileName;
-      clearInterval(intervalFileName);
-    }
-  })
-}
-
 const openRecList = () => {  
     chrome.tabs.getAllInWindow(undefined,(tabs) => {
       for (var i = 0, tab; tab = tabs[i]; i++) {
@@ -112,13 +72,6 @@ const openRecList = () => {
     });
   
 }
-const getRecName = async() =>{
-  injectFileName();
-  intervalFileName = setInterval(getFileName,500);
-  intervalFileName;
-  await prepareDB();
-  window.meetStartTime = dayjs().format();
-}
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -128,8 +81,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     switch(message.recordingStatus){
       case popupMessages.rec :
         if(!window.isRecording && !message.isVoiceCommandStop){         
-          // window.fileName = "CITB Rec";
-          // chrome.storage.sync.set({fileName: "undefined"}, () => {});
           window.idMic = message.idMic;
           window.idTab = message.idTab;
           window.recMode = message.recMode;
@@ -137,9 +88,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           // getRecName();
         }else{
             clearInterval(window.iconRecChange);
-            if(intervalFileName != null){
-              clearInterval(intervalFileName);
-            }
             if(message.isVoiceCommandStop){
               delLastItem(3);
             }
@@ -252,7 +200,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         else if (msg.okRec){
           window.fileName = msg.fileName;
           window.calendarId = msg.calendarId;
-          chrome.storage.sync.set({fileName: msg.fileName}, () => {});
           await prepareDB();
           window.meetStartTime = dayjs().format();
           startRecordScreen(window.idMic,window.idTab,window.recMode);
