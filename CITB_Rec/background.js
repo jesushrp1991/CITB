@@ -26,6 +26,7 @@ import {
   ,moveDriveFileToFolder
   ,deleteFileOrFolder
   ,searchDrive
+  ,getCalendarList
 } from './js/fileManager.js'
 
 import { createListForFrontend } from './js/tools.js'
@@ -239,6 +240,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           let allFiles = [...listFolders,...listFiles];
           let result = allFiles.filter(x => x.name.includes(msg.searchTerm));
           port.postMessage({searchList: result});
+        }
+        else if (msg.requestCalendarList){
+          console.log("Recibiendo Peticion de Calendar",msg)
+          let list = await getCalendarList();
+          console.log("List of calendars",list)
+          port.postMessage({calendarList: list});
         }
       });
 

@@ -116,7 +116,13 @@ const addEventToGoogleCalendar = (linkDrive) => {
     request.execute((resp) => {
     //  console.log("respuesta del calendar",resp);
    });
-  }
+}
+
+const getCalendarList = async() =>{
+  let result = await gapi.client.calendar.calendarList.list();
+  return result.result.items;
+
+}
 
   const verificateAuth = () => {
     // console.log("VERIFICATE AUTH");
@@ -387,4 +393,5 @@ export {
     ,moveDriveFileToFolder
     ,deleteFileOrFolder
     ,searchDrive
+    ,getCalendarList
 }

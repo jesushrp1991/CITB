@@ -59,16 +59,17 @@ const playPause = () =>{
 }
 
 const activateVoiceControl = () =>{
-    const request = { recordingStatus: 'voiceOpen' };
-    if(buttonVoiceControl.getAttribute('class').includes('voiceControlOff')){
-        buttonVoiceControl.setAttribute('class','voiceControl icons')
-        sendMessage(request);
-        chrome.runtime.openOptionsPage(()=>{});
-    }else{
-        const request = { recordingStatus: 'voiceClose' };
-        sendMessage(request);
-        buttonVoiceControl.setAttribute('class','voiceControlOff icons');
-    }
+    chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
+    // const request = { recordingStatus: 'voiceOpen' };
+    // if(buttonVoiceControl.getAttribute('class').includes('voiceControlOff')){
+    //     buttonVoiceControl.setAttribute('class','voiceControl icons')
+    //     sendMessage(request);
+    //     chrome.runtime.openOptionsPage(()=>{});
+    // }else{
+    //     const request = { recordingStatus: 'voiceClose' };
+    //     sendMessage(request);
+    //     buttonVoiceControl.setAttribute('class','voiceControlOff icons');
+    // }
 }
 
 let select = document.getElementById('miclist');

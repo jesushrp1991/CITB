@@ -11,7 +11,7 @@
   "oauth2": {
     "client_id": "550302001460-0n04rinv35kaus6au65472c653rdd8ie.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar.events.owned"
+      "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/calendar"
     ]
   },
   "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'",
