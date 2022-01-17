@@ -364,7 +364,7 @@ const dragElement = (element) => {
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     let time = details.dateStart.substring(11, 19);
-    date = moment(date, "YYYY/MM/DD").format("MM-DD-YYYY");
+    date = moment(date, "YYYY/MM/DD").format("DD/MM/YYYY");
     const recTime = calculateRecTime(details);    
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
