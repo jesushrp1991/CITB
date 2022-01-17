@@ -125,3 +125,8 @@
   position: absolute;
   top: 87%;
 }
+
+.toggle-off.btn-xs{
+  padding-left:12px;
+  background-color: #d9dcdf;
+}
