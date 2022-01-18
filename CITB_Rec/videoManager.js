@@ -382,7 +382,7 @@ const shareModal = (event) =>{
 
 const shareLinkModal = (event) =>{
     let id = event.srcElement.id;
-    id = id.substring(5,id.length)
+    id = id.substring(14,id.length)
     let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
     navigator.clipboard.writeText(driveID).then(function() {
         alert("Vínculo copiado correctamente.")
@@ -391,6 +391,14 @@ const shareLinkModal = (event) =>{
         alert("Error, por favor repórtelo en nuestra página.")
     });
 };
+
+const downloadFromDrive = (event) =>{
+    let id = event.srcElement.id;
+    id = id.substring(17,id.length);    
+    let name = event.srcElement.closest(".row.p-2");
+    alert("Usted puede cerrar esta pestaña, su descarga terminará en breve. No descargue otro video si no ha terminado éste.")
+    port.postMessage({downloadFromDrive: true ,fileID: id , name: name.id});
+}
 
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
@@ -415,6 +423,8 @@ const createRecordCard = async (details) => {
     html = html.replace("{{idModal}}","idModal" + details.id);
     html = html.replace("{{idQRCode}}","idQRCode" + details.id);
     html = html.replace("{{shareLinkModal}}","shareLinkModal" + details.id);
+    html = html.replace("{{downloadFromDrive}}","downloadFromDrive" + details.id);
+    html = html.replace("{{nameForDownload}}", details.name);
 
     if(details.thumbnailLink){
         html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
@@ -445,6 +455,7 @@ const createRecordCard = async (details) => {
     document.getElementById("drive" + details.id).addEventListener("click", reply_click);
     document.getElementById("share" + details.id).addEventListener("click", shareModal);
     document.getElementById("shareLinkModal" + details.id).addEventListener("click", shareLinkModal);
+    document.getElementById("downloadFromDrive" + details.id).addEventListener("click", downloadFromDrive);
     return;
 }
 const startQueue = () =>{

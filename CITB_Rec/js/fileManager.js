@@ -97,6 +97,28 @@ const getLinkFileDrive = async() => {
     chrome.storage.sync.set({shareLink: fileId}, () =>{});
     return fileId;
 }
+const downloadFromDrive = (fileId,name) => {
+  gapi.client.drive.files.get(
+      {fileId: fileId, alt: 'media'}
+  ).then((response) => {
+      // response.body has the file data
+      // console.log(response);
+      var blob = new Blob(response.blob, {
+        type: "video/webm"
+      });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = url;
+      a.download = name + ".webm";
+      a.click();
+      window.URL.revokeObjectURL(url);
+  }, (reason) => {
+      alert(`Failed to get file: ${reason}`);
+  });
+}
+
 const addEventToGoogleCalendar = (linkDrive) => {
     let description = "See video here: " + "https://drive.google.com/file/d/" + linkDrive +  "/view?usp=sharing";
     let newEvent = {
@@ -222,7 +244,9 @@ const prepareRecordFile = (finalArray) => {
   }
 
   //test only, to save in mi pc
-  const download = (test) => {
+  const download = (test,fileName) => {
+    let finalName;
+    fileName? fileName = fileName : finalName = window.fileName;
     var blob = new Blob(test, {
         type: "video/webm"
     });
@@ -231,7 +255,7 @@ const prepareRecordFile = (finalArray) => {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = window.fileName + Date() + ".webm";
+    a.download = finalName + Date() + ".webm";
     a.click();
     window.URL.revokeObjectURL(url);
     // window.fileName = "CITB Rec";
@@ -397,4 +421,5 @@ export {
     ,deleteFileOrFolder
     ,searchDrive
     ,getCalendarList
+    ,downloadFromDrive
 }

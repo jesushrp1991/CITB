@@ -3,9 +3,6 @@ import {
   ,prepareDB
   ,delLastItem
   ,getDriverLinkInQueueDB
-  ,addRecQueueDB
-  ,createRecQueueDB
-  ,searchBylinkQueueDB
 } from "./js/database.js";
 
 import {
@@ -27,6 +24,7 @@ import {
   ,deleteFileOrFolder
   ,searchDrive
   ,getCalendarList
+  ,downloadFromDrive
 } from './js/fileManager.js'
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
@@ -210,6 +208,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           await prepareDB();
           window.meetStartTime = dayjs().format();
           startRecordScreen(window.idMic,window.idTab,window.recMode);
+        }
+        else if (msg.downloadFromDrive){
+          // window.fileName = msg.fileName;
+          console.log("fownload file from drie",msg.fileID)
+          downloadFromDrive(msg.fileID,msg.name);
         }
       });
 
