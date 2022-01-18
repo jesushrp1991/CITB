@@ -359,14 +359,14 @@ function monkeyPatchMediaDevices() {
   }
 
   const openCloseExtension = async () =>{
-    console.log("OPEN CLOSE", window.isExtentionActive)
+    // console.log("OPEN CLOSE", window.isExtentionActive)
     var chromeOS = /(CrOS)/.test(navigator.userAgent);
 
     if (chromeOS && document.URL.includes("zoom.us")) {
       return;
     }
     let isCITBConnected = await checkCITBConnetion();
-    console.log("OPEN CLOSE AFTER", isCITBConnected, window.isExtentionActive)
+    // console.log("OPEN CLOSE AFTER", isCITBConnected, window.isExtentionActive)
 
     if (!isCITBConnected && !window.isExtentionActive) {
       console.log("INSIDE IF");
@@ -990,7 +990,7 @@ function monkeyPatchMediaDevices() {
     //frame.close();
   }
   MediaDevices.prototype.getUserMedia = async function () {
-    console.log("GET USER MEDIA",arguments) ;
+    // console.log("GET USER MEDIA",arguments) ;
 
     try {
       const args = arguments;
@@ -1030,7 +1030,7 @@ function monkeyPatchMediaDevices() {
         presentacionCallBackFunction();
       }
     }
-    console.log(citbMicrophone.length, CITBVideo.length);
+    // console.log(citbMicrophone.length, CITBVideo.length);
     if (citbConnectionCount < 3) {
       setTimeout(async () =>{
         await checkCITBConnetion();
@@ -1049,7 +1049,7 @@ function monkeyPatchMediaDevices() {
     navigator.mediaDevices.addEventListener(
       "devicechange",
       async function (event) {
-        console.log("DEVICE CHANGE");
+        // console.log("DEVICE CHANGE");
         await navigator.mediaDevices.enumerateDevices();
         let isCITBConnected = await checkCITBConnetion();
         
@@ -1060,7 +1060,7 @@ function monkeyPatchMediaDevices() {
           await buildVideoContainersAndCanvas();
           await builVideosFromDevices();
         }
-        console.log("DEVICE CHANGE BEFORE IF");
+        // console.log("DEVICE CHANGE BEFORE IF");
         if (!isCITBConnected && window.isExtentionActive){
           console.log("DEVICE CHANGE AFTER IF");
           await closeExtension();

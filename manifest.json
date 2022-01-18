@@ -2,25 +2,23 @@
   "name": "ClassInTheBox",
   "description": "Sistema profesional de video conferencia: simple, rápido, con cancelación de ruido avanzada y portable",
   "version": "1.0.10",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "minimum_chrome_version": "88.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsiTbtsAQszcqFHIwUEJLC6vW9nYMajp2Cd4pqb2+HZUoZx1yCZwkJfrGFvEBQXmZCDSy/SNgjROdnDxrVtgYi/w8a7fBZBN77jt6QNpUQohHhkvSgCv+YPifbutyXbz6V4MBa4uLiOp0nUUVdrb6d6U1hxdthiuyW1C9+gDkB/Esxrr8vw94pmkvPjD0dWN7i89Zj1aEw9wk2lEseK+nSYE8xid3SnmWF1ijSmy8pT+eYLser6WJtcc7G7OIOd25lYgLnyFGYtlEupU40IgIBu9Gnbpbde+fagVmkST3pbofVEalWUIXttBNhQUeNX8/XjYwKUxbxmjJh+MdWXMBxwIDAQAB",
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
-  ],
-  "background": {
-    "service_worker": "js/background.js"
-  }, 
-  "host_permissions": [ 
     "https://meet.google.com/*",
     "https://zoom.us/*",
     "https://*.zoom.us/*",
     "https://meet.jit.si/*",
     "https://teams.live.com/*"
   ],
-  "action": {
+  "background": {
+    "page": "js/background.js",
+    "persistent": false
+  },
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "CITB COLOR SIN CIRCULO.png",
@@ -44,26 +42,27 @@
         "https://teams.live.com/*",
         "https://teams.microsoft.com/*"
       ],
-      "js": [
-        "js/inject.js"
-        ,"js/external/material.min.js"
-      ],
-      "css": ["css/floatinbuttons.css","css/material.min.css"],
+      "js": ["js/inject.js", "js/external/material.min.js"],
+      "css": ["css/floatinbuttons.css", "css/material.min.css"],
       "run_at": "document_start",
       "all_frames": true
-    } 
+    }
   ],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": false
   },
-  "web_accessible_resources": [{
-    "resources": ["js/*","helper/*", "css/font/*", "html/*"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": ["js/*", "helper/*", "css/font/*", "html/*"],
   "externally_connectable": {
     "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
-    "matches": ["https://meet.google.com/*","https://zoom.us/*","https://*.zoom.us/*","https://meet.jit.si/*","https://teams.live.com/*","https://teams.microsoft.com/*"],
+    "matches": [
+      "https://meet.google.com/*",
+      "https://zoom.us/*",
+      "https://*.zoom.us/*",
+      "https://meet.jit.si/*",
+      "https://teams.live.com/*",
+      "https://teams.microsoft.com/*"
+    ],
     "accepts_tls_channel_id": true
   }
 }
