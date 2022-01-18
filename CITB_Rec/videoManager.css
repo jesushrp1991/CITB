@@ -134,6 +134,18 @@
   background-position: center;
   background-image: url("./assets/drive.svg") !important;
 }
+.share-icon {
+  height: 40px;
+  width: 40px;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url("./assets/compartirAzul.png") !important;
+}
 .progress-bar-wrapper {
   padding-top: 20px;
 }
@@ -178,7 +190,7 @@
 .buttons-containers-personalized {
   border: 2px solid;
   border-radius: 30px;
-  border-color: #e94e1b;
+  border-color: #547DBE;
   margin-top: 5px;
 }
 
@@ -187,8 +199,8 @@
 }
 
 .buttonCITB {
-  height: 22px !important;
-  width: 20px;
+  height: 35px !important;
+  width: 35px;
   margin: 5px;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -531,4 +543,32 @@ display: block !important;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 60%;
+}
+
+.icon-citb-record {
+  background-image: url('./assets/CITB_Records.png');
+  width: 160px;
+  height: 50px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90%;
+}
+.icon-copy-link {
+  background-image: url('./assets/copiar.png');
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90%;
+}
+.icon-download-link {
+  background-image: url('./assets/descargar.png');
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90%;
 }

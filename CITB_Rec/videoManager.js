@@ -361,6 +361,37 @@ const dragElement = (element) => {
   }, false);
 }
 
+const shareModal = (event) =>{
+    let id = event.srcElement.id;
+    id = id.substring(5,id.length)
+    let divQR = document.getElementById('idQRCode'+id);
+    let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    while (divQR.firstChild) {
+        divQR.removeChild(divQR.firstChild);
+    }
+    new QRCode(divQR, {
+        text: driveID,
+        width: 170,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    $(`#idModal${id}`).modal('show');
+};
+
+const shareLinkModal = (event) =>{
+    let id = event.srcElement.id;
+    id = id.substring(5,id.length)
+    let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    navigator.clipboard.writeText(driveID).then(function() {
+        alert("Vínculo copiado correctamente.")
+      }, function(err) {
+        console.error('Async: Could not copy text: ', err);
+        alert("Error, por favor repórtelo en nuestra página.")
+    });
+};
+
 const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     let time = details.dateStart.substring(11, 19);
@@ -380,6 +411,11 @@ const createRecordCard = async (details) => {
     html = html.replace("{{whatsAppcardId}}","whats" + details.id);
     html = html.replace("{{wakeletcardId}}","wakel" + details.id);
     html = html.replace("{{drive}}","drive" + details.id);
+    html = html.replace("{{share}}","share" + details.id);
+    html = html.replace("{{idModal}}","idModal" + details.id);
+    html = html.replace("{{idQRCode}}","idQRCode" + details.id);
+    html = html.replace("{{shareLinkModal}}","shareLinkModal" + details.id);
+
     if(details.thumbnailLink){
         html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
     }else{
@@ -407,6 +443,8 @@ const createRecordCard = async (details) => {
     document.getElementById("whats" + details.id).addEventListener("click", reply_click);
     document.getElementById("wakel" + details.id).addEventListener("click", reply_click);
     document.getElementById("drive" + details.id).addEventListener("click", reply_click);
+    document.getElementById("share" + details.id).addEventListener("click", shareModal);
+    document.getElementById("shareLinkModal" + details.id).addEventListener("click", shareLinkModal);
     return;
 }
 const startQueue = () =>{

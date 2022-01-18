@@ -25,17 +25,50 @@
         <div class="d-flex flex-row share-container-personalized justify-content-between">                  
           <div class="drive-icon" id="{{drive}}">
           </div>    
-          <div class="d-flex flex-column">
-            <div class=" d-flex flex-row buttons-containers-personalized align-items-center justify-content-around">
-              <div class="buttonCITB CITBGmail" id="{{gmailcardId}}">
-              </div>
-              <div class="buttonCITB CITBClassRoom" id="{{classRoomcardId}}">
-              </div>
-              <div class="buttonCITB CITBTwitter" id="{{twittercardId}}">
-              </div>
-              <div class="buttonCITB CITBWhatsApp" id="{{whatsAppcardId}}">
-              </div>
-              <div class="buttonCITB CITBWakelet" id="{{wakeletcardId}}">
+          <div class="share-icon" id="{{share}}">
+          </div>    
+        </div>
+      </div>
+    </div>
+     <!-- Modal -->
+     <div class="modal fade" id="{{idModal}}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <div class="modal-title icon-citb-record"></div>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+              <div class="row">
+                <div class="col" id='{{idQRCode}}'></div>
+                <div class="col">
+                  <div class="row align-items-center">                    
+                      <div class=" d-flex flex-row buttons-containers-personalized align-items-center justify-content-around">
+                        <div class="buttonCITB CITBGmail" id="{{gmailcardId}}">
+                        </div>
+                        <div class="buttonCITB CITBClassRoom" id="{{classRoomcardId}}">
+                        </div>
+                        <div class="buttonCITB CITBTwitter" id="{{twittercardId}}">
+                        </div>
+                        <div class="buttonCITB CITBWhatsApp" id="{{whatsAppcardId}}">
+                        </div>
+                        <div class="buttonCITB CITBWakelet" id="{{wakeletcardId}}">
+                        </div>
+                      </div>                    
+                  </div>
+                  <div class="row p-2">
+                    <div id="{{shareLinkModal}}" class="col-md-auto icon-copy-link"></div>
+                    <div class="col align-items-center my-auto">
+                      <h7>Copiar vínculo</h7>
+                    </div>                    
+                  </div>
+                  <div class="row p-2">
+                    <div class="col-md-auto icon-download-link"></div>
+                    <div class="col align-items-center my-auto">
+                      <h7>Descargar archivo</h7>
+                    </div>    
+                  </div>
+                </div>
               </div>
             </div>
           </div>
