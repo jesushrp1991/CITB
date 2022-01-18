@@ -29,9 +29,16 @@ import {
   ,getCalendarList
 } from './js/fileManager.js'
 
-import { filterModifiableCalendars } from './js/tools.js'
+import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 
-import { createListForFrontend } from './js/tools.js'
+chrome.runtime.onInstalled.addListener(function(details){
+  if(details.reason == "install"){
+      chrome.storage.sync.set({ extensionGlobalState: "on" });
+
+  }else if(details.reason == "update"){
+    chrome.storage.sync.set({ extensionGlobalState: "on" });
+  }
+});
 
 const popupMessages = {
   rec:'rec'

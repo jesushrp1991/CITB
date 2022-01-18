@@ -9,6 +9,7 @@
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <script src="./js/external/bootstrap.bundle.min.js"></script>
     <script src="./js/external/bootstrap-toggle.min.js"></script>
+    <link href="./css/popupCITB.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div class="container">
@@ -18,7 +19,7 @@
       <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h5 class="card-title">Elige fuente de video</h5>
+            <h6 class="card-title">Elige fuente de video</h6>
             <div div class="row">
               <div class="col-6">
                 <div class="row justify-content-center">
@@ -37,11 +38,11 @@
       <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h5 class="card-title">Elige fuente de audio</h5>
+            <h6 class="card-title">Elige fuente de audio</h6>
             <div div class="row">
               <div class="col-4 align-items-center justify-content-center">
                 <div class="row justify-content-center">
-                  <h7>On/Off</h7>
+                  <h8>On/Off</h8>
                 </div>
                 <div class="row justify-content-center">
                   <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
@@ -49,7 +50,7 @@
               </div>
               <div class="col-8 justify-content-center">
                 <div class="row justify-content-center">
-                  <h7>Escoger micrófono</h7>
+                  <h8>Escoger micrófono</h8>
                 </div>
                 <div class="row justify-content-center">
                   <select id="miclist" class="custom-select custom-select-sm select-mic">
@@ -63,14 +64,23 @@
       <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h5 class="card-title last-options">Otras Opciones</h5>
             <div div class="row">
               <div class="col justify-content-center">
                 <div class="row justify-content-center">
                   <div id="voiceControlButton" class="voiceControlOff icons"></div>
                 </div>
                 <div class="row justify-content-center">
-                  <h7>Voice commands</h7>
+                  <h8>Comandos</h8>
+                  <h8> de voz</h8>
+                </div>
+              </div>
+              <div class="col justify-content-center">
+                <div class="row justify-content-center">
+                  <div id="citbOptions" class="citb-options icons" data-toggle="collapse" href="#citbButtonsContainer" role="button" aria-expanded="false" aria-controls="citbButtonsContainer"></div>
+                </div>
+                <div class="row justify-content-center">
+                  <h8>Dispositivo</h8>
+                  <h8>CITB</h8>
                 </div>
               </div>
               <div id="recListButton" class="col justify-content-center">
@@ -84,6 +94,17 @@
             </div>
           </div>
         </div>
+      </div>
+      
+      <div class="buttonsBorder collapse"  id="citbButtonsContainer">
+        <button type="button" id="button1" class="buttonOnOffDeactivate">
+        </button>
+        <button type="button" id="button3" class="button3Deactivated">
+        </button>
+        <button type="button" id="button5" class="buttonChooseMic">
+        </button>
+        <button type="button" id="button4" class="button4WebContainer">
+        </button>
       </div>
       <div id="panelTimer" class="row p-2 rec-timer-hide panel-timer-container">
         <div class="col justify-content-center">
@@ -106,5 +127,6 @@
       </div>
     </div>
     <script src="popup.js" type="module"></script>
+    <script src="./js/CITB/popup.js"></script>
   </body>
 </html>

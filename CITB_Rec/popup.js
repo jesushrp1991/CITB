@@ -44,6 +44,15 @@ const getCurrentState = () =>{
             buttonVoiceControl.setAttribute('class','voiceControlOff icons');
         }
     })
+    chrome.storage.sync.get('isCITBPanelVisible', (result) => {
+        window.isCITBPanelVisible = result.isCITBPanelVisible;
+        if(result.isCITBPanelVisible){
+            citbButtonsContainer.classList.remove('show');
+        }
+        else{
+            citbButtonsContainer.classList.add('show');
+        }
+    });
 
 }
 
@@ -166,6 +175,20 @@ recordScreen.addEventListener('click',()=>{
     recordTabs.classList.remove('selected-icon');
     window.recMode = 'recordScreen'
 });
+
+const checkCITBPanelStatus = () =>{
+    if(window.isCITBPanelVisible){
+        citbButtonsContainer.classList.remove('show');
+    }
+    else{
+        citbButtonsContainer.classList.add('show');
+    }
+   window.isCITBPanelVisible = !window.isCITBPanelVisible;
+   chrome.storage.sync.set({isCITBPanelVisible: window.isCITBPanelVisible}, () => {});
+}
+
+let citbOptions = document.getElementById('citbOptions');
+citbOptions.addEventListener('click',checkCITBPanelStatus)
 
 
 

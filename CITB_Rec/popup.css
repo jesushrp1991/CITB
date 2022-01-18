@@ -22,6 +22,9 @@
 .stop-icon {
   background-image: url('./assets/STOP\ NEGRO.svg');
 }
+.citb-options{
+  background-image: url('./assets/CITB\ COLOR.png');
+}
 .header-icon{
   background-image: url('./assets/newpopup/CITB\ REC.png');
   width: 180px;
