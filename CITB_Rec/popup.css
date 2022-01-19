@@ -70,12 +70,15 @@
 }
 
 .button-rec{
-  width: 100% !important;
+  width: 80% !important;
   height: 40px !important;
   transition: opacity 0.5s, 
   visibility 0.5s;
   opacity: 1;
   visibility: innherit ;
+  margin-top: 1px;
+  margin-bottom: 10px;
+  border-radius: 15px !important;
 }
 
 .select-mic{
@@ -134,11 +137,6 @@
   background-color: #d9dcdf;
 }
 
-#citbMissingAlert {
-  position: absolute;
-  visibility: hidden;
-}
-
 .citb-missing-alert {
   width: 340px;
   height: 50px ;
@@ -150,4 +148,18 @@
   background-size: 95%;
   cursor: pointer;
   background-image: url('./assets/alertpopup.png');
+}
+
+.card{
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 4px dotted rgba(0,0,0,.300) !important;
+}
+.card-title {
+  margin-bottom:10px;
+}
+
+.title{
+  padding-left: 85px;
 }

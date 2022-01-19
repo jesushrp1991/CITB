@@ -98,7 +98,8 @@ const populateMicSelect = async () => {
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
         organizedMicList = usableMic;
-        document.getElementById('citbMissingAlert').style.visibility = 'visible';
+        // document.getElementById('citbMissingAlert').style.visibility = 'visible';
+        $("#citbMissingAlert").toggle();
         // setInterval(()=>{
         //     document.getElementById('modal').style.display = 'none';
         // },5000);

@@ -19,7 +19,7 @@
       <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h6 class="card-title">Elige fuente de video</h6>
+            <h6 class="card-title title">Elige fuente de video</h6>
             <div div class="row">
               <div class="col-6">
                 <div class="row justify-content-center">
@@ -38,23 +38,23 @@
       <div class="row row p-1">
         <div class="card" style="width: 22rem;">
           <div class="card-body">
-            <h6 class="card-title">Elige fuente de audio</h6>
+            <h6 class="card-title title">Elige fuente de audio</h6>
             <div div class="row">
               <div class="col-4 align-items-center justify-content-center">
                 <div class="row justify-content-center">
-                  <h8>On/Off</h8>
+                  <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
                 </div>
                 <div class="row justify-content-center">
-                  <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
+                  <h8>On/Off</h8>
                 </div>
               </div>
               <div class="col-8 justify-content-center">
                 <div class="row justify-content-center">
-                  <h8>Escoger micrófono</h8>
-                </div>
-                <div class="row justify-content-center">
                   <select id="miclist" class="custom-select custom-select-sm select-mic">
                   </select>
+                  <div class="row justify-content-center">
+                    <h8>Escoger micrófono</h8>
+                  </div>
                 </div>
               </div>
             </div>
@@ -79,8 +79,8 @@
                   <div id="citbOptions" class="citb-options icons" data-toggle="collapse" href="#citbButtonsContainer" role="button" aria-expanded="false" aria-controls="citbButtonsContainer"></div>
                 </div>
                 <div class="row justify-content-center">
-                  <h8>Dispositivo</h8>
-                  <h8>CITB</h8>
+                  <h8>Dispositivo CITB</h8>
+                  <!-- <h8>CITB</h8> -->
                 </div>
               </div>
               <div id="recListButton" class="col justify-content-center">
@@ -119,10 +119,10 @@
           <div id="stopButton" class="stop-icon icons"></div>
         </div>
       </div>
-      <div class="row p-2 justify-content-center button-active">
-        <button id="button-rec" class="btn-danger rounded-lg button-rec">Record</button>
+      <div class="row justify-content-center button-active">
+        <button id="button-rec" class="btn-danger button-rec">Record</button>
       </div>
-      <div id="citbMissingAlert" class="row p-1">
+      <div id="citbMissingAlert" class="row p-1 collapse">
         <div class="citb-missing-alert"></div>
       </div>
     </div>
