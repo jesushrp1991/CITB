@@ -395,7 +395,7 @@ const shareLinkModal = (event) =>{
 const downloadFromDrive = (event) =>{
     let id = event.srcElement.id;
     id = id.substring(17,id.length);    
-    let name = event.srcElement.closest(".row.p-2");
+    let name = event.srcElement.closest(".row");
     alert("Usted puede cerrar esta pestaña, su descarga terminará en breve. No descargue otro video si no ha terminado éste.")
     port.postMessage({downloadFromDrive: true ,fileID: id , name: name.id});
 }
