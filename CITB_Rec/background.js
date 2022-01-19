@@ -49,6 +49,8 @@ const popupMessages = {
   ,getDriveLink: 'getDriveLink'
   ,listRec: 'listRec'
   ,showRecList: 'showRecList'
+  ,changeVoiceVolume: 'changeVoiceVolume'
+  ,changeSystemVolume: 'changeSystemVolume'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -140,6 +142,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.showRecList :
         openRecList();
+        break;
+      case popupMessages.changeVoiceVolume :
+        window.voiceGain.gain.value = parseInt(message.volume);
+        break;
+      case popupMessages.changeSystemVolume :
+        console.log(message.volume)
+        window.desktopGain.gain.value = parseInt(message.volume);
         break;
     }
     return true;

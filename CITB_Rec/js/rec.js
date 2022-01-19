@@ -88,15 +88,15 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             //DESTINATION 
             const destination = context.createMediaStreamDestination();  
             //GAIN 
-            const desktopGain = context.createGain();  
-            const voiceGain = context.createGain();      
-            desktopGain.gain.value = 0.6;  
-            voiceGain.gain.value = 0.8;  
+            window.desktopGain = context.createGain();  
+            window.voiceGain = context.createGain();      
+            window.desktopGain.gain.value = 0.6;  
+            window.voiceGain.gain.value = 0.8;  
             if(sourceDesktop != null){  
-              sourceDesktop.connect(desktopGain).connect(destination);  
+              sourceDesktop.connect(window.desktopGain).connect(destination);  
             }  
             if(sourceMic != null){
-              sourceMic.connect(voiceGain).connect(destination);
+              sourceMic.connect(window.voiceGain).connect(destination);
             }  
             window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
             window.recorder = new MediaRecorder(window.resultStream); 
@@ -167,16 +167,16 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             //DESTINATION 
             const destination = context.createMediaStreamDestination();  
             //GAIN 
-            const desktopGain = context.createGain();  
-            const voiceGain = context.createGain();      
-            desktopGain.gain.value = 0.6;  
-            voiceGain.gain.value = 0.8;  
+            window.desktopGain = context.createGain();  
+            window.voiceGain = context.createGain();      
+            window.desktopGain.gain.value = 0.6;  
+            window.voiceGain.gain.value = 0.8;  
 
             if(sourceDesktop != null){  
-              sourceDesktop.connect(desktopGain).connect(destination);  
+              sourceDesktop.connect(window.desktopGain).connect(destination);  
             }  
             if(sourceMic != null){
-              sourceMic.connect(voiceGain).connect(destination);
+              sourceMic.connect(window.voiceGain).connect(destination);
             }  
 
             constraints = {  
@@ -262,16 +262,16 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           const sourceMic = context.createMediaStreamSource(window.micStream);  
           const destination = context.createMediaStreamDestination();  
    
-          const desktopGain = context.createGain();  
-          const voiceGain = context.createGain();  
+          window.desktopGain = context.createGain();  
+          window.voiceGain = context.createGain();  
    
-          desktopGain.gain.value = 0.7;  
-          voiceGain.gain.value = 0.7;  
+          window.desktopGain.gain.value = 0.7;  
+          window.voiceGain.gain.value = 0.7;  
    
           if(sourceDesktop != null){  
-            sourceDesktop.connect(desktopGain).connect(destination);  
+            sourceDesktop.connect(window.desktopGain).connect(destination);  
           }  
-          sourceMic.connect(voiceGain).connect(destination);  
+          sourceMic.connect(window.voiceGain).connect(destination);  
    
            
           window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
