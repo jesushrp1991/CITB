@@ -1,8 +1,8 @@
 .tab-icon {
-  background-image: url('./assets/newpopup/PESTANA.svg');
+  background-image: url('./assets/PESTANA.png');
 }
 .screen-icon {
-  background-image: url('./assets/newpopup/ESCRITORIO.svg');
+  background-image: url('./assets/ESCRITORIO.png');
 }
 .voiceControlOff {
   background-image: url('./assets/COMANDOS\ GRIS.svg');
@@ -32,7 +32,7 @@
   background-image: url('./assets/offMic.png');
 }
 .header-icon{
-  background-image: url('./assets/newpopup/CITB\ REC.png');
+  background-image: url('./assets/CITB_Records.png');
   width: 180px;
   height: 50px;
   background-color: transparent;
@@ -85,6 +85,12 @@
   border-radius: 15px !important;
 }
 
+/* .button-rec-img{
+  /* src: url('./assets/BOTON\ REC\ ROJO.svg'); */
+  height: 54px !important;
+  width:344px !important;
+} */
+
 .select-mic{
   width: 200px !important;
   margin-top: 5px;
@@ -128,13 +134,6 @@
 }
 .rec-timer-hide {
   display: none !important;
-}
-
-.panel-timer-container {
- 
-}
-.panel-timer-container-alert {
-  
 }
 
 .toggle-off.btn-xs{
