@@ -43,16 +43,16 @@ const getCurrentState = () =>{
             buttonVoiceControl.setAttribute('class','voiceControlOff icons');
         }
     })
+}
+
+let isCITBPanelVisible;
+const initialCITBPanelStatus = () =>{
     chrome.storage.sync.get('isCITBPanelVisible', (result) => {
-        window.isCITBPanelVisible = result.isCITBPanelVisible;
+        isCITBPanelVisible = result.isCITBPanelVisible;
         if(result.isCITBPanelVisible){
-            citbButtonsContainer.classList.remove('show');
-        }
-        else{
-            citbButtonsContainer.classList.add('show');
+            citbButtonsContainer.classList.add('expanded');
         }
     });
-
 }
 
 
@@ -177,14 +177,15 @@ recordScreen.addEventListener('click',()=>{
 });
 
 const checkCITBPanelStatus = () =>{
-    if(window.isCITBPanelVisible){
+    if(isCITBPanelVisible){
         citbButtonsContainer.classList.remove('expanded');
     }
     else{
         citbButtonsContainer.classList.add('expanded');
     }
-   window.isCITBPanelVisible = !window.isCITBPanelVisible;
-   chrome.storage.sync.set({isCITBPanelVisible: window.isCITBPanelVisible}, () => {});
+    isCITBPanelVisible = !isCITBPanelVisible;
+
+   chrome.storage.sync.set({isCITBPanelVisible: isCITBPanelVisible}, () => {});
 }
 
 let citbOptions = document.getElementById('citbOptions');
@@ -222,5 +223,6 @@ checkAut();
 populateMicSelect();
 checkTimer();
 getCurrentState();
+initialCITBPanelStatus();
 setInterval(getCurrentState,2000);
 
