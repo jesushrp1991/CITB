@@ -111,8 +111,7 @@
 }
 
 .button-hide {
-  visibility: hidden !important;
-  opacity: 0 !important;
+  display: none;
 }
 
 .button-active {
@@ -126,12 +125,10 @@
 }
 
 .panel-timer-container {
-  position: absolute;
-  top: 89%;
+ 
 }
 .panel-timer-container-alert {
-  position: absolute;
-  top: 78.5%;
+  
 }
 
 .toggle-off.btn-xs{
