@@ -129,6 +129,10 @@ let buttonRec = document.getElementById('button-rec');
 let newTimerPanel = document.getElementById('panelTimer');
 
 const displayRecordingMode = () =>{
+    if(document.getElementById('citbMissingAlert').style.display == 'block'){
+        buttonRec.classList.remove('panel-timer-container');
+        buttonRec.classList.add('panel-timer-container-alert');
+    }
     buttonRec.classList.remove('button-active');
     buttonRec.classList.add('button-hide');
     newTimerPanel.classList.remove('rec-timer-hide');
@@ -136,7 +140,7 @@ const displayRecordingMode = () =>{
 }
 buttonRec.addEventListener('click',() =>{
     displayRecordingMode();
-    sendRecordCommand();
+    // sendRecordCommand();
 })
 
 const displayNotRecordingMode = () =>{

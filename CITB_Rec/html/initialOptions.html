@@ -1,58 +1,79 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>CITB Rec</title>
-    <link href="../css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="../js/external/jquery-3.5.1.slim.min.js" ></script>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-toggle.min.css" rel="stylesheet" />
+    <script src="../js/external/jquery-3.5.1.slim.min.js"></script>
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
     <script src="../js/external/bootstrap.bundle.min.js"></script>
     <script src="../js/external/bootstrap-toggle.min.js"></script>
-    <link href="../css/initialOptions.css" rel="stylesheet" type="text/css">
+    <link href="../css/initialOptions.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div class="container">
-      <div class="row p-2 justify-content-center">
-        <div class="header-icon"></div>
-      </div>        
-      <div class="row row p-2">
-        <div class="card" style="width: 22rem;">
-          <div class="card-body">
-            <h5 class="card-title">Nombre de la grabación</h5>
-            <div div class="row justify-content-center">
-                <input type="text" id="fileName" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+    <div class="container h-100">
+      <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+          <div class="jumbotron rounded">
+            <div class="row p-2 justify-content-center">
+              <div class="header-icon"></div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row row p-2">
-        <div class="card" style="width: 22rem;">
-          <div class="card-body">
-            <h5 class="card-title">Opciones de Calendario</h5>
-            <div div class="row">
-              <div class="col-4 align-items-center justify-content-center">
-                <div class="row justify-content-center">
+            <div class="row p-2 justify-content-center">
+              <h5>Nombre de la grabación :</h5>
+            </div>
+            <div div class="row p-2 justify-content-center">
+              <input
+                type="text"
+                id="fileName"
+                class="form-control"
+                aria-label="Small"
+                aria-describedby="inputGroup-sizing-sm"
+              />
+            </div>
+            <div div class="row p-2 justify-content-center">
+              <div class="icon-calendar"></div>
+            </div>
+            <div div class="row p-2 justify-content-center">
+              <h5>Opciones de Calendario</h5>
+            </div>
+            <div div class="row p-2">
+              <div class="col-2 align-items-center justify-content-center">
+                <div class="row p-2 justify-content-center">
                   <h7>On/Off</h7>
                 </div>
-                <div class="row justify-content-center">
-                  <input id="checkboxCalendar" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
+                <div class="row p-2 justify-content-center">
+                  <input
+                    id="checkboxCalendar"
+                    type="checkbox"
+                    checked
+                    data-toggle="toggle"
+                    data-onstyle="danger"
+                    data-size="mini"
+                  />
                 </div>
               </div>
-              <div class="col-8 justify-content-center">
-                <div class="row justify-content-center">
+              <div class="col-10 justify-content-center">
+                <div class="row p-2 justify-content-start">
                   <h7>Escoger calendario</h7>
                 </div>
-                <div class="row justify-content-center">
-                  <select id="miclist" class="custom-select custom-select-sm select-mic">
-                  </select>
+                <div class="row p-2 justify-content-end">
+                  <select
+                    id="miclist"
+                    class="custom-select custom-select-sm select-mic"
+                  ></select>
                 </div>
+              </div>
+            </div>
+            <div class="row p-2 button-active">
+              <div class="col-9"></div>
+              <div class="col-3 justify-content-end">
+                <button id="button-ok" class="btn-danger button-rec">
+                  Ok
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row p-2 justify-content-left button-active">
-        <button id="button-ok" class="btn-danger rounded-lg button-rec">OK</button>
       </div>
     </div>
     <script src="../js/initialOptions.js" type="module"></script>

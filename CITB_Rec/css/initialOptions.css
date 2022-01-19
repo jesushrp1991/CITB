@@ -1,136 +1,39 @@
-.tab-icon {
-  background-image: url('./assets/newpopup/PESTANA.svg');
-}
-.screen-icon {
-  background-image: url('./assets/newpopup/ESCRITORIO.svg');
-}
-.voiceControlOff {
-  background-image: url('./assets/COMANDOS\ GRIS.svg');
-}
-.voiceControl {
-  background-image: url('./assets/COMANDOS\ COLOR.svg');
-}
-.list-rec-icon {
-  background-image: url('./assets/records.png');
-}
-.play-icon {
-  background-image: url('./assets/PLAY\ NEGRO.svg');
-}
-.pause-icon {
-  background-image: url('./assets/PAUSE\ NEGRO.svg');
-}
-.stop-icon {
-  background-image: url('./assets/STOP\ NEGRO.svg');
-}
+
 .header-icon{
-  background-image: url('./assets/newpopup/CITB\ REC.png');
-  width: 180px;
-  height: 50px;
+  background-image: url('../assets/newpopup/CITB\ REC.png');
+  width: 280px;
+  height: 100px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
 }
-.icons{
-  width: 70px;
-  height: 60px ;
-  padding-left: 3px;
-  padding-right: 3px;
+.icon-calendar{
+  background-image: url('../assets/calendar.png');
+  width: 150px;
+  height: 150px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  cursor: pointer;
 }
-.tab-screen-icons{
-  width: 140px;
-  height: 110px ;
-  padding-left: 3px;
-  padding-right: 3px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 90%;
-  cursor: pointer;
-}
-.select-icon:hover {
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: red; */
-  background-color: #547dbe57;
-}
-.selected-icon {
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: red; */
-  background-color: #547dbe57;
+
+.form-control {
+  width: 98%;
 }
 
 .button-rec{
-  width: 180px !important;
+  width: 100px !important;
   height: 40px !important;
   transition: opacity 0.5s, 
   visibility 0.5s;
   opacity: 1;
   visibility: innherit ;
+  border-radius: 15px !important;
+  padding-right: 15px;
 }
 
 .select-mic{
-  width: 200px !important;
+  width: 100% !important;
   margin-top: 5px;
-}
-
-.card-title{
-  padding-left: 55px;
-}
-.last-options{
-  padding-left: 95px;
-}
-.card-body{
-  padding: 10px !important;
-}
-
-.timer {
-  background-color: black;
-  border-radius: 10px;
-  height: 40px;
-  width: 120px; 
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  margin-top: 11px;
-}
-
-.timer h4{
-  color: white;
-  padding-left: 30px;
-  padding-top: 5px;
-}
-
-.button-hide {
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-.button-active {
-  display: block;
-}
-.rec-timer-active {
-  display: block;
-}
-.rec-timer-hide {
-  display: none !important;
-}
-
-.panel-timer-container {
-  position: absolute;
-  top: 87%;
-}
-
-.toggle-off.btn-xs{
-  padding-left:12px;
-  background-color: #d9dcdf;
-}
-
-.form-control {
-  width: 90%;
 }
