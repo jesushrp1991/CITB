@@ -1,13 +1,13 @@
 
 
 button {
-    height: 60px;
+    height: 50px;
     width: 50px;
     outline: none;
     margin-left: 15px;
     margin-right: 15px;
-    margin-top: 10px;
-    /* margin-bottom: 9px; */
+    margin-top: 5px;
+    margin-bottom: 9px;
     border: none;
     border-radius: 2px;
     background-color: transparent;

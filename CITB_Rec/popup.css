@@ -25,6 +25,12 @@
 .citb-options{
   background-image: url('./assets/CITB\ COLOR.png');
 }
+.mic-on{
+  background-image: url('./assets/onMic.png');
+}
+.mic-off{
+  background-image: url('./assets/offMic.png');
+}
 .header-icon{
   background-image: url('./assets/newpopup/CITB\ REC.png');
   width: 180px;
@@ -164,4 +170,8 @@
 
 .title{
   padding-left: 85px;
+}
+
+.mic-select-text {
+  padding-top: 10px;
 }

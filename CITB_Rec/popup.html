@@ -42,7 +42,8 @@
             <div div class="row">
               <div class="col-4 align-items-center justify-content-center">
                 <div class="row justify-content-center">
-                  <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">                
+                  <!-- <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">-->
+                  <div id="checkboxMic" class='mic-on icons'></div>
                 </div>
                 <div class="row justify-content-center">
                   <h8>On/Off</h8>
@@ -52,7 +53,7 @@
                 <div class="row justify-content-center">
                   <select id="miclist" class="custom-select custom-select-sm select-mic">
                   </select>
-                  <div class="row justify-content-center">
+                  <div class="row mic-select-text justify-content-center">
                     <h8>Escoger micrófono</h8>
                   </div>
                 </div>
@@ -106,6 +107,10 @@
         <button type="button" id="button4" class="button4WebContainer">
         </button>
       </div>
+
+      <div class="row justify-content-center button-active">
+        <button id="button-rec" class="btn-danger button-rec">Record</button>
+      </div>
       
       <div id="panelTimer" class="row p-2 rec-timer-hide panel-timer-container">
         <div class="col justify-content-center">
@@ -121,9 +126,6 @@
         </div>
       </div>
 
-      <div class="row p-2 justify-content-center button-active">
-        <button id="button-rec" class="btn-danger button-rec">Record</button>
-      </div>
       <div id="citbMissingAlert" class="row p-1 justify-content-center collapse">
         <div class="citb-missing-alert"></div>
       </div>

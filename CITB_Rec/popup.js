@@ -6,8 +6,7 @@ const sendMessage = (msg) =>{
 }
 const rec = (isTabForMac) =>{
     let idMic;
-    let checkboxMic = document.getElementById('checkboxMic');
-    checkboxMic.checked ? idMic = select.value : idMic = null
+    isMicEnable ? idMic = select.value : idMic = null
     const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: window.recMode};
     sendMessage(request);
 }
@@ -98,11 +97,7 @@ const populateMicSelect = async () => {
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
         organizedMicList = usableMic;
-        // document.getElementById('citbMissingAlert').style.visibility = 'visible';
         $("#citbMissingAlert").toggle();
-        // setInterval(()=>{
-        //     document.getElementById('modal').style.display = 'none';
-        // },5000);
     }
     while (select.options.length > 0) {                
         select.remove(0);
@@ -195,6 +190,19 @@ const checkCITBPanelStatus = () =>{
 let citbOptions = document.getElementById('citbOptions');
 citbOptions.addEventListener('click',checkCITBPanelStatus)
 
+let isMicEnable = true;
+let checkboxMic = document.getElementById('checkboxMic');
+checkboxMic.addEventListener('click',()=>{
+    if (isMicEnable){
+        checkboxMic.classList.remove('mic-on')
+        checkboxMic.classList.add('mic-off')
+    } 
+    else{
+        checkboxMic.classList.remove('mic-off')
+        checkboxMic.classList.add('mic-on')
+    }
+    isMicEnable = !isMicEnable;
+})
 
 
 checkAut();
