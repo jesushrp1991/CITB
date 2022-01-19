@@ -371,8 +371,8 @@ const shareModal = (event) =>{
     }
     new QRCode(divQR, {
         text: driveID,
-        width: 170,
-        height: 200,
+        width: 115,
+        height: 115,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H

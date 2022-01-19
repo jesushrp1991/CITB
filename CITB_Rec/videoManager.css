@@ -182,7 +182,7 @@
 }
 
 .share-container-personalized {
-  padding-top: 10px !important ;
+  padding-top: 10px !important;
   padding-left: 0px !important;
   padding-bottom: 10px !important;
 }
@@ -191,17 +191,13 @@
   border: 2px solid;
   border-radius: 30px;
   border-color: #547DBE;
-  margin-top: 5px;
-}
-
-.fake-space {
-  height: 20%;
+  /* margin-top: 5px; */
 }
 
 .buttonCITB {
-  height: 35px !important;
+  height: 25px !important;
   width: 35px;
-  margin: 5px;
+  margin: 8px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
@@ -571,4 +567,8 @@ display: block !important;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 90%;
+}
+
+.qr-code{
+  padding-top: 40px;
 }
