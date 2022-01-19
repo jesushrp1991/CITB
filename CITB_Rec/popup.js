@@ -178,10 +178,10 @@ recordScreen.addEventListener('click',()=>{
 
 const checkCITBPanelStatus = () =>{
     if(window.isCITBPanelVisible){
-        citbButtonsContainer.classList.remove('show');
+        citbButtonsContainer.classList.remove('expanded');
     }
     else{
-        citbButtonsContainer.classList.add('show');
+        citbButtonsContainer.classList.add('expanded');
     }
    window.isCITBPanelVisible = !window.isCITBPanelVisible;
    chrome.storage.sync.set({isCITBPanelVisible: window.isCITBPanelVisible}, () => {});
