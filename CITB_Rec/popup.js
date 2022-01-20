@@ -133,6 +133,9 @@ const displayRecordingMode = () =>{
     buttonRec.classList.add('button-hide');
     newTimerPanel.classList.remove('rec-timer-hide');
     newTimerPanel.classList.add('rec-timer-active');
+
+    audioPanel.style.display = 'none';
+    volumeControl.style.display = 'block';
 }
 buttonRec.addEventListener('click',() =>{
     displayRecordingMode();
@@ -144,6 +147,10 @@ const displayNotRecordingMode = () =>{
     buttonRec.classList.add('button-active');
     newTimerPanel.classList.remove('rec-timer-active');
     newTimerPanel.classList.add('rec-timer-hide');
+
+    // audioPanel.style.display = 'none';
+    audioPanel.style.display = 'block';
+    volumeControl.style.display = 'none';
 }
 let buttonStop = document.getElementById("stopButton");
 buttonStop.addEventListener('click',()=>{
@@ -211,19 +218,22 @@ checkboxMic.addEventListener('click',()=>{
     isMicEnable = !isMicEnable;
 })
 
-// let voiceVolumeControl = document.getElementById('voiceVolumeControl');
-// voiceVolumeControl.addEventListener('change',()=>{
-//     console.log(voiceVolumeControl.value);
-//     const request = { recordingStatus: 'changeVoiceVolume' , volume: voiceVolumeControl.value};
-//     sendMessage(request);
-// })
+let volumeControl = document.getElementById('volumeControl');
+let audioPanel = document.getElementById('audioPanel');
 
-// let systemVolumeControl = document.getElementById('systemVolumeControl');
-// systemVolumeControl.addEventListener('change',()=>{
-//     console.log(systemVolumeControl.value);
-//     const request = { recordingStatus: 'changeSystemVolume' , volume: systemVolumeControl.value};
-//     sendMessage(request);
-// })
+let voiceVolumeControl = document.getElementById('voiceVolumeControl');
+voiceVolumeControl.addEventListener('change',()=>{
+    console.log(voiceVolumeControl.value);
+    const request = { recordingStatus: 'changeVoiceVolume' , volume: voiceVolumeControl.value};
+    sendMessage(request);
+})
+
+let systemVolumeControl = document.getElementById('systemVolumeControl');
+systemVolumeControl.addEventListener('change',()=>{
+    console.log(systemVolumeControl.value);
+    const request = { recordingStatus: 'changeSystemVolume' , volume: systemVolumeControl.value};
+    sendMessage(request);
+})
 
 checkAut();
 populateMicSelect();

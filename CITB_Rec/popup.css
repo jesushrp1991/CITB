@@ -52,14 +52,14 @@
   cursor: pointer;
 }
 .tab-screen-icons{
-  width: 120px;
-  height: 90px ;
+  width: 80px;
+  height: 60px ;
   padding-left: 3px;
   padding-right: 3px;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 90%;
+  background-size: contain;
   cursor: pointer;
 }
 .select-icon:hover {
@@ -156,7 +156,7 @@
 }
 .card-title {
   padding-left: 55px;
-  margin-bottom:10px;
+  /* margin-bottom:2px !important; */
 }
 
 .title{
