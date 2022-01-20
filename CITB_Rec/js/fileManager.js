@@ -100,10 +100,10 @@ const getLinkFileDrive = async() => {
 const downloadFromDrive = (fileId,name) => {
   gapi.client.drive.files.get(
       {fileId: fileId, alt: 'media'}
-  ).then((response) => {
+  ).then( async(response) => {
       // response.body has the file data
-      // console.log(response);
-      var blob = new Blob(response.blob, {
+      console.log(response);
+      var blob = new Blob([response.body], {
         type: "video/webm"
       });
       var url = URL.createObjectURL(blob);
@@ -111,7 +111,7 @@ const downloadFromDrive = (fileId,name) => {
       document.body.appendChild(a);
       a.style = "display: none";
       a.href = url;
-      a.download = name + ".webm";
+      a.download = name;
       a.click();
       window.URL.revokeObjectURL(url);
   }, (reason) => {
