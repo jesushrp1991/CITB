@@ -277,7 +277,18 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
         }
         else {  
-          window.resultStream = window.desktopStream;  
+          const context = new AudioContext();  
+          let sourceDesktop = null;  
+          if(window.desktopStream.getAudioTracks().length > 0){  
+            sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
+          }  
+          const destination = context.createMediaStreamDestination();  
+          window.desktopGain = context.createGain();  
+          window.desktopGain.gain.value = 0.7;  
+          if(sourceDesktop != null){  
+            sourceDesktop.connect(window.desktopGain).connect(destination);  
+          }
+          window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()]);
         }  
         window.recorder = new MediaRecorder(window.resultStream); 
         window.recorder.ondataavailable = event => { 
