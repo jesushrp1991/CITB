@@ -136,6 +136,12 @@ const displayRecordingMode = () =>{
 
     audioPanel.style.display = 'none';
     volumeControl.style.display = 'block';
+    chrome.storage.local.get('voiceVolumeControl', (result)=> {
+        voiceVolumeControl.value = result.voiceVolumeControl;
+    });
+    chrome.storage.local.get('systemVolumeControl', (result)=> {
+        systemVolumeControl.value = result.systemVolumeControl;
+    });
 }
 buttonRec.addEventListener('click',() =>{
     displayRecordingMode();
@@ -151,11 +157,14 @@ const displayNotRecordingMode = () =>{
     // audioPanel.style.display = 'none';
     audioPanel.style.display = 'block';
     volumeControl.style.display = 'none';
+    chrome.storage.local.set({voiceVolumeControl: 0.5});
+    chrome.storage.local.set({systemVolumeControl: 0.5});
+
 }
 let buttonStop = document.getElementById("stopButton");
 buttonStop.addEventListener('click',()=>{
-    displayNotRecordingMode()
-;    sendRecordCommand();
+    displayNotRecordingMode();
+    sendRecordCommand();
 });
 
 let buttonPlayPause = document.getElementById("playPauseButton");
@@ -223,9 +232,9 @@ let audioPanel = document.getElementById('audioPanel');
 
 let voiceVolumeControl = document.getElementById('voiceVolumeControl');
 voiceVolumeControl.addEventListener('change',()=>{
-    console.log(voiceVolumeControl.value);
     const request = { recordingStatus: 'changeVoiceVolume' , volume: voiceVolumeControl.value};
     sendMessage(request);
+    chrome.storage.local.set({voiceVolumeControl: voiceVolumeControl.value});
 })
 
 let systemVolumeControl = document.getElementById('systemVolumeControl');
@@ -233,6 +242,7 @@ systemVolumeControl.addEventListener('change',()=>{
     console.log(systemVolumeControl.value);
     const request = { recordingStatus: 'changeSystemVolume' , volume: systemVolumeControl.value};
     sendMessage(request);
+    chrome.storage.local.set({systemVolumeControl: systemVolumeControl.value});
 })
 
 checkAut();
