@@ -78,11 +78,12 @@
 .button-rec{
   width: 80% !important;
   height: 40px !important;
-  transition: opacity 0.5s, 
-  visibility 0.5s;
+  transition: opacity 0.8s, 
+  visibility 0.8s;
   opacity: 1;
   visibility: innherit ;
   border-radius: 15px !important;
+  margin-left: -5px !important;
 }
 
 /* .button-rec-img{
@@ -91,16 +92,13 @@
 } */
 
 .select-mic{
-  width: 200px !important;
+  width: 180px !important;
   margin-top: 5px;
 }
 
-.card-title{
-  padding-left: 55px;
-}
-.last-options{
+/* .last-options{
   padding-left: 95px;
-}
+} */
 .card-body{
   padding: 10px !important;
 }
@@ -153,13 +151,11 @@
   background-image: url('./assets/alertpopup.png');
 }
 
-.card{
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: 4px dotted rgba(0,0,0,.300) !important;
+.card-borderless{
+  border: none !important ;
 }
 .card-title {
+  padding-left: 55px;
   margin-bottom:10px;
 }
 
@@ -169,4 +165,13 @@
 
 .mic-select-text {
   padding-top: 10px;
+}
+
+.description-padding {
+  padding-top: 12px;
+}
+
+.container {
+  padding-right: 0px !important;
+  padding-left: 20px !important;
 }

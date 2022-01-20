@@ -45,6 +45,7 @@ const getCurrentState = () =>{
     })
 }
 
+let citbButtonsContainer = document.getElementById('citbButtonsContainer');
 let isCITBPanelVisible;
 const initialCITBPanelStatus = () =>{
     chrome.storage.sync.get('isCITBPanelVisible', (result) => {
@@ -179,9 +180,14 @@ recordScreen.addEventListener('click',()=>{
 const checkCITBPanelStatus = () =>{
     if(isCITBPanelVisible){
         citbButtonsContainer.classList.remove('expanded');
+        // citbButtonsContainer.setAttribute('class','')
+        citbButtonsContainer.style.border = 'none';
     }
     else{
         citbButtonsContainer.classList.add('expanded');
+        // citbButtonsContainer.setAttribute('class','expanded');
+        citbButtonsContainer.style.border = '';
+
     }
     isCITBPanelVisible = !isCITBPanelVisible;
 
@@ -205,19 +211,19 @@ checkboxMic.addEventListener('click',()=>{
     isMicEnable = !isMicEnable;
 })
 
-let voiceVolumeControl = document.getElementById('voiceVolumeControl');
-voiceVolumeControl.addEventListener('change',()=>{
-    console.log(voiceVolumeControl.value);
-    const request = { recordingStatus: 'changeVoiceVolume' , volume: voiceVolumeControl.value};
-    sendMessage(request);
-})
+// let voiceVolumeControl = document.getElementById('voiceVolumeControl');
+// voiceVolumeControl.addEventListener('change',()=>{
+//     console.log(voiceVolumeControl.value);
+//     const request = { recordingStatus: 'changeVoiceVolume' , volume: voiceVolumeControl.value};
+//     sendMessage(request);
+// })
 
-let systemVolumeControl = document.getElementById('systemVolumeControl');
-systemVolumeControl.addEventListener('change',()=>{
-    console.log(systemVolumeControl.value);
-    const request = { recordingStatus: 'changeSystemVolume' , volume: systemVolumeControl.value};
-    sendMessage(request);
-})
+// let systemVolumeControl = document.getElementById('systemVolumeControl');
+// systemVolumeControl.addEventListener('change',()=>{
+//     console.log(systemVolumeControl.value);
+//     const request = { recordingStatus: 'changeSystemVolume' , volume: systemVolumeControl.value};
+//     sendMessage(request);
+// })
 
 checkAut();
 populateMicSelect();

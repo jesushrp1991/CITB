@@ -12,12 +12,12 @@
     <link href="./css/popupCITB.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div class="container">
+    <div class="container m-1">
       <div class="row p-1 justify-content-center">
         <div class="header-icon"></div>
       </div>
-      <div class="row row p-1">
-        <div class="card" style="width: 22rem">
+      <div class="row p-1">
+        <div class="card card-borderless" style="width: 22rem">
           <div class="card-body">
             <h6 class="card-title title">Elige fuente de video</h6>
             <div div class="row">
@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div class="row row p-1">
+      <div id= "audio" class="row p-1">
         <div class="card" style="width: 22rem">
           <div class="card-body">
             <h6 class="card-title title">Elige fuente de audio</h6>
@@ -68,7 +68,7 @@
                     class="custom-select custom-select-sm select-mic"
                   ></select>
                   <div class="row justify-content-center">
-                    <h8>Escoger micrófono</h8>
+                    <h8 class="description-padding">Escoger micrófono</h8>
                   </div>
                 </div>
               </div>
@@ -76,8 +76,8 @@
           </div>
         </div>
       </div>
-      <div class="row row p-1">
-        <div class="card" style="width: 22rem">
+      <div class="row p-1">
+        <div class="card card-borderless" style="width: 22rem">
           <div class="card-body">
             <div div class="row">
               <div class="col justify-content-center">
@@ -117,20 +117,23 @@
           </div>
         </div>
       </div>
-
-      <div class="buttonsBorder" id="citbButtonsContainer">
-        <button
-          type="button"
-          id="button1"
-          class="buttonOnOffDeactivate"
-        ></button>
-        <button type="button" id="button3" class="button3Deactivated"></button>
-        <button type="button" id="button5" class="buttonChooseMic"></button>
-        <button type="button" id="button4" class="button4WebContainer"></button>
+      <div class="card" id="citbButtonsContainer" style="width: 22rem">
+        <div class="card-body">
+          <div class="buttonsBorder">
+            <button
+              type="button"
+              id="button1"
+              class="buttonOnOffDeactivate"
+            ></button>
+            <button type="button" id="button3" class="button3Deactivated"></button>
+            <button type="button" id="button5" class="buttonChooseMic"></button>
+            <button type="button" id="button4" class="button4WebContainer"></button>
+          </div>
+        </div>
       </div>
 
-      <input type="range" class="form-range" id="voiceVolumeControl" min="0" max="2" step="0.4">
-      <input type="range" class="form-range" id="systemVolumeControl" min="0" max="2" step="0.4">
+      <!-- <input type="range" class="form-range" id="voiceVolumeControl" min="0" max="2" step="0.4">
+      <input type="range" class="form-range" id="systemVolumeControl" min="0" max="2" step="0.4"> -->
 
       <div class="row p-2 justify-content-center button-active">
         <button id="button-rec" class="btn-danger button-rec">
