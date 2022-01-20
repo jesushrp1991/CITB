@@ -136,9 +136,20 @@ const displayRecordingMode = () =>{
 
     audioPanel.style.display = 'none';
     volumeControl.style.display = 'block';
+    chrome.storage.local.get('isMicEnable', (result)=> {
+        console.log("mic",result)
+        if(result == undefined){
+            voiceVolumeControl.disabled = false;    
+        }
+        else{
+            voiceVolumeControl.disabled = result.isMicEnable;    
+            isMicEnable = result.isMicEnable;    
+        }
+    });
+    
     chrome.storage.local.get('voiceVolumeControl', (result)=> {
         voiceVolumeControl.value = result.voiceVolumeControl;
-    });
+    });    
     chrome.storage.local.get('systemVolumeControl', (result)=> {
         systemVolumeControl.value = result.systemVolumeControl;
     });
@@ -159,6 +170,8 @@ const displayNotRecordingMode = () =>{
     volumeControl.style.display = 'none';
     chrome.storage.local.set({voiceVolumeControl: 0.5});
     chrome.storage.local.set({systemVolumeControl: 0.5});
+    voiceVolumeControl.disabled = false;
+    // chrome.storage.sync.set({isMicEnable: true}, () => {});
 
 }
 let buttonStop = document.getElementById("stopButton");
@@ -206,17 +219,24 @@ const checkCITBPanelStatus = () =>{
 
     }
     isCITBPanelVisible = !isCITBPanelVisible;
-
-   chrome.storage.sync.set({isCITBPanelVisible: isCITBPanelVisible}, () => {});
+    chrome.storage.local.set({isCITBPanelVisible: isCITBPanelVisible}, () => {});
 }
 
 let citbOptions = document.getElementById('citbOptions');
 citbOptions.addEventListener('click',checkCITBPanelStatus)
 
-let isMicEnable = true;
+let isMicEnable;
 let checkboxMic = document.getElementById('checkboxMic');
 checkboxMic.addEventListener('click',()=>{
-    if (isMicEnable){
+    console.log("isMicEnable",isMicEnable)
+    if (isMicEnable == undefined){
+        checkboxMic.classList.remove('mic-on')
+        checkboxMic.classList.add('mic-off')
+        isMicEnable = false;
+        chrome.storage.sync.set({isMicEnable: isMicEnable}, () => {});
+        return;
+    } 
+    else if (isMicEnable){
         checkboxMic.classList.remove('mic-on')
         checkboxMic.classList.add('mic-off')
     } 
@@ -225,6 +245,7 @@ checkboxMic.addEventListener('click',()=>{
         checkboxMic.classList.add('mic-on')
     }
     isMicEnable = !isMicEnable;
+    chrome.storage.sync.set({isMicEnable: isMicEnable}, () => {});
 })
 
 let volumeControl = document.getElementById('volumeControl');
