@@ -144,11 +144,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         openRecList();
         break;
       case popupMessages.changeVoiceVolume :
-        window.voiceGain.gain.value = parseInt(message.volume);
+        window.voiceGain.gain.value = message.volume;
         break;
       case popupMessages.changeSystemVolume :
-        console.log(message.volume)
-        window.desktopGain.gain.value = parseInt(message.volume);
+        window.desktopGain.gain.value = message.volume;
         break;
     }
     return true;
