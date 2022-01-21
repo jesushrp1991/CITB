@@ -67,10 +67,10 @@ import { environment } from "../config/environment.js";
 
   const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink) =>{
     try{
-      let exitsDB = await Dexie.exists("CITBQueueRecords");
-      if(!exitsDB){
-        createRecQueueDB();
-      }
+      // let exitsDB = await Dexie.exists("CITBQueueRecords");
+      // if(!exitsDB){
+      //   createRecQueueDB();
+      // }
       await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration,thumbnailLink:thumbnailLink});  
     }catch(error){
         console.log(error);
@@ -86,7 +86,7 @@ import { environment } from "../config/environment.js";
           throw error; //needed to abort the transaction.
       }
   }
-  delQueueDB();
+  //delQueueDB();
 
   
   const getLastElementIdQueueDB = async () =>{
@@ -262,6 +262,7 @@ const tryPersistWithoutPromtingUser = async () => {
   const prepareDB = async() =>{
     delDB();           
     createDB();
+    createRecQueueDB();
     await initStoragePersistence();
     // console.log(isStoragePersisted());
     showEstimatedQuota();

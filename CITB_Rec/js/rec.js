@@ -11,11 +11,8 @@ import {
 } from './recTimer.js' 
  
 import { 
-    addDB, 
-    selectDB, 
-    showEstimatedQuota, 
-    prepareDB, 
-    delLastItem 
+    addDB,
+    showEstimatedQuota
 } from "./database.js"; 
  
   const verifyAvailableSpaceOnDisk = async () =>{   

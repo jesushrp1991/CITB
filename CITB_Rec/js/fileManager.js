@@ -313,7 +313,7 @@ const saveVideo = async(localDownload) =>{
   // console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
-    createRecQueueDB();
+    // createRecQueueDB();
     var thumbnailGeneratedLink;
     var duration;
     try {
