@@ -268,6 +268,8 @@ const tryPersistWithoutPromtingUser = async () => {
     showEstimatedQuota();
   }
 
+  prepareDB();
+
   const delLastItem = async (itemsToDel = 1) => {    
     let last;
     for(let i=0;i<=itemsToDel;i++){
