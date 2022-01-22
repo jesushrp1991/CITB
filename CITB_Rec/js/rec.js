@@ -30,7 +30,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
       let isMac = navigator.userAgentData.platform.toLowerCase().includes('mac');  
       let  constraints,constraintsTabAudio,constraintsDesktopVideo; 
       //MAC!!!
-      console.log("RecordScreen")
       if(isMac){ 
         console.log("Es MAC")
         let micConstraints;
@@ -243,7 +242,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
         }  
 
         window.desktopStream = await navigator.mediaDevices.getUserMedia(constraints); 
-        if (idMic != undefined && idMic != null && idMic != '') {  
+        if (idMic != undefined && idMic != null && idMic != '') { 
           const micConstraints = {    
             video: false,    
             audio: {    
@@ -251,13 +250,14 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             },    
           }   
           window.micStream = await navigator.mediaDevices.getUserMedia(micConstraints);  
+    
           const context = new AudioContext();  
           let sourceDesktop = null;  
-          if(window.desktopStream && window.desktopStream.getAudioTracks().length > 0){  
+          if(window.desktopStream && window.desktopStream.getAudioTracks().length > 0){
             sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
           }  
-          const sourceMic = context.createMediaStreamSource(window.micStream);  
-          const destination = context.createMediaStreamDestination();  
+          const sourceMic = context.createMediaStreamSource(window.micStream);
+          const destination = context.createMediaStreamDestination();
    
           window.desktopGain = context.createGain();  
           window.voiceGain = context.createGain();  
@@ -268,26 +268,25 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           if(sourceDesktop != null){  
             sourceDesktop.connect(window.desktopGain).connect(destination);  
           }  
-          sourceMic.connect(window.voiceGain).connect(destination);  
-   
+          sourceMic.connect(window.voiceGain).connect(destination);   
            
           window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
         }
         else {  
-          window.resultStream = window.desktopStream;  
+          // window.resultStream = window.desktopStream;  
 
-          // const context = new AudioContext();  
-          // let sourceDesktop = null;  
-          // if(window.desktopStream.getAudioTracks().length > 0){  
-          //   sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
-          // }  
-          // const destination = context.createMediaStreamDestination();  
-          // window.desktopGain = context.createGain();  
-          // window.desktopGain.gain.value = 0.7;  
-          // if(sourceDesktop != null){  
-          //   sourceDesktop.connect(window.desktopGain).connect(destination);  
-          // }
-          // window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()]);
+          const context = new AudioContext();  
+          let sourceDesktop = null;  
+          if(window.desktopStream.getAudioTracks().length > 0){  
+            sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
+          }  
+          const destination = context.createMediaStreamDestination();  
+          window.desktopGain = context.createGain();  
+          window.desktopGain.gain.value = 0.7;  
+          if(sourceDesktop != null){  
+            sourceDesktop.connect(window.desktopGain).connect(destination);  
+          }
+          window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()]);
         }  
         window.recorder = new MediaRecorder(window.resultStream); 
         window.recorder.ondataavailable = event => { 
