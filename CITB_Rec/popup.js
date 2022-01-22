@@ -136,7 +136,7 @@ const displayRecordingMode = () =>{
 
     audioPanel.style.display = 'none';
     volumeControl.style.display = 'block';
-    chrome.storage.local.get('isMicEnable', (result)=> {
+    chrome.storage.sync.get('isMicEnable', (result)=> {
         console.log("mic",result)
         if(result == undefined){
             voiceVolumeControl.disabled = false;    
@@ -239,6 +239,8 @@ checkboxMic.addEventListener('click',()=>{
     else if (isMicEnable){
         checkboxMic.classList.remove('mic-on')
         checkboxMic.classList.add('mic-off')
+        isMicEnable = false;
+        chrome.storage.sync.set({isMicEnable: isMicEnable}, () => {});
     } 
     else{
         checkboxMic.classList.remove('mic-off')
