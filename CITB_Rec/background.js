@@ -1,8 +1,8 @@
 import {
    showEstimatedQuota
-  ,prepareDB
   ,delLastItem
   ,getDriverLinkInQueueDB
+  ,createDB
 } from "./js/database.js";
 
 import {
@@ -214,6 +214,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           window.fileName = msg.fileName;
           window.calendarId = msg.calendarId;
           // await prepareDB();
+          createDB();
           window.meetStartTime = dayjs().format();
           startRecordScreen(window.idMic,window.idTab,window.recMode);
         }

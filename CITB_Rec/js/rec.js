@@ -253,7 +253,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           window.micStream = await navigator.mediaDevices.getUserMedia(micConstraints);  
           const context = new AudioContext();  
           let sourceDesktop = null;  
-          if(window.desktopStream.getAudioTracks().length > 0){  
+          if(window.desktopStream && window.desktopStream.getAudioTracks().length > 0){  
             sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
           }  
           const sourceMic = context.createMediaStreamSource(window.micStream);  
