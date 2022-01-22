@@ -78,7 +78,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
               sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
             }  
             let sourceMic = null;
-            if(window.micStream.getAudioTracks().length >0){
+            if(window.micStream && window.micStream.getAudioTracks().length >0){
               //SOURCE 2 => MIC AUDIO 
               sourceMic = context.createMediaStreamSource(window.micStream); 
             }
@@ -157,7 +157,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
               sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
             }  
             let sourceMic = null;
-            if(window.micStream.getAudioTracks().length >0){
+            if(window.micStream && window.micStream.getAudioTracks().length >0){
               //SOURCE 2 => MIC AUDIO 
               sourceMic = context.createMediaStreamSource(window.micStream); 
             }
