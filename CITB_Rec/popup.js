@@ -149,6 +149,12 @@ const displayRecordingMode = () =>{
     chrome.storage.local.get('systemVolumeControl', (result)=> {
         systemVolumeControl.value = result.systemVolumeControl;
     });
+    chrome.storage.local.get('recMode', (result)=> {
+        if(result.recMode == 'recordTabs')
+            recordTabs.click();
+        else
+            recordScreen.click();
+    });
 }
 buttonRec.addEventListener('click',() =>{
     displayRecordingMode();
@@ -168,7 +174,7 @@ const displayNotRecordingMode = () =>{
     chrome.storage.local.set({systemVolumeControl: 1});
     voiceVolumeControl.disabled = false;
     chrome.storage.local.set({isMicEnable: true}, () => {});
-    // micOn();    
+    chrome.storage.local.set({recMode: 'recordTabs'}, () => {});
 }
 let buttonStop = document.getElementById("stopButton");
 buttonStop.addEventListener('click',()=>{
@@ -194,12 +200,15 @@ recordTabs.addEventListener('click',()=>{
     recordTabs.classList.add('selected-icon');
     recordScreen.classList.remove('selected-icon');
     window.recMode = 'recordTabs'
+    chrome.storage.local.set({recMode: window.recMode}, () => {});
+
 });
 
 recordScreen.addEventListener('click',()=>{
     recordScreen.classList.add('selected-icon');
     recordTabs.classList.remove('selected-icon');
     window.recMode = 'recordScreen'
+    chrome.storage.local.set({recMode: window.recMode}, () => {});
 });
 
 const checkCITBPanelStatus = () =>{
