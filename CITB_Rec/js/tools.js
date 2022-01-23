@@ -51,7 +51,7 @@ const createListForFrontend = (list,carpetaBase) =>{
             }
         }
     }
-    return listResult;
+    return listResult.reverse();
 }
 
 
