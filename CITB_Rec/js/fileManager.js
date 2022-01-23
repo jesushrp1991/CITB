@@ -365,7 +365,8 @@ const listUploadQueue = async() =>{
         const videoData = await getVideoCover(element.file, 1);
         const cover = videoData.blob;
         let thumbnailGeneratedLink = URL.createObjectURL(cover);
-
+        window.startTimeCurrentFile = element.dateStart;
+        window.endTimeCurrentFile = element.dateEnd;
         let details = {
              id: element.id 
             ,name: element.name

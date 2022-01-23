@@ -111,6 +111,9 @@ const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
 })
 
 const calculateRecTime = (details) =>{
+    if(details.msDuration == 0){
+        return "00:00";
+    }
     let seconds,minutes;
     if(details.msDuration){
          seconds = parseInt(details.msDuration/1000);

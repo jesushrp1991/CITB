@@ -27,8 +27,8 @@ const createListForFrontend = (list,carpetaBase) =>{
                 if( element.videoMediaMetadata ){
                     durationMillis = element.videoMediaMetadata.durationMillis
                 }else{
-                    const initDate = dayjs(window.meetStartTime);
-                    const endDate = dayjs(window.meetEndTime);
+                    const initDate = dayjs(window.startTimeCurrentFile);
+                    const endDate = dayjs(window.endTimeCurrentFile);
                     let millisecond = endDate.diff(initDate,"millisecond",true);
                     durationMillis = millisecond;
                 }
