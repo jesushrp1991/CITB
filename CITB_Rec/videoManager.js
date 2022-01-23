@@ -130,6 +130,8 @@ const calculateRecTime = (details) =>{
     if(seconds < 10){
         seconds = '0' + seconds
     }
+    seconds = seconds.toString();
+    seconds = seconds[0] + seconds[1];
     return `${minutes}:${seconds}`;
 }
 
