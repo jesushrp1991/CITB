@@ -328,7 +328,7 @@ const saveVideo = async(localDownload) =>{
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
-    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,duration,thumbnailGeneratedLink); 
+    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,duration,thumbnailGeneratedLink,window.calendarId); 
     //Crear alerta para que inicie el proceso de subida
     //Cuando este subido modificar tabla para incluir  DriveLink
   }else{
@@ -370,6 +370,7 @@ const uploadQueueDaemon = async() =>{
         window.nameToUploads = nextFile.name; 
         window.starTimeUpload = nextFile.dateStart; 
         window.endTimeUpload = nextFile.dateEnd; 
+        window.calendarId = nextFile.calendarId;
         prepareUploadToDrive(nextFile.file);
     }
 }

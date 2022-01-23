@@ -60,18 +60,19 @@ import { environment } from "../config/environment.js";
             dateEnd,
             driveLink,
             msDuration,
-            thumbnailLink
+            thumbnailLink,
+            calendarId
             `,
         });
   }
 
-  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink) =>{
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink,calendarId) =>{
     try{
       // let exitsDB = await Dexie.exists("CITBQueueRecords");
       // if(!exitsDB){
       //   createRecQueueDB();
       // }
-      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration,thumbnailLink:thumbnailLink});  
+      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration,thumbnailLink:thumbnailLink,calendarId:calendarId});  
     }catch(error){
         console.log(error);
         throw error;
