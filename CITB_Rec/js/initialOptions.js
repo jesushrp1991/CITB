@@ -15,15 +15,22 @@ let select = document.getElementById('miclist');
 const populateCalendarSelect = async (calendarList) => {
     while (select.options.length > 0) {                
         select.remove(0);
-    }  
-    calendarList.forEach(element => {
-        var option = document.createElement("option");
-        option.text = element.summary;
-        option.value = element.id;
-        select.add(option);
-    });
+    }
+    chrome.storage.local.get('lastCalendar', (result)=> {
+        calendarList.forEach(element => {
+            var option = document.createElement("option");
+            option.text = element.summary;
+            option.value = element.id;
+            select.add(option);
+            if(result.lastCalendar == element.id){
+                select.value = element.id; 
+            }
+        });
+    }); 
+    
 }
 
+let checkboxCalendar = document.getElementById('checkboxCalendar');
 const recOk = () =>{
     let fileName = document.getElementById('fileName').value;
     if(fileName == '' || fileName == undefined || fileName == null){
@@ -31,10 +38,10 @@ const recOk = () =>{
         return;
     }
     else{
-        let idCalendar;
-        let checkboxCalendar = document.getElementById('checkboxCalendar');
+        let idCalendar;        
         checkboxCalendar.checked ? idCalendar = select.value : idCalendar = null;
         port.postMessage({okRec: true ,fileName:fileName ,calendarId: idCalendar});
+        chrome.storage.local.set({lastCalendar: idCalendar});
         window.close();
     }
 }
