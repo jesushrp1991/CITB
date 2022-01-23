@@ -78,14 +78,14 @@ import { environment } from "../config/environment.js";
     }
   }
 
-  const delQueueDB = async () => {
-      try{
-          await queueDB.delete();
-      }catch(error){
-          console.log(error);
-          throw error; //needed to abort the transaction.
-      }
-  }
+  // const delQueueDB = async () => {
+  //     try{
+  //         await queueDB.delete();
+  //     }catch(error){
+  //         console.log(error);
+  //         throw error; //needed to abort the transaction.
+  //     }
+  // }
   //delQueueDB();
 
   
@@ -268,7 +268,14 @@ const tryPersistWithoutPromtingUser = async () => {
     showEstimatedQuota();
   }
 
-  prepareDB();
+  const initDB = async() =>{
+    createRecQueueDB();
+    await initStoragePersistence();
+    // console.log(isStoragePersisted());
+    showEstimatedQuota();
+  }
+
+  initDB();
 
   const delLastItem = async (itemsToDel = 1) => {    
     let last;
