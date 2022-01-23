@@ -46,10 +46,6 @@ import { environment } from "../config/environment.js";
   }
     
   const createRecQueueDB = () =>{
-      // let exitsDB = await Dexie.exists("CITBQueueRecords");
-      // if(exitsDB){
-      //   delQueueDB();
-      // }
       queueDB = new Dexie("CITBQueueRecords", { autoOpen: true });
       queueDB.version(1).stores({
         records: `
@@ -59,36 +55,19 @@ import { environment } from "../config/environment.js";
             dateStart,
             dateEnd,
             driveLink,
-            msDuration,
-            thumbnailLink,
             calendarId
             `,
         });
   }
 
-  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,msDuration,thumbnailLink,calendarId) =>{
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,calendarId) =>{
     try{
-      // let exitsDB = await Dexie.exists("CITBQueueRecords");
-      // if(!exitsDB){
-      //   createRecQueueDB();
-      // }
-      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,msDuration:msDuration,thumbnailLink:thumbnailLink,calendarId:calendarId});  
+      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,calendarId:calendarId});  
     }catch(error){
         console.log(error);
         throw error;
     }
   }
-
-  // const delQueueDB = async () => {
-  //     try{
-  //         await queueDB.delete();
-  //     }catch(error){
-  //         console.log(error);
-  //         throw error; //needed to abort the transaction.
-  //     }
-  // }
-  //delQueueDB();
-
   
   const getLastElementIdQueueDB = async () =>{
       try{
@@ -150,7 +129,6 @@ import { environment } from "../config/environment.js";
           return;
         }
         let result = await queueDB.records.orderBy('id').reverse().toArray();
-        // console.log("COLLADOlistQueueDB",result);
         return result; 
     }catch(error){
         console.log(error);
@@ -163,10 +141,7 @@ import { environment } from "../config/environment.js";
     if(!exitsDB){
       return;
     }
-    // console.log("Search by id",id);
     let result;
-    // const result = await queueDB.records.where({id: id.toString()}).first();
-    // const result = await queueDB.records.get({id});
     await queueDB.records.each(element => {  
       if(element.id == id){
         result = element.driveLink;

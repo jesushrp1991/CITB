@@ -2,14 +2,11 @@ import { environment } from "../config/environment.js";
 import { errorHandling } from './errorHandling.js'
 import { 
      selectDB
-    ,createRecQueueDB
     ,getLastElementIdQueueDB
-    ,getNextQueueFile 
     ,saveLinktoDB
     ,delFileInDB
     ,addRecQueueDB
     ,listQueueDB
-    ,removeRecordQueueDB
 } from "./database.js";
 
 const moveDriveFileToFolder = async (destFolderId,originalDocID) => {    
@@ -91,9 +88,6 @@ const getLinkFileDrive = async() => {
     let fileList = await getDriveFileList(window.defautCITBFolderID);
     let file = fileList.filter(x => x.name === window.nameToUploads);
     let fileId = file.length > 0 ? file[0].id : 0;
-    // let shareLink = "https://drive.google.com/file/d/" + fileId +  "/view?usp=sharing";
-    // chrome.storage.sync.set({shareLink: shareLink}, () =>{});
-    // return shareLink;
     chrome.storage.sync.set({shareLink: fileId}, () =>{});
     return fileId;
 }
@@ -144,7 +138,6 @@ const addEventToGoogleCalendar = (linkDrive) => {
 const getCalendarList = async() =>{
   let result = await gapi.client.calendar.calendarList.list();
   return result.result.items;
-
 }
 
   const verificateAuth = () => {
@@ -230,9 +223,7 @@ const prepareUploadToDrive = (obj) => {
       // console.log(msg);
     });
   }
-  /* 
-  ** DESKTOP REC
-  */
+  
 window.fileName = "CITB Rec";
 const prepareRecordFile = (finalArray) => {
     var blob = new Blob(finalArray, {
@@ -243,7 +234,6 @@ const prepareRecordFile = (finalArray) => {
     return file;
   }
 
-  //test only, to save in mi pc
   const download = (test,fileName) => {
     let finalName;
     fileName? fileName = fileName : finalName = window.fileName;
@@ -258,11 +248,9 @@ const prepareRecordFile = (finalArray) => {
     a.download = finalName + Date() + ".webm";
     a.click();
     window.URL.revokeObjectURL(url);
-    // window.fileName = "CITB Rec";
 }
 function getVideoCover(file, seekTo = 0.0) {
   return new Promise((resolve, reject) => {
-      // load the file to a video player
       var duration = 0;
       const videoPlayer = document.createElement('video');
       videoPlayer.setAttribute('src', URL.createObjectURL(file));
@@ -270,9 +258,7 @@ function getVideoCover(file, seekTo = 0.0) {
       videoPlayer.addEventListener('error', (ex) => {
           reject("error when loading video file", ex);
       });
-      // load metadata of the video to get video duration and dimensions
       videoPlayer.addEventListener('loadedmetadata', () => {
-          // seek to user defined timestamp (in seconds) if possible
           duration = videoPlayer.duration;
           if (videoPlayer.duration < seekTo) {
               reject("video is too short.");
@@ -284,8 +270,6 @@ function getVideoCover(file, seekTo = 0.0) {
           }, 200);
           // extract video thumbnail once seeking is complete
           videoPlayer.addEventListener('seeked', () => {
-              // console.log('video is now paused at %ss.', seekTo);
-              // define a canvas to have the same dimension as the video
               const canvas = document.createElement("canvas");
               canvas.width = videoPlayer.videoWidth;
               canvas.height = videoPlayer.videoHeight;
@@ -310,27 +294,13 @@ const saveVideo = async(localDownload) =>{
   save.forEach(element => {
     finalArray.push(element.record[0]);
   });
-  // console.log("FinalArray",finalArray);
   if(environment.upLoadToDrive && !localDownload){
     let file = prepareRecordFile(finalArray);
-    // createRecQueueDB();
-    var thumbnailGeneratedLink;
-    var duration;
     try {
-      // get the frame at 1.5 seconds of the video file
-      const videoData = await getVideoCover(file, 1)
-      const cover = videoData.blob;
-      // duration = videoData.duration;
-      // print out the result image blob
-      thumbnailGeneratedLink = URL.createObjectURL(cover);
-      window.thumbnailForFileInProgress = thumbnailGeneratedLink;
-      // window.durationForFileInProgress = duration;
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
-    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,duration,thumbnailGeneratedLink,window.calendarId); 
-    //Crear alerta para que inicie el proceso de subida
-    //Cuando este subido modificar tabla para incluir  DriveLink
+    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,window.calendarId); 
   }else{
     if(finalArray.length != 0 ){
       download(finalArray);
@@ -364,7 +334,6 @@ const uploadQueueDaemon = async() =>{
         return;
     }
     if(lastElemenID.file != "uploaded" && lastElemenID.file != "folder" ){
-        // let nextFile = await getNextQueueFile(window.fileIDUploadInProgress);
         let nextFile = lastElemenID;
         window.fileIDUploadInProgress = nextFile.id;
         window.nameToUploads = nextFile.name; 
@@ -390,11 +359,13 @@ const listUploadQueue = async() =>{
           upload = 'inProgress';
         }else if (element.file == 'uploaded' ){
             upload = 'uploaded'
-            // removeRecordQueueDB(element.id);
-            // continue;
         }else{
           upload = 'awaiting';
         }
+        const videoData = await getVideoCover(element.file, 1);
+        const cover = videoData.blob;
+        let thumbnailGeneratedLink = URL.createObjectURL(cover);
+
         let details = {
              id: element.id 
             ,name: element.name
@@ -403,7 +374,7 @@ const listUploadQueue = async() =>{
             ,driveLink : element.driveLink
             ,upload: upload
             ,msDuration: element.msDuration
-            ,thumbnailLink: element.thumbnailLink
+            ,thumbnailLink: thumbnailGeneratedLink
         }
         listResult.push(details);
       }
