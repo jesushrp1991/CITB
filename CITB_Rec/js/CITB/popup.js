@@ -113,16 +113,25 @@ button4WEB.addEventListener("click", async () => {
 const chekWebContainerState = async () => {
   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   chrome.tabs.getSelected(null, (tab) => {
-    chrome.tabs.executeScript(tab.id,{
-      code: 'isOpen = document.getElementById("pWebContainerState").innerText.toString(); isOpen;'
-    },(injectionResults)=>{
-        console.log(injectionResults)
-        injectionResults[0] == "OPEN"
-          ? (webContainerActivated = true)
-          : (webContainerActivated = false);
-          setButtonWebContainerBackground(webContainerActivated);
-      }
-    );
+    const url = tab.url;
+    if (
+      url.includes("meet.google.com") ||
+      url.includes("teams.microsoft.com") ||
+      url.includes("teams.live.com") ||
+      url.includes("zoom.us") ||
+      url.includes("meet.jit.si")
+    ){
+      chrome.tabs.executeScript(tab.id,{
+        code: 'isOpen = document.getElementById("pWebContainerState").innerText.toString(); isOpen;'
+      },(injectionResults)=>{
+          console.log(injectionResults)
+          injectionResults[0] == "OPEN"
+            ? (webContainerActivated = true)
+            : (webContainerActivated = false);
+            setButtonWebContainerBackground(webContainerActivated);
+        }
+      );
+    }
   });
 };
 chekWebContainerState();
