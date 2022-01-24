@@ -97,7 +97,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
             window.recorder = new MediaRecorder(window.resultStream); 
             window.recorder.ondataavailable = event => {  
-              console.log("ON DATA AVAILABLE", videoChunksArray.length,event.data.size);  
+              // console.log("ON DATA AVAILABLE", videoChunksArray.length,event.data.size);  
                 verifyAvailableSpaceOnDisk();  
                 if (event.data.size > 0) {  
                     window.videoChunksArray.push(event.data);  
