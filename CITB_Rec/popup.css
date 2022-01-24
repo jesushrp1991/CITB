@@ -1,3 +1,6 @@
+body {
+  width: 300px;
+}
 .tab-icon {
   background-image: url('./assets/PESTANA.png');
 }
@@ -41,8 +44,8 @@
   background-size: contain;
 }
 .icons{
-  width: 60px;
-  height: 50px ;
+  width: 35px;
+  height: 35px ;
   padding-left: 3px;
   padding-right: 3px;
   background-color: transparent;
@@ -52,8 +55,8 @@
   cursor: pointer;
 }
 .tab-screen-icons{
-  width: 80px;
-  height: 60px ;
+  width: 140px;
+  height: 35px ;
   padding-left: 3px;
   padding-right: 3px;
   background-color: transparent;
@@ -63,15 +66,9 @@
   cursor: pointer;
 }
 .select-icon:hover {
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: red; */
   background-color: #547dbe57;
 }
 .selected-icon {
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: red; */
   background-color: #547dbe57;
 }
 
@@ -86,21 +83,14 @@
   margin-left: -5px !important;
 }
 
-/* .button-rec-img{
-  height: 54px !important;
-  width:344px !important;
-} */
-
 .select-mic{
-  width: 180px !important;
+  width: 150px !important;
   margin-top: 5px;
 }
 
-/* .last-options{
-  padding-left: 95px;
-} */
 .card-body{
-  padding: 10px !important;
+  padding: 3px !important;
+  max-width: 270px !important;
 }
 
 .timer {
@@ -154,24 +144,20 @@
 .card-borderless{
   border: none !important ;
 }
-.card-title {
-  padding-left: 55px;
-  /* margin-bottom:2px !important; */
-}
-
-.title{
-  padding-left: 85px;
-}
 
 .mic-select-text {
   padding-top: 10px;
 }
 
-.description-padding {
-  padding-top: 12px;
-}
-
 .container {
   padding-right: 0px !important;
   padding-left: 20px !important;
+}
+
+.card-title {
+  justify-content: center !important;
+}
+
+.form-range {
+  max-width: 100px !important;
 }

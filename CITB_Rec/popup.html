@@ -17,11 +17,13 @@
         <div class="header-icon"></div>
       </div>
       <div class="row p-1">
-        <div class="card card-borderless" style="width: 22rem">
+        <div class="card card-borderless">
           <div class="card-body">
-            <h6 class="card-title title">Elige fuente de video</h6>
+            <div class="col-12 text-center">
+              <h6>Elige fuente de vídeo</h6>
+            </div>
             <div div class="row">
-              <div class="col-6">
+              <div class="col justify-content-center">
                 <div class="row justify-content-center">
                   <div
                     id="recordTabs"
@@ -32,7 +34,7 @@
                   <h9>Grabar Tab</h9>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col justify-content-center">
                 <div class="row justify-content-center">
                   <div
                     id="recordScreen"
@@ -48,11 +50,13 @@
         </div>
       </div>
       <div id= "audio" class="row p-1">
-        <div id="audioPanel" class="card" style="width: 22rem">
+        <div id="audioPanel" class="card card-borderless">
           <div class="card-body">
-            <h6 class="card-title title">Elige fuente de audio</h6>
+            <div class="col-12 text-center">
+              <h6>Elige fuente de audio</h6>
+            </div>
             <div class="row">
-              <div class="col-4 align-items-center justify-content-center">
+              <div class="col-4 justify-content-center">
                 <div class="row justify-content-center">
                   <!-- <input id="checkboxMic" type="checkbox" checked data-toggle="toggle" data-onstyle="danger" data-size="mini">-->
                   <div id="checkboxMic" class='mic-on icons'></div>
@@ -68,7 +72,7 @@
                     class="custom-select custom-select-sm select-mic"
                   ></select>
                   <div class="row justify-content-center">
-                    <h9 class="description-padding">Escoger micrófono</h9>
+                    <h9>Escoger micrófono</h9>
                   </div>
                 </div>
               </div>
@@ -76,23 +80,23 @@
           </div>
         </div>
 
-        <div id="volumeControl" class="card" style="width: 22rem; display: none">
+        <div id="volumeControl" class="card card-borderless" style="display: none">
           <div class="card-body">
-            <h6 class="card-title title" style="padding-left: 135px;">Volumen</h6>
+            <h6 class="card-title text-center">Volumen</h6>
             <div class="row">
               <div class="col justify-content-center">
                 <div class="row justify-content-center">
                   <input type="range" class="form-range" id="voiceVolumeControl" min="0" max="1" step="0.2">
                 </div>
-                <div class="row justify-content-center p-1">
-                  <h9>Volumen Micrófono</h9>
+                <div class="row text-center">
+                  <h9>Volumen del micrófono</h9>
                 </div>
               </div>
               <div class="col justify-content-center">
                 <div class="row justify-content-center">
                   <input type="range" class="form-range" id="systemVolumeControl" min="0" max="1" step="0.2">
                 </div>
-                <div class="row justify-content-center p-1">
+                <div class="row text-center">
                   <h9>Volumen del sistema</h9>
                 </div>
               </div>
@@ -101,7 +105,7 @@
        </div>
       </div>
       <div class="row p-1">
-        <div class="card card-borderless" style="width: 22rem">
+        <div class="card card-borderless">
           <div class="card-body">
             <div div class="row">
               <div class="col justify-content-center">
@@ -111,7 +115,7 @@
                     class="voiceControlOff icons"
                   ></div>
                 </div>
-                <div class="row justify-content-center">
+                <div class="row text-center">
                   <h9>Control de Voz</h9>
                 </div>
               </div>
@@ -123,16 +127,15 @@
                     role="button"
                   ></div>
                 </div>
-                <div class="row justify-content-center">
+                <div class="row text-center">
                   <h9>Dispositivo CITB</h9>
-                  <!-- <h9>CITB</h9> -->
                 </div>
               </div>
               <div id="recListButton" class="col justify-content-center">
                 <div class="row justify-content-center">
                   <div class="list-rec-icon icons"></div>
                 </div>
-                <div class="row justify-content-center">
+                <div class="row text-center">
                   <h9>Grabaciones</h9>
                 </div>
               </div>
@@ -140,7 +143,7 @@
           </div>
         </div>
       </div>
-      <div class="card" id="citbButtonsContainer" style="width: 22rem">
+      <div class="card" id="citbButtonsContainer">
         <div class="card-body">
           <div class="buttonsBorder">
             <button

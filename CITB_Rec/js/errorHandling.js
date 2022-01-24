@@ -1,5 +1,6 @@
 import { environment } from "../config/environment.js";  
 import { reset } from './recTimer.js';
+import { delQueueDB } from './database.js';
 const errorHandling = (error) => {
     clearInterval(window.iconRecChange);
     setTimeout(()=>{
@@ -9,6 +10,7 @@ const errorHandling = (error) => {
     window.isRecording = false;
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: true}, () => {}); 
+    delQueueDB();
     window.recorder.stop();
     if(window.desktopStream){
         window.desktopStream.getTracks().forEach(track => track.stop())

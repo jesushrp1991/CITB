@@ -68,7 +68,14 @@ import { environment } from "../config/environment.js";
         throw error;
     }
   }
-  
+  const delQueueDB = async () => {
+    try{
+        await queueDB.delete();
+    }catch(error){
+        console.log(error);
+        throw error; //needed to abort the transaction.
+    }
+  }
   const getLastElementIdQueueDB = async () =>{
       try{
           const exitsDB = await Dexie.exists("CITBQueueRecords");
@@ -283,4 +290,5 @@ export {
     ,getDriverLinkInQueueDB
     ,searchBylinkQueueDB
     ,removeRecordQueueDB
+    ,delQueueDB
 }
