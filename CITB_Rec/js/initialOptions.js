@@ -13,20 +13,22 @@ const askCalendarList = () =>{
 
 let select = document.getElementById('miclist');
 const populateCalendarSelect = async (calendarList) => {
+    calendarList = calendarList.reverse();
     while (select.options.length > 0) {                
         select.remove(0);
     }
-    chrome.storage.local.get('lastCalendar', (result)=> {
+    // chrome.storage.local.get('lastCalendar', (result)=> {
         calendarList.forEach(element => {
             var option = document.createElement("option");
             option.text = element.summary;
             option.value = element.id;
             select.add(option);
-            if(result.lastCalendar == element.id){
+            // if(result.lastCalendar == element.id){
+            if( element.primary){
                 select.value = element.id; 
             }
         });
-    }); 
+    // }); 
     
 }
 
@@ -41,7 +43,7 @@ const recOk = () =>{
         let idCalendar;        
         checkboxCalendar.checked ? idCalendar = select.value : idCalendar = null;
         port.postMessage({okRec: true ,fileName:fileName ,calendarId: idCalendar});
-        chrome.storage.local.set({lastCalendar: idCalendar});
+        // chrome.storage.local.set({lastCalendar: idCalendar});
         window.close();
     }
 }
