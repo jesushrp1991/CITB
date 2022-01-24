@@ -7,4 +7,18 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'citbRecPopup';
+
+  public recMode = 'recordScreen'
+
+  public get isRecordTabActive() {
+    return this.recMode === 'recordTab'
+  }
+
+  public get isRecordScreenActive() {
+    return this.recMode === 'recordScreen'
+  }
+
+  public changeRecMode = (type: 'recordScreen' | 'recordTab') => {
+    this.recMode = type;
+  }
 }
