@@ -158,7 +158,7 @@ const displayRecordingMode = () =>{
 }
 buttonRec.addEventListener('click',() =>{
     displayRecordingMode();
-    sendRecordCommand();
+    // sendRecordCommand();
 })
 
 const displayNotRecordingMode = () =>{
