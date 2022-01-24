@@ -36,27 +36,46 @@
 }
 
 #audioOnOff {
-    top: 245px;
-    width: 50px;
-    height: 50px;
-    left: 11px;
+    top: 239px;
+    width: 55px;
+    height: 55px;
+    left: 10px;
+    img {
+        width:100%
+    }
 }
 
 #voiceCommands {
-    top: 331px;
-    width: 90px;
+    top: 323px;
+    height: 80px;
+    width: 80px;
+    left: 8px;
+    img {
+        width:100%
+    }
 }
 
 #citbDevice {
-    top: 331px;
+    top: 323px;
     right: 82px;
-    width: 90px;
+    width: 80px;
+}
+
+#miclist {
+    position: absolute;
+    top: 252px;
+    height: 25px;
+    border: 1px solid #c6c6c6;
+    color: #c5c6c6;
+    width: 171px;
+    opacity: 0.8;
+    left: 74px;
 }
 
 #recordings {
-    top: 331px;
+    top: 323px;
     right: 0;
-    width: 90px;
+    width: 80px;
 }
 
 #citbOn {

@@ -12,10 +12,15 @@
     id="grabarEscritorio"
   ></button>
   <button class="invisibleButtons" id="audioOnOff" (click)="toggleAudio()">
-    <label *ngIf="audioEnabled">On</label>
-    <label *ngIf="!audioEnabled">Off</label>
+    <img [src]="onOffImg" alt="" />
   </button>
-  <button class="invisibleButtons" id="voiceCommands"></button>
+  <select id="miclist" class="custom-select custom-select-sm select-mic">
+    <option *ngFor="let mic of organizedMicList;" value="mic.deviceId">{{mic.label}}</option>
+  </select>
+
+  <button class="invisibleButtons" id="voiceCommands" (click)="toggleVoiceCommands()">
+    <img [src]="voiceCommandImg" alt="" />
+  </button>
   <button class="invisibleButtons" id="citbDevice"></button>
   <button class="invisibleButtons" id="recordings"></button>
   <button class="invisibleButtons citbButtons" id="citbOn"></button>
