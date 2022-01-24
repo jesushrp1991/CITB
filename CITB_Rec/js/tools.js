@@ -95,7 +95,7 @@ const addToCache = (newArray,idFolder) => {
 const filterModifiableCalendars = (calendarList) =>{
     let result = [];
     calendarList.forEach(element => {
-        if(element.accessRole == 'owner'){
+        if(element.accessRole == 'owner' || element.accessRole == 'writer'){
             result.push(element);
         }
     });
