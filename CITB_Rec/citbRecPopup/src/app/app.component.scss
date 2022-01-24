@@ -7,6 +7,12 @@
     position: relative;
 }
 
+.recordButtons {
+    &.active {
+        background-color: #547dbe57;
+    }
+}
+
 .invisibleButtons {
     border: none;
     width: 105px;

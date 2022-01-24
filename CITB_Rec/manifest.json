@@ -30,7 +30,7 @@
   ],
   "browser_action": {
     "default_title": "CITB Rec",
-    "default_popup": "popup.html",
+    "default_popup": "citbRecPopup/dist/citb-rec-popup/index.html",
     "default_icon": {
       "16": "assets/CITB COLOR SIN CIRCULO.png",
       "48": "assets/CITB COLOR SIN CIRCULO.png",
@@ -44,7 +44,7 @@
     "128": "assets/CITB COLOR SIN CIRCULO.png"
   },
   "options_page": "options.html",
-  "web_accessible_resources": ["js/*", "helper/*", "css/font/*", "html/*"],
+  "web_accessible_resources": ["js/*", "helper/*", "css/font/*", "html/*","citbRecPopup/dist/citb-rec-popup/*"],
   "content_scripts": [
     {
       "matches": [
