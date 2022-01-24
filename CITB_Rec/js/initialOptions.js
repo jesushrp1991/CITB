@@ -33,6 +33,7 @@ const populateCalendarSelect = async (calendarList) => {
 }
 
 let checkboxCalendar = document.getElementById('checkboxCalendar');
+checkboxCalendar.checked = false;
 const recOk = () =>{
     let fileName = document.getElementById('fileName').value;
     if(fileName == '' || fileName == undefined || fileName == null){
