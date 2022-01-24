@@ -1,13 +1,28 @@
 <div id="content">
-  <button  class="invisibleButtons recordButtons" [ngClass]="{'active':isRecordTabActive}" (click)="changeRecMode('recordTab')" id="grabarPestana"></button>
-  <button class="invisibleButtons recordButtons" [ngClass]="{'active':isRecordScreenActive}" (click)="changeRecMode('recordScreen')" id="grabarEscritorio"></button>
-  <button class="invisibleButtons" id="audioOnOff"></button>
+  <button
+    class="invisibleButtons recordButtons"
+    [ngClass]="{ active: isRecordTabActive }"
+    (click)="changeRecMode('recordTab')"
+    id="grabarPestana"
+  ></button>
+  <button
+    class="invisibleButtons recordButtons"
+    [ngClass]="{ active: isRecordScreenActive }"
+    (click)="changeRecMode('recordScreen')"
+    id="grabarEscritorio"
+  ></button>
+  <button class="invisibleButtons" id="audioOnOff" (click)="toggleAudio()">
+    <label *ngIf="audioEnabled">On</label>
+    <label *ngIf="!audioEnabled">Off</label>
+  </button>
   <button class="invisibleButtons" id="voiceCommands"></button>
   <button class="invisibleButtons" id="citbDevice"></button>
   <button class="invisibleButtons" id="recordings"></button>
   <button class="invisibleButtons citbButtons" id="citbOn"></button>
   <button class="invisibleButtons citbButtons" id="citbCamPopup"></button>
   <button class="invisibleButtons citbButtons" id="citbMicPopup"></button>
-  <button class="invisibleButtons citbButtons" id="citbShowFloatingDiv"></button>
-
+  <button
+    class="invisibleButtons citbButtons"
+    id="citbShowFloatingDiv"
+  ></button>
 </div>
