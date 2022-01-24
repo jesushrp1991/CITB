@@ -36,7 +36,6 @@ body {
 }
 .header-icon{
   background-image: url('./assets/CITB_Records.png');
-  width: 180px;
   height: 50px;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -71,7 +70,7 @@ body {
 }
 
 .button-rec{
-  width: 80% !important;
+  width: 100% !important;
   height: 40px !important;
   transition: opacity 0.8s, 
   visibility 0.8s;
@@ -154,10 +153,10 @@ h10{
   font-size: 12px;
 }
 #citbMissingAlert {
-    max-height: 0px;
     transition: max-height .5s ease-out;
     overflow: hidden;
     margin-right: 20px;
+    width: 100%;
 }
 .alert-text {
   float: right;
