@@ -19,7 +19,6 @@ button {
     max-height: 0px;
     transition: max-height .5s ease-out;
     overflow: hidden;
-    margin-right: 20px;
 }
 
 #citbButtonsContainer.expanded {

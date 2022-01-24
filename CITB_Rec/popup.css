@@ -1,5 +1,5 @@
 body {
-  width: 300px;
+  width: 350px;
 }
 .tab-icon {
   background-image: url('./assets/PESTANA.png');
@@ -44,7 +44,6 @@ body {
   background-size: contain;
 }
 .icons{
-  width: 35px;
   height: 35px ;
   padding-left: 3px;
   padding-right: 3px;
@@ -55,7 +54,6 @@ body {
   cursor: pointer;
 }
 .tab-screen-icons{
-  width: 140px;
   height: 35px ;
   padding-left: 3px;
   padding-right: 3px;
@@ -90,7 +88,6 @@ body {
 
 .card-body{
   padding: 3px !important;
-  max-width: 270px !important;
 }
 
 .timer {
@@ -137,8 +134,7 @@ body {
 }
 
 .container {
-  padding-right: 0px !important;
-  padding-left: 20px !important;
+  width: auto !important;
 }
 
 .card-title {
@@ -163,8 +159,15 @@ h10{
     overflow: hidden;
     margin-right: 20px;
 }
+.alert-text {
+  float: right;
+  width: calc(100% - 40px);
+  line-height: 1rem;
+  padding-right: 5px;
+}
 #citbMissingAlert.expanded {
   max-height: 100px;
   transition: max-height .5s ease-in;
+  border: 1px solid orange;
 
 }
