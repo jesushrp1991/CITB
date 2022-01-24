@@ -17,7 +17,7 @@
         <div class="header-icon"></div>
       </div>
       <div class="row p-1">
-        <div class="card card-borderless">
+        <div class="card ">
           <div class="card-body">
             <div class="col-12 text-center">
               <h6>Elige fuente de vídeo</h6>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div id= "audio" class="row p-1">
-        <div id="audioPanel" class="card card-borderless">
+        <div id="audioPanel" class="card ">
           <div class="card-body">
             <div class="col-12 text-center">
               <h6>Elige fuente de audio</h6>
@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <div id="volumeControl" class="card card-borderless" style="display: none">
+        <div id="volumeControl" class="card " style="display: none">
           <div class="card-body">
             <h6 class="card-title text-center">Volumen</h6>
             <div class="row">
@@ -105,7 +105,7 @@
        </div>
       </div>
       <div class="row p-1">
-        <div class="card card-borderless">
+        <div class="card ">
           <div class="card-body">
             <div div class="row">
               <div class="col justify-content-center">
@@ -173,19 +173,23 @@
               <h4 id="recTimerPanel">00:00</h4>
             </div>
           </div>
-          <div class="col justify-content-center">
+          <div class="col align-self-center">
             <div id="playPauseButton" class="pause-icon icons"></div>
           </div>
-          <div class="col justify-content-center">
+          <div class="col align-self-center">
             <div id="stopButton" class="stop-icon icons"></div>
           </div>
         </div>
       </div>
-      <div
-        id="citbMissingAlert"
-        class="row p-1 justify-content-center collapse"
-      >
-        <div class="citb-missing-alert"></div>
+      <div id="citbMissingAlert" class="row p-1">
+        <div class="col-2 align-self-center">
+          <img src = "assets/ALERTA.png" class="img-alert-citb">
+        </div>
+        <div class="col-10 text-center">
+          <h10>El audio grabado puede tener eco, si no usas ClassInTheBox</h10>
+        </div>
+        <div class="col-1">
+        </div>
       </div>
     </div>
     <script src="popup.js" type="module"></script>

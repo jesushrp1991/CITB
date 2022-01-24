@@ -128,20 +128,7 @@ body {
   background-color: #d9dcdf;
 }
 
-.citb-missing-alert {
-  width: 99%;
-  height: 70px ;
-  padding-left: 3px;
-  padding-right: 3px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 85%;
-  cursor: pointer;
-  background-image: url('./assets/alertpopup.png');
-}
-
-.card-borderless{
+.card{
   border: none !important ;
 }
 
@@ -160,4 +147,24 @@ body {
 
 .form-range {
   max-width: 100px !important;
+}
+
+.img-alert-citb {
+    overflow: hidden;
+    width: 35px;
+    height: 35px ;
+}
+h10{
+  font-size: 12px;
+}
+#citbMissingAlert {
+    max-height: 0px;
+    transition: max-height .5s ease-out;
+    overflow: hidden;
+    margin-right: 20px;
+}
+#citbMissingAlert.expanded {
+  max-height: 100px;
+  transition: max-height .5s ease-in;
+
 }

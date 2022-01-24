@@ -101,7 +101,7 @@ const populateMicSelect = async () => {
         organizedMicList = organizedMicList.concat(usableMic);
     }else{
         organizedMicList = usableMic;
-        $("#citbMissingAlert").toggle();
+        document.getElementById('citbMissingAlert').classList.add('expanded');
     }
     while (select.options.length > 0) {                
         select.remove(0);
