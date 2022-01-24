@@ -1,0 +1,70 @@
+/* You can add global styles to this file, and also import other style files */
+#content{
+    background-image: url(../assets/popup2.jpg);
+    background-size: cover;
+    height: 580px;
+    width: 263px;
+    position: relative;
+}
+
+.invisibleButtons {
+    border: none;
+    width: 105px;
+    height: 90px;
+    position: absolute;
+    background-color: transparent;
+}
+.citbButtons{
+    width: 45px;
+    height:45px;
+    top: 460px;
+}
+#grabarPestana {
+    left: 11px;
+    top: 100px;
+}
+
+#grabarEscritorio {
+    top: 100px;
+    right: 15px;
+}
+
+#audioOnOff {
+    top: 245px;
+    width: 50px;
+    height: 50px;
+    left: 11px;
+}
+
+#voiceCommands {
+    top: 331px;
+    width: 90px;
+}
+
+#citbDevice {
+    top: 331px;
+    right: 82px;
+    width: 90px;
+}
+
+#recordings {
+    top: 331px;
+    right: 0;
+    width: 90px;
+}
+
+#citbOn {
+    left: 19px
+}
+
+#citbCamPopup {
+    left: 78px;
+}
+
+#citbMicPopup{
+    left: 139px;
+}
+
+#citbShowFloatingDiv {
+    right:19px;
+}
