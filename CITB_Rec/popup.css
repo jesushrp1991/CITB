@@ -1,5 +1,5 @@
 body {
-  width: 350px;
+  width: 390px;
 }
 .tab-icon {
   background-image: url('./assets/PESTANA.png');
@@ -153,6 +153,7 @@ h10{
   font-size: 12px;
 }
 #citbMissingAlert {
+    max-height: 0px;
     transition: max-height .5s ease-out;
     overflow: hidden;
     margin-right: 20px;
