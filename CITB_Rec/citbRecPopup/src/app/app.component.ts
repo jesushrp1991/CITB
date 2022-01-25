@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   public voiceCommandEnabled = false;
   public audioEnabled = true;
   public recMode = 'recordScreen';
+  public isCITBEnabled = false;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -108,7 +109,7 @@ export class AppComponent implements OnInit {
     }
   };
 
-  public sendMessage = (msg: any) => {
+  public sendMessage = (msg: object) => {
     this.window.chrome.runtime.sendMessage(msg);
   };
 
@@ -120,4 +121,16 @@ export class AppComponent implements OnInit {
     this.sendMessage(request);
     this.window.chrome.runtime.openOptionsPage(() => {});
   };
+
+  public get citbOnOffImg() {
+    return this.isCITBEnabled
+      ? '../assets/on.png'
+      : '../assets/off.png';
+  }
+
+  public toggleCITBOnOff= () => {
+    this.isCITBEnabled = !this.isCITBEnabled;
+  };
+
+
 }

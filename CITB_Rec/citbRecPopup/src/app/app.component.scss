@@ -23,7 +23,7 @@
 .citbButtons{
     width: 45px;
     height:45px;
-    top: 460px;
+    top: 453px;
 }
 #grabarPestana {
     left: 11px;
@@ -79,7 +79,12 @@
 }
 
 #citbOn {
-    left: 19px
+    left: 9px;
+    height: 45px;
+    width: 45px;
+    img {
+        width:55px
+    }
 }
 
 #citbCamPopup {
