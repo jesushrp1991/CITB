@@ -376,11 +376,11 @@ const shareModal = (event) =>{
     }
     new QRCode(divQR, {
         text: driveID,
-        width: 115,
-        height: 115,
+        width: 125,
+        height: 125,
         colorDark : "#000000",
         colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        correctLevel : QRCode.CorrectLevel.L
     });
     $(`#idModal${id}`).modal('show');
 };
@@ -403,6 +403,17 @@ const downloadFromDrive = (event) =>{
     let name = event.srcElement.closest(".row");
     alert("Usted puede cerrar esta pestaña, su descarga terminará en breve. No descargue otro video si no ha terminado éste.")
     port.postMessage({downloadFromDrive: true ,fileID: id , name: name.id});
+}
+
+const downloadQRImg = (event) =>{
+    let id = event.srcElement.id;
+    id = id.substring(13,id.length);   
+    let base64Data = document.getElementById('idQRCode'+ id);
+    base64Data = base64Data.children[1].src;
+    let downloadLink = document.createElement("a");
+    downloadLink.href = base64Data;
+    downloadLink.download = "CITB QR Code";
+    downloadLink.click();
 }
 
 const createRecordCard = async (details) => {
@@ -430,6 +441,7 @@ const createRecordCard = async (details) => {
     html = html.replace("{{shareLinkModal}}","shareLinkModal" + details.id);
     html = html.replace("{{downloadFromDrive}}","downloadFromDrive" + details.id);
     html = html.replace("{{nameForDownload}}", details.name);
+    html = html.replace("{{downloadQRImg}}","downloadQRImg" + details.id);
 
     if(details.thumbnailLink){
         html = html.replace("{{thumbnailLink}}", details.thumbnailLink);
@@ -461,6 +473,7 @@ const createRecordCard = async (details) => {
     document.getElementById("share" + details.id).addEventListener("click", shareModal);
     document.getElementById("shareLinkModal" + details.id).addEventListener("click", shareLinkModal);
     document.getElementById("downloadFromDrive" + details.id).addEventListener("click", downloadFromDrive);
+    document.getElementById("downloadQRImg" + details.id).addEventListener("click", downloadQRImg);
     return;
 }
 const startQueue = () =>{

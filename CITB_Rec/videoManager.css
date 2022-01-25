@@ -568,6 +568,15 @@ display: block !important;
   background-position: center;
   background-size: 90%;
 }
+.icon-qr-img {
+  background-image: url('./assets/ICONOQR.png');
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90%;
+}
 
 .qr-code{
   padding-top: 40px;
