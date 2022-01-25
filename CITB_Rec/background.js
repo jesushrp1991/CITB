@@ -81,6 +81,27 @@ const openRecList = () => {
   
 }
 
+const recCommandStart = async(message) => {
+  if(!window.isRecording && !message.isVoiceCommandStop){    
+    window.idMic = message.idMic;
+    window.idTab = message.idTab;
+    window.recMode = message.recMode;
+    chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
+    // getRecName();
+  }else{
+      clearInterval(window.iconRecChange);
+      if(message.isVoiceCommandStop){
+        delLastItem(3);
+      }
+      openRecList();
+      await stopRecordScreen();
+      chrome.storage.sync.set({isPaused: false}, () => {});
+      setTimeout(()=>{
+        chrome.browserAction.setIcon({path: "./assets/icon.png"});
+      },3000);
+  } 
+}
+
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
@@ -88,24 +109,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
     switch(message.recordingStatus){
       case popupMessages.rec :
-        if(!window.isRecording && !message.isVoiceCommandStop){         
-          window.idMic = message.idMic;
-          window.idTab = message.idTab;
-          window.recMode = message.recMode;
-          chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
-          // getRecName();
-        }else{
-            clearInterval(window.iconRecChange);
-            if(message.isVoiceCommandStop){
-              delLastItem(3);
-            }
-            openRecList();
-            await stopRecordScreen();
-            chrome.storage.sync.set({isPaused: false}, () => {});
-            setTimeout(()=>{
-              chrome.browserAction.setIcon({path: "./assets/icon.png"});
-            },3000);
-        }    
+        recCommandStart(message);   
         break;
       case popupMessages.pause :
         pauseOrResume();
@@ -235,6 +239,22 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       });
     }
   });
+
+  chrome.runtime.onMessageExternal.addListener(
+    (request, sender, sendResponse) =>{
+      
+      console.log(request);
+      request.idTab = sender.tab.id;
+      if (request.recordingStatus == 'rec')
+      {
+        console.log("REEECCC from injected",request)
+        recCommandStart(request);  
+      }
+      else if (request.activateLasers) {
+        var success = true;
+        sendResponse({activateLasers: success});
+      }
+    });
 
 
   

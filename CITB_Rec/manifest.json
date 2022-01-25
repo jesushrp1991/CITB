@@ -60,5 +60,17 @@
       "run_at": "document_start",
       "all_frames": true
     }
-  ]
+  ],
+  "externally_connectable": {
+    "ids": ["pgloinlccpmhpgbnccfecikdjgdhneof"],
+    "matches": [
+      "https://meet.google.com/*",
+      "https://zoom.us/*",
+      "https://*.zoom.us/*",
+      "https://meet.jit.si/*",
+      "https://teams.live.com/*",
+      "https://teams.microsoft.com/*"
+    ],
+    "accepts_tls_channel_id": true
+  }
 }

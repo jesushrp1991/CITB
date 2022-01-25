@@ -31,11 +31,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
       let  constraints,constraintsTabAudio,constraintsDesktopVideo; 
       //MAC!!!
       if(isMac){ 
-        console.log("Es MAC")
         let micConstraints;
         chrome.tabCapture.getMediaStreamId({targetTabId: isTabForMac},  async(stream)=>{
           if(recMode == 'recordTabs'){
-            console.log("Es record TABS")
             constraintsTabAudio = {  
               audio:{  
                   mandatory: {  
@@ -97,7 +95,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
             window.recorder = new MediaRecorder(window.resultStream); 
             window.recorder.ondataavailable = event => {  
-              // console.log("ON DATA AVAILABLE", videoChunksArray.length,event.data.size);  
                 verifyAvailableSpaceOnDisk();  
                 if (event.data.size > 0) {  
                     window.videoChunksArray.push(event.data);  
@@ -114,7 +111,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           }//End if recMode == RecordTabs
           //recMode == destokp
           else{
-            console.log("Es record Desktop")
             constraintsTabAudio = {  
               audio:{  
                   mandatory: {  
@@ -196,13 +192,10 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
               }  
             }  
             window.videoStreamDesktop = await navigator.mediaDevices.getUserMedia(constraints);
-            console.log(window.videoStreamDesktop.getVideoTracks());
             window.resultStream = new MediaStream([...window.videoStreamDesktop.getVideoTracks() ,...destination.stream.getAudioTracks()])  
-            console.log(window.resultStream);
             window.recorder = new MediaRecorder(window.resultStream); 
 
             window.recorder.ondataavailable = event => {  
-              console.log("ON DATA AVAILABLE", event.data.size,event.data);  
                 verifyAvailableSpaceOnDisk();  
                 if (event.data.size > 0) {  
                     window.videoChunksArray.push(event.data);  
@@ -310,7 +303,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
   }  
 }  
 const startRecordScreen = async(idMic,isTabForMac,recMode) =>{  
-  console.log("recMode=>",recMode,isTabForMac);
   try{  
     if(isTabForMac){
       if(recMode == 'recordTabs'){
@@ -321,7 +313,6 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
         recIcon();
       }
       else{
-        console.log("SCREEN!!!");
         chrome.desktopCapture.chooseDesktopMedia(['screen','audio'], async (streamId) => {  
           if (!streamId) {  
               window.isRecording = false;  

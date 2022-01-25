@@ -1,10 +1,22 @@
+// import { rec,stop, close, play,pause } from "../../../voiceActions.js";
 const speachCommands = () => {
 try{
+
+    const sendMessage = () =>{
+      const request = { recordingStatus: 'rec' , idMic: null ,idTab : null, recMode: 'recordScreen'};
+        chrome.runtime.sendMessage("ijbdnbhhklnlmdpldichdlknfaibceaf", request,
+        function(response) {
+          console.log(response)
+        }
+      );
+    }
+
   
       var cameraCommands = {
         '*w the box camera': () => {
           beep();
           document.getElementsByClassName("CITBCamButton")[0].click(); 
+          sendMessage()
         }
       };
     var showCommands = {
@@ -24,6 +36,8 @@ try{
       '*w the box cam': () => {
         beep();
         document.getElementsByClassName("CITBCamButton")[0].click(); 
+        sendMessage()
+
       }
     };
     var cameraCommands2 = {
