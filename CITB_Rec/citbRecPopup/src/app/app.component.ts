@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
   public audioEnabled = true;
   public recMode = 'recordScreen';
   public isCITBEnabled = false;
+  public citbShowFloatingImg =false;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -130,6 +131,16 @@ export class AppComponent implements OnInit {
 
   public toggleCITBOnOff= () => {
     this.isCITBEnabled = !this.isCITBEnabled;
+  };
+
+  public get citbFloatingPanelImg() {
+    return this.citbShowFloatingImg
+      ? '../assets/citbPanelOn.png'
+      : '../assets/citbPanelOff.png';
+  }
+
+  public toggleCITBFloatingPanelImg= () => {
+    this.citbShowFloatingImg = !this.citbShowFloatingImg;
   };
 
 
