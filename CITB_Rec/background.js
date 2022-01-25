@@ -141,7 +141,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         chrome.storage.sync.set({drivelink: drivelink}, () => {});
         break;
       case popupMessages.listRec :
-        alert("AQUIIII")
         let list = await listUploadQueue();
         chrome.storage.sync.set({listRec: {list:list}}, () => {});        
         break;
@@ -241,18 +240,27 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   });
 
   chrome.runtime.onMessageExternal.addListener(
-    (request, sender, sendResponse) =>{
+    (message, sender, sendResponse) =>{
       
-      console.log(request);
-      request.idTab = sender.tab.id;
-      if (request.recordingStatus == 'rec')
-      {
-        console.log("REEECCC from injected",request)
-        recCommandStart(request);  
-      }
-      else if (request.activateLasers) {
-        var success = true;
-        sendResponse({activateLasers: success});
+      console.log(message);
+      message.idTab = sender.tab.id;
+
+      switch(message.recordingStatus){
+        case popupMessages.rec :
+          recCommandStart(message);   
+        break;
+        case popupMessages.pause :
+          pauseOrResume();
+        break;
+        case popupMessages.isVoiceCommand :
+          if(message.isVoiceCommandPause == 'pause'){
+            pauseRec();          
+          }else{
+            playRec();
+          }
+          delLastItem();
+        break;
+
       }
     });
 
