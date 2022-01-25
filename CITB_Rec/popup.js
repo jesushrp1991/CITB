@@ -2,7 +2,7 @@ import { checkTimer } from './js/timerBar.js';
 
 let isMicEnable = true;
 
-window.recMode = 'recordTabs';
+window.recMode = 'recordScreen';
 const sendMessage = (msg) =>{
     chrome.runtime.sendMessage(msg);
 }
