@@ -93,7 +93,9 @@ const recCommandStart = async(message) => {
       if(message.isVoiceCommandStop){
         delLastItem(3);
       }
-      openRecList();
+      if(window.showRecords){
+        openRecList();
+      }
       await stopRecordScreen();
       chrome.storage.sync.set({isPaused: false}, () => {});
       setTimeout(()=>{
@@ -217,6 +219,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         else if (msg.okRec){
           window.fileName = msg.fileName;
           window.calendarId = msg.calendarId;
+          window.showRecords = msg.showRecords;
           await prepareDB();
           // createDB();
           window.meetStartTime = dayjs().format();
