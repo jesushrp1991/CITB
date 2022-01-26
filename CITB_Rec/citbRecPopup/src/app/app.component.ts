@@ -32,12 +32,12 @@ export class AppComponent implements OnInit {
   }
 
   public get onOffImg() {
-    return this.audioEnabled ? '../assets/onMic.png' : '../assets/offMic.png';
+    return this.audioEnabled ? 'assets/onMic.png' : 'assets/offMic.png';
   }
   public get voiceCommandImg() {
     return this.voiceCommandEnabled
-      ? '../assets/COMANDOS COLOR.svg'
-      : '../assets/COMANDOS GRIS.svg';
+      ? 'assets/COMANDOS COLOR.svg'
+      : 'assets/COMANDOS GRIS.svg';
   }
 
   public get isRecordScreenActive() {
@@ -117,10 +117,12 @@ export class AppComponent implements OnInit {
 
 
   public sendMessage = (msg: object) => {
-    this.window.chrome.runtime.sendMessage(msg);
+    console.log("sending msg", msg)
+    this.window.chrome.runtime.sendMessage('ijbdnbhhklnlmdpldichdlknfaibceaf', msg);
   };
 
   toggleVoiceControl = () => {
+    console.log("TOOGLEVOICE");
     this.voiceCommandEnabled = !this.voiceCommandEnabled;
     const status = this.voiceCommandEnabled ? 'voiceOpen' : 'voiceClose';
     const request = { recordingStatus: status };
@@ -131,8 +133,8 @@ export class AppComponent implements OnInit {
 
   public get citbOnOffImg() {
     return this.isCITBEnabled
-      ? '../assets/on.png'
-      : '../assets/off.png';
+      ? 'assets/on.png'
+      : 'assets/off.png';
   }
 
   public toggleCITBOnOff= () => {

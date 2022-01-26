@@ -105,6 +105,7 @@ const recCommandStart = async(message) => {
 }
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  console.log("message received ", message)
     let thereAreLowDiskSpace = await showEstimatedQuota();
     if(thereAreLowDiskSpace){
       prompt("Insufficient disk space");      
