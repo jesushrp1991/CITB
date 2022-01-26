@@ -149,5 +149,9 @@ export class AppComponent implements OnInit {
     this.sendMessage(request);
   }
 
+  public startRecording = () => {
+
+  }
+
 
 }
