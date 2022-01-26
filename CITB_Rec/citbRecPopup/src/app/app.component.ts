@@ -1,3 +1,4 @@
+///<reference types="chrome"/>
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -17,6 +18,9 @@ export class AppComponent implements OnInit {
     this.populateMicSelect().then(data => {
 
     });
+    this.deamonGetState();
+    this.timerController();
+    this.checkTimer();
   }
 
   public window = window as any;
@@ -31,6 +35,8 @@ export class AppComponent implements OnInit {
   public isRecording = false;
   public isPaused = false;
   public exitsCITBDevice = true;
+  public portTimer = chrome.runtime.connect({name: "portTimer"});
+  public recTime = '00:00';
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -113,8 +119,6 @@ export class AppComponent implements OnInit {
         this.selectedMic = this.organizedMicList[0].deviceId;
       }
       this.exitsCITBDevice = false;
-      //show citb alert audio
-      // document.getElementById('citbMissingAlert').classList.add('expanded');
     }
   };
 
@@ -199,15 +203,60 @@ export class AppComponent implements OnInit {
 
   public tooglePlayPause = () =>{
     this.isPaused = !this.isPaused;
+    const request = { recordingStatus: 'pause' };
+    this.sendMessage(request);
   }
   public get isPausedState () {
     return this.isPaused
-      ? 'assets/pause.png'
-      : 'assets/play.png'
+      ? 'assets/play.png'
+      : 'assets/pause.png'
   }
+
+  //************ TIMER CONTROLLER **********/////
+  public timerController = () => {
+    this.portTimer.onMessage.addListener(async (msg) => {
+      if (msg.answer && msg.answer.seconds > 0){
+          this.recTime = `${msg.answer.minute}:${msg.answer.seconds}`;
+      }else{
+        this.recTime = '00:00';           
+      }    
+    });
+  }
+
+  public checkTimer = () => {
+      setInterval(()=>{
+          this.portTimer.postMessage({getTimer: true});
+      },1000)
+  }
+  //************ TIMER CONTROLLER **********//////
 
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     this.sendMessage(request);
   }
+
+  public getCurrentState = () =>{
+    console.log("checking state")
+    this.window.chrome.storage.sync.get('isRecording', (result : any) => {
+        if (result.isRecording ){
+            this.isRecording = true;
+        }
+    });
+    this.window.chrome.storage.sync.get('isPaused', (result : any) => {   
+        if(result.isPaused ){
+            this.isPaused = true;
+        }    
+    });
+    this.window.chrome.storage.sync.get('voice', (result : any) => {
+        if(result.voice){
+            this.voiceCommandEnabled = true;
+        }
+    })
+  
+  }
+
+  public deamonGetState = () => {
+    this.window.setInterval( this.getCurrentState, 1000);
+  }
+
 }

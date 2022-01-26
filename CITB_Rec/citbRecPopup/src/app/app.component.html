@@ -47,6 +47,7 @@
   
   <button (click)="startRecording()" id="timerPanel" *ngIf="isRecording" >
     <img src='assets/reloj.png' alt="">
+    <div class="rec-time">{{recTime}}</div>
   </button>
   <button (click)="tooglePlayPause()" id="play-pause" *ngIf="isRecording" >
     <img [src]='isPausedState' alt="">
