@@ -40,9 +40,15 @@
   </button>
   <button class="invisibleButtons" (click)="citbDeviceToggle()" id="citbDevice"></button>
   <button class="invisibleButtons" (click)="showRecordings()" id="recordings"></button>
-  <button (click)="startRecording()" id="startRecord">
+
+  <button (click)="startRecording()" id="startRecord" [ngClass]="isRecording ? 'special':'isSpecial'" >
     <img src="assets/rec-button.png" alt="">
   </button>
+  
+  <button (click)="startRecording()" id="timerPanel" [ngClass]="isRecording ? 'isSpecial': 'special' ">
+    <img src='assets/reloj.png' alt="">
+  </button>
+  
   
   <div class="custom-alert">
     <div id="citbMissingAlert" class="mb-3 p-1 expanded">

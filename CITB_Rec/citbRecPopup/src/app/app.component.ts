@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   public citbDeviceEnabled = false;
   public selectedMic = "";
   public isFloatingPanelShow = true;
+  public isRecording = false;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -160,8 +161,14 @@ export class AppComponent implements OnInit {
   }
 
   public startRecording = () => {
-
+    console.log("asdasdasd")
+    this.isRecording = !this.isRecording;
   }
 
+  public get recPanel(){
+    return this.isRecording
+      ? 'assets/reloj.png'
+      :'assets/rec-button.png'
+  }
 
 }

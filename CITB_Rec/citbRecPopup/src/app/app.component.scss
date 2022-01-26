@@ -111,6 +111,17 @@
         width: 100%;
     }
 }
+#timerPanel{
+    height: 36px;
+    width: 248px;
+    border: none;
+    margin-top: 5px;
+    background: transparent;
+    margin-left: 7px;
+    img {
+        width: 100%;
+    }
+}
 
 #voiceCommands {
     top: 323px;
@@ -171,4 +182,11 @@
         width:100%;
         background-color: transparent;
     }
+}
+
+.special {
+    display: none
+}
+.isSpecial {
+    display: block;
 }
