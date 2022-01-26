@@ -51,12 +51,12 @@
   <button (click)="tooglePlayPause()" id="play-pause" *ngIf="isRecording" >
     <img [src]='isPausedState' alt="">
   </button>
-  <button id="stop-button" (click)="startRecording()" *ngIf="isRecording">
+  <button id="stop-button" (click)="stopRecording()" *ngIf="isRecording">
     <img src='assets/stop.png' alt="">
   </button>
   
   
-  <div class="custom-alert">
+  <div class="custom-alert" *ngIf="!exitsCITBDevice">
     <div id="citbMissingAlert" class="mb-3 p-1 expanded">
       <div class="align-self-center float-left">
         <img src="assets/ALERTA.png" class="img-alert-citb">

@@ -9,6 +9,7 @@ export class AppComponent implements OnInit {
   ngOnInit (): void {
     console.log('inside')
     try {
+      this.checkAut();
       this.restoreState();
     } catch (error) {
       console.log("CANNOT RESTORE STATE")
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   public isFloatingPanelShow = true;
   public isRecording = false;
   public isPaused = false;
+  public exitsCITBDevice = true;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -104,11 +106,13 @@ export class AppComponent implements OnInit {
     if (citb.length > 0) {
       this.organizedMicList.push(citb[0]);
       this.organizedMicList = this.organizedMicList.concat(usableMic);
+      this.selectedMic = this.organizedMicList[0].deviceId;
     } else {
       this.organizedMicList = usableMic;
       if (this.organizedMicList.length > 0) {
-        this.selectedMic = this.organizedMicList[0].deviceId
+        this.selectedMic = this.organizedMicList[0].deviceId;
       }
+      this.exitsCITBDevice = false;
       //show citb alert audio
       // document.getElementById('citbMissingAlert').classList.add('expanded');
     }
@@ -161,9 +165,30 @@ export class AppComponent implements OnInit {
       : 'assets/hidePanelFlotante.svg'
   }
 
+  public rec = (isTabForMac:any|undefined) =>{
+    let idMic;
+    this.audioEnabled ? idMic = this.selectedMic : idMic = null
+    const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: this.recMode};
+    this.sendMessage(request);
+}
+
   public startRecording = () => {
-    console.log("asdasdasd")
+    console.log("Recording")
     this.isRecording = !this.isRecording;
+    let userAgentData = this.window.navigator.userAgentData.platform.toLowerCase().includes('mac');
+    if(userAgentData){
+        this.window.chrome.tabs.getSelected(null, (tab:any) => {
+            this.rec(tab.id);
+        });
+    }else{
+      this.rec(undefined)
+    }
+  }
+
+  public stopRecording = () =>{
+    console.log("STOP REC!!!")
+    this.isRecording = !this.isRecording;
+    this.rec(undefined);
   }
 
   public get recPanel(){
@@ -179,5 +204,10 @@ export class AppComponent implements OnInit {
     return this.isPaused
       ? 'assets/pause.png'
       : 'assets/play.png'
+  }
+
+  public checkAut = () => {
+    const request = { recordingStatus: 'checkAuth' };
+    this.sendMessage(request);
   }
 }
