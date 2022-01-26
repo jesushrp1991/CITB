@@ -24,7 +24,8 @@ export class AppComponent implements OnInit {
   public audioEnabled = true;
   public recMode = 'recordScreen';
   public isCITBEnabled = false;
-  public citbShowFloatingImg =false;
+  public citbDeviceEnabled = false;
+  public selectedMic = "";
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -105,10 +106,15 @@ export class AppComponent implements OnInit {
       this.organizedMicList = this.organizedMicList.concat(usableMic);
     } else {
       this.organizedMicList = usableMic;
+      if (this.organizedMicList.length > 0) {
+        this.selectedMic = this.organizedMicList[0].deviceId
+      }
       //show citb alert audio
       // document.getElementById('citbMissingAlert').classList.add('expanded');
     }
   };
+
+
 
   public sendMessage = (msg: object) => {
     this.window.chrome.runtime.sendMessage(msg);
@@ -133,15 +139,15 @@ export class AppComponent implements OnInit {
     this.isCITBEnabled = !this.isCITBEnabled;
   };
 
-  public get citbFloatingPanelImg() {
-    return this.citbShowFloatingImg
-      ? '../assets/citbPanelOn.png'
-      : '../assets/citbPanelOff.png';
-  }
-
-  public toggleCITBFloatingPanelImg= () => {
-    this.citbShowFloatingImg = !this.citbShowFloatingImg;
+  public citbDeviceToggle = () => {
+    this.citbDeviceEnabled = !this.citbDeviceEnabled;
+    this.window.chrome.storage.local.set({isCITBPanelVisible: this.citbDeviceEnabled}, () => {});
   };
+
+  public showRecordings = () => {
+    const request = { recordingStatus: 'showRecList' };
+    this.sendMessage(request);
+  }
 
 
 }
