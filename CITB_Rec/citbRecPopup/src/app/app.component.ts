@@ -45,9 +45,6 @@ export class AppComponent implements OnInit {
     return this.recMode === 'recordScreen';
   }
 
-  public toggleVoiceCommands = () => {
-    this.voiceCommandEnabled = !this.voiceCommandEnabled;
-  };
   public toggleAudio = () => {
     this.audioEnabled = !this.audioEnabled;
     this.window.chrome.storage.local.set(
@@ -92,7 +89,7 @@ export class AppComponent implements OnInit {
       await this.window.navigator.mediaDevices.getUserMedia({ audio: true });
       micList = await this.window.navigator.mediaDevices.enumerateDevices();
     } catch (error) {
-      this.toggleVoiceControl();
+      this.toggleVoiceCommands();
     }
     micList = await this.window.navigator.mediaDevices.enumerateDevices();
     console.log(micList);
@@ -122,7 +119,7 @@ export class AppComponent implements OnInit {
     this.window.chrome.runtime.sendMessage('ijbdnbhhklnlmdpldichdlknfaibceaf', msg);
   };
 
-  toggleVoiceControl = () => {
+  toggleVoiceCommands = () => {
     console.log("TOOGLEVOICE");
     this.voiceCommandEnabled = !this.voiceCommandEnabled;
     const status = this.voiceCommandEnabled ? 'voiceOpen' : 'voiceClose';
@@ -158,8 +155,8 @@ export class AppComponent implements OnInit {
 
   public get floatingPanelStatus() {
     return this.isFloatingPanelShow
-      ? '../assets/citbPanelOn.png'
-      : '../assets/citbPanelOff.png'
+      ? 'assets/showPanelFlotante.svg'
+      : 'assets/hidePanelFlotante.png'
   }
 
   public startRecording = () => {
