@@ -156,7 +156,7 @@ export class AppComponent implements OnInit {
   public get floatingPanelStatus() {
     return this.isFloatingPanelShow
       ? 'assets/showPanelFlotante.svg'
-      : 'assets/hidePanelFlotante.png'
+      : 'assets/hidePanelFlotante.svg'
   }
 
   public startRecording = () => {
