@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   public isCITBEnabled = false;
   public citbDeviceEnabled = false;
   public selectedMic = "";
+  public isFloatingPanelShow = true;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -149,6 +150,16 @@ export class AppComponent implements OnInit {
   public showRecordings = () => {
     const request = { recordingStatus: 'showRecList' };
     this.sendMessage(request);
+  }
+
+  public toogleFloatingPanel = () => {
+    this.isFloatingPanelShow = !this.isFloatingPanelShow;
+  }
+
+  public get floatingPanelStatus() {
+    return this.isFloatingPanelShow
+      ? '../assets/citbPanelOn.png'
+      : '../assets/citbPanelOff.png'
   }
 
   public startRecording = () => {

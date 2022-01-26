@@ -163,10 +163,12 @@
 }
 
 #citbShowFloatingDiv {
-    right:19px;
-    height: 45px;
-    width: 45px;
+    right:9px;
+    top: 448px !important;
+    height: 67px;
+    width: 67px;
     img {
-        width:100%
+        width:100%;
+        background-color: transparent;
     }
 }

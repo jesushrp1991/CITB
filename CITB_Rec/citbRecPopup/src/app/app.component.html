@@ -11,7 +11,10 @@
     <button
       class="invisibleButtons citbButtons"
       id="citbShowFloatingDiv"
-    ></button>
+      (click)="toogleFloatingPanel()"
+    >
+    <img [src]="floatingPanelStatus" alt="" />
+  </button>
   </div>
   <button
     class="invisibleButtons recordButtons"
