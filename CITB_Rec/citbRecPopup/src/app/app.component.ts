@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   public selectedMic = "";
   public isFloatingPanelShow = true;
   public isRecording = false;
+  public isPaused = false;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -171,4 +172,12 @@ export class AppComponent implements OnInit {
       :'assets/rec-button.png'
   }
 
+  public tooglePlayPause = () =>{
+    this.isPaused = !this.isPaused;
+  }
+  public get isPausedState () {
+    return this.isPaused
+      ? 'assets/pause.png'
+      : 'assets/play.png'
+  }
 }
