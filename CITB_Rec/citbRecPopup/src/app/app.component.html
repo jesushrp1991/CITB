@@ -6,8 +6,8 @@
     <button class="invisibleButtons citbButtons" id="citbOn" (click)="toggleCITBOnOff()">
       <img [src]="citbOnOffImg" alt="" />
     </button>
-    <button class="invisibleButtons citbButtons" id="citbCamPopup"></button>
-    <button class="invisibleButtons citbButtons" id="citbMicPopup"></button>
+    <button class="invisibleButtons citbButtons" id="citbCamPopup" (click)="chooseMic()"></button>
+    <button class="invisibleButtons citbButtons" id="citbMicPopup" (click)="chooseCamara()"></button>
     <button
       class="invisibleButtons citbButtons"
       id="citbShowFloatingDiv"

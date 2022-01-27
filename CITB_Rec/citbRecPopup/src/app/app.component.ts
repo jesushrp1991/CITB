@@ -21,10 +21,13 @@ export class AppComponent implements OnInit {
     this.deamonGetState();
     this.timerController();
     this.checkTimer();
+    this.getOnOffState();
+    this.chekWebContainerState();
   }
 
   public window = window as any;
 
+  //REC variables
   public voiceCommandEnabled = false;
   public audioEnabled = true;
   public recMode = 'recordScreen';
@@ -37,6 +40,9 @@ export class AppComponent implements OnInit {
   public exitsCITBDevice = true;
   public portTimer = chrome.runtime.connect({name: "portTimer"});
   public recTime = '00:00';
+
+  //CITB variables
+  public globalState = false;
 
   public get isRecordTabActive() {
     return this.recMode === 'recordTab';
@@ -145,9 +151,124 @@ export class AppComponent implements OnInit {
       : 'assets/off.png';
   }
 
+  //************* CITB CAM  *********************/
+  public onOfChecker = (tab:any) => {
+    const url = tab.url;
+    if (
+      url.includes("meet.google.com") ||
+      url.includes("teams.microsoft.com") ||
+      url.includes("teams.live.com") ||
+      url.includes("zoom.us") ||
+      url.includes("meet.jit.si")
+    ) {
+      chrome.tabs.executeScript(tab.id,{
+        code: 'isOpen = document.getElementById("buttonOnOff").innerText.toString();isOpen;'      
+      },(injectionResults) => {
+        injectionResults[0] == "true" ?
+                    this.globalState = true
+                    : this.globalState = false;
+        this.globalState 
+          ? this.isCITBEnabled = true 
+          : this.isCITBEnabled = false;
+      });
+    }
+    //try again each second during 5 seconds
+    let onOfChekerCounter =0;
+    if (onOfChekerCounter < 5) {
+      onOfChekerCounter += 1;
+      setTimeout(() => {
+        this.onOfChecker(tab);
+      }, 1000);
+    } else {
+      onOfChekerCounter = 0;
+    }
+  };
+
+  public getOnOffState = async () => {
+    chrome.tabs.getSelected((tab) => {
+      this.onOfChecker(tab);
+    });
+  };
+
   public toggleCITBOnOff= () => {
     this.isCITBEnabled = !this.isCITBEnabled;
+    chrome.tabs.getSelected( (tab) => {
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        let url = tab.url;
+        let id: number = tab.id!;
+        if (
+          url?.includes("meet.google.com") ||
+          url?.includes("teams.microsoft.com") ||
+          url?.includes("teams.live.com") ||
+          url?.includes("zoom.us") ||
+          url?.includes("meet.jit.si")
+        ) {
+          chrome.tabs.executeScript(id,{
+            code: 'document.getElementById("buttonOnOff").click();'
+          });
+        }
+        setTimeout(() => {
+          this.getOnOffState();
+        }, 100);
+      });
+    });
   };
+
+  public chooseMic = () =>{
+    chrome.tabs.getSelected((tab) => {
+      chrome.tabs.executeScript(tab.id!,{
+        code: 'document.getElementById("buttonPopup").click();'
+      });
+    });
+  }
+
+  public chooseCamara = () => {
+    chrome.tabs.getSelected((tab) => {
+      chrome.tabs.executeScript(tab.id!,{
+          code: 'document.getElementById("buttonPopupVideo").click();'
+      });
+    });
+  }
+
+  public toogleFloatingPanel = () => {
+    this.isFloatingPanelShow = !this.isFloatingPanelShow;
+    chrome.tabs.getSelected((tab) => {
+      if (!this.isFloatingPanelShow) {
+        chrome.tabs.executeScript(tab.id!,{
+          code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
+        });
+      } else {
+        chrome.tabs.executeScript(tab.id!,{
+          code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
+        });
+      }
+    });
+  }
+
+  public chekWebContainerState = async () => {
+    // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.tabs.getSelected((tab) => {
+      const url = tab.url!;
+      if (
+        url.includes("meet.google.com") ||
+        url.includes("teams.microsoft.com") ||
+        url.includes("teams.live.com") ||
+        url.includes("zoom.us") ||
+        url.includes("meet.jit.si")
+      ){
+        chrome.tabs.executeScript(tab.id!,{
+          code: 'isOpen = document.getElementById("pWebContainerState").innerText.toString(); isOpen;'
+        },(injectionResults)=>{
+            console.log(injectionResults)
+            injectionResults[0] == "OPEN"
+              ? (this.isFloatingPanelShow = true)
+              : (this.isFloatingPanelShow = false);
+          }
+        );
+      }
+    });
+  };
+  //************* END CITB CAM  *********************/
 
   public citbDeviceToggle = () => {
     this.citbDeviceEnabled = !this.citbDeviceEnabled;
@@ -159,9 +280,7 @@ export class AppComponent implements OnInit {
     this.sendMessage(request);
   }
 
-  public toogleFloatingPanel = () => {
-    this.isFloatingPanelShow = !this.isFloatingPanelShow;
-  }
+  
 
   public get floatingPanelStatus() {
     return this.isFloatingPanelShow
