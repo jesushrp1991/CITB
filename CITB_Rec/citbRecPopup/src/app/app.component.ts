@@ -1,12 +1,13 @@
 ///<reference types="chrome"/>
 import { Component, OnInit } from '@angular/core';
+import { BaseButton } from './base/ButtonBase';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends BaseButton implements OnInit {
   ngOnInit (): void {
     console.log('inside')
     try {
@@ -25,9 +26,6 @@ export class AppComponent implements OnInit {
     this.chekWebContainerState();
   }
 
-  public window = window as any;
-
-  //REC variables
   public voiceCommandEnabled = false;
   public audioEnabled = true;
   public recMode = 'recordScreen';
@@ -50,11 +48,6 @@ export class AppComponent implements OnInit {
 
   public get onOffImg() {
     return this.audioEnabled ? 'assets/onMic.png' : 'assets/offMic.png';
-  }
-  public get voiceCommandImg() {
-    return this.voiceCommandEnabled
-      ? 'assets/COMANDOS COLOR.svg'
-      : 'assets/COMANDOS GRIS.svg';
   }
 
   public get isRecordScreenActive() {
@@ -128,12 +121,6 @@ export class AppComponent implements OnInit {
     }
   };
 
-
-
-  public sendMessage = (msg: object) => {
-    console.log("sending msg", msg)
-    this.window.chrome.runtime.sendMessage('ijbdnbhhklnlmdpldichdlknfaibceaf', msg);
-  };
 
   toggleVoiceCommands = () => {
     console.log("TOOGLEVOICE");
