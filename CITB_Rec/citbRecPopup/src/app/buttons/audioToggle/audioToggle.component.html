@@ -1,25 +1,39 @@
 <button class="popupButton" (click)="toggleAudio()">
-  <svg
-    id="Capa_1"
-    data-name="Capa 1"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 38.63 38.63"
-  >
+ 
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33.25 47.67">
     <defs>
       <style>
         .cls-1 {
-          fill: #C7C6C6;
+          font-size: 11.62px;
+          fill: #878787;
+          font-family: AntartidaRounded-Light, Antartida Rounded;
+          font-weight: 300;
         }
         .cls-2 {
-          font-size: 17.45px;
+          letter-spacing: -0.03em;
+        }
+        .cls-3 {
+          fill: #c7c6c6;
+        }
+        .cls-4 {
+          font-size: 13.94px;
           fill: #fff;
           font-family: AntartidaRounded-Medium, Antartida Rounded;
           font-weight: 500;
         }
       </style>
     </defs>
-    <rect [ngClass]="{ active: active }" class="cls-1" width="38.63" height="38.63" rx="19.32" />
-    <text class="cls-2" transform="translate(9.02 24.67)">{{state}}</text>
+    <g id="Layer_2" data-name="Layer 2">
+      <g id="Capa_1" data-name="Capa 1">
+        <text class="cls-1" transform="translate(0 45)">
+          On
+          <tspan class="cls-2" x="13.6" y="0">/</tspan>
+          <tspan x="18.78" y="0">Off</tspan>
+        </text>
+        <rect [ngClass]="{ active: active }"  class="cls-3" x="1.05" width="30.86" height="30.86" rx="15.43" />
+        <text class="cls-4" transform="translate(8.25 19.71)">{{ state }}</text>
+      </g>
+    </g>
   </svg>
- 
 </button>
