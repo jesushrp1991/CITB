@@ -1,0 +1,13 @@
+@import "../../base/buttonBase.scss";
+.recordButtons {
+    background-size: 85%;
+    background-position: center;
+    background-repeat: no-repeat;
+    &.active {
+        background-color: #547dbe57;
+    }
+    img {
+        width: 80%;
+    }
+   
+}

@@ -1,5 +1,5 @@
 import { Component, Input, Output } from '@angular/core';
-import { BaseButton } from '../base/ButtonBase';
+import { BaseButton } from 'src/app/base/ButtonBase';
 
 @Component({
   selector: 'voice-command',
@@ -32,5 +32,4 @@ export class VoiceCommandComponent extends BaseButton {
       this.sendMessage(request);
       this.window.chrome.runtime.openOptionsPage(() => {});
     };
-  
 }

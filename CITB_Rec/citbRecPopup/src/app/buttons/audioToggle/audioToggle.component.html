@@ -1,0 +1,25 @@
+<button class="popupButton" (click)="toggleAudio()">
+  <svg
+    id="Capa_1"
+    data-name="Capa 1"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 38.63 38.63"
+  >
+    <defs>
+      <style>
+        .cls-1 {
+          fill: #C7C6C6;
+        }
+        .cls-2 {
+          font-size: 17.45px;
+          fill: #fff;
+          font-family: AntartidaRounded-Medium, Antartida Rounded;
+          font-weight: 500;
+        }
+      </style>
+    </defs>
+    <rect [ngClass]="{ active: active }" class="cls-1" width="38.63" height="38.63" rx="19.32" />
+    <text class="cls-2" transform="translate(9.02 24.67)">{{state}}</text>
+  </svg>
+ 
+</button>

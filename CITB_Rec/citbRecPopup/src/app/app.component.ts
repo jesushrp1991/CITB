@@ -1,7 +1,7 @@
 ///<reference types="chrome"/>
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseButton } from './base/ButtonBase';
-import {VoiceCommandComponent} from './buttons/voiceCommand.component'
+import {VoiceCommandComponent} from './buttons/voiceCommand/voiceCommand.component'
 
 @Component({
   selector: 'app-root',
@@ -32,6 +32,27 @@ export class AppComponent extends BaseButton implements OnInit {
   //Fin Referencias a componentes hijos
 
   public voiceCommandEnabled = false;
+  private _voiceVolume = 0;
+  public get voiceVolume () {
+    return this._voiceVolume;
+  }
+  public set voiceVolume (value: number) {
+    this._voiceVolume = value; 
+    console.log("change",value!);
+    const request = { recordingStatus: 'changeVoiceVolume' , volume: value};
+    this.sendMessage(request);
+    chrome.storage.local.set({voiceVolumeControl: value});
+  }
+  private _systemVolume = 0;
+  public get systemVolume() {
+    return this._systemVolume;
+  }
+  public set systemVolume(value: number){
+    console.log("change",value!);
+    const request = { recordingStatus: 'changeSystemVolume' , volume: value};
+    this.sendMessage(request);
+    chrome.storage.local.set({systemVolumeControl: value});
+  }
   public audioEnabled = true;
   public recMode = 'recordScreen';
   public isCITBEnabled = false;
@@ -47,31 +68,6 @@ export class AppComponent extends BaseButton implements OnInit {
   //CITB variables
   public globalState = false;
 
-  public get isRecordTabActive() {
-    return this.recMode === 'recordTab';
-  }
-
-  public get onOffImg() {
-    return this.audioEnabled ? 'assets/onMic.png' : 'assets/offMic.png';
-  }
-
-  public get isRecordScreenActive() {
-    return this.recMode === 'recordScreen';
-  }
-
-  public toggleAudio = () => {
-    this.audioEnabled = !this.audioEnabled;
-    this.window.chrome.storage.local.set(
-      { isMicEnable: this.audioEnabled },
-      () => {}
-    );
-  };
-
-  public changeRecMode = (type: 'recordScreen' | 'recordTab') => {
-    this.recMode = type;
-    this.window.chrome.storage.local.set({ recMode: this.recMode }, () => {});
-  };
-
   public restoreState = () => {
     this.window.chrome.storage.local.get('isMicEnable', (result: any) => {
       this.audioEnabled = result.isMicEnable;
@@ -80,13 +76,13 @@ export class AppComponent extends BaseButton implements OnInit {
     this.window.chrome.storage.local.get(
       'voiceVolumeControl',
       (result: any) => {
-        // voiceVolumeControl.value = result.voiceVolumeControl;
+        this.voiceVolume = result.voiceVolumeControl;
       }
     );
     this.window.chrome.storage.local.get(
       'systemVolumeControl',
       (result: any) => {
-        // systemVolumeControl.value = result.systemVolumeControl;
+        this.systemVolume = result.systemVolumeControl;
       }
     );
     this.window.chrome.storage.local.get('recMode', (result: any) => {
@@ -329,25 +325,6 @@ export class AppComponent extends BaseButton implements OnInit {
       },1000)
   }
   //************ TIMER CONTROLLER **********//////
-
-
-  //*************** Volumen Control ********/
-  public changeVoiceVolume = (value : Event) => {
-    console.log("change",value!);
-    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
-    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
-    this.sendMessage(request);
-    chrome.storage.local.set({voiceVolumeControl: volumenValue});
-  }
-
-  public changeSystemVolume = (value: Event) => {
-    console.log("change",value!);
-    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
-    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
-    this.sendMessage(request);
-    chrome.storage.local.set({voiceVolumeControl: volumenValue});
-  }
-  //*************** End Volumen Control ********/
 
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
