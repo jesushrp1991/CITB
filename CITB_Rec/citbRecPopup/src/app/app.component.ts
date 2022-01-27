@@ -349,6 +349,25 @@ export class AppComponent implements OnInit {
   }
   //************ TIMER CONTROLLER **********//////
 
+
+  //*************** Volumen Control ********/
+  public changeVoiceVolume = (value : Event) => {
+    console.log("change",value!);
+    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
+    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
+    this.sendMessage(request);
+    chrome.storage.local.set({voiceVolumeControl: volumenValue});
+  }
+
+  public changeSystemVolume = (value: Event) => {
+    console.log("change",value!);
+    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
+    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
+    this.sendMessage(request);
+    chrome.storage.local.set({voiceVolumeControl: volumenValue});
+  }
+  //*************** End Volumen Control ********/
+
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     this.sendMessage(request);
