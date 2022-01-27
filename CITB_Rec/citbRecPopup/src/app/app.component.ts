@@ -1,6 +1,7 @@
 ///<reference types="chrome"/>
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseButton } from './base/ButtonBase';
+import {VoiceCommandComponent} from './buttons/voiceCommand.component'
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ export class AppComponent extends BaseButton implements OnInit {
     try {
       this.checkAut();
       this.restoreState();
+      this.getCurrentState();
     } catch (error) {
       console.log("CANNOT RESTORE STATE")
     }
@@ -25,6 +27,9 @@ export class AppComponent extends BaseButton implements OnInit {
     this.getOnOffState();
     this.chekWebContainerState();
   }
+  // Referencias a componentes hijos
+  @ViewChild('voiceCommandComponent') voiceCommandComponent!: VoiceCommandComponent;
+  //Fin Referencias a componentes hijos
 
   public voiceCommandEnabled = false;
   public audioEnabled = true;
@@ -98,7 +103,7 @@ export class AppComponent extends BaseButton implements OnInit {
       await this.window.navigator.mediaDevices.getUserMedia({ audio: true });
       micList = await this.window.navigator.mediaDevices.enumerateDevices();
     } catch (error) {
-      this.toggleVoiceCommands();
+      this.voiceCommandComponent.toggleState();
     }
     micList = await this.window.navigator.mediaDevices.enumerateDevices();
     console.log(micList);
@@ -119,17 +124,6 @@ export class AppComponent extends BaseButton implements OnInit {
       }
       this.exitsCITBDevice = false;
     }
-  };
-
-
-  toggleVoiceCommands = () => {
-    console.log("TOOGLEVOICE");
-    this.voiceCommandEnabled = !this.voiceCommandEnabled;
-    const status = this.voiceCommandEnabled ? 'voiceOpen' : 'voiceClose';
-    const request = { recordingStatus: status };
-
-    this.sendMessage(request);
-    this.window.chrome.runtime.openOptionsPage(() => {});
   };
 
   public get citbOnOffImg() {

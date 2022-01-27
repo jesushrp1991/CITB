@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { BaseButton } from '../base/ButtonBase';
 
 @Component({
@@ -7,9 +7,21 @@ import { BaseButton } from '../base/ButtonBase';
   styleUrls: ['./voiceCommandSVG.scss'],
 })
 export class VoiceCommandComponent extends BaseButton {
-    @Input() public active: boolean = false;
-    public voiceCommandEnabled = false;
+    private _active: boolean = false;
+    @Input() public get active() {
+      return this._active;
+    };
+    public set active(enabled: boolean) {
+      this._active = enabled;
+      this.voiceCommandEnabled = enabled;
+    };
 
+    @Output() public toggleState = () => {
+      this.toggleVoiceCommands();
+    }
+
+
+    public voiceCommandEnabled = false;
 
     toggleVoiceCommands = () => {
       console.log("TOOGLEVOICE");
@@ -20,4 +32,5 @@ export class VoiceCommandComponent extends BaseButton {
       this.sendMessage(request);
       this.window.chrome.runtime.openOptionsPage(() => {});
     };
+  
 }
