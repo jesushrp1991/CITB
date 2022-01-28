@@ -28,4 +28,8 @@ export class RecordButtonComponent extends BaseButton {
         this.window.chrome.storage.local.set({ recMode: this.recordKind }, () => {});
     }
 
+    public get recordButtonImg() {
+        return this.recordKind == 'recordTab' ? 'assets/recordTab.svg' : 'assets/recordScreen.svg'
+    }
+
 }
