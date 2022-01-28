@@ -7,7 +7,8 @@ import { AppComponent } from './app.component';
 import { RecordButtonComponent } from './buttons/recordScreen/recordButton.component';
 import { VoiceCommandComponent } from './buttons/voiceCommand/voiceCommand.component';
 import { AudioToggleComponent } from './buttons/audioToggle/audioToggle.component';
-import { citbOpenComponent } from './buttons/citbOpenPanel/citbOpen.component'
+import { citbOpenComponent } from './buttons/citbOpenPanel/citbOpen.component';
+import { recordListComponent } from './buttons/recordList/recordList.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { citbOpenComponent } from './buttons/citbOpenPanel/citbOpen.component'
     , AudioToggleComponent
     , RecordButtonComponent
     , citbOpenComponent
+    , recordListComponent
   ],
   imports: [
     BrowserModule,
