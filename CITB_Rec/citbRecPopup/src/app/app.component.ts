@@ -253,13 +253,6 @@ export class AppComponent extends BaseButton implements OnInit {
     this.window.chrome.storage.local.set({isCITBPanelVisible: this.citbDeviceEnabled}, () => {});
   };
 
-  public showRecordings = () => {
-    const request = { recordingStatus: 'showRecList' };
-    this.sendMessage(request);
-  }
-
-  
-
   public get floatingPanelStatus() {
     return this.isFloatingPanelShow
       ? 'assets/showPanelFlotante.svg'
