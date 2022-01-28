@@ -326,6 +326,28 @@ export class AppComponent extends BaseButton implements OnInit {
   }
   //************ TIMER CONTROLLER **********//////
 
+<<<<<<< Updated upstream
+=======
+
+  //*************** Volumen Control ********/
+  public changeVoiceVolume = (value : Event) => {
+    console.log("change",value!);
+    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
+    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
+    this.sendMessage(request);
+    chrome.storage.local.set({voiceVolumeControl: volumenValue});
+  }
+
+  public changeSystemVolume = (value: Event) => {
+    console.log("change",value!);
+    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
+    const request = { recordingStatus: 'changeSystemVolume' , volume: volumenValue};
+    this.sendMessage(request);
+    chrome.storage.local.set({systemVolumeControl: volumenValue});
+  }
+  //*************** End Volumen Control ********/
+
+>>>>>>> Stashed changes
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     this.sendMessage(request);

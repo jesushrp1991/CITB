@@ -9,7 +9,7 @@ const errorHandling = (error) => {
     reset();
     window.isRecording = false;
     chrome.storage.sync.set({isRecording: false}, () => {});
-    chrome.storage.sync.set({isPaused: true}, () => {}); 
+    chrome.storage.sync.set({isPaused: false}, () => {}); 
     delQueueDB();
     window.recorder.stop();
     if(window.desktopStream){
@@ -39,6 +39,16 @@ const errorHandling = (error) => {
     }).then(response => response.json());  
 }
 
+
+const initialCleanUp = () =>{
+    window.isRecording = false;
+    chrome.browserAction.setIcon({path: "./assets/icon.png"});
+    reset();
+    chrome.storage.sync.set({isRecording: false}, () => {});
+    chrome.storage.sync.set({isPaused: false}, () => {}); 
+  }
+
 export {
     errorHandling
+    ,initialCleanUp
 }

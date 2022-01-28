@@ -2,7 +2,6 @@ import {
    showEstimatedQuota
   ,delLastItem
   ,getDriverLinkInQueueDB
-  // ,createDB
   ,prepareDB
 } from "./js/database.js";
 
@@ -29,6 +28,9 @@ import {
 } from './js/fileManager.js'
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
+import { initialCleanUp } from './js/errorHandling.js'
+
+initialCleanUp();
 
 chrome.runtime.onInstalled.addListener(function(details){
   if(details.reason == "install"){

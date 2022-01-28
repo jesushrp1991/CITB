@@ -34,8 +34,14 @@ import { environment } from "../config/environment.js";
         }
     }
 
-    const selectDB = async () =>{
+    const getAllRecordsDB = async () =>{
       try{
+          db = new Dexie("CITBRecords", { autoOpen: true });
+          db.version(1).stores({
+              records: `
+                  ++id,
+                  record`,
+          });
           let result = await db.records.orderBy('id').toArray();
           return result; 
       }catch(error){
@@ -62,7 +68,8 @@ import { environment } from "../config/environment.js";
 
   const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,calendarId) =>{
     try{
-      await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,calendarId:calendarId});  
+      const id = await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,calendarId:calendarId});
+      return id;
     }catch(error){
         console.log(error);
         throw error;
@@ -76,7 +83,7 @@ import { environment } from "../config/environment.js";
         throw error; //needed to abort the transaction.
     }
   }
-  const getLastElementIdQueueDB = async () =>{
+  const getLastElementQueueDB = async () =>{
       try{
           const exitsDB = await Dexie.exists("CITBQueueRecords");
           if(!exitsDB){
@@ -114,6 +121,10 @@ import { environment } from "../config/environment.js";
   const saveLinktoDB = async(id,link) =>{
     await queueDB.records.update(id,{driveLink: link});
     getDriverLinkInQueueDB(id);
+  }
+  
+  const updateFileDB = async(id,file,dateEnd) =>{
+    await queueDB.records.update(id,{file: file,dateEnd:dateEnd});
   }
 
   const delFileInDB = async(id) =>{
@@ -272,7 +283,7 @@ export {
      createDB
     ,addDB
     ,delDB
-    ,selectDB 
+    ,getAllRecordsDB
     ,persist 
     ,isStoragePersisted
     ,showEstimatedQuota
@@ -282,7 +293,7 @@ export {
     ,delLastItem
     ,createRecQueueDB
     ,addRecQueueDB
-    ,getLastElementIdQueueDB
+    ,getLastElementQueueDB
     ,getNextQueueFile
     ,saveLinktoDB
     ,delFileInDB
@@ -291,4 +302,5 @@ export {
     ,searchBylinkQueueDB
     ,removeRecordQueueDB
     ,delQueueDB
+    ,updateFileDB
 }

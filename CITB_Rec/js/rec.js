@@ -5,14 +5,15 @@ import { recIcon } from './tools.js'
  
  
 import { 
-    startTimerCount, 
-    stopTimerCount, 
-    reset 
+    startTimerCount 
+   ,stopTimerCount
+   ,reset 
 } from './recTimer.js' 
  
 import { 
-    addDB,
-    showEstimatedQuota
+    addDB
+    ,showEstimatedQuota
+    ,addRecQueueDB
 } from "./database.js"; 
  
   const verifyAvailableSpaceOnDisk = async () =>{   
@@ -107,7 +108,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
-            window.isRecording = true;  
+            // window.isRecording = true;  
+            window.currentRecordingId = await addRecQueueDB("recording",window.fileName,window.meetStartTime,null,null,window.calendarId);
+
           }//End if recMode == RecordTabs
           //recMode == destokp
           else{
@@ -208,7 +211,8 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
-            window.isRecording = true;  
+            // window.isRecording = true;  
+            window.currentRecordingId = await addRecQueueDB("recording",window.fileName,window.meetStartTime,null,null,window.calendarId);
           }
         });
       }
@@ -295,7 +299,8 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
         }  
         window.recorder.start(environment.timeIntervalSaveDB);  
         startTimerCount();  
-        window.isRecording = true;  
+        // window.isRecording = true;  
+        window.currentRecordingId = await addRecQueueDB('recording',window.fileName,window.meetStartTime,null,null,window.calendarId);
       } 
   }catch(e){  
     console.log(e);  

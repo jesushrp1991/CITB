@@ -1,12 +1,13 @@
 import { environment } from "../config/environment.js";  
 import { errorHandling } from './errorHandling.js'
 import { 
-     selectDB
-    ,getLastElementIdQueueDB
+    getAllRecordsDB
+    ,getLastElementQueueDB
     ,saveLinktoDB
     ,delFileInDB
     ,addRecQueueDB
     ,listQueueDB
+    ,updateFileDB
 } from "./database.js";
 
 const moveDriveFileToFolder = async (destFolderId,originalDocID) => {    
@@ -289,9 +290,9 @@ function getVideoCover(file, seekTo = 0.0) {
   });
 }
 const saveVideo = async(localDownload) =>{
-  let save = await selectDB();
+  let videoArrayChunks = await getAllRecordsDB();
   let finalArray = [];
-  save.forEach(element => {
+  videoArrayChunks.forEach(element => {
     finalArray.push(element.record[0]);
   });
   if(environment.upLoadToDrive && !localDownload){
@@ -300,7 +301,11 @@ const saveVideo = async(localDownload) =>{
       } catch (ex) {
           console.log("ERROR: ", ex);
       }
-    addRecQueueDB(file,window.fileName,window.meetStartTime,window.meetEndTime,null,window.calendarId); 
+    //cambiar a update file y meet.endTime
+    if(window.meetEndTime == null || window.meetEndTime == undefined || window.meetEndTime == ''){
+      window.meetEndTime = dayjs().subtract(videoArrayChunks.length * 100,'ms').format();
+    }
+    updateFileDB(window.currentRecordingId,file,window.meetEndTime); 
   }else{
     if(finalArray.length != 0 ){
       download(finalArray);
@@ -329,18 +334,24 @@ const uploadQueueDaemon = async() =>{
     if(window.uploadValue != -1){
       return;
     }
-    let lastElemenID = await getLastElementIdQueueDB();
-    if(lastElemenID == undefined){
+    let lastElement = await getLastElementQueueDB();
+    if(lastElement == undefined){
         return;
     }
-    if(lastElemenID.file != "uploaded" && lastElemenID.file != "folder" ){
-        let nextFile = lastElemenID;
-        window.fileIDUploadInProgress = nextFile.id;
-        window.nameToUploads = nextFile.name; 
-        window.starTimeUpload = nextFile.dateStart; 
-        window.endTimeUpload = nextFile.dateEnd; 
-        window.calendarId = nextFile.calendarId;
-        prepareUploadToDrive(nextFile.file);
+    if(lastElement.file == 'recording' && window.isRecording == false){
+      window.currentRecordingId = lastElement.id;
+      window.fileName = lastElement.name;
+      window.meetStartTime = lastElement.dateStart;
+      window.calendarId = lastElement.calendarId;
+      saveVideo(false);
+    }
+    if(lastElement.file != "uploaded" && lastElement.file != "folder" && lastElement.file != 'recording'){
+        window.fileIDUploadInProgress = lastElement.id;
+        window.nameToUploads = lastElement.name; 
+        window.starTimeUpload = lastElement.dateStart; 
+        window.endTimeUpload = lastElement.dateEnd; 
+        window.calendarId = lastElement.calendarId;
+        prepareUploadToDrive(lastElement.file);
     }
 }
 setInterval(uploadQueueDaemon,environment.timerUploadQueueDaemon);
