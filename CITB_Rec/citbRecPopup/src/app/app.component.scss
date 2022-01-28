@@ -9,6 +9,25 @@
     background-position: center top;
     margin: 10px;
 }
+.logo {
+    text-align: center;
+    margin: auto;
+    img {
+        width: 103px;
+        margin: auto;
+    }
+}
+.record-section {
+    margin-top: 15px;
+    float:left;
+    width: 100%;
+    .title {
+        text-align: center;
+        img{
+            height:15px;
+        }
+    }
+}
 .citbButtonsContainer {
     background-image: url(../assets/citbButtons.png);
     width: 100%;
@@ -37,13 +56,17 @@
     top: 457px;
 }
 #grabarPestana {
-    left: -13px;
-    top: 76px;
+    position: inherit;
+    float: left;
+    margin-left: -13px;
+    margin-top: 8px;
 }
 
 #grabarEscritorio {
-    top: 76px;
-    right: -10px;
+    position: inherit;
+    float: right;
+    margin-right: -10px;
+    margin-top: 8px;
 }
 
 #audioOnOff {

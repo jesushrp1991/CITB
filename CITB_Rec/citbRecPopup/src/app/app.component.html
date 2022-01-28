@@ -1,5 +1,4 @@
 <div id="content">
-  <div id="spacer"></div>
   <div class="citbButtonsContainer" *ngIf="citbDeviceEnabled">
     <button
       class="invisibleButtons citbButtons"
@@ -26,23 +25,32 @@
       <img [src]="floatingPanelStatus" alt="" />
     </button>
   </div>
-  <record-button
-    id="grabarPestana"
-    recordKind="recordTab"
-    class="invisibleButtons"
-    [activeRecordMode]="recMode"
-    (click)="recMode = 'recordTab'"
-  >
-  </record-button>
-  <record-button
-    id="grabarEscritorio"
-    class="invisibleButtons"
-    recordKind="recordScreen"
-    [activeRecordMode]="recMode"
-    (click)="recMode = 'recordScreen'"
-  >
-  </record-button>
-  <img src="assets/separator.svg" alt="" id="separator1">
+  <div class="logo">
+    <img src="assets/logo.svg" alt="Logo Rec Mode" />
+  </div>
+  <div class="record-section">
+    <div class="title">
+      <img src="assets/video_title.svg" alt="" />
+    </div>
+    <record-button
+      id="grabarPestana"
+      recordKind="recordTab"
+      class="invisibleButtons"
+      [activeRecordMode]="recMode"
+      (click)="recMode = 'recordTab'"
+    >
+    </record-button>
+    <record-button
+      id="grabarEscritorio"
+      class="invisibleButtons"
+      recordKind="recordScreen"
+      [activeRecordMode]="recMode"
+      (click)="recMode = 'recordScreen'"
+    >
+    </record-button>
+  </div>
+
+  <img src="assets/separator.svg" alt="" id="separator1" />
 
   <audio-toggle
     class="invisibleButtons"
