@@ -7,14 +7,13 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   styleUrls: ['./citbOn.scss'],
 })
 export class citbOnComponent extends BaseButton {
-    // private _active: boolean = false;
-    // @Input() public get active() {
-    //   return this._active;
-    // };
-    // public set active(enabled: boolean) {
-    //   this._active = enabled;
-    //   this.voiceCommandEnabled = enabled;
-    // };
+    private _active: boolean = false;
+    @Input() public get active() {
+      return this._active;
+    };
+    public set active(enabled: boolean) {
+      this._active = enabled;
+    };
 
     // @Output() public toggleState = () => {
     //   this.toggleVoiceCommands();
