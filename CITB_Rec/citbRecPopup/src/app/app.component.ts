@@ -37,21 +37,21 @@ export class AppComponent extends BaseButton implements OnInit {
     return this._voiceVolume;
   }
   public set voiceVolume (value: number) {
-    this._voiceVolume = value; 
-    console.log("change",value!);
-    const request = { recordingStatus: 'changeVoiceVolume' , volume: value};
-    this.sendMessage(request);
-    chrome.storage.local.set({voiceVolumeControl: value});
+    // this._voiceVolume = value; 
+    // console.log("change",value!);
+    // const request = { recordingStatus: 'changeVoiceVolume' , volume: value};
+    // this.sendMessage(request);
+    // chrome.storage.local.set({voiceVolumeControl: value});
   }
   private _systemVolume = 0;
   public get systemVolume() {
     return this._systemVolume;
   }
   public set systemVolume(value: number){
-    console.log("change",value!);
-    const request = { recordingStatus: 'changeSystemVolume' , volume: value};
-    this.sendMessage(request);
-    chrome.storage.local.set({systemVolumeControl: value});
+    // console.log("change",value!);
+    // const request = { recordingStatus: 'changeSystemVolume' , volume: value};
+    // this.sendMessage(request);
+    // chrome.storage.local.set({systemVolumeControl: value});
   }
   public audioEnabled = true;
   public recMode = 'recordScreen';
@@ -326,8 +326,6 @@ export class AppComponent extends BaseButton implements OnInit {
   }
   //************ TIMER CONTROLLER **********//////
 
-<<<<<<< Updated upstream
-=======
 
   //*************** Volumen Control ********/
   public changeVoiceVolume = (value : Event) => {
@@ -347,7 +345,6 @@ export class AppComponent extends BaseButton implements OnInit {
   }
   //*************** End Volumen Control ********/
 
->>>>>>> Stashed changes
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
     this.sendMessage(request);

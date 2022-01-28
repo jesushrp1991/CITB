@@ -19,6 +19,7 @@
 }
 .record-section {
     margin-top: 15px;
+    left: 15px;
     float:left;
     width: 100%;
     .title {
@@ -50,6 +51,14 @@
     position: absolute;
     background-color: transparent;
 }
+.invisibleComandButtons {
+    z-index: 2;
+    border: none;
+    width: 76px;
+    height: 75px;
+    position: absolute;
+    background-color: transparent;
+}
 .citbButtons{
     width: 53px;
     height:53px;
@@ -70,7 +79,7 @@
 }
 
 #audioOnOff {
-    top: 172px;
+    top: 173px;
     width: 43px;
     height: 43px;
     left: 7px;
@@ -131,10 +140,10 @@
 }
 
 #voiceCommands {
-    top: 323px;
-    height: 80px;
-    width: 80px;
-    left: 8px;
+    top: 293px;
+    height: 70px;
+    width: 73px;
+    left: -9px;
 
 }
 
