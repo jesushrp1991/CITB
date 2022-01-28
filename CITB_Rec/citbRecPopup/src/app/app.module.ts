@@ -15,6 +15,7 @@ import { citbVideoComponent } from './buttons/citbVideoSelect/citbVideo.componen
 import { citbShowBarComponent } from './buttons/citbShowBar/citbShowBar.component';
 import { recordButtonComponent } from './buttons/recordButton/recordButton.component';
 import { ecoAlertComponent } from './buttons/ecoAlert/ecoAlert.component';
+import { VolumeControlComponent } from './buttons/volumeControl/volumeControl.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ecoAlertComponent } from './buttons/ecoAlert/ecoAlert.component';
     , citbShowBarComponent
     , recordButtonComponent
     , ecoAlertComponent
+    , VolumeControlComponent
   ],
   imports: [
     BrowserModule,
