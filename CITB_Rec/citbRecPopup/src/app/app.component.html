@@ -8,10 +8,10 @@
     </div>
     <record-button
       id="grabarPestana"
-      recordKind="recordTab"
+      recordKind="recordTabs"
       class="invisibleButtons"
       [activeRecordMode]="recMode"
-      (click)="recMode = 'recordTab'"
+      (click)="recMode = 'recordTabs'"
     >
     </record-button>
     <record-button
@@ -28,23 +28,23 @@
 
   <div>
     <audio-toggle
-    class="invisibleButtons"
-    id="audioOnOff"
-    [active]="audioEnabled"
-      >
-      </audio-toggle>
+      class="invisibleButtons"
+      id="audioOnOff"
+      [active]="audioEnabled"
+    >
+    </audio-toggle>
 
-      <select id="miclist" class="custom-select custom-select-sm select-mic">
-        <option
-          (click)="selectedMic = mic.deviceId"
-          *ngFor="let mic of organizedMicList"
-          value="mic.deviceId"
-        >
-          {{ mic.label }}
-        </option>
-      </select>
-      <volume-control id="volumeControl"></volume-control>
-      <!-- <div id="volumeControl" class="row" style="display: block">
+    <select id="miclist" class="custom-select custom-select-sm select-mic" [(ngModel)]="selectedMic">
+      <option
+        *ngFor="let mic of organizedMicList"
+        [value]="mic.deviceId"
+      >
+        {{ mic.label }}
+      </option>
+    </select>
+
+    <volume-control id="volumeControl"></volume-control>
+    <!-- <div id="volumeControl" class="row" style="display: block">
         <div class="col">
           <div class="card">
             <div class="card-body">
@@ -100,7 +100,7 @@
   </div>
 
   <img src="assets/separator.svg" alt="" id="separator2" />
-  
+
   <div>
     <voice-command
       #voiceCommandComponent
@@ -109,11 +109,9 @@
       [active]="voiceCommandEnabled"
     ></voice-command>
 
-    <citb-open class="invisibleComandButtons" id="citbDevice">    
-    </citb-open>
+    <citb-open class="invisibleComandButtons" id="citbDevice"> </citb-open>
 
-    <record-list class="invisibleComandButtons" id="recordings">  
-    </record-list>
+    <record-list class="invisibleComandButtons" id="recordings"> </record-list>
     <!-- <button
       class="invisibleButtons"
       (click)="citbDeviceToggle()"
@@ -125,14 +123,17 @@
       id="recordings"
     ></button> -->
   </div>
-  
+
   <img src="assets/separator.svg" alt="" id="separator3" />
 
   <div>
     <citb-on class="invisibleComandButtons" id="citbOn"></citb-on>
     <citb-video class="invisibleComandButtons" id="citbCamPopup"></citb-video>
     <citb-mic class="invisibleComandButtons" id="citbMicPopup"></citb-mic>
-    <citb-show-bar class="invisibleComandButtons" id="citbShowFloatingDiv"></citb-show-bar>
+    <citb-show-bar
+      class="invisibleComandButtons"
+      id="citbShowFloatingDiv"
+    ></citb-show-bar>
     <!-- <div class="citbButtonsContainer" *ngIf="citbDeviceEnabled">
     <button
       class="invisibleButtons citbButtons"
@@ -164,7 +165,11 @@
   <img src="assets/separator.svg" alt="" id="separator4" />
 
   <div>
-    <rec-button class="invisibleComandButtons" id="startRecord"></rec-button>
+    <rec-button
+      class="invisibleComandButtons"
+      id="startRecord"
+      (click)="startRecording()"
+    ></rec-button>
   </div>
 
   <div *ngIf="!exitsCITBDevice">

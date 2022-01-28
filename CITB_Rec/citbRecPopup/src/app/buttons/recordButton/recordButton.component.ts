@@ -7,14 +7,16 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   styleUrls: ['./recordButton.scss'],
 })
 export class recordButtonComponent extends BaseButton {
-    // private _active: boolean = false;
-    // @Input() public get active() {
-    //   return this._active;
-    // };
-    // public set active(enabled: boolean) {
-    //   this._active = enabled;
-    //   this.voiceCommandEnabled = enabled;
-    // };
+    private isMicActive : boolean = true;
+    
+    @Input() public get micStatus() {
+      return this.isMicActive;
+    };
+
+    public set micStatus(enabled: boolean) {
+      this.isMicActive = enabled;
+      console.log("Cambio el estado del mic",this.isMicActive)
+    };
 
     // @Output() public toggleState = () => {
     //   this.toggleVoiceCommands();

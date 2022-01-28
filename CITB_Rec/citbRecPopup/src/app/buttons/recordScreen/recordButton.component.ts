@@ -8,9 +8,9 @@ import { BaseButton } from '../../base/ButtonBase';
 })
 export class RecordButtonComponent extends BaseButton {
 
-    @Input() public recordKind: string = 'recordTab';
+    @Input() public recordKind: string = 'recordTabs';
     public active = false;
-    private _activeRecordMode: string = 'recordTab';
+    private _activeRecordMode: string = 'recordTabs';
 
     @Input() public get activeRecordMode () {
         return this._activeRecordMode;
@@ -29,7 +29,7 @@ export class RecordButtonComponent extends BaseButton {
     }
 
     public get recordButtonImg() {
-        return this.recordKind == 'recordTab' ? 'assets/recordTab.svg' : 'assets/recordScreen.svg'
+        return this.recordKind == 'recordTabs' ? 'assets/recordTab.svg' : 'assets/recordScreen.svg'
     }
 
 }

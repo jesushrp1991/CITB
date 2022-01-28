@@ -11,7 +11,6 @@ import { citbOpenComponent } from './buttons/citbOpenPanel/citbOpen.component';
 })
 export class AppComponent extends BaseButton implements OnInit {
   ngOnInit (): void {
-    console.log('inside')
     try {
       this.checkAut();
       this.restoreState();
@@ -59,7 +58,6 @@ export class AppComponent extends BaseButton implements OnInit {
   public isCITBEnabled = false;
   public citbDeviceEnabled = false;
   public selectedMic = "";
-  public isFloatingPanelShow = true;
   public isRecording = false;
   public isPaused = false;
   public exitsCITBDevice = true;
@@ -68,6 +66,8 @@ export class AppComponent extends BaseButton implements OnInit {
 
   //CITB variables
   // public globalState = false;
+  // public isFloatingPanelShow = true;
+
 
   public restoreState = () => {
     this.window.chrome.storage.local.get('isMicEnable', (result: any) => {
@@ -123,151 +123,31 @@ export class AppComponent extends BaseButton implements OnInit {
     }
   };
 
-  public get citbOnOffImg() {
-    return this.isCITBEnabled
-      ? 'assets/on.png'
-      : 'assets/off.png';
-  }
-
-  //************* CITB CAM  *********************/
-  // public onOfChecker = (tab:any) => {
-  //   const url = tab.url;
-  //   if (
-  //     url.includes("meet.google.com") ||
-  //     url.includes("teams.microsoft.com") ||
-  //     url.includes("teams.live.com") ||
-  //     url.includes("zoom.us") ||
-  //     url.includes("meet.jit.si")
-  //   ) {
-  //     chrome.tabs.executeScript(tab.id,{
-  //       code: 'isOpen = document.getElementById("buttonOnOff").innerText.toString();isOpen;'      
-  //     },(injectionResults) => {
-  //       injectionResults[0] == "true" ?
-  //                   this.globalState = true
-  //                   : this.globalState = false;
-  //       this.globalState 
-  //         ? this.isCITBEnabled = true 
-  //         : this.isCITBEnabled = false;
-  //     });
-  //   }
-  //   //try again each second during 5 seconds
-  //   let onOfChekerCounter =0;
-  //   if (onOfChekerCounter < 5) {
-  //     onOfChekerCounter += 1;
-  //     setTimeout(() => {
-  //       this.onOfChecker(tab);
-  //     }, 1000);
-  //   } else {
-  //     onOfChekerCounter = 0;
-  //   }
-  // };
-
-  // public getOnOffState = async () => {
-  //   chrome.tabs.getSelected((tab) => {
-  //     this.onOfChecker(tab);
-  //   });
-  // };
-
-  // public toggleCITBOnOff= () => {
-  //   this.isCITBEnabled = !this.isCITBEnabled;
-  //   chrome.tabs.getSelected( (tab) => {
-  //     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-  //       let url = tab.url;
-  //       let id: number = tab.id!;
-  //       if (
-  //         url?.includes("meet.google.com") ||
-  //         url?.includes("teams.microsoft.com") ||
-  //         url?.includes("teams.live.com") ||
-  //         url?.includes("zoom.us") ||
-  //         url?.includes("meet.jit.si")
-  //       ) {
-  //         chrome.tabs.executeScript(id,{
-  //           code: 'document.getElementById("buttonOnOff").click();'
-  //         });
-  //       }
-  //       setTimeout(() => {
-  //         this.getOnOffState();
-  //       }, 100);
-  //     });
-  //   });
-  // };
-
-  // public chooseMic = () =>{
-  //   chrome.tabs.getSelected((tab) => {
-  //     chrome.tabs.executeScript(tab.id!,{
-  //       code: 'document.getElementById("buttonPopup").click();'
-  //     });
-  //   });
+  // public get citbOnOffImg() {
+  //   return this.isCITBEnabled
+  //     ? 'assets/on.png'
+  //     : 'assets/off.png';
   // }
-
-  // public chooseCamara = () => {
-  //   chrome.tabs.getSelected((tab) => {
-  //     chrome.tabs.executeScript(tab.id!,{
-  //         code: 'document.getElementById("buttonPopupVideo").click();'
-  //     });
-  //   });
-  // }
-
-  // public toogleFloatingPanel = () => {
-  //   this.isFloatingPanelShow = !this.isFloatingPanelShow;
-  //   chrome.tabs.getSelected((tab) => {
-  //     if (!this.isFloatingPanelShow) {
-  //       chrome.tabs.executeScript(tab.id!,{
-  //         code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
-  //       });
-  //     } else {
-  //       chrome.tabs.executeScript(tab.id!,{
-  //         code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
-  //       });
-  //     }
-  //   });
-  // }
-
-  // public chekWebContainerState = async () => {
-  //   // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  //   chrome.tabs.getSelected((tab) => {
-  //     const url = tab.url!;
-  //     if (
-  //       url.includes("meet.google.com") ||
-  //       url.includes("teams.microsoft.com") ||
-  //       url.includes("teams.live.com") ||
-  //       url.includes("zoom.us") ||
-  //       url.includes("meet.jit.si")
-  //     ){
-  //       chrome.tabs.executeScript(tab.id!,{
-  //         code: 'isOpen = document.getElementById("pWebContainerState").innerText.toString(); isOpen;'
-  //       },(injectionResults)=>{
-  //           console.log(injectionResults)
-  //           injectionResults[0] == "OPEN"
-  //             ? (this.isFloatingPanelShow = true)
-  //             : (this.isFloatingPanelShow = false);
-  //         }
-  //       );
-  //     }
-  //   });
-  // };
-  //************* END CITB CAM  *********************/
-
   public citbDeviceToggle = () => {
     this.citbDeviceEnabled = !this.citbDeviceEnabled;
     this.window.chrome.storage.local.set({isCITBPanelVisible: this.citbDeviceEnabled}, () => {});
   };
 
-  public get floatingPanelStatus() {
-    return this.isFloatingPanelShow
-      ? 'assets/showPanelFlotante.svg'
-      : 'assets/hidePanelFlotante.svg'
-  }
+  // public get floatingPanelStatus() {
+  //   return this.isFloatingPanelShow
+  //     ? 'assets/showPanelFlotante.svg'
+  //     : 'assets/hidePanelFlotante.svg'
+  // }
 
   public rec = (isTabForMac:any|undefined) =>{
     let idMic;
     this.audioEnabled ? idMic = this.selectedMic : idMic = null
     const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: this.recMode};
-    this.sendMessage(request);
+    console.log(request)
+    //this.sendMessage(request);
 }
 
   public startRecording = () => {
-    console.log("Recording")
     this.isRecording = !this.isRecording;
     let userAgentData = this.window.navigator.userAgentData.platform.toLowerCase().includes('mac');
     if(userAgentData){
