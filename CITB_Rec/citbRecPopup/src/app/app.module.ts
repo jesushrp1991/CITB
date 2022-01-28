@@ -12,6 +12,7 @@ import { recordListComponent } from './buttons/recordList/recordList.component';
 import { citbOnComponent } from './buttons/citbOn/citbOn.component';
 import { citbMicComponent } from './buttons/citbMicSelect/citbMic.component';
 import { citbVideoComponent } from './buttons/citbVideoSelect/citbVideo.component';
+import { citbShowBarComponent } from './buttons/citbShowBar/citbShowBar.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { citbVideoComponent } from './buttons/citbVideoSelect/citbVideo.componen
     , citbOnComponent
     , citbMicComponent
     , citbVideoComponent
+    , citbShowBarComponent
   ],
   imports: [
     BrowserModule,
