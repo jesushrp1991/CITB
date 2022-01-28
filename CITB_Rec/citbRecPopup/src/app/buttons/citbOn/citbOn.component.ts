@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, Output, OnInit} from '@angular/core';
 import { BaseButton } from 'src/app/base/ButtonBase';
 
 @Component({
@@ -6,34 +6,17 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   templateUrl: './citbOnComponent.html',
   styleUrls: ['./citbOn.scss'],
 })
-export class citbOnComponent extends BaseButton {
-    private _active: boolean = false;
-    @Input() public get active() {
-      return this._active;
-    };
-    public set active(enabled: boolean) {
-      this._active = enabled;
-    };
+export class citbOnComponent extends BaseButton implements OnInit{
+    ngOnInit(): void {
+      this.getOnOffState()
+    }
 
-    // @Output() public toggleState = () => {
-    //   this.toggleVoiceCommands();
-    // }
+    public isCITBEnabled: boolean = false;
+    public globalState = false;
 
-
-    // public voiceCommandEnabled = false;
-
-    // toggleVoiceCommands = () => {
-    //   console.log("TOOGLEVOICE");
-    //   this.voiceCommandEnabled = !this.voiceCommandEnabled;
-    //   const status = this.voiceCommandEnabled ? 'voiceOpen' : 'voiceClose';
-    //   const request = { recordingStatus: status };
-  
-    //   this.sendMessage(request);
-    //   this.window.chrome.runtime.openOptionsPage(() => {});
-    // };
 
     public toggleCITBOnOff= () => {
-      // this.isCITBEnabled = !this.isCITBEnabled;
+      this.isCITBEnabled = !this.isCITBEnabled;
       chrome.tabs.getSelected( (tab) => {
         chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
           let url = tab.url;
@@ -53,6 +36,44 @@ export class citbOnComponent extends BaseButton {
           //   this.getOnOffState();
           // }, 100);
         });
+      });
+    };
+
+    public onOfChecker = (tab:any) => {
+      const url = tab.url;
+      if (
+        url.includes("meet.google.com") ||
+        url.includes("teams.microsoft.com") ||
+        url.includes("teams.live.com") ||
+        url.includes("zoom.us") ||
+        url.includes("meet.jit.si")
+      ) {
+        chrome.tabs.executeScript(tab.id,{
+          code: 'isOpen = document.getElementById("buttonOnOff").innerText.toString();isOpen;'      
+        },(injectionResults) => {
+          injectionResults[0] == "true" ?
+                      this.globalState = true
+                      : this.globalState = false;
+          this.globalState 
+            ? this.isCITBEnabled = true 
+            : this.isCITBEnabled = false;
+        });
+      }
+      //try again each second during 5 seconds
+      let onOfChekerCounter =0;
+      if (onOfChekerCounter < 5) {
+        onOfChekerCounter += 1;
+        setTimeout(() => {
+          this.onOfChecker(tab);
+        }, 1000);
+      } else {
+        onOfChekerCounter = 0;
+      }
+    };
+  
+    public getOnOffState = async () => {
+      chrome.tabs.getSelected((tab) => {
+        this.onOfChecker(tab);
       });
     };
 }
