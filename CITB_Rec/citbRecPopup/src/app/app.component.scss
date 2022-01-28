@@ -154,6 +154,27 @@
     top: 155px;
     left: 0;
 }
+#separator2 {
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    top: 284px;
+    left: 0;
+}
+#separator3 {
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    top: 391px;
+    left: 0;
+}
+#separator4 {
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    top: 491px;
+    left: 0;
+}
 
 #citbDevice {
     top: 302px;
@@ -190,7 +211,10 @@
 }
 
 #citbMicPopup{
-    left: 139px;
+    left: 120px;
+    height: 50px;
+    width: 47px;
+    top: 412px;
 }
 
 #citbShowFloatingDiv {
