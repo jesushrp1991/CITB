@@ -88,10 +88,11 @@
     }
 }
 
-.custom-alert {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 15px;
+#custom-alert {
+    position: relative;
+    top: 396px;
+    height: 70px;
+    width: 70px;
 }
 
 #citbMissingAlert {
