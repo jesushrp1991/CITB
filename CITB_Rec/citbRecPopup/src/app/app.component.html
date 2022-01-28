@@ -170,13 +170,12 @@
     <button-stop class="invisibleComandButtons" id="stop-button"></button-stop>
   </div>
   
-  <div *ngIf="!isRecording">
-    <rec-button
-      class="invisibleComandButtons"
-      id="startRecord"
-      (click)="startRecording()"
-    ></rec-button>
-  </div>
+  <rec-button
+    class="invisibleComandButtons"
+    id="startRecord"
+    (click)="startRecording()"
+    *ngIf="!isRecording"
+  ></rec-button>
 
   <div *ngIf="!exitsCITBDevice">
     <eco-alert id="custom-alert"></eco-alert>

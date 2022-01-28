@@ -22,8 +22,8 @@ export class AppComponent extends BaseButton implements OnInit {
 
     });
     this.deamonGetState();
-    this.timerController();
-    this.checkTimer();
+    // this.timerController();
+    // this.checkTimer();
     // this.getOnOffState();
     // this.chekWebContainerState();
   }
@@ -59,10 +59,10 @@ export class AppComponent extends BaseButton implements OnInit {
   public citbDeviceEnabled = false;
   public selectedMic = "";
   public isRecording = false;
-  public isPaused = false;
+  // public isPaused = false;
   public exitsCITBDevice = true;
-  public portTimer = chrome.runtime.connect({name: "portTimer"});
-  public recTime = '00:00';
+  // public portTimer = chrome.runtime.connect({name: "portTimer"});
+  // public recTime = '00:00';
 
   //CITB variables
   // public globalState = false;
@@ -94,7 +94,6 @@ export class AppComponent extends BaseButton implements OnInit {
   public organizedMicList: { label: string; deviceId: string }[] = [];
 
   populateMicSelect = async () => {
-    console.log("POPUPLATING")
     let micList;
     try {
       await this.window.navigator.mediaDevices.getUserMedia({ audio: true });
@@ -143,8 +142,8 @@ export class AppComponent extends BaseButton implements OnInit {
     let idMic;
     this.audioEnabled ? idMic = this.selectedMic : idMic = null
     const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: this.recMode};
-    console.log(request)
-    //this.sendMessage(request);
+    //OJO PARA GRABAR !!!!!
+    this.sendMessage(request);
 }
 
   public startRecording = () => {
@@ -159,45 +158,45 @@ export class AppComponent extends BaseButton implements OnInit {
     }
   }
 
-  public stopRecording = () =>{
-    console.log("STOP REC!!!")
-    this.isRecording = !this.isRecording;
-    this.rec(undefined);
-  }
+  // public stopRecording = () =>{
+  //   console.log("STOP REC!!!")
+  //   this.isRecording = !this.isRecording;
+  //   this.rec(undefined);
+  // }
 
-  public get recPanel(){
-    return this.isRecording
-      ? 'assets/reloj.png'
-      :'assets/rec-button.png'
-  }
+  // public get recPanel(){
+  //   return this.isRecording
+  //     ? 'assets/reloj.png'
+  //     :'assets/rec-button.png'
+  // }
 
-  public tooglePlayPause = () =>{
-    this.isPaused = !this.isPaused;
-    const request = { recordingStatus: 'pause' };
-    this.sendMessage(request);
-  }
-  public get isPausedState () {
-    return this.isPaused
-      ? 'assets/play.png'
-      : 'assets/pause.png'
-  }
+  // public tooglePlayPause = () =>{
+  //   this.isPaused = !this.isPaused;
+  //   const request = { recordingStatus: 'pause' };
+  //   this.sendMessage(request);
+  // }
+  // public get isPausedState () {
+  //   return this.isPaused
+  //     ? 'assets/play.png'
+  //     : 'assets/pause.png'
+  // }
 
   //************ TIMER CONTROLLER **********/////
-  public timerController = () => {
-    this.portTimer.onMessage.addListener(async (msg) => {
-      if (msg.answer && msg.answer.seconds > 0){
-          this.recTime = `${msg.answer.minute}:${msg.answer.seconds}`;
-      }else{
-        this.recTime = '00:00';           
-      }    
-    });
-  }
+  // public timerController = () => {
+  //   this.portTimer.onMessage.addListener(async (msg) => {
+  //     if (msg.answer && msg.answer.seconds > 0){
+  //         this.recTime = `${msg.answer.minute}:${msg.answer.seconds}`;
+  //     }else{
+  //       this.recTime = '00:00';           
+  //     }    
+  //   });
+  // }
 
-  public checkTimer = () => {
-      setInterval(()=>{
-          this.portTimer.postMessage({getTimer: true});
-      },1000)
-  }
+  // public checkTimer = () => {
+  //     setInterval(()=>{
+  //         this.portTimer.postMessage({getTimer: true});
+  //     },1000)
+  // }
   //************ TIMER CONTROLLER **********//////
 
 
@@ -231,11 +230,11 @@ export class AppComponent extends BaseButton implements OnInit {
             this.isRecording = true;
         }
     });
-    this.window.chrome.storage.sync.get('isPaused', (result : any) => {   
-        if(result.isPaused ){
-            this.isPaused = true;
-        }    
-    });
+    // this.window.chrome.storage.sync.get('isPaused', (result : any) => {   
+    //     if(result.isPaused ){
+    //         this.isPaused = true;
+    //     }    
+    // });
     this.window.chrome.storage.sync.get('voice', (result : any) => {
         if(result.voice){
             this.voiceCommandEnabled = true;
