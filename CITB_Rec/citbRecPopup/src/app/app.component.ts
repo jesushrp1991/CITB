@@ -168,60 +168,60 @@ export class AppComponent extends BaseButton implements OnInit {
     });
   };
 
-  public toggleCITBOnOff= () => {
-    this.isCITBEnabled = !this.isCITBEnabled;
-    chrome.tabs.getSelected( (tab) => {
-      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-        let url = tab.url;
-        let id: number = tab.id!;
-        if (
-          url?.includes("meet.google.com") ||
-          url?.includes("teams.microsoft.com") ||
-          url?.includes("teams.live.com") ||
-          url?.includes("zoom.us") ||
-          url?.includes("meet.jit.si")
-        ) {
-          chrome.tabs.executeScript(id,{
-            code: 'document.getElementById("buttonOnOff").click();'
-          });
-        }
-        setTimeout(() => {
-          this.getOnOffState();
-        }, 100);
-      });
-    });
-  };
+  // public toggleCITBOnOff= () => {
+  //   this.isCITBEnabled = !this.isCITBEnabled;
+  //   chrome.tabs.getSelected( (tab) => {
+  //     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+  //       let url = tab.url;
+  //       let id: number = tab.id!;
+  //       if (
+  //         url?.includes("meet.google.com") ||
+  //         url?.includes("teams.microsoft.com") ||
+  //         url?.includes("teams.live.com") ||
+  //         url?.includes("zoom.us") ||
+  //         url?.includes("meet.jit.si")
+  //       ) {
+  //         chrome.tabs.executeScript(id,{
+  //           code: 'document.getElementById("buttonOnOff").click();'
+  //         });
+  //       }
+  //       setTimeout(() => {
+  //         this.getOnOffState();
+  //       }, 100);
+  //     });
+  //   });
+  // };
 
-  public chooseMic = () =>{
-    chrome.tabs.getSelected((tab) => {
-      chrome.tabs.executeScript(tab.id!,{
-        code: 'document.getElementById("buttonPopup").click();'
-      });
-    });
-  }
+  // public chooseMic = () =>{
+  //   chrome.tabs.getSelected((tab) => {
+  //     chrome.tabs.executeScript(tab.id!,{
+  //       code: 'document.getElementById("buttonPopup").click();'
+  //     });
+  //   });
+  // }
 
-  public chooseCamara = () => {
-    chrome.tabs.getSelected((tab) => {
-      chrome.tabs.executeScript(tab.id!,{
-          code: 'document.getElementById("buttonPopupVideo").click();'
-      });
-    });
-  }
+  // public chooseCamara = () => {
+  //   chrome.tabs.getSelected((tab) => {
+  //     chrome.tabs.executeScript(tab.id!,{
+  //         code: 'document.getElementById("buttonPopupVideo").click();'
+  //     });
+  //   });
+  // }
 
-  public toogleFloatingPanel = () => {
-    this.isFloatingPanelShow = !this.isFloatingPanelShow;
-    chrome.tabs.getSelected((tab) => {
-      if (!this.isFloatingPanelShow) {
-        chrome.tabs.executeScript(tab.id!,{
-          code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
-        });
-      } else {
-        chrome.tabs.executeScript(tab.id!,{
-          code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
-        });
-      }
-    });
-  }
+  // public toogleFloatingPanel = () => {
+  //   this.isFloatingPanelShow = !this.isFloatingPanelShow;
+  //   chrome.tabs.getSelected((tab) => {
+  //     if (!this.isFloatingPanelShow) {
+  //       chrome.tabs.executeScript(tab.id!,{
+  //         code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
+  //       });
+  //     } else {
+  //       chrome.tabs.executeScript(tab.id!,{
+  //         code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
+  //       });
+  //     }
+  //   });
+  // }
 
   public chekWebContainerState = async () => {
     // let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

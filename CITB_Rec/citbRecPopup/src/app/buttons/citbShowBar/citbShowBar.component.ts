@@ -7,6 +7,7 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   styleUrls: ['./citbShowBar.scss'],
 })
 export class citbShowBarComponent extends BaseButton {
+  public isFloatingPanelShow = true;
     // private _active: boolean = false;
     // @Input() public get active() {
     //   return this._active;
@@ -32,4 +33,18 @@ export class citbShowBarComponent extends BaseButton {
     //   this.sendMessage(request);
     //   this.window.chrome.runtime.openOptionsPage(() => {});
     // };
+    public toogleFloatingPanel = () => {
+      this.isFloatingPanelShow = !this.isFloatingPanelShow;
+      chrome.tabs.getSelected((tab) => {
+        if (!this.isFloatingPanelShow) {
+          chrome.tabs.executeScript(tab.id!,{
+            code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
+          });
+        } else {
+          chrome.tabs.executeScript(tab.id!,{
+            code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
+          });
+        }
+      });
+    }
 }

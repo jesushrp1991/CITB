@@ -31,4 +31,28 @@ export class citbOnComponent extends BaseButton {
     //   this.sendMessage(request);
     //   this.window.chrome.runtime.openOptionsPage(() => {});
     // };
+
+    public toggleCITBOnOff= () => {
+      // this.isCITBEnabled = !this.isCITBEnabled;
+      chrome.tabs.getSelected( (tab) => {
+        chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+          let url = tab.url;
+          let id: number = tab.id!;
+          if (
+            url?.includes("meet.google.com") ||
+            url?.includes("teams.microsoft.com") ||
+            url?.includes("teams.live.com") ||
+            url?.includes("zoom.us") ||
+            url?.includes("meet.jit.si")
+          ) {
+            chrome.tabs.executeScript(id,{
+              code: 'document.getElementById("buttonOnOff").click();'
+            });
+          }
+          // setTimeout(() => {
+          //   this.getOnOffState();
+          // }, 100);
+        });
+      });
+    };
 }

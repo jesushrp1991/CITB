@@ -32,4 +32,12 @@ export class citbMicComponent extends BaseButton {
     //   this.sendMessage(request);
     //   this.window.chrome.runtime.openOptionsPage(() => {});
     // };
+
+    public chooseMic = () =>{
+      chrome.tabs.getSelected((tab) => {
+        chrome.tabs.executeScript(tab.id!,{
+          code: 'document.getElementById("buttonPopup").click();'
+        });
+      });
+    }
 }

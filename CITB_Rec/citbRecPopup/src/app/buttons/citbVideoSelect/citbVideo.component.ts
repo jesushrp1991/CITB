@@ -32,4 +32,12 @@ export class citbVideoComponent extends BaseButton {
     //   this.sendMessage(request);
     //   this.window.chrome.runtime.openOptionsPage(() => {});
     // };
+
+    public chooseCamara = () => {
+      chrome.tabs.getSelected((tab) => {
+        chrome.tabs.executeScript(tab.id!,{
+            code: 'document.getElementById("buttonPopupVideo").click();'
+        });
+      });
+    }
 }
