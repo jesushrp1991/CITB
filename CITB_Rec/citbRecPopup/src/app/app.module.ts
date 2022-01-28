@@ -16,6 +16,9 @@ import { citbShowBarComponent } from './buttons/citbShowBar/citbShowBar.componen
 import { recordButtonComponent } from './buttons/recordButton/recordButton.component';
 import { ecoAlertComponent } from './buttons/ecoAlert/ecoAlert.component';
 import { VolumeControlComponent } from './buttons/volumeControl/volumeControl.component';
+import { timePanelComponent } from './buttons/timePanel/timePanel.component';
+import { buttonPlayComponent } from './buttons/buttonPlay/buttonPlay.component';
+import { buttonStopComponent } from './buttons/buttonStop/buttonStop.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,9 @@ import { VolumeControlComponent } from './buttons/volumeControl/volumeControl.co
     , recordButtonComponent
     , ecoAlertComponent
     , VolumeControlComponent
+    , timePanelComponent
+    , buttonPlayComponent
+    , buttonStopComponent
   ],
   imports: [
     BrowserModule,

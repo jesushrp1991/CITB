@@ -134,6 +134,25 @@
     left: 7px;
 }
 
+#time-panel{
+    height: 29px;
+    width: 82px;
+    top: 502px;
+    left: 21px;
+}
+#play-button{
+    height: 29px;
+    width: 35px;
+    top: 496px;
+    left: 126px;
+}
+#stop-button{
+    height: 29px;
+    width: 35px;
+    top: 496px;
+    left: 177px;
+}
+
 #volumeControl {
     width: 174px;
     position: absolute;
@@ -229,40 +248,7 @@
     top: 417px;
 }
 
-#timerPanel{
-    width: 120px !important;
-    height: 36px !important;
-    margin-top: 10.8px;
-    margin-left: 14px;
-    border: none;
-    background: transparent;
-    img {
-        width: 100%;
-    }
-}
 
-#play-pause {
-    width: 45px !important;
-    height: 45px !important;
-    margin-top: 10.8px;
-    margin-left: 14px;
-    border: none;
-    background: transparent;
-    img {
-        width: 100%;
-    }
-}
-#stop-button {
-    width: 45px !important;
-    height: 45px !important;
-    margin-top: 10.8px;
-    margin-left: 10px;
-    border: none;
-    background: transparent;
-    img {
-        width: 100%;
-    }
-}
 
 .rec-time {
     color: white;

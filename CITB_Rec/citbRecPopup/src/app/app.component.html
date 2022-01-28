@@ -164,7 +164,13 @@
 
   <img src="assets/separator.svg" alt="" id="separator4" />
 
-  <div>
+  <div *ngIf="isRecording">
+    <time-panel class="invisibleComandButtons" id="time-panel"></time-panel>
+    <button-play class="invisibleComandButtons" id="play-button"></button-play>
+    <button-stop class="invisibleComandButtons" id="stop-button"></button-stop>
+  </div>
+  
+  <div *ngIf="!isRecording">
     <rec-button
       class="invisibleComandButtons"
       id="startRecord"
