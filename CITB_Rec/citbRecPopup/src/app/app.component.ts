@@ -2,6 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseButton } from './base/ButtonBase';
 import {VoiceCommandComponent} from './buttons/voiceCommand/voiceCommand.component'
+import { citbOpenComponent } from './buttons/citbOpenPanel/citbOpen.component';
 
 @Component({
   selector: 'app-root',
