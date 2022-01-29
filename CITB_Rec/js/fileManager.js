@@ -167,6 +167,7 @@ const getCalendarList = async() =>{
   *
 */ 
 const prepareUploadToDrive = (obj) => {
+    console.log("UPLOAD TO DRIVE")
     // const file = obj.target.files[0];
     const file = obj;
     if (file.name != "") {
@@ -319,6 +320,7 @@ const saveUploadProgress = (value) =>{
 
 window.fileIDUploadInProgress = -1 ;
 
+window.listUploadpsStarted = [];
 var refreshToken = 0;
 const uploadQueueDaemon = async() =>{
     refreshToken++;
@@ -346,12 +348,15 @@ const uploadQueueDaemon = async() =>{
       saveVideo(false);
     }
     if(lastElement.file != "uploaded" && lastElement.file != "folder" && lastElement.file != 'recording'){
-        window.fileIDUploadInProgress = lastElement.id;
-        window.nameToUploads = lastElement.name; 
-        window.starTimeUpload = lastElement.dateStart; 
-        window.endTimeUpload = lastElement.dateEnd; 
-        window.calendarId = lastElement.calendarId;
-        prepareUploadToDrive(lastElement.file);
+        if(!window.listUploadpsStarted.includes(lastElement.id)){
+          window.fileIDUploadInProgress = lastElement.id;
+          window.nameToUploads = lastElement.name; 
+          window.starTimeUpload = lastElement.dateStart; 
+          window.endTimeUpload = lastElement.dateEnd; 
+          window.calendarId = lastElement.calendarId;
+          window.listUploadpsStarted.push(lastElement.id);
+          prepareUploadToDrive(lastElement.file);
+        }
     }
 }
 setInterval(uploadQueueDaemon,environment.timerUploadQueueDaemon);
@@ -373,9 +378,9 @@ const listUploadQueue = async() =>{
         }else{
           upload = 'awaiting';
         }
-        const videoData = await getVideoCover(element.file, 1);
-        const cover = videoData.blob;
-        let thumbnailGeneratedLink = URL.createObjectURL(cover);
+        // const videoData = await getVideoCover(element.file, 1);
+        // const cover = videoData.blob;
+        // let thumbnailGeneratedLink = URL.createObjectURL(cover);
         window.startTimeCurrentFile = element.dateStart;
         window.endTimeCurrentFile = element.dateEnd;
         let details = {
@@ -386,7 +391,7 @@ const listUploadQueue = async() =>{
             ,driveLink : element.driveLink
             ,upload: upload
             ,msDuration: element.msDuration
-            ,thumbnailLink: thumbnailGeneratedLink
+            // ,thumbnailLink: thumbnailGeneratedLink
         }
         listResult.push(details);
       }
