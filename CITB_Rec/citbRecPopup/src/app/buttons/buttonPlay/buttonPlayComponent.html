@@ -1,25 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" (click)="tooglePlayPause()">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #fff;
-      }
-    </style>
-  </defs>
-  <title>pause_button</title>
-  <g id="Layer_2" data-name="Layer 2">
-    <g id="Capa_1" data-name="Capa 1">
-      <circle cx="15.5" cy="15.5" r="15.5" />
-      <g id="Pause">
-        <path
-          class="cls-1"
-          d="M13.9,20.1a1.79,1.79,0,0,1-1.8,1.8h0a1.79,1.79,0,0,1-1.8-1.8V10.9a1.79,1.79,0,0,1,1.8-1.8h0a1.79,1.79,0,0,1,1.8,1.8Z"
-        />
-        <path
-          class="cls-1"
-          d="M20.6,20.1a1.79,1.79,0,0,1-1.8,1.8h0A1.79,1.79,0,0,1,17,20.1V10.9a1.79,1.79,0,0,1,1.8-1.8h0a1.79,1.79,0,0,1,1.8,1.8Z"
-        />
+<button class="popupButton" (click)="tooglePlayPause()">
+  <svg *ngIf="!isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" >
+    <defs>
+      <style>
+        .cls-1 {
+          fill: #fff;
+        }
+      </style>
+    </defs>
+    <title>pause_button</title>
+    <g id="Layer_2" data-name="Layer 2">
+      <g id="Capa_1" data-name="Capa 1">
+        <circle cx="15.5" cy="15.5" r="15.5" />
+        <g id="Pause">
+          <path
+            class="cls-1"
+            d="M13.9,20.1a1.79,1.79,0,0,1-1.8,1.8h0a1.79,1.79,0,0,1-1.8-1.8V10.9a1.79,1.79,0,0,1,1.8-1.8h0a1.79,1.79,0,0,1,1.8,1.8Z"
+          />
+          <path
+            class="cls-1"
+            d="M20.6,20.1a1.79,1.79,0,0,1-1.8,1.8h0A1.79,1.79,0,0,1,17,20.1V10.9a1.79,1.79,0,0,1,1.8-1.8h0a1.79,1.79,0,0,1,1.8,1.8Z"
+          />
+        </g>
       </g>
     </g>
-  </g>
-</svg>
+  </svg>
+  <svg *ngIf="isPaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 371.4 371.4"><defs><style>.cls-1{fill:#fff;}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Capa_1" data-name="Capa 1"><circle cx="185.7" cy="185.7" r="185.7"/><g id="Play"><path class="cls-1" d="M267.8,177.5,138,102.6a10.6,10.6,0,0,0-15.9,9.2V261.7a10.58,10.58,0,0,0,5.3,9.2,10,10,0,0,0,5.3,1.4,11,11,0,0,0,5.3-1.4L267.8,196a10.72,10.72,0,0,0,0-18.5Z"/></g></g></g></svg>
+</button>
+

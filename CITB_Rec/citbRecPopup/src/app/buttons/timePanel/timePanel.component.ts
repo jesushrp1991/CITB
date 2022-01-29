@@ -12,7 +12,7 @@ export class timePanelComponent extends BaseButton implements OnInit {
     this.timerController();
     this.checkTimer();
   }
-  public recTime = '00:00';
+  public recTime = '--:--';
   public portTimer = chrome.runtime.connect({name: "portTimer"});
 
     //************ TIMER CONTROLLER **********/////

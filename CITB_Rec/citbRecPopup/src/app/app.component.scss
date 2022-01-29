@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 #content{
-    background-image: url(../assets/popup.svg);
     background-size: 100%;
     min-height: 600px;
     width: 225px;
@@ -79,10 +78,10 @@
 }
 
 #audioOnOff {
-    top: 170px;
+    top: 175px;
     width: 40px;
     height: 40px;
-    left: 8px;
+    left: 9px;
     img {
         width:100%
     }
@@ -135,24 +134,35 @@
 }
 
 #time-panel{
-    height: 29px;
-    width: 82px;
-    top: 502px;
-    left: 21px;
+    height: 27px;
+    width: 84px;
+    top: 501px;
+    left: 20px;
 }
 #play-button{
-    height: 29px;
-    width: 35px;
-    top: 496px;
+    height: 40px;
+    width: 40px;
+    top: 494px;
     left: 126px;
 }
 #stop-button{
-    height: 29px;
-    width: 35px;
-    top: 496px;
+    height: 40px;
+    width: 40px;
+    top: 494px;
     left: 177px;
 }
 
+#micSelectText {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 207px;
+    font-family: Antartida Rounded;
+    font-weight: lighter;
+    color: #8c8c8c;
+    font-size: 11px;
+    right: 44px;
+}
 #volumeControl {
     width: 174px;
     position: absolute;
@@ -161,10 +171,10 @@
 }
 
 #voiceCommands {
-    top: 293px;
-    height: 70px;
-    width: 73px;
-    left: -9px;
+    top: 302px;
+    height: 65px;
+    width: 65px;
+    left: -5px;
 
 }
 

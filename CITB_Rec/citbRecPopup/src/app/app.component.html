@@ -34,14 +34,16 @@
     >
     </audio-toggle>
 
-    <select id="miclist" class="custom-select custom-select-sm select-mic" [(ngModel)]="selectedMic">
-      <option
-        *ngFor="let mic of organizedMicList"
-        [value]="mic.deviceId"
-      >
+    <select
+      id="miclist"
+      class="custom-select custom-select-sm select-mic"
+      [(ngModel)]="selectedMic"
+    >
+      <option *ngFor="let mic of organizedMicList" [value]="mic.deviceId">
         {{ mic.label }}
       </option>
     </select>
+    <p id="micSelectText">Seleccionar micrófono</p>
 
     <volume-control id="volumeControl"></volume-control>
     <!-- <div id="volumeControl" class="row" style="display: block">
@@ -169,7 +171,7 @@
     <button-play class="invisibleComandButtons" id="play-button"></button-play>
     <button-stop class="invisibleComandButtons" id="stop-button"></button-stop>
   </div>
-  
+
   <rec-button
     class="invisibleComandButtons"
     id="startRecord"
