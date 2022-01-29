@@ -1,4 +1,9 @@
 var port = chrome.runtime.connect({name: "getDriveLink"});
+const askCalendarList = () =>{
+    port.postMessage({requestCalendarList: true});
+}
+askCalendarList();
+
 let checkboxCalendar = document.getElementById('checkboxCalendar');
 let showRecords = document.getElementById('chekcBoxShowRecords');
 checkboxCalendar.checked = false;
@@ -10,9 +15,7 @@ port.onMessage.addListener(async (msg) => {
 });
 
 
-const askCalendarList = () =>{
-    port.postMessage({requestCalendarList: true});
-}
+
 
 let select = document.getElementById('miclist');
 const populateCalendarSelect = async (calendarList) => {
@@ -31,11 +34,6 @@ const populateCalendarSelect = async (calendarList) => {
                 select.value = element.id; 
             }
         });
-    // }); 
-    chrome.storage.local.get('showRecords', (result)=> {
-        showRecords.checked = result.showRecords ;
-    })
-    
 }
 
 
@@ -50,12 +48,9 @@ const recOk = () =>{
         checkboxCalendar.checked ? idCalendar = select.value : idCalendar = null;
         port.postMessage({okRec: true ,fileName:fileName ,calendarId: idCalendar,showRecords:showRecords.checked});
         // chrome.storage.local.set({lastCalendar: idCalendar});
-        chrome.storage.local.set({showRecords: showRecords.checked});
         window.close();
     }
 }
 
 const buttonOK = document.getElementById('button-ok');
 buttonOK.addEventListener('click',recOk);
-
-askCalendarList();
