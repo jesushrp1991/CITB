@@ -85,8 +85,21 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             //GAIN 
             window.desktopGain = context.createGain();  
             window.voiceGain = context.createGain();      
-            window.desktopGain.gain.value = 0.6;  
-            window.voiceGain.gain.value = 0.8;  
+            if(windows.InitialVoiceGain != undefined){
+              window.voiceGain.gain.value = window.InitialVoiceGain;
+              window.InitialVoiceGain = undefined;
+            }
+            else{
+              window.voiceGain.gain.value = 0.9;
+            }
+            if(window.InitialDesktopGain != undefined){
+              window.desktopGain.gain.value = window.InitialDesktopGain;  
+              window.InitialDesktopGain = undefined;
+            }
+            else{
+              window.desktopGain.gain.value = 0.9;
+            }
+             
             if(sourceDesktop != null){  
               sourceDesktop.connect(window.desktopGain).connect(destination);  
             }  
@@ -164,8 +177,20 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             //GAIN 
             window.desktopGain = context.createGain();  
             window.voiceGain = context.createGain();      
-            window.desktopGain.gain.value = 0.6;  
-            window.voiceGain.gain.value = 0.8;  
+            if(window.InitialVoiceGain != undefined){
+              window.voiceGain.gain.value = window.InitialVoiceGain;
+              window.InitialVoiceGain = undefined;
+            }
+            else{
+              window.voiceGain.gain.value = 0.9;
+            }
+            if(window.InitialDesktopGain != undefined){
+              window.desktopGain.gain.value = window.InitialDesktopGain;  
+              window.InitialDesktopGain = undefined;
+            }
+            else{
+              window.desktopGain.gain.value = 0.9;
+            }
 
             if(sourceDesktop != null){  
               sourceDesktop.connect(window.desktopGain).connect(destination);  
@@ -258,9 +283,21 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
    
           window.desktopGain = context.createGain();  
           window.voiceGain = context.createGain();  
-   
-          window.desktopGain.gain.value = 0.7;  
-          window.voiceGain.gain.value = 0.7;  
+          
+          if(windows.InitialVoiceGain != undefined){
+            window.voiceGain.gain.value = window.InitialVoiceGain;
+            window.InitialVoiceGain = undefined;
+          }
+          else{
+            window.voiceGain.gain.value = 0.9;
+          }
+          if(window.InitialDesktopGain != undefined){
+            window.desktopGain.gain.value = window.InitialDesktopGain;  
+            window.InitialDesktopGain = undefined;
+          }
+          else{
+            window.desktopGain.gain.value = 0.9;
+          }
    
           if(sourceDesktop != null){  
             sourceDesktop.connect(window.desktopGain).connect(destination);  
@@ -369,11 +406,17 @@ const stopTracks = () =>{
 const stopRecordScreen = () =>{ 
     if(window.isRecording){ 
         window.meetEndTime = dayjs().format(); 
-        window.recorder.stop(); 
-        stopTracks(); 
+        if(window.recorder){
+          window.recorder.stop(); 
+          stopTracks(); 
+        }
         reset(); 
-        window.isRecording = false; 
-        chrome.storage.sync.set({isRecording: false},() => {}); 
+        window.isRecording = false;
+        chrome.storage.sync.set({isRecording: false}, () => {});
+        chrome.storage.sync.set({isPaused: false}, () => {}); 
+        setTimeout(()=>{
+            chrome.browserAction.setIcon({path: "./assets/icon.png"});
+        },3000);
     } 
 } 
  

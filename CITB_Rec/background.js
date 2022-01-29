@@ -84,7 +84,7 @@ const openRecList = () => {
 }
 
 const recCommandStart = async(message) => {
-  if(!window.isRecording && !message.isVoiceCommandStop){    
+  if(!window.isRecording && !message.isVoiceCommandStop){
     window.idMic = message.idMic;
     window.idTab = message.idTab;
     window.recMode = message.recMode;
@@ -153,10 +153,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         openRecList();
         break;
       case popupMessages.changeVoiceVolume :
-        window.voiceGain.gain.value = message.volume;
+        if(window.voiceGain != undefined){
+          window.voiceGain.gain.value = message.volume;
+        }else{
+          window.InitialVoiceGain = message.volume;
+        }
         break;
       case popupMessages.changeSystemVolume :
-        window.desktopGain.gain.value = message.volume;
+        if(window.desktopGain != undefined){
+          window.desktopGain.gain.value = message.volume;
+        }else{
+          window.InitialDesktopGain = message.volume;
+        }
         break;
     }
     return true;

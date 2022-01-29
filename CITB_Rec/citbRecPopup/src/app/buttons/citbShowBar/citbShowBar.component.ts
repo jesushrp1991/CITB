@@ -12,7 +12,7 @@ export class citbShowBarComponent extends BaseButton implements OnInit {
     this.chekWebContainerState();
    }
 
-  public isFloatingPanelShow = true;
+  public isFloatingPanelShow = false;
 
   public get active() {
     return this.isFloatingPanelShow;

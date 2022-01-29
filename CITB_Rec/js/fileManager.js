@@ -157,7 +157,7 @@ const getCalendarList = async() =>{
       })
     }, (error) => {
       console.log("ERROR ERROR", error);
-      errorHandling(error);
+      // errorHandling(error);
     });
   }
 

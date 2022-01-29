@@ -71,11 +71,10 @@ export class AppComponent extends BaseButton implements OnInit {
 
 
   public restoreState = () => {
-    this.window.chrome.storage.local.get('isMicEnable', (result: any) => {
-      this.audioEnabled = result.isMicEnable;
-      // voiceVolumeControl.disabled = !result.isMicEnable;
-    });
-    
+    // this.window.chrome.storage.local.get('isMicEnable', (result: any) => {
+    //   this.audioEnabled = result.isMicEnable;
+    //   // voiceVolumeControl.disabled = !result.isMicEnable;
+    // });
     
     this.window.chrome.storage.local.get('recMode', (result: any) => {
       this.recMode = result.recMode;

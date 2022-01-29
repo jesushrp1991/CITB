@@ -65,7 +65,7 @@
       [active]="voiceCommandEnabled"
     ></voice-command>
 
-    <citb-open class="invisibleComandButtons" id="citbDevice" (click)="citbDeviceToggle()"> </citb-open>
+    <citb-open class="invisibleComandButtons" id="citbDevice"> </citb-open>
 
     <record-list class="invisibleComandButtons" id="recordings"> </record-list>
     <!-- <button
@@ -82,7 +82,7 @@
 
   <img src="assets/separator.svg" alt="" id="separator3" />
 
-  <div *ngIf="citbDeviceEnabled">
+  <div>
     <citb-on class="invisibleComandButtons" id="citbOn"></citb-on>
     <citb-video class="invisibleComandButtons" id="citbCamPopup"></citb-video>
     <citb-mic class="invisibleComandButtons" id="citbMicPopup"></citb-mic>

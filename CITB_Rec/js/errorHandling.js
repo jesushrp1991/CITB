@@ -11,7 +11,9 @@ const errorHandling = (error) => {
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: false}, () => {}); 
     delQueueDB();
-    window.recorder.stop();
+    if(window.recorder){
+        window.recorder.stop();
+    }
     if(window.desktopStream){
         window.desktopStream.getTracks().forEach(track => track.stop())
     }

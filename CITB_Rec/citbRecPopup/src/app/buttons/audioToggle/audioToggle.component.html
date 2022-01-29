@@ -30,7 +30,7 @@
           <tspan x="18.78" y="0">Off</tspan>
         </text>
         <rect [ngClass]="{ active: active }"  class="audio-toggle-circle" x="1.05" width="30.86" height="30.86" rx="15.43" />
-        <text class="audioOnOffOnText" transform="translate(8.25 19.71)">On</text>
+        <text class="audioOnOffOnText" transform="translate(8.25 19.71)">{{state}}</text>
       </g>
     </g>
   </svg>
