@@ -10,7 +10,7 @@ export class buttonStopComponent extends BaseButton {
 
 
   public rec = () =>{
-    const request = { recordingStatus: 'rec' , idMic: null ,idTab : null, recMode: null};
+    const request = { recordingStatus: 'rec' , idMic: null ,idTab : undefined, recMode: null};
     this.sendMessage(request);
   }
 
