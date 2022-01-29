@@ -1,0 +1,53 @@
+<div id="volumeControl" class="row" style="display: block">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <div class="col">
+          <h6 class="card-title text-center">Volumen</h6>
+        </div>
+        <div class="row">
+          <div class="col-6 justify-content-center">
+            <div class="col">
+              <div class="row p-1 justify-content-center">
+                <input
+                  type="range"
+                  class="form-range"
+                  id="voiceVolumeControl"
+                  min="0"
+                  max="1"
+                  step="0.2"
+                  [(ngModel)]="voiceVolume"
+                />
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col">
+                <h6>Volumen del micrófono</h6>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 justify-content-center">
+            <div class="col">
+              <div class="row p-1 justify-content-center">
+                <input
+                  type="range"
+                  class="form-range"
+                  id="systemVolumeControl"
+                  min="0"
+                  max="1"
+                  step="0.2"
+                  [(ngModel)]="systemVolume"
+                />
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col">
+                <h6>Volumen del sistema</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

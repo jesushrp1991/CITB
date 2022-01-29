@@ -19,6 +19,7 @@ import { VolumeControlComponent } from './buttons/volumeControl/volumeControl.co
 import { timePanelComponent } from './buttons/timePanel/timePanel.component';
 import { buttonPlayComponent } from './buttons/buttonPlay/buttonPlay.component';
 import { buttonStopComponent } from './buttons/buttonStop/buttonStop.component';
+import { volumenPanelComponent } from './buttons/volumenPanel/volumenPanel.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { buttonStopComponent } from './buttons/buttonStop/buttonStop.component';
     , timePanelComponent
     , buttonPlayComponent
     , buttonStopComponent
+    , volumenPanelComponent
   ],
   imports: [
     BrowserModule,
