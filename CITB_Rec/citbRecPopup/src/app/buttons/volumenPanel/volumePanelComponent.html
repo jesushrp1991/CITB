@@ -1,53 +1,99 @@
-<div id="volumeControl" class="row" style="display: block">
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <div class="col">
-          <h6 class="card-title text-center">Volumen</h6>
-        </div>
-        <div class="row">
-          <div class="col-6 justify-content-center">
-            <div class="col">
-              <div class="row p-1 justify-content-center">
-                <input
-                  type="range"
-                  class="form-range"
-                  id="voiceVolumeControl"
-                  min="0"
-                  max="1"
-                  step="0.2"
-                  [(ngModel)]="voiceVolume"
-                />
-              </div>
-            </div>
-            <div class="row text-center">
-              <div class="col">
-                <h6>Volumen del micrófono</h6>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 justify-content-center">
-            <div class="col">
-              <div class="row p-1 justify-content-center">
-                <input
-                  type="range"
-                  class="form-range"
-                  id="systemVolumeControl"
-                  min="0"
-                  max="1"
-                  step="0.2"
-                  [(ngModel)]="systemVolume"
-                />
-              </div>
-            </div>
-            <div class="row text-center">
-              <div class="col">
-                <h6>Volumen del sistema</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+<button id="volumePanelButton" class="popupButton">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 123.37 52.96">
+    <defs>
+      <style>
+        .controlVolumenTextCont {
+          font-size: 14.38px;
+          fill: #878787;
+          font-family: AntartidaRounded-Light, Antartida Rounded;
+          font-weight: 300;
+        }
+        .controlVolumenTextR {
+          letter-spacing: -0.03em;
+        }
+        .ControlVolumenTextv {
+          letter-spacing: -0.02em;
+        }
+        .ControlVolumenTextolumen {
+          letter-spacing: 0em;
+        }
+        .controlVolumenCircleFill {
+          fill: #547dbe;
+        }
+        .controlVolumenPath {
+          fill: #fff;
+        }
+      </style>
+    </defs>
+    <g id="Layer_2" data-name="Layer 2">
+      <g id="Capa_1" data-name="Capa 1">
+        <text class="controlVolumenTextCont" transform="translate(0 49.65)">
+          Cont
+          <tspan class="controlVolumenTextR" x="29.64" y="0">r</tspan>
+          <tspan x="33.84" y="0">ol de</tspan>
+          <tspan class="ControlVolumenTextv" x="69.39" y="0">v</tspan>
+          <tspan class="ControlVolumenTextolumen" x="75.99" y="0">olumen</tspan>
+        </text>
+        <circle class="controlVolumenCircleFill" cx="63.17" cy="15.94" r="15.94" />
+        <path
+          class="controlVolumenPath"
+          d="M64.86,7.53a1.15,1.15,0,0,0-1.21.12L60,10.52a2.18,2.18,0,0,0-.63-.09H55.63a2.22,2.22,0,0,0-2.23,2.22v6.49a2.23,2.23,0,0,0,2.23,2.23h3.74a2.35,2.35,0,0,0,.54-.07l3.74,2.93a1.17,1.17,0,0,0,.71.24,1.11,1.11,0,0,0,.5-.12,1.13,1.13,0,0,0,.64-1V8.55A1.13,1.13,0,0,0,64.86,7.53Z"
+        />
+        <path
+          class="controlVolumenPath"
+          d="M72.22,16.71H68.65a.73.73,0,0,1,0-1.46h3.57a.73.73,0,0,1,0,1.46Z"
+        />
+        <path
+          class="controlVolumenPath"
+          d="M72.2,9.84l-3.08,1.78a.73.73,0,0,1-.73-1.26l3.09-1.78a.73.73,0,1,1,.72,1.26Z"
+        />
+        <path
+          class="controlVolumenPath"
+          d="M72.3,22.1l-3.09-1.79a.73.73,0,0,0-.72,1.26l3.08,1.78a.74.74,0,0,0,1-.26A.72.72,0,0,0,72.3,22.1Z"
+        />
+      </g>
+    </g>
+  </svg>
+</button>
+
+<div class="row">
+  <div class="col-6 f-left">
+    <div class="range-container">
+      <input
+      type="range"
+      class="form-range"
+      id="voiceVolumeControl"
+      min="0"
+      max="1"
+      step="0.2"
+      [(ngModel)]="voiceVolume"
+    />
+    </div>
+    <div class="text-container">
+      <p class="volumeLabel">Micrófono</p>
+
+    </div>
+  </div>
+  <div class="col-6 f-rigth">
+    <div class="range-container">
+      <input
+      type="range"
+      class="form-range"
+      id="systemVolumeControl"
+      min="0"
+      max="1"
+      step="0.2"
+      [(ngModel)]="systemVolume"
+    />
+    </div>
+    <div class="text-container">
+      <p class="volumeLabel">Sistema</p>
+
     </div>
   </div>
 </div>
+               
+       
+                
+        

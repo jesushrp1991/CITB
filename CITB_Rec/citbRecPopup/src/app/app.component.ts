@@ -32,6 +32,7 @@ export class AppComponent extends BaseButton implements OnInit {
   //Fin Referencias a componentes hijos
 
   public voiceCommandEnabled = false;
+  public showVolumeControl = false;
   private _voiceVolume = 0;
   public get voiceVolume () {
     return this._voiceVolume;
@@ -74,18 +75,8 @@ export class AppComponent extends BaseButton implements OnInit {
       this.audioEnabled = result.isMicEnable;
       // voiceVolumeControl.disabled = !result.isMicEnable;
     });
-    this.window.chrome.storage.local.get(
-      'voiceVolumeControl',
-      (result: any) => {
-        this.voiceVolume = result.voiceVolumeControl;
-      }
-    );
-    this.window.chrome.storage.local.get(
-      'systemVolumeControl',
-      (result: any) => {
-        this.systemVolume = result.systemVolumeControl;
-      }
-    );
+    
+    
     this.window.chrome.storage.local.get('recMode', (result: any) => {
       this.recMode = result.recMode;
     });
@@ -201,21 +192,7 @@ export class AppComponent extends BaseButton implements OnInit {
 
 
   //*************** Volumen Control ********/
-  public changeVoiceVolume = (value : Event) => {
-    console.log("change",value!);
-    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
-    const request = { recordingStatus: 'changeVoiceVolume' , volume: volumenValue};
-    this.sendMessage(request);
-    chrome.storage.local.set({voiceVolumeControl: volumenValue});
-  }
-
-  public changeSystemVolume = (value: Event) => {
-    console.log("change",value!);
-    let volumenValue : any = (<HTMLTextAreaElement>value.target).value;
-    const request = { recordingStatus: 'changeSystemVolume' , volume: volumenValue};
-    this.sendMessage(request);
-    chrome.storage.local.set({systemVolumeControl: volumenValue});
-  }
+  
   //*************** End Volumen Control ********/
 
   public checkAut = () => {

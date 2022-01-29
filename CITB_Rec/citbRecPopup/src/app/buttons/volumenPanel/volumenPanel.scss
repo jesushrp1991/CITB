@@ -1,1 +1,36 @@
 @import "../../base/buttonBase.scss";
+.row{
+    float:left;
+    width:100%;
+    .col-6{
+        width: 49%;
+        &.f-rigth {
+            float:right;
+        }
+        &.f-left {
+            float:left;
+        }
+        input {
+            width: 100%;
+            float: left;
+            accent-color: #537CBE;
+        }
+        .volumeLabel {
+            text-align: center;
+            font-family: Antartida Rounded;
+            font-weight: lighter;
+            color: #868786;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+
+    }
+}
+#volumePanelButton {
+    height: 52px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    svg {
+        height:100%;
+    }
+}
