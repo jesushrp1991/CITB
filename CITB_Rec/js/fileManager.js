@@ -167,33 +167,38 @@ const getCalendarList = async() =>{
   *
 */ 
 const prepareUploadToDrive = (obj) => {
-    console.log("UPLOAD TO DRIVE")
-    // const file = obj.target.files[0];
-    const file = obj;
-    if (file.name != "") {
-      let fr = new FileReader();
-      fr.fileName = file.name;
-      fr.fileSize = file.size;
-      fr.fileType = file.type;
-      fr.readAsArrayBuffer(file);
-      fr.onload = startResumableUploadToDrive;
-    }
-  }
-  
-  window.uploadValue = -1;
-  const startResumableUploadToDrive = async (e) => {
+    // const file = obj;
+    // if (file.name != "") {
+    //   let fr = new FileReader();
+    //   fr.fileName = file.name;
+    //   fr.fileSize = file.size;
+    //   fr.fileType = file.type;
+    //   fr.readAsArrayBuffer(file);
+    //   fr.onload = startResumableUploadToDrive;
+    // 
     let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
-    const f = e.target;
     const resource = {
-      fileName: f.fileName,
-      fileSize: f.fileSize,
-      fileType: f.fileType,
-      fileBuffer: f.result,
-      chunkSize: 5*1024*1024,
+      file: obj,
       accessToken: accessToken,
       folderId: window.defautCITBFolderID
     };
-    const upload = new ResumableUploadToGoogleDrive();
+    startResumableUploadToDrive(resource);
+  }
+  
+  window.uploadValue = -1;
+  const startResumableUploadToDrive = async (resource) => {
+    // let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
+    // const f = e.target;
+    // const resource = {
+    //   fileName: f.fileName,
+    //   fileSize: f.fileSize,
+    //   fileType: f.fileType,
+    //   fileBuffer: f.result,
+    //   chunkSize: 5*1024*1024,
+    //   accessToken: accessToken,
+    //   folderId: window.defautCITBFolderID
+    // };
+    const upload = new ResumableUploadToGoogleDrive2();
 
     upload.Do(resource, async (res, err)=>{
       if (err) {
