@@ -16,7 +16,6 @@ export class citbOnComponent extends BaseButton implements OnInit{
 
 
     public toggleCITBOnOff= () => {
-      this.isCITBEnabled = !this.isCITBEnabled;
       chrome.tabs.getSelected( (tab) => {
         chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
           let url = tab.url;
@@ -28,6 +27,7 @@ export class citbOnComponent extends BaseButton implements OnInit{
             url?.includes("zoom.us") ||
             url?.includes("meet.jit.si")
           ) {
+            this.isCITBEnabled = !this.isCITBEnabled;
             chrome.tabs.executeScript(id,{
               code: 'document.getElementById("buttonOnOff").click();'
             });

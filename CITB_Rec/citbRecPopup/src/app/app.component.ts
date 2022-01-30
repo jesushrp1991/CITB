@@ -199,6 +199,10 @@ export class AppComponent extends BaseButton implements OnInit {
     this.sendMessage(request);
   }
 
+  public redirectToCITBWeb = () =>{
+    window.open("https://classinthebox.com/", "_blank");
+  }
+
   public getCurrentState = () =>{
     console.log("checking state")
     this.window.chrome.storage.sync.get('isRecording', (result : any) => {

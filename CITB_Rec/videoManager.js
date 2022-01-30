@@ -401,7 +401,7 @@ const downloadFromDrive = (event) =>{
     let id = event.srcElement.id;
     id = id.substring(17,id.length);    
     let name = event.srcElement.closest(".row");
-    alert("Usted puede cerrar esta pestaña, su descarga terminará en breve. No descargue otro video si no ha terminado éste.")
+    alert("La descarga comenzará en breve. Por favor, no intente descargar otra grabación hasta que haya terminado esta.")
     port.postMessage({downloadFromDrive: true ,fileID: id , name: name.id});
 }
 
@@ -591,25 +591,8 @@ const localDownload = () => {
     const request = { recordingStatus: 'localDownload' };
     chrome.runtime.sendMessage(request);
 }
-let buttonLocalDownload = document.getElementById("localDownloadButton");
-buttonLocalDownload.addEventListener('click',localDownload);
-
-
-//TEST NEW MODAL
-// document.getElementById('open-modal').addEventListener('click',()=>{
-    
-//     document.getElementById("backdrop").style.display = "block"
-//     document.getElementById("exampleModal").style.display = "block"
-//     document.getElementById("exampleModal").classList.add("show")
-// })
-
-// const closeModal = () =>{
-//     document.getElementById("backdrop").style.display = "none"
-//     document.getElementById("exampleModal").style.display = "none"
-//     document.getElementById("exampleModal").classList.remove("show")
-// }
-// document.getElementById('secundary-close-modal').addEventListener('click',closeModal);
-// document.getElementById('close-modal').addEventListener('click',closeModal);
+// let buttonLocalDownload = document.getElementById("localDownloadButton");
+// buttonLocalDownload.addEventListener('click',localDownload);
 
 getDriveFiles();
 startQueue();

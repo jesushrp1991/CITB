@@ -133,7 +133,7 @@
     *ngIf="!isRecording"
   ></rec-button>
 
-  <div *ngIf="!exitsCITBDevice">
+  <div *ngIf="!exitsCITBDevice" (click)="redirectToCITBWeb()">
     <eco-alert id="custom-alert"></eco-alert>
   </div>
   <!-- <button (click)="startRecording()" id="startRecord" *ngIf="!isRecording">

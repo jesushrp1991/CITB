@@ -19,16 +19,25 @@ export class citbShowBarComponent extends BaseButton implements OnInit {
   };
 
   public toogleFloatingPanel = () => {
-    this.isFloatingPanelShow = !this.isFloatingPanelShow;
     chrome.tabs.getSelected((tab) => {
-      if (!this.isFloatingPanelShow) {
-        chrome.tabs.executeScript(tab.id!,{
-          code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
-        });
-      } else {
-        chrome.tabs.executeScript(tab.id!,{
-          code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
-        });
+      const url = tab.url!;
+      if (
+        url.includes("meet.google.com") ||
+        url.includes("teams.microsoft.com") ||
+        url.includes("teams.live.com") ||
+        url.includes("zoom.us") ||
+        url.includes("meet.jit.si")
+      ){
+        this.isFloatingPanelShow = !this.isFloatingPanelShow;
+        if (!this.isFloatingPanelShow) {
+          chrome.tabs.executeScript(tab.id!,{
+            code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
+          });
+        } else {
+          chrome.tabs.executeScript(tab.id!,{
+            code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
+          });
+        }
       }
     });
   }
