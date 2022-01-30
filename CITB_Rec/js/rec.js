@@ -85,7 +85,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             //GAIN 
             window.desktopGain = context.createGain();  
             window.voiceGain = context.createGain();      
-            if(windows.InitialVoiceGain != undefined){
+            if(window.InitialVoiceGain != undefined){
               window.voiceGain.gain.value = window.InitialVoiceGain;
               window.InitialVoiceGain = undefined;
             }
@@ -284,7 +284,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           window.desktopGain = context.createGain();  
           window.voiceGain = context.createGain();  
           
-          if(windows.InitialVoiceGain != undefined){
+          if(window.InitialVoiceGain != undefined){
             window.voiceGain.gain.value = window.InitialVoiceGain;
             window.InitialVoiceGain = undefined;
           }
