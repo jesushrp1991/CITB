@@ -23,15 +23,15 @@ class ResumableUpload2 {
       error: string
     ) => { result: string; error: string }
     ,opciones: ResumableDownloadOptions
-  ): Promise<any> {
+  ) {
     try {
       callback("Status", "Iniciando");
-      const head = await this.initializeRequest.call(opciones);
+      const head = await this.initializeRequest(opciones);
       const location = head.get("location");
-      callback("getLocation", location);
+      callback("getLocation", location ?? "");
       let range: string = "bytes " + this.start + "-" + this.start + 256 + "/" + this.totalSize;
-      let fileAsArray = this.getArrayBuffer(file);
-      let httpResponse: Response = await this.doUpload(fileAsArray as ArrayBuffer, range, location);
+      let fileAsArray = await this.getArrayBuffer(file);
+      let httpResponse: Response = await this.doUpload(fileAsArray, range, location ?? "");
 
       if(httpResponse.status == 200){
         this.start += 256; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
@@ -43,17 +43,17 @@ class ResumableUpload2 {
             throw "Error, tratar luego"
         }
         else{
-            this.start = this.start + 256 - httpResponse.headers['Range'] as number;
+            this.start = this.start + 256 - (parseInt(httpResponse.headers.get('Range') ?? "0"));
             this.upload(file,callback,opciones);
             this.cantRetries ++;
         }
       }
     } catch (error) {
-      callback("Ha ocurrido el stge error:", error);
+      callback("Ha ocurrido el stge error:", JSON.stringify(error));
     }
   }
 
-  public async initializeRequest(
+  public initializeRequest(
     options: ResumableDownloadOptions
   ): Promise<Headers> {
     return new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ class ResumableUpload2 {
     });
   }
 
-  private async doUpload(data:ArrayBuffer,range:string, url:string): Promise<Response> {
+  private doUpload(data:ArrayBuffer,range:string, url:string): Promise<Response> {
     return new Promise(function (resolve, reject) {
       fetch(url, {
         method: "PUT",
@@ -112,11 +112,15 @@ class ResumableUpload2 {
   }
 
 //   private getArrayBuffer (file: Blob) : ArrayBuffer | string {
-  private getArrayBuffer (file: Blob) : any {
-    var fileReader = new FileReader();
-    fileReader.onload = (event) =>{
-        return event.target.result;
-    };
-    fileReader.readAsArrayBuffer(file);
+  private getArrayBuffer (file: Blob) : Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      var fileReader = new FileReader();
+      fileReader.onload = (event) =>{
+        const arrayBuffer = event.target!.result as ArrayBuffer;
+        resolve( arrayBuffer );
+      };
+      fileReader.readAsArrayBuffer(file);
+    })
+   
   }
 } //END Class
