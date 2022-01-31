@@ -303,9 +303,7 @@ const saveVideo = async(localDownload) =>{
           console.log("ERROR: ", ex);
       }
     //cambiar a update file y meet.endTime
-    if(window.meetEndTime == null || window.meetEndTime == undefined || window.meetEndTime == ''){
-      window.meetEndTime = dayjs().subtract(videoArrayChunks.length * 100,'ms').format();
-    }
+    window.meetEndTime = dayjs().format();
     updateFileDB(window.currentRecordingId,file,window.meetEndTime); 
   }else{
     if(finalArray.length != 0 ){
@@ -345,6 +343,7 @@ const uploadQueueDaemon = async() =>{
       window.fileName = lastElement.name;
       window.meetStartTime = lastElement.dateStart;
       window.calendarId = lastElement.calendarId;
+      window.meetEndTime = dayjs().subtract(videoArrayChunks.length * 100,'ms').format();
       saveVideo(false);
     }
     if(lastElement.file != "uploaded" && lastElement.file != "folder" && lastElement.file != 'recording'){
