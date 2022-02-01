@@ -292,24 +292,49 @@ function getVideoCover(file, seekTo = 0.0) {
 }
 const saveVideo = async(localDownload) =>{
   let videoArrayChunks = await getAllRecordsDB();
+
   let finalArray = [];
   videoArrayChunks.forEach(element => {
-    finalArray.push(element.record[0]);
-  });
-  if(environment.upLoadToDrive && !localDownload){
+      finalArray.push(element.record[0]);
+    });
     let file = prepareRecordFile(finalArray);
-    try {
-      } catch (ex) {
-          console.log("ERROR: ", ex);
-      }
-    //cambiar a update file y meet.endTime
-    window.meetEndTime = dayjs().format();
-    updateFileDB(window.currentRecordingId,file,window.meetEndTime); 
-  }else{
-    if(finalArray.length != 0 ){
-      download(finalArray);
-    }
+    console.log(file)
+    let accessToken = gapi.auth.getToken().access_token; // Please set access token here.
+    const resource = {
+      accessToken: accessToken,
+      fileName: file.fileName,
+      mimeType: "application/vnd.google-apps.video",
+      parentFolderId: window.defautCITBFolderID
+    };
+
+  let resumableUpload = new ResumableUpload2();
+  resumableUpload.upload(videoArrayChunks[0]); 
+    for (let index = 0; index < videoArrayChunks.length; index++) {
+      let result = await resumableUpload.upload(videoArrayChunks[index],file.size,resource);
+      console.log(result);
   }
+  
+  // let videoArrayChunks = await getAllRecordsDB();
+  // let finalArray = [];
+  // videoArrayChunks.forEach(element => {
+  //   finalArray.push(element.record[0]);
+  // });
+  // if(environment.upLoadToDrive && !localDownload){
+  //   let file = prepareRecordFile(finalArray);
+  //   console.log(file)
+
+  //   try {
+  //     } catch (ex) {
+  //         console.log("ERROR: ", ex);
+  //     }
+  //   //cambiar a update file y meet.endTime
+  //   window.meetEndTime = dayjs().format();
+  //   updateFileDB(window.currentRecordingId,file,window.meetEndTime); 
+  // }else{
+  //   if(finalArray.length != 0 ){
+  //     download(finalArray);
+  //   }
+  // }
 }
 
 const saveUploadProgress = (value) =>{
@@ -343,6 +368,7 @@ const uploadQueueDaemon = async() =>{
       window.fileName = lastElement.name;
       window.meetStartTime = lastElement.dateStart;
       window.calendarId = lastElement.calendarId;
+      let videoArrayChunks = await getAllRecordsDB();
       window.meetEndTime = dayjs().subtract(videoArrayChunks.length * 100,'ms').format();
       saveVideo(false);
     }

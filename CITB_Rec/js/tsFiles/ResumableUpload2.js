@@ -35,49 +35,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var ResumableUpload2 = /** @class */ (function () {
-    function ResumableUpload2(totalSize) {
+    function ResumableUpload2() {
         this.endpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
         this.start = 0;
         this.cantRetries = 0;
-        this.totalSize = totalSize;
     }
-    ResumableUpload2.prototype.upload = function (file, callback, opciones) {
+    ResumableUpload2.prototype.upload = function (file, totalSize, opciones) {
         return __awaiter(this, void 0, void 0, function () {
             var head, location_1, range, fileAsArray, httpResponse, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        callback("Status", "Iniciando");
                         return [4 /*yield*/, this.initializeRequest.call(opciones)];
                     case 1:
                         head = _a.sent();
                         location_1 = head.get("location");
-                        callback("getLocation", location_1);
-                        range = "bytes " + this.start + "-" + this.start + 256 + "/" + this.totalSize;
+                        range = "bytes " + this.start + "-" + this.start + 256 + "/" + totalSize;
                         fileAsArray = this.getArrayBuffer(file);
                         return [4 /*yield*/, this.doUpload(fileAsArray, range, location_1)];
                     case 2:
                         httpResponse = _a.sent();
                         if (httpResponse.status == 200) {
-                            this.start += 256; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
-                            callback("Done", "Next Chunk of 256 kb");
+                            this.start += 256 * 1024; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
+                            console.log("http 200");
+                            // callback("Done",null);
+                            return [2 /*return*/, "new pedazo"];
                         }
                         if (httpResponse.status == 308) {
+                            console.log("http 308");
                             if (this.cantRetries >= 5) {
                                 this.cantRetries = 0;
                                 throw "Error, tratar luego";
                             }
                             else {
-                                this.start = this.start + 256 - httpResponse.headers['Range'];
-                                this.upload(file, callback, opciones);
-                                this.cantRetries++;
+                                throw "AQUI COLLADO";
+                                // this.start = this.start + 256 * 1024 - httpResponse.headers['Range'] as number;
+                                // this.upload(file,totalSize,opciones,callback);
+                                // this.cantRetries ++;
                             }
                         }
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();
-                        callback("Ha ocurrido el stge error:", error_1);
+                        console.log(error_1);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }
@@ -90,7 +91,7 @@ var ResumableUpload2 = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         var metadata = {
-                            mimeType: options.mymeTipe,
+                            mimeType: options.mimeType,
                             name: options.fileName,
                             parents: options.parentFolderId
                         };
@@ -103,6 +104,7 @@ var ResumableUpload2 = /** @class */ (function () {
                             }
                         })
                             .then(function (res) {
+                            console.log("http initialize", res);
                             if (res.status != 200) {
                                 res.json().then(function (e) { return reject(e); });
                                 return;

@@ -1,27 +1,22 @@
 type ResumableDownloadOptions = {
-  resource: [number];
+  // resource: [number];
   accessToken: string;
   fileName: string;
-  mymeTipe: string;
+  mimeType: string;
   parentFolderId: string;
 };
 
 class ResumableUpload2 {
-  totalSize: number;
   endpoint: string = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
   start: number = 0;
   cantRetries : number = 0;
 
-  constructor(totalSize: number) {
-    this.totalSize = totalSize;
+  constructor() {
   }
 
   public async upload(
      file: Blob
-    ,callback: (
-      result: string,
-      error: string
-    ) => { result: string; error: string }
+     ,totalSize: number
     ,opciones: ResumableDownloadOptions
   ) {
     try {
@@ -34,10 +29,13 @@ class ResumableUpload2 {
       let httpResponse: Response = await this.doUpload(fileAsArray, range, location ?? "");
 
       if(httpResponse.status == 200){
-        this.start += 256; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
-        callback("Done","Next Chunk of 256 kb");
+        this.start += 256 * 1024; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
+        console.log("http 200")
+        // callback("Done",null);
+        return "new pedazo"
       }
       if(httpResponse.status == 308){
+        console.log("http 308")
         if(this.cantRetries >= 5){
             this.cantRetries = 0;
             throw "Error, tratar luego"
@@ -58,7 +56,7 @@ class ResumableUpload2 {
   ): Promise<Headers> {
     return new Promise((resolve, reject) => {
       let metadata = {
-        mimeType: options.mymeTipe,
+        mimeType: options.mimeType,
         name: options.fileName,
         parents: options.parentFolderId,
       };
@@ -71,6 +69,7 @@ class ResumableUpload2 {
         },
       })
         .then((res) => {
+        console.log("http initialize",res)
           if (res.status != 200) {
             res.json().then((e) => reject(e));
             return;
