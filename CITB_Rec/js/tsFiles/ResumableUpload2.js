@@ -35,127 +35,134 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var ResumableUpload2 = /** @class */ (function () {
-    function ResumableUpload2() {
+    function ResumableUpload2(file, options, fileTotalSize) {
+        var _this = this;
         this.endpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
-        this.start = 0;
         this.cantRetries = 0;
+        this.location = "";
+        this.chunkSize = 256 * 1024;
+        this.startBuffer = 0;
+        this.endBuffer = this.chunkSize;
+        this.fileTotalSize = 0;
+        this.calculateUploadPercent = function (callback) {
+            var percent = (_this.startBuffer * 100) / _this.fileTotalSize;
+            callback({ status: percent });
+        };
+        this.doUpload = function (element, callback) {
+            return new Promise(function (resolve, reject) {
+                var contentRange = "bytes " +
+                    String(_this.startBuffer) +
+                    "-" +
+                    String((_this.endBuffer - 1)) +
+                    "/" +
+                    _this.fileTotalSize;
+                // console.log("contentRange",contentRange);
+                fetch(_this.location, {
+                    method: "PUT",
+                    body: element,
+                    headers: {
+                        "Content-Range": contentRange
+                    }
+                })
+                    .then(function (res) {
+                    var status = res.status;
+                    if (status == 308) {
+                        var range = res.headers.get("Range");
+                        var lastUploadedByte = range.split("-");
+                        _this.startBuffer = parseInt(lastUploadedByte[1]) + 1;
+                        _this.endBuffer = Math.min(_this.startBuffer + _this.chunkSize, _this.fileTotalSize);
+                        _this.calculateUploadPercent(callback);
+                        resolve({ status: "Next", result: res });
+                    }
+                    else if (status == 200 || status == 201) {
+                        console.log("fetch result 200");
+                        callback({ status: 100 });
+                        resolve({ status: "Done", result: res });
+                    }
+                    else {
+                        console.log("fetch result ??", res.status);
+                        reject(res.status);
+                        return;
+                    }
+                })["catch"](function (err) {
+                    console.log("error fetch", err);
+                    reject(err);
+                    return;
+                });
+            });
+        };
+        this.file = file;
+        this.options = options;
+        this.fileTotalSize = fileTotalSize;
     }
-    ResumableUpload2.prototype.upload = function (file, totalSize, opciones) {
+    ResumableUpload2.prototype.initializeRequest = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var metadata = {
+                // mimeType: this.options.mimeType,
+                name: _this.options.fileName,
+                parents: _this.options.parentFolderId
+            };
+            fetch(_this.endpoint, {
+                method: "POST",
+                body: JSON.stringify(metadata),
+                headers: {
+                    Authorization: "Bearer " + _this.options.accessToken,
+                    "X-Upload-Content-Type": _this.options.mimeType,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(function (res) {
+                if (res.status != 200) {
+                    res.json().then(function (e) { return reject(e); });
+                    return;
+                }
+                _this.location = res.headers.get("location");
+                resolve(res.headers);
+            })["catch"](function (err) {
+                console.log(err);
+                reject(err);
+            });
+        });
+    };
+    ResumableUpload2.prototype.nextChunk = function () {
+        try {
+            return this.file.slice(this.startBuffer, this.endBuffer);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+    ResumableUpload2.prototype.start = function (callback) {
         return __awaiter(this, void 0, void 0, function () {
-            var head, location_1, range, fileAsArray, httpResponse, error_1;
+            var len, index, nextChunk, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.initializeRequest.call(opciones)];
+                        _a.trys.push([0, 5, , 6]);
+                        len = Math.ceil(this.fileTotalSize / this.chunkSize);
+                        index = 0;
+                        _a.label = 1;
                     case 1:
-                        head = _a.sent();
-                        location_1 = head.get("location");
-                        range = "bytes " + this.start + "-" + this.start + 256 + "/" + totalSize;
-                        fileAsArray = this.getArrayBuffer(file);
-                        return [4 /*yield*/, this.doUpload(fileAsArray, range, location_1)];
+                        if (!(index < len)) return [3 /*break*/, 4];
+                        nextChunk = this.nextChunk();
+                        return [4 /*yield*/, this.doUpload(nextChunk, callback)];
                     case 2:
-                        httpResponse = _a.sent();
-                        if (httpResponse.status == 200) {
-                            this.start += 256 * 1024; //if succesfully upload, asumiendo que los chunks son de 256 kb todo el tiempo
-                            console.log("http 200");
-                            // callback("Done",null);
-                            return [2 /*return*/, "new pedazo"];
-                        }
-                        if (httpResponse.status == 308) {
-                            console.log("http 308");
-                            if (this.cantRetries >= 5) {
-                                this.cantRetries = 0;
-                                throw "Error, tratar luego";
-                            }
-                            else {
-                                throw "AQUI COLLADO";
-                                // this.start = this.start + 256 * 1024 - httpResponse.headers['Range'] as number;
-                                // this.upload(file,totalSize,opciones,callback);
-                                // this.cantRetries ++;
-                            }
-                        }
-                        return [3 /*break*/, 4];
+                        _a.sent();
+                        nextChunk = null; //Asegurandonos de limpiar la memoria.
+                        _a.label = 3;
                     case 3:
+                        index++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         console.log(error_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
-    };
-    ResumableUpload2.prototype.initializeRequest = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var metadata = {
-                            mimeType: options.mimeType,
-                            name: options.fileName,
-                            parents: options.parentFolderId
-                        };
-                        fetch(_this.endpoint, {
-                            method: "POST",
-                            body: JSON.stringify(metadata),
-                            headers: {
-                                Authorization: "Bearer " + options.accessToken,
-                                "Content-Type": "application/json"
-                            }
-                        })
-                            .then(function (res) {
-                            console.log("http initialize", res);
-                            if (res.status != 200) {
-                                res.json().then(function (e) { return reject(e); });
-                                return;
-                            }
-                            resolve(res.headers);
-                        })["catch"](function (err) {
-                            reject(err);
-                        });
-                    })];
-            });
-        });
-    };
-    ResumableUpload2.prototype.doUpload = function (data, range, url) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        fetch(url, {
-                            method: "PUT",
-                            body: data,
-                            headers: { "Content-Range": range }
-                        })
-                            .then(function (res) {
-                            var status = res.status;
-                            if (status == 308) {
-                                resolve(res);
-                            }
-                            else if (status == 200) {
-                                res.json().then(function (res) { return resolve(res); });
-                            }
-                            else {
-                                res.json().then(function (err) {
-                                    reject(err);
-                                    return;
-                                });
-                                return;
-                            }
-                        })["catch"](function (err) {
-                            reject(err);
-                            return;
-                        });
-                    })];
-            });
-        });
-    };
-    //   private getArrayBuffer (file: Blob) : ArrayBuffer | string {
-    ResumableUpload2.prototype.getArrayBuffer = function (file) {
-        var fileReader = new FileReader();
-        fileReader.onload = function (event) {
-            return event.target.result;
-        };
-        fileReader.readAsArrayBuffer(file);
     };
     return ResumableUpload2;
 }()); //END Class

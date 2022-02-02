@@ -5,6 +5,10 @@ type ResumableDownloadOptions = {
   parentFolderId: string;
 };
 
+interface CallbackOneParam<T1, T2 = void> {
+  (param1: T1): T2;
+}
+
 class ResumableUpload2 {
   endpoint: string =
     "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
@@ -39,6 +43,7 @@ class ResumableUpload2 {
         body: JSON.stringify(metadata),
         headers: {
           Authorization: "Bearer " + this.options.accessToken,
+          "X-Upload-Content-Type": this.options.mimeType ,
           "Content-Type": "application/json",
         },
       })
@@ -48,7 +53,6 @@ class ResumableUpload2 {
             return;
           }
           this.location = res.headers.get("location");
-          console.log(this.location, res.headers);
           resolve(res.headers);
         })
         .catch((err) => {
@@ -66,12 +70,17 @@ class ResumableUpload2 {
     }
   }
 
-  public async start() {
+  public calculateUploadPercent = (callback: CallbackOneParam<object>) => {
+    let percent = (this.startBuffer * 100) / this.fileTotalSize;
+    callback({status: percent});
+  }
+
+  public async start(callback: CallbackOneParam<object>) {
     try {
       const len = Math.ceil(this.fileTotalSize / this.chunkSize);
       for (let index = 0; index < len; index++) {
         let nextChunk = this.nextChunk();
-        await this.doUpload(nextChunk);
+        await this.doUpload(nextChunk,callback);
         nextChunk = null; //Asegurandonos de limpiar la memoria.
       }
     } catch (error) {
@@ -79,7 +88,7 @@ class ResumableUpload2 {
     }
   }
 
-  public doUpload = (element) => {
+  public doUpload = (element,callback: CallbackOneParam<object>) => {
     return new Promise((resolve, reject) => {
       const contentRange: string =
         "bytes " +
@@ -88,7 +97,7 @@ class ResumableUpload2 {
         String((this.endBuffer - 1)) +
         "/" +
         this.fileTotalSize;
-      console.log("contentRange",contentRange);
+      // console.log("contentRange",contentRange);
       fetch(this.location, {
         method: "PUT",
         body: element,
@@ -103,20 +112,17 @@ class ResumableUpload2 {
             let lastUploadedByte = range.split("-");
             this.startBuffer = parseInt(lastUploadedByte[1]) + 1;
             this.endBuffer = Math.min(this.startBuffer + this.chunkSize,this.fileTotalSize);
+            this.calculateUploadPercent(callback);
             resolve({ status: "Next", result: res });
           } 
-          else if (status == 200) {
+          else if (status == 200 || status == 201) {
             console.log("fetch result 200");
+            callback({status: 100});
             resolve({ status: "Done", result: res });
           } 
           else {
             console.log("fetch result ??", res.status);
-            res.json().then((err) => {
-              err.additionalInformation =
-                "When the file size is large, there is the case that the file cannot be converted to Google Docs. Please be care§l this.";
-              reject(err);
-              return;
-            });
+            reject(res.status);  
             return;
           }
         })
