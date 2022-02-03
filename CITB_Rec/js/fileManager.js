@@ -233,6 +233,10 @@ const startResumableUpload = async (file) => {
     return;
   }
   window.processingVideo = true;
+  if(window.defautCITBFolderID == undefined){
+    verificateAuth();
+    await searchDefaultFolder();
+  }
   const options = {
     accessToken: accessToken,
     fileName: window.fileName,
@@ -255,11 +259,19 @@ const saveVideo = async (localDownload) => {
   console.log("SAVE VIDEO");
   let videoArrayChunks = await getAllRecordsDB();
   let finalArray = [];
-  videoArrayChunks.forEach((element) => {
-    finalArray.push(element.record[0]);
-  });
+  console.time("createArray");
+  for (let index = 0; index < videoArrayChunks.length; index++) {
+    const element = videoArrayChunks[index];
+    finalArray.push(element.record[0]);    
+  }
+  // videoArrayChunks.forEach((element) => {
+  //   finalArray.push(element.record[0]);
+  // });
+  console.timeEnd("createArray");
   if (environment.upLoadToDrive && !localDownload) {
+    console.time;
     let file = prepareRecordFile(finalArray);
+    console.timeEnd;
     try {
     } catch (ex) {
       console.log("ERROR: ", ex);

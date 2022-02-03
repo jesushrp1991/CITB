@@ -135,6 +135,10 @@ const calculateRecTime = (details) =>{
     }
     seconds = seconds.toString();
     seconds = seconds[0] + seconds[1];
+    if(isNaN(minutes) || isNaN(seconds)){
+        minutes = "--";
+        seconds = "--"
+    } 
     return `${minutes}:${seconds}`;
 }
 
@@ -420,7 +424,7 @@ const createRecordCard = async (details) => {
     let date =  details.dateStart.substring(0, 10);
     let time = details.dateStart.substring(11, 19);
     date = moment(date, "YYYY/MM/DD").format("DD/MM/YYYY");
-    const recTime = calculateRecTime(details);    
+    const recTime = calculateRecTime(details);   
     const urlContent = await fetch(chrome.runtime.getURL('html/card.html'))
     let html = await urlContent.text();
     html = html.replace("{{cardId}}",details.id);
