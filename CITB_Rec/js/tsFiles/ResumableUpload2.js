@@ -40,13 +40,14 @@ var ResumableUpload2 = /** @class */ (function () {
         this.endpoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
         this.cantRetries = 0;
         this.location = "";
-        this.chunkSize = 256 * 1024;
+        this.chunkSize = 256 * 1024 * 10;
         this.startBuffer = 0;
         this.endBuffer = this.chunkSize;
         this.fileTotalSize = 0;
         this.calculateUploadPercent = function (callback) {
             var percent = (_this.startBuffer * 100) / _this.fileTotalSize;
-            callback({ status: percent });
+            console.log(Math.ceil(percent));
+            callback({ status: Math.ceil(percent) });
         };
         this.doUpload = function (element, callback) {
             return new Promise(function (resolve, reject) {
@@ -75,7 +76,7 @@ var ResumableUpload2 = /** @class */ (function () {
                         resolve({ status: "Next", result: res });
                     }
                     else if (status == 200 || status == 201) {
-                        console.log("fetch result 200");
+                        console.log("fetch result 200,Done");
                         callback({ status: 100 });
                         resolve({ status: "Done", result: res });
                     }
@@ -99,9 +100,9 @@ var ResumableUpload2 = /** @class */ (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var metadata = {
-                // mimeType: this.options.mimeType,
-                name: _this.options.fileName,
-                parents: _this.options.parentFolderId
+                'mimeType': _this.options.mimeType,
+                'name': _this.options.fileName,
+                'parents': [_this.options.parentFolderId]
             };
             fetch(_this.endpoint, {
                 method: "POST",

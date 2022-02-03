@@ -14,7 +14,7 @@ class ResumableUpload2 {
     "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable";
   cantRetries: number = 0;
   location: string = "";
-  chunkSize: number = 256 * 1024;
+  chunkSize: number = 256 * 1024 * 10;
   startBuffer: number = 0;
   endBuffer: number = this.chunkSize;
   fileTotalSize: number = 0;
@@ -34,9 +34,9 @@ class ResumableUpload2 {
   public initializeRequest(): Promise<Headers> {
     return new Promise((resolve, reject) => {
       let metadata = {
-        // mimeType: this.options.mimeType,
-        name: this.options.fileName,
-        parents: this.options.parentFolderId,
+        'mimeType': this.options.mimeType,
+        'name': this.options.fileName,
+        'parents': [this.options.parentFolderId],
       };
       fetch(this.endpoint, {
         method: "POST",
@@ -72,7 +72,8 @@ class ResumableUpload2 {
 
   public calculateUploadPercent = (callback: CallbackOneParam<object>) => {
     let percent = (this.startBuffer * 100) / this.fileTotalSize;
-    callback({status: percent});
+    console.log(Math.ceil(percent));
+    callback({status: Math.ceil(percent)});
   }
 
   public async start(callback: CallbackOneParam<object>) {
@@ -116,7 +117,7 @@ class ResumableUpload2 {
             resolve({ status: "Next", result: res });
           } 
           else if (status == 200 || status == 201) {
-            console.log("fetch result 200");
+            console.log("fetch result 200,Done");
             callback({status: 100});
             resolve({ status: "Done", result: res });
           } 

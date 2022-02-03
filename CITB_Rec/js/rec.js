@@ -1,6 +1,6 @@
 import { environment } from "../config/environment.js";   
 import { errorHandling } from './errorHandling.js'; 
-import { saveVideo } from './fileManager.js'; 
+import { saveVideo, uploadQueueDaemon } from './fileManager.js'; 
 import { recIcon } from './tools.js' 
  
  
@@ -417,7 +417,9 @@ const stopRecordScreen = () =>{
         setTimeout(()=>{
             chrome.browserAction.setIcon({path: "./assets/icon.png"});
         },3000);
+      uploadQueueDaemon();
     } 
+    
 } 
  
 const pauseRec = () => { 

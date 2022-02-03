@@ -1,6 +1,7 @@
 import { environment } from "../config/environment.js";  
 import { reset } from './recTimer.js';
 import { delQueueDB } from './database.js';
+import { uploadQueueDaemon } from './fileManager.js'
 const errorHandling = (error) => {
     clearInterval(window.iconRecChange);
     setTimeout(()=>{
@@ -48,6 +49,7 @@ const initialCleanUp = () =>{
     reset();
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: false}, () => {}); 
+    uploadQueueDaemon();
   }
 
 export {

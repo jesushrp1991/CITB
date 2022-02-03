@@ -61,14 +61,15 @@ import { environment } from "../config/environment.js";
             dateStart,
             dateEnd,
             driveLink,
-            calendarId
+            calendarId,
+            isUploadComplete
             `,
         });
   }
 
-  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,calendarId) =>{
+  const addRecQueueDB = async(file,name,dateStart,dateEnd,driveLink,calendarId,isUploadComplete) =>{
     try{
-      const id = await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,calendarId:calendarId});
+      const id = await queueDB.records.add({file: file,name: name,dateStart:dateStart,dateEnd:dateEnd,driveLink:driveLink,calendarId:calendarId,isUploadComplete:isUploadComplete});
       return id;
     }catch(error){
         console.log(error);
@@ -107,17 +108,6 @@ import { environment } from "../config/environment.js";
       
   }
 
-  const getNextQueueFile = async(id) =>{
-    //get first Element FILE fields
-    let first;
-    if(id > -1){
-      first = await queueDB.records.where('id').above(id).first();
-    }else{
-      first = await queueDB.records.orderBy('id').last();
-    }
-    return first;
-  }
-
   const saveLinktoDB = async(id,link) =>{
     await queueDB.records.update(id,{driveLink: link});
     getDriverLinkInQueueDB(id);
@@ -125,6 +115,10 @@ import { environment } from "../config/environment.js";
   
   const updateFileDB = async(id,file,dateEnd) =>{
     await queueDB.records.update(id,{file: file,dateEnd:dateEnd});
+  }
+  
+  const updateUploadStatusDB = async(id,getNextQueueFile) =>{
+    await queueDB.records.update(id,{getNextQueueFile: getNextQueueFile});
   }
 
   const delFileInDB = async(id) =>{
@@ -294,7 +288,6 @@ export {
     ,createRecQueueDB
     ,addRecQueueDB
     ,getLastElementQueueDB
-    ,getNextQueueFile
     ,saveLinktoDB
     ,delFileInDB
     ,listQueueDB
@@ -303,4 +296,5 @@ export {
     ,removeRecordQueueDB
     ,delQueueDB
     ,updateFileDB
+    ,updateUploadStatusDB
 }
