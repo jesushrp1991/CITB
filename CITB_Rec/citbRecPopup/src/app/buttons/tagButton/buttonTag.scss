@@ -1,1 +1,7 @@
 @import "../../base/buttonBase.scss";
+
+circle{
+    &.active {
+        fill: #C7C6C6
+    }
+}

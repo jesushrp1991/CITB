@@ -10,9 +10,10 @@ export class buttonTagComponent extends BaseButton implements OnInit {
     
   ngOnInit(): void {
   }
+  public active: boolean = false;
   
-  public newPin = () =>{
-    alert("Pin CLick");
+  public newTag = ():void =>{
+    this.active = !this.active;
   }
 
 }
