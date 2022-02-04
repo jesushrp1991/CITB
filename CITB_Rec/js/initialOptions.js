@@ -4,14 +4,14 @@ const askCalendarList = () =>{
 }
 askCalendarList();
 
-let isCalendarSelected = false
+let isCalendarSelected = false;
 let checkboxCalendar = document.getElementById('checkboxCalendar');
 let showRecords = document.getElementById('chekcBoxShowRecords');
 checkboxCalendar.addEventListener('click',()=>{
     isCalendarSelected = !isCalendarSelected;
     isCalendarSelected
-        ? checkboxCalendar.classList.add('calendar-selected')
-        : checkboxCalendar.classList.remove('calendar-selected');
+        ? checkboxCalendar.classList.remove('calendar-unselected')
+        : checkboxCalendar.classList.add('calendar-unselected');
 })
 
 port.onMessage.addListener(async (msg) => {
@@ -23,7 +23,7 @@ port.onMessage.addListener(async (msg) => {
 
 
 
-let select = document.getElementById('caledarList');
+let select = document.getElementById('calendarList');
 const populateCalendarSelect = async (calendarList) => {
     calendarList = calendarList.reverse();
     while (select.options.length > 0) {                
@@ -51,7 +51,7 @@ const recOk = () =>{
     }
     else{
         let idCalendar;        
-        checkboxCalendar.checked ? idCalendar = select.value : idCalendar = null;
+        isCalendarSelected ? idCalendar = select.value : idCalendar = null;
         port.postMessage({okRec: true ,fileName:fileName ,calendarId: idCalendar,showRecords:showRecords.checked});
         // chrome.storage.local.set({lastCalendar: idCalendar});
         window.close();

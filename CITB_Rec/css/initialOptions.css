@@ -31,7 +31,7 @@
   background-color: transparent;
   border: none !important;
 }
-.calendar-selected {
+.calendar-unselected {
   background-image: url('../assets/offMic.png');
   background-repeat: no-repeat;
   background-position: center;
