@@ -20,6 +20,8 @@ import { timePanelComponent } from './buttons/timePanel/timePanel.component';
 import { buttonPlayComponent } from './buttons/buttonPlay/buttonPlay.component';
 import { buttonStopComponent } from './buttons/buttonStop/buttonStop.component';
 import { volumenPanelComponent } from './buttons/volumenPanel/volumenPanel.component';
+import { buttonPinComponent } from './buttons/pinButton/buttonPin.component';
+import { buttonTagComponent } from './buttons/tagButton/buttonTag.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { volumenPanelComponent } from './buttons/volumenPanel/volumenPanel.compo
     , buttonPlayComponent
     , buttonStopComponent
     , volumenPanelComponent
+    , buttonPinComponent
+    , buttonTagComponent
   ],
   imports: [
     BrowserModule,

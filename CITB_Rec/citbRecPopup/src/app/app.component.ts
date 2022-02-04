@@ -22,10 +22,6 @@ export class AppComponent extends BaseButton implements OnInit {
 
     });
     this.deamonGetState();
-    // this.timerController();
-    // this.checkTimer();
-    // this.getOnOffState();
-    // this.chekWebContainerState();
   }
   // Referencias a componentes hijos
   @ViewChild('voiceCommandComponent') voiceCommandComponent!: VoiceCommandComponent;
@@ -33,49 +29,16 @@ export class AppComponent extends BaseButton implements OnInit {
 
   public voiceCommandEnabled = false;
   public showVolumeControl = false;
-  private _voiceVolume = 0;
-  public get voiceVolume () {
-    return this._voiceVolume;
-  }
-  public set voiceVolume (value: number) {
-    // this._voiceVolume = value; 
-    // console.log("change",value!);
-    // const request = { recordingStatus: 'changeVoiceVolume' , volume: value};
-    // this.sendMessage(request);
-    // chrome.storage.local.set({voiceVolumeControl: value});
-  }
-  private _systemVolume = 0;
-  public get systemVolume() {
-    return this._systemVolume;
-  }
-  public set systemVolume(value: number){
-    // console.log("change",value!);
-    // const request = { recordingStatus: 'changeSystemVolume' , volume: value};
-    // this.sendMessage(request);
-    // chrome.storage.local.set({systemVolumeControl: value});
-  }
+
   public audioEnabled = true;
   public recMode = 'recordScreen';
   public isCITBEnabled = false;
   public citbDeviceEnabled = false;
   public selectedMic = "";
   public isRecording = false;
-  // public isPaused = false;
   public exitsCITBDevice = true;
-  // public portTimer = chrome.runtime.connect({name: "portTimer"});
-  // public recTime = '00:00';
-
-  //CITB variables
-  // public globalState = false;
-  // public isFloatingPanelShow = true;
-
 
   public restoreState = () => {
-    // this.window.chrome.storage.local.get('isMicEnable', (result: any) => {
-    //   this.audioEnabled = result.isMicEnable;
-    //   // voiceVolumeControl.disabled = !result.isMicEnable;
-    // });
-    
     this.window.chrome.storage.local.get('recMode', (result: any) => {
       this.recMode = result.recMode;
     });
@@ -112,28 +75,17 @@ export class AppComponent extends BaseButton implements OnInit {
     }
   };
 
-  // public get citbOnOffImg() {
-  //   return this.isCITBEnabled
-  //     ? 'assets/on.png'
-  //     : 'assets/off.png';
-  // }
   public citbDeviceToggle = () => {
     this.citbDeviceEnabled = !this.citbDeviceEnabled;
     this.window.chrome.storage.local.set({isCITBPanelVisible: this.citbDeviceEnabled}, () => {});
   };
-
-  // public get floatingPanelStatus() {
-  //   return this.isFloatingPanelShow
-  //     ? 'assets/showPanelFlotante.svg'
-  //     : 'assets/hidePanelFlotante.svg'
-  // }
 
   public rec = (isTabForMac:any|undefined) =>{
     let idMic;
     this.audioEnabled ? idMic = this.selectedMic : idMic = null
     const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: this.recMode};
     //OJO PARA GRABAR !!!!!
-    this.sendMessage(request);
+    // this.sendMessage(request);
 }
 
   public startRecording = () => {
@@ -147,52 +99,6 @@ export class AppComponent extends BaseButton implements OnInit {
       this.rec(undefined)
     }
   }
-
-  // public stopRecording = () =>{
-  //   console.log("STOP REC!!!")
-  //   this.isRecording = !this.isRecording;
-  //   this.rec(undefined);
-  // }
-
-  // public get recPanel(){
-  //   return this.isRecording
-  //     ? 'assets/reloj.png'
-  //     :'assets/rec-button.png'
-  // }
-
-  // public tooglePlayPause = () =>{
-  //   this.isPaused = !this.isPaused;
-  //   const request = { recordingStatus: 'pause' };
-  //   this.sendMessage(request);
-  // }
-  // public get isPausedState () {
-  //   return this.isPaused
-  //     ? 'assets/play.png'
-  //     : 'assets/pause.png'
-  // }
-
-  //************ TIMER CONTROLLER **********/////
-  // public timerController = () => {
-  //   this.portTimer.onMessage.addListener(async (msg) => {
-  //     if (msg.answer && msg.answer.seconds > 0){
-  //         this.recTime = `${msg.answer.minute}:${msg.answer.seconds}`;
-  //     }else{
-  //       this.recTime = '00:00';           
-  //     }    
-  //   });
-  // }
-
-  // public checkTimer = () => {
-  //     setInterval(()=>{
-  //         this.portTimer.postMessage({getTimer: true});
-  //     },1000)
-  // }
-  //************ TIMER CONTROLLER **********//////
-
-
-  //*************** Volumen Control ********/
-  
-  //*************** End Volumen Control ********/
 
   public checkAut = () => {
     const request = { recordingStatus: 'checkAuth' };
@@ -210,11 +116,7 @@ export class AppComponent extends BaseButton implements OnInit {
             this.isRecording = true;
         }
     });
-    // this.window.chrome.storage.sync.get('isPaused', (result : any) => {   
-    //     if(result.isPaused ){
-    //         this.isPaused = true;
-    //     }    
-    // });
+
     this.window.chrome.storage.sync.get('voice', (result : any) => {
         if(result.voice){
             this.voiceCommandEnabled = true;

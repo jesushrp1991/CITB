@@ -137,19 +137,31 @@
     height: 27px;
     width: 84px;
     top: 501px;
-    left: 20px;
+    left: -10px;
 }
 #play-button{
     height: 40px;
     width: 40px;
     top: 494px;
-    left: 126px;
+    left: 70px;
 }
 #stop-button{
     height: 40px;
     width: 40px;
     top: 494px;
-    left: 177px;
+    left: 107px;
+}
+#pin-button{
+    height: 50px;
+    width: 50px;
+    top: 490px;
+    left: 140px;
+}
+#tag-button{
+    height: 50px;
+    width: 50px;
+    top: 490px;
+    left: 180px;
 }
 #volumenPanel {
     position: absolute;

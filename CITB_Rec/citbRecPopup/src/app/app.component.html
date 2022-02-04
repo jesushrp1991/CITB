@@ -68,16 +68,6 @@
     <citb-open class="invisibleComandButtons" id="citbDevice"> </citb-open>
 
     <record-list class="invisibleComandButtons" id="recordings"> </record-list>
-    <!-- <button
-      class="invisibleButtons"
-      (click)="citbDeviceToggle()"
-      id="citbDevice"
-    ></button>
-    <button
-      class="invisibleButtons"
-      (click)="showRecordings()"
-      id="recordings"
-    ></button> -->
   </div>
 
   <img src="assets/separator.svg" alt="" id="separator3" />
@@ -90,32 +80,6 @@
       class="invisibleComandButtons"
       id="citbShowFloatingDiv"
     ></citb-show-bar>
-    <!-- <div class="citbButtonsContainer" *ngIf="citbDeviceEnabled">
-    <button
-      class="invisibleButtons citbButtons"
-      id="citbOn"
-      (click)="toggleCITBOnOff()"
-    >
-      <img [src]="citbOnOffImg" alt="" />
-    </button>
-    <button
-      class="invisibleButtons citbButtons"
-      id="citbCamPopup"
-      (click)="chooseMic()"
-    ></button>
-    <button
-      class="invisibleButtons citbButtons"
-      id="citbMicPopup"
-      (click)="chooseCamara()"
-    ></button>
-    <buttonO
-      class="invisibleButtons citbButtons"
-      id="citbShowFloatingDiv"
-      (click)="toogleFloatingPanel()"
-    >
-      <img [src]="floatingPanelStatus" alt="" />
-    </buttonO>
-  </div> -->
   </div>
 
   <img src="assets/separator.svg" alt="" id="separator4" />
@@ -124,6 +88,8 @@
     <time-panel class="invisibleComandButtons" id="time-panel"></time-panel>
     <button-play class="invisibleComandButtons" id="play-button"></button-play>
     <button-stop class="invisibleComandButtons" id="stop-button"></button-stop>
+    <button-pin class="invisibleComandButtons" id="pin-button" > </button-pin>
+    <button-tag class="invisibleComandButtons" id="tag-button" > </button-tag>
   </div>
 
   <rec-button
@@ -136,29 +102,4 @@
   <div *ngIf="!exitsCITBDevice" (click)="redirectToCITBWeb()">
     <eco-alert id="custom-alert"></eco-alert>
   </div>
-  <!-- <button (click)="startRecording()" id="startRecord" *ngIf="!isRecording">
-    <img src="assets/rec-button.png" alt="" />
-  </button> -->
-
-  <!-- <button (click)="startRecording()" id="timerPanel" *ngIf="isRecording">
-    <img src="assets/reloj.png" alt="" />
-    <div class="rec-time">{{ recTime }}</div>
-  </button>
-  <button (click)="tooglePlayPause()" id="play-pause" *ngIf="isRecording">
-    <img [src]="isPausedState" alt="" />
-  </button>
-  <button id="stop-button" (click)="stopRecording()" *ngIf="isRecording">
-    <img src="assets/stop.png" alt="" />
-  </button> -->
-
-  <!-- <div class="custom-alert" *ngIf="!exitsCITBDevice">
-    <div id="citbMissingAlert" class="mb-3 p-1 expanded">
-      <div class="align-self-center float-left">
-        <img src="assets/ALERTA.png" class="img-alert-citb" />
-      </div>
-      <div class="alert-text">
-        <p>El audio grabado puede tener eco, si no usas ClassInTheBox</p>
-      </div>
-    </div>
-  </div> -->
 </div>
