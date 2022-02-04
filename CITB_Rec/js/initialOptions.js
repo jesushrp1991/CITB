@@ -4,9 +4,15 @@ const askCalendarList = () =>{
 }
 askCalendarList();
 
+let isCalendarSelected = false
 let checkboxCalendar = document.getElementById('checkboxCalendar');
 let showRecords = document.getElementById('chekcBoxShowRecords');
-checkboxCalendar.checked = false;
+checkboxCalendar.addEventListener('click',()=>{
+    isCalendarSelected = !isCalendarSelected;
+    isCalendarSelected
+        ? checkboxCalendar.classList.add('calendar-selected')
+        : checkboxCalendar.classList.remove('calendar-selected');
+})
 
 port.onMessage.addListener(async (msg) => {
     if (msg.calendarList){
@@ -17,7 +23,7 @@ port.onMessage.addListener(async (msg) => {
 
 
 
-let select = document.getElementById('miclist');
+let select = document.getElementById('caledarList');
 const populateCalendarSelect = async (calendarList) => {
     calendarList = calendarList.reverse();
     while (select.options.length > 0) {                

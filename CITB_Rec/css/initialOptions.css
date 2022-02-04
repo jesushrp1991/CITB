@@ -1,39 +1,66 @@
-
-.header-icon{
-  background-image: url('../assets/logo.svg');
-  width: 280px;
-  height: 100px;
-  background-color: transparent;
+.contenedor {
+  position: relative;
+  background-image: url(../assets/pagina_detalles.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  width: 400px !important;
+  height: 600px !important;
+  top: 5px;
+  left: calc(50% - 200px) !important;
 }
-.icon-calendar{
-  background-image: url('../assets/calendar.png');
-  width: 100px;
-  height: 100px;
+#fileName {
+  width: 322px;
+  height: 38px;
+  position: absolute;
+  top: 161px;
+  left: 39px;
+  border: none;
+  border-width: unset;
+  background-color: 1;
+  animation-fill-mode: backwards;
+}
+
+#checkboxCalendar {
+  position: absolute;
+  top: 414px;
+  left: 40px;
+  width: 45px;
+  height: 44px;
+  border-radius: 50%;
   background-color: transparent;
+  border: none !important;
+}
+.calendar-selected {
+  background-image: url('../assets/offMic.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  background-color: grey !important;
+}
+#chekcBoxShowRecords {
+  position: absolute;
+    top: 490px;
+    left: 56px;
+    width: 18px;
+    height: 18px;
+    border: transparent;
 }
 
-.form-control {
-  width: 98%;
+#button-ok {
+    position: absolute;
+    top: 533px;
+    left: 164px;
+    width: 72px;
+    height: 42px;
+    background-color: transparent;
+    border: none !important;
 }
 
-.button-rec{
-  width: 100px !important;
-  height: 40px !important;
-  transition: opacity 0.5s, 
-  visibility 0.5s;
-  opacity: 1;
-  visibility: innherit ;
-  border-radius: 15px !important;
-  padding-right: 15px;
-}
-
-.select-mic{
-  width: 100% !important;
-  margin-top: 5px;
+#calendarList {
+  position: absolute;
+  top: 418px;
+  left: 115px;
+  width: 245px;
+  height: 34px;
 }
