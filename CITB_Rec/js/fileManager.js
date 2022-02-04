@@ -272,14 +272,9 @@ const saveVideo = async (localDownload) => {
     console.time;
     let file = prepareRecordFile(finalArray);
     console.timeEnd;
-    try {
-    } catch (ex) {
-      console.log("ERROR: ", ex);
-    }
     //cambiar a update file y meet.endTime
     window.meetEndTime = dayjs().format();
     updateFileDB(window.currentRecordingId, file, window.meetEndTime);
-    download(finalArray);
     uploadQueueDaemon();
   } else {
     if (finalArray.length != 0) {
