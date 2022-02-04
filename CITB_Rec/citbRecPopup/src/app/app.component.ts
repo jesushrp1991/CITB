@@ -85,7 +85,7 @@ export class AppComponent extends BaseButton implements OnInit {
     this.audioEnabled ? idMic = this.selectedMic : idMic = null
     const request = { recordingStatus: 'rec' , idMic: idMic ,idTab : isTabForMac, recMode: this.recMode};
     //OJO PARA GRABAR !!!!!
-    // this.sendMessage(request);
+    this.sendMessage(request);
 }
 
   public startRecording = () => {
