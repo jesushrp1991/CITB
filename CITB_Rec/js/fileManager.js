@@ -8,6 +8,7 @@ import {
   updateFileDB,
   updateUploadStatusDB
 } from "./database.js";
+import { setDBToken } from "./services.js";
 
 const moveDriveFileToFolder = async (destFolderId, originalDocID) => {
   await gapi.client.drive.files.update({
@@ -150,29 +151,35 @@ const getCalendarList = async () => {
   return result.result.items;
 };
 
-const verificateAuth = () => {
-  gapi.client
-    .init({
-      // Don't pass client nor scope as these will init auth2, which we don't want
-      apiKey: environment.API_KEY,
-      discoveryDocs: environment.DISCOVERY_DOCS,
-    })
-    .then(
-      (data) => {
-        chrome.identity.getAuthToken({ interactive: true }, (tokenResult) => {
-          window.accessToken = tokenResult;
-          uploadQueueDaemon();
+const verificateAuth = () =>{
+  try{
+    chrome.storage.local.get("authToken", (result)=>{
+      if(result.length == undefined){
+        //redirect to web to auth
+        window.open('https://localhost:4200',"_blank");
+      }
+      else{
+        window.accessToken = result.authToken;
+        gapi.load("client", async () =>
           gapi.auth.setToken({
-            access_token: tokenResult,
-          });
+            access_token: result.authToken
+          })
+        );
+        gapi.client.init({
+          discoveryDocs: environment.DISCOVERY_DOCS,
+          apiKey: environment.API_KEY,
+        }).then(()=>{
+          uploadQueueDaemon();
           searchDefaultFolder();
         });
-      },
-      (error) => {
-        console.log("ERROR ERROR", error);
       }
-    );
-};
+    });
+  }
+  catch(error){
+    console.log(error);
+    setDBToken();
+  }
+}
 
 /*
  *   Upload to Drive

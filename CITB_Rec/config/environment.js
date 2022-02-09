@@ -4,10 +4,10 @@ const environment = {
     ,videoRecordMimeType : 'video/webm; codecs=vp9'
     ,audioRecordMimeType : 'audio/webm; codecs=vp9'
     ,upLoadToDrive : true
-    ,API_KEY : 'AIzaSyD-1Qv29qBstORU_Olt0ESCe5GLLKyM8as'
+    // ,API_KEY : 'AIzaSyD-1Qv29qBstORU_Olt0ESCe5GLLKyM8as'//mia
+    ,API_KEY : 'AIzaSyD7EL3gks0cBoCdcslEVNILkyeYcLFoukY'//NOEL
     ,DISCOVERY_DOCS : ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest","https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
     ,videoCaptureModes : ['screen','audio']
-    //,videoCaptureModesForMac : ['tab','audio']
     ,lowDiskSpaceAlert : 50
     ,timeIntervalSaveDB : 100
     ,backendLogURL: 'https://apicitb.tk/api/log/savelog'
@@ -24,6 +24,7 @@ const environment = {
                     "4- Class in the box play: Play the recording" + "<br>" +
                     "5- Class in the box close: Closes the voice commands."
     ,timerUploadQueueDaemon: 5000
+    ,backendURL: 'https://api.classinthebox.tk/'
 
 }
 
