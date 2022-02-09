@@ -11,7 +11,7 @@ const errorHandling = (error) => {
     window.isRecording = false;
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: false}, () => {}); 
-    delQueueDB();
+    // delQueueDB();
     if(window.recorder){
         window.recorder.stop();
     }

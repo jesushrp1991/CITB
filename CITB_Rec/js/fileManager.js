@@ -153,9 +153,8 @@ const getCalendarList = async () => {
 
 const verificateAuth = () =>{
   try{
-    chrome.storage.local.get("authToken", (result)=>{
+    chrome.storage.local.get("authToken", async(result)=>{
       if(result.authToken == undefined){
-        //redirect to web to auth
         window.open(environment.webBaseURL,"_blank");
       }
       else{
@@ -172,6 +171,7 @@ const verificateAuth = () =>{
           uploadQueueDaemon();
           searchDefaultFolder();
         });
+        return;
       }
     });
   }
@@ -230,7 +230,6 @@ const afterUploadSuccessActions = async () => {
 
 const startResumableUpload = async (file) => {
   console.log("Start resumable Upload");
-  // let accessToken = gapi.auth.getToken().access_token;
   if (
     window.accessToken == null ||
     window.accessToken == undefined ||
@@ -271,15 +270,11 @@ const saveVideo = async (localDownload) => {
     const element = videoArrayChunks[index];
     finalArray.push(element.record[0]);    
   }
-  // videoArrayChunks.forEach((element) => {
-  //   finalArray.push(element.record[0]);
-  // });
   console.timeEnd("createArray");
   if (environment.upLoadToDrive && !localDownload) {
     console.time;
     let file = prepareRecordFile(finalArray);
     console.timeEnd;
-    //cambiar a update file y meet.endTime
     window.meetEndTime = dayjs().format();
     updateFileDB(window.currentRecordingId, file, window.meetEndTime);
     uploadQueueDaemon();
@@ -320,11 +315,9 @@ const uploadQueueDaemon = async () => {
     window.fileName = lastElement.name;
     window.starTimeUpload = lastElement.dateStart;
     window.calendarId = lastElement.calendarId;
-    // prepareUploadToDrive(lastElement.file);
     startResumableUpload(lastElement.file);
   }
 };
-// setInterval(uploadQueueDaemon, environment.timerUploadQueueDaemon);
 
 const listUploadQueue = async () => {
   let list = await listQueueDB();

@@ -12,8 +12,7 @@ const getDBToken = async (token) => {
   });
   return response.json();
 };
-
-const setDBToken =  () => {
+const setDBToken = () => {
   chrome.storage.local.get("dbToken", async (result) => {
     if (result.length == undefined) {
       //redirect to web to auth
@@ -32,4 +31,34 @@ const setDBToken =  () => {
   });
 };
 
-export { getDBToken, setDBToken };
+const createVideo = async (dbToken, name, recordedDate) => {
+  const response = await fetch(environment.backendURL + "video", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + dbToken,
+    },
+    body: JSON.stringify({
+      name: name,
+      recordedDate: recordedDate,
+    }),
+  });
+  return response.json();
+};
+
+const updateVideo = async (dbToken, duration, id) => {
+  const response = await fetch(environment.backendURL + "video/" + id, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + dbToken,
+    },
+    body: JSON.stringify({
+      duration: duration,
+    }),
+  });
+  return response.json();
+};
+
+
+export { getDBToken, setDBToken, createVideo, updateVideo };

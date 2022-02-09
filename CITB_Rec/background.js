@@ -2,12 +2,10 @@ import {
    showEstimatedQuota
   ,delLastItem
   ,getDriverLinkInQueueDB
-  ,prepareDB
 } from "./js/database.js";
 
 import {
-   startRecordScreen
-  ,stopRecordScreen
+  stopRecordScreen
   ,pauseOrResume
   ,playRec
   ,pauseRec
@@ -29,6 +27,7 @@ import {
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
+import { recUC } from './js/useCase.js';
 
 initialCleanUp();
 
@@ -194,10 +193,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }
         else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
-          // let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
           let listFoldersResult = createListForFrontend([result],'root')
           port.postMessage({currentList: listFoldersResult});
-          // await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
         }
         else if (msg.moveFile){
           if(msg.id.idFolder.includes("https")){
@@ -233,14 +230,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           window.fileName = msg.fileName;
           window.calendarId = msg.calendarId;
           window.showRecords = msg.showRecords;
-          await prepareDB();
-          // createDB();
-          window.meetStartTime = dayjs().format();
-          startRecordScreen(window.idMic,window.idTab,window.recMode);
+          recUC();
         }
         else if (msg.downloadFromDrive){
-          // window.fileName = msg.fileName;
-          console.log("fownload file from drie",msg.fileID)
           downloadFromDrive(msg.fileID,msg.name);
         }
       });
