@@ -154,9 +154,9 @@ const getCalendarList = async () => {
 const verificateAuth = () =>{
   try{
     chrome.storage.local.get("authToken", (result)=>{
-      if(result.length == undefined){
+      if(result.authToken == undefined){
         //redirect to web to auth
-        window.open('https://localhost:4200',"_blank");
+        window.open(environment.webBaseURL,"_blank");
       }
       else{
         window.accessToken = result.authToken;

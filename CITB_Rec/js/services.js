@@ -13,16 +13,16 @@ const getDBToken = async (token) => {
   return response.json();
 };
 
-const setDBToken = async () => {
-  chrome.storage.local.get("dbToken", (result) => {
+const setDBToken =  () => {
+  chrome.storage.local.get("dbToken", async (result) => {
     if (result.length == undefined) {
       //redirect to web to auth
-      window.open("https://localhost:4200", "_blank");
+      window.open(environment.webBaseURL, "_blank");
     } else {
       //verify if token is expired
       let token = await getDBToken(result);
       if (!token) {
-        window.open("https://localhost:4200", "_blank");
+        window.open(environment.webBaseURL, "_blank");
       } else {
         //save token to comunicate woith back
         window.dbToken = token;

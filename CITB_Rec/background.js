@@ -263,10 +263,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       switch(message.recordingStatus){
         case popupMessages.token :
-          chrome.storage.local.set({ "authToken": message.token },()=>{});
+          chrome.storage.local.set({ "authToken": message.token.token },()=>{});
         break;
         case popupMessages.dbtoken :
-          chrome.storage.local.set({ "dbToken": message.dbToken },()=>{});
+          chrome.storage.local.set({ "dbToken": message.dbToken.dbToken },()=>{});
         break;
         case popupMessages.rec :
           recCommandStart(message);   
