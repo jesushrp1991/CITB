@@ -113,9 +113,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     window.videoChunksArray = [];  
                 }  
             }  
-            window.recorder.onstop = async() => {  
-              saveVideo(false);  
-            }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
           }//End if recMode == RecordTabs
@@ -217,9 +214,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     window.videoChunksArray = [];  
                 }  
             }  
-            window.recorder.onstop = async() => {  
-              saveVideo(false);  
-            }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
           }
@@ -313,9 +307,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                 window.videoChunksArray = [];  
             }  
         }  
-        window.recorder.onstop = async() => {  
-           saveVideo(false);  
-        }  
         window.recorder.start(environment.timeIntervalSaveDB);  
         startTimerCount();  
       } 
@@ -361,34 +352,6 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
     errorHandling(e);  
   }  
 }  
-const stopTracks = () =>{  
-  window.desktopStream.getTracks().forEach(track => track.stop()); 
-  if (window.micStream != undefined) {  
-    window.micStream.getTracks().forEach(track => track.stop()); 
-  }  
-  if(window.videoDesktopStream != undefined){ 
-    window.videoDesktopStream.getTracks().forEach(track => track.stop()); 
-  } 
-  window.resultStream.getTracks().forEach(track => track.stop()); 
-}   
-const stopRecordScreen = () =>{ 
-    if(window.isRecording){ 
-        window.meetEndTime = dayjs().format(); 
-        if(window.recorder){
-          window.recorder.stop(); 
-          stopTracks(); 
-        }
-        reset(); 
-        window.isRecording = false;
-        chrome.storage.sync.set({isRecording: false}, () => {});
-        chrome.storage.sync.set({isPaused: false}, () => {}); 
-        setTimeout(()=>{
-            chrome.browserAction.setIcon({path: "./assets/icon.png"});
-        },3000);
-      uploadQueueDaemon();
-    } 
-    
-} 
  
 const pauseRec = () => { 
   window.recorder.pause() 
@@ -415,7 +378,6 @@ const pauseOrResume = async () => {
 export { 
      recordScreen 
     ,startRecordScreen 
-    ,stopRecordScreen 
     ,pauseOrResume 
     ,playRec 
     ,pauseRec 

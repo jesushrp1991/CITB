@@ -5,8 +5,7 @@ import {
 } from "./js/database.js";
 
 import {
-  stopRecordScreen
-  ,pauseOrResume
+  pauseOrResume
   ,playRec
   ,pauseRec
 } from './js/rec.js'
@@ -27,7 +26,7 @@ import {
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
-import { recUC } from './js/useCase.js';
+import { recUC,stopRecordScreen } from './js/useCase.js';
 
 initialCleanUp();
 
@@ -100,10 +99,6 @@ const recCommandStart = async(message) => {
         openRecList();
       }
       await stopRecordScreen();
-      chrome.storage.sync.set({isPaused: false}, () => {});
-      setTimeout(()=>{
-        chrome.browserAction.setIcon({path: "./assets/icon.png"});
-      },3000);
   } 
 }
 
