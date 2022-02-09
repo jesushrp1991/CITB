@@ -231,7 +231,10 @@ const afterUploadSuccessActions = async () => {
   if (window.calendarId) {
     addEventToGoogleCalendar(linkDrive);
   }
-  updateVideo(window.dbToken,100,linkDrive,window.idVideoInBack);
+  const starTime = dayjs(window.meetStartTime);
+  const endTime = dayjs(window.meetEndTime);
+  const videoDuration = endTime.diff(starTime);
+  updateVideo(window.dbToken,videoDuration,linkDrive,window.idVideoInBack);
   window.uploadValue = -1;
   saveUploadProgress(-1);
   uploadQueueDaemon();
