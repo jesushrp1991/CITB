@@ -53,7 +53,7 @@ const popupMessages = {
   ,changeVoiceVolume: 'changeVoiceVolume'
   ,changeSystemVolume: 'changeSystemVolume'
   ,token: 'token'
-  ,dbToken: 'dbToken'
+  ,idToken: 'idToken'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -252,8 +252,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         case popupMessages.token :
           chrome.storage.local.set({ "authToken": message.token.token },()=>{});
         break;
-        case popupMessages.dbtoken :
-          chrome.storage.local.set({ "dbToken": message.dbToken.dbToken },()=>{});
+        case popupMessages.idToken :
+          chrome.storage.local.set({ "idToken": message.idToken.idToken },()=>{});
         break;
         case popupMessages.rec :
           recCommandStart(message);   

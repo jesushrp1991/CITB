@@ -3,7 +3,8 @@ import { prepareDB } from "./database.js";
 import { recIcon } from "./tools.js";
 import { addRecQueueDB } from "./database.js";
 import { reset } from "./recTimer.js";
-import { saveVideo, uploadQueueDaemon } from './fileManager.js'; 
+import { saveVideo, uploadQueueDaemon } from './fileManager.js';
+import { createVideo } from "./services.js";
 
 const recUC = async () => {
   await prepareDB();
@@ -12,13 +13,17 @@ const recUC = async () => {
   window.isRecording = true;
   chrome.storage.sync.set({ isRecording: true }, () => {});
   recIcon();
+  const idVideo = await createVideo(window.dbToken,window.fileName,window.meetStartTime);
+  window.idVideoInBack = idVideo._id;
   window.currentRecordingId = await addRecQueueDB(
     "recording",
     window.fileName,
     window.meetStartTime,
     null,
     null,
-    window.calendarId
+    window.calendarId,
+    null,
+    idVideo._id
   );
 };
 

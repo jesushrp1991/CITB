@@ -1,8 +1,5 @@
 import { environment } from "../config/environment.js";   
 import { errorHandling } from './errorHandling.js'; 
-import { saveVideo, uploadQueueDaemon } from './fileManager.js'; 
-import { recIcon } from './tools.js' 
- 
  
 import { 
     startTimerCount 
@@ -13,7 +10,6 @@ import {
 import { 
     addDB
     ,showEstimatedQuota
-    ,addRecQueueDB
 } from "./database.js"; 
  
   const verifyAvailableSpaceOnDisk = async () =>{   

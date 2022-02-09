@@ -12,24 +12,6 @@ const getDBToken = async (token) => {
   });
   return response.json();
 };
-const setDBToken = () => {
-  chrome.storage.local.get("dbToken", async (result) => {
-    if (result.length == undefined) {
-      //redirect to web to auth
-      window.open(environment.webBaseURL, "_blank");
-    } else {
-      //verify if token is expired
-      let token = await getDBToken(result);
-      if (!token) {
-        window.open(environment.webBaseURL, "_blank");
-      } else {
-        //save token to comunicate woith back
-        window.dbToken = token;
-        chrome.storage.local.set({ dbToken: token }, () => {});
-      }
-    }
-  });
-};
 
 const createVideo = async (dbToken, name, recordedDate) => {
   const response = await fetch(environment.backendURL + "video", {
@@ -46,19 +28,20 @@ const createVideo = async (dbToken, name, recordedDate) => {
   return response.json();
 };
 
-const updateVideo = async (dbToken, duration, id) => {
+const updateVideo = async (dbToken, duration,videoLink, id) => {
   const response = await fetch(environment.backendURL + "video/" + id, {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + dbToken,
     },
     body: JSON.stringify({
       duration: duration,
+      videoLink: videoLink
     }),
   });
   return response.json();
 };
 
 
-export { getDBToken, setDBToken, createVideo, updateVideo };
+export { getDBToken, createVideo, updateVideo };

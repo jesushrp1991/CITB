@@ -8,7 +8,7 @@ import {
   updateFileDB,
   updateUploadStatusDB
 } from "./database.js";
-import { setDBToken } from "./services.js";
+import { getDBToken,updateVideo } from "./services.js";
 
 const moveDriveFileToFolder = async (destFolderId, originalDocID) => {
   await gapi.client.drive.files.update({
@@ -153,6 +153,16 @@ const getCalendarList = async () => {
 
 const verificateAuth = () =>{
   try{
+    chrome.storage.local.get("idToken", async(result)=>{
+      if(result.idToken == undefined){
+        window.open(environment.webBaseURL,"_blank");
+      }
+      else{
+        const dbToken = await getDBToken(result.idToken);
+        chrome.storage.local.set({ "dbToken": dbToken.token },()=>{});
+        window.dbToken = dbToken;
+      }
+    });
     chrome.storage.local.get("authToken", async(result)=>{
       if(result.authToken == undefined){
         window.open(environment.webBaseURL,"_blank");
@@ -177,7 +187,6 @@ const verificateAuth = () =>{
   }
   catch(error){
     console.log(error);
-    setDBToken();
   }
 }
 
@@ -215,14 +224,14 @@ const download = (test, fileName) => {
 };
 
 const afterUploadSuccessActions = async () => {
-  console.log("after upload actions");
   let linkDrive = await getLinkFileDrive();
   saveLinktoDB(window.fileIDUploadInProgress, linkDrive);
   delFileInDB(window.fileIDUploadInProgress);
-  updateUploadStatusDB(window.fileIDUploadInProgress,'COMPLETE');
+  updateUploadStatusDB(window.fileIDUploadInProgress,"COMPLETE");
   if (window.calendarId) {
     addEventToGoogleCalendar(linkDrive);
   }
+  updateVideo(window.dbToken,100,linkDrive,window.idVideoInBack);
   window.uploadValue = -1;
   saveUploadProgress(-1);
   uploadQueueDaemon();
