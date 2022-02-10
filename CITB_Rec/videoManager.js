@@ -1,5 +1,4 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
-import { compareWhitCache } from './js/tools.js'
 
 var id;
 let isFirstRender = true;
@@ -14,11 +13,6 @@ const baseUrlPerHost = {
     wakel: 'https://wakelet.com/save?self=1&media=',
     drive: 'https://drive.google.com/file/d/',
 };
-
-const drawScreen = (list) =>{
-    //algoritm to draw whit cache, compare and decide.
-    //Esta en la libreta!!!
-}
 
 port.onMessage.addListener(async (msg) => {
     if (msg.lista){

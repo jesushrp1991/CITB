@@ -5,6 +5,28 @@ import { addRecQueueDB } from "./database.js";
 import { reset } from "./recTimer.js";
 import { uploadQueueDaemon,saveVideo } from './uploadManager.js';
 import { createVideo } from "./backService.js";
+import { stopTracks, openRecList } from "./tools.js";
+import { delLastItem } from "./database.js";
+import { addMark,addTag,tagEndTime } from './backService.js'
+
+
+const recCommandStart = async(message) => {
+  if(!window.isRecording && !message.isVoiceCommandStop){
+    window.idMic = message.idMic;
+    window.idTab = message.idTab;
+    window.recMode = message.recMode;
+    chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
+  }else{
+      clearInterval(window.iconRecChange);
+      if(message.isVoiceCommandStop){
+        delLastItem(3);
+      }
+      if(window.showRecords){
+        openRecList();
+      }
+      await stopRecordScreen();
+  } 
+}
 
 const recUC = async () => {
   await prepareDB();
@@ -27,16 +49,7 @@ const recUC = async () => {
   );
 };
 
-const stopTracks = () => {
-  window.desktopStream.getTracks().forEach((track) => track.stop());
-  if (window.micStream != undefined) {
-    window.micStream.getTracks().forEach((track) => track.stop());
-  }
-  if (window.videoDesktopStream != undefined) {
-    window.videoDesktopStream.getTracks().forEach((track) => track.stop());
-  }
-  window.resultStream.getTracks().forEach((track) => track.stop());
-};
+
 const stopRecordScreen = () => {
   if (window.isRecording) {
     window.meetEndTime = dayjs().format();
@@ -56,4 +69,28 @@ const stopRecordScreen = () => {
   }
 };
 
-export { recUC, stopRecordScreen };
+let isFirstTag = undefined;
+let idTag;
+const addTagUC = async() => {
+  if(window.isRecording){
+    if(isFirstTag == undefined || isFirstTag == true){
+      isFirstTag = false;
+      let time = (window.timer.minute * 60) + window.timer.seconds;
+      idTag = await addTag(window.dbToken,window.idVideoInBack,time);
+    }
+    else{
+      isFirstTag = true;
+      let endTime = (window.timer.minute * 60) + window.timer.seconds;
+      tagEndTime(window.dbToken,window.idVideoInBack, idTag._id, endTime);
+    }
+  }
+}
+
+const addMarkUC = () => {
+  if(window.isRecording){
+    let time = (window.timer.minute * 60) + window.timer.seconds 
+    addMark(window.dbToken,window.idVideoInBack,time);
+  }
+}
+
+export { recUC, stopRecordScreen, recCommandStart, addTagUC, addMarkUC };

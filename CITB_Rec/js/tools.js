@@ -66,32 +66,6 @@ const recIcon = () =>{
 }
 
 
-const compareWhitCache = (newArray) => {
-    //window.cache;
-    let cache = window.cache;
-    //list of new objets
-    let newObjects = cache.filter(o1 => !newArray.some(o2=> o1.id === o2.id));
-    let deletedObjects = newArray.filter(o1 => !cache.some(o2=> o1.id === o2.id));
-
-    return [...newObjects,...deletedObjects];
-}
-
-const addToCache = (newArray,idFolder) => {
-    let cache = window.cache;
-    
-    let exits = false;
-    cache.forEach((element,index) => {
-        if(element.id == idFolder){
-            cache[index].files = newArray;
-            exits = true;
-        } 
-    });
-    if(!exits){
-        cache.push({id:idFolder,files:newArray});
-    }
-    window.cache = cache;
-}
-
 const filterModifiableCalendars = (calendarList) =>{
     let result = [];
     calendarList.forEach(element => {
@@ -102,9 +76,32 @@ const filterModifiableCalendars = (calendarList) =>{
     return result;
 }
 
+const stopTracks = () => {
+    window.desktopStream.getTracks().forEach((track) => track.stop());
+    if (window.micStream != undefined) {
+      window.micStream.getTracks().forEach((track) => track.stop());
+    }
+    if (window.videoDesktopStream != undefined) {
+      window.videoDesktopStream.getTracks().forEach((track) => track.stop());
+    }
+    window.resultStream.getTracks().forEach((track) => track.stop());
+  };
+
+const openRecList = () => {  
+    chrome.tabs.getAllInWindow(undefined,(tabs) => {
+        for (var i = 0, tab; tab = tabs[i]; i++) {
+        if (tab.url && tab.url.includes('videoManager.html')) {
+            chrome.tabs.update(tab.id, {selected: true});
+            return;
+        }
+        }
+        chrome.tabs.create({ url: chrome.extension.getURL('videoManager.html') });  
+    });
+}
 export {
     createListForFrontend
     ,recIcon
-    ,compareWhitCache
     ,filterModifiableCalendars
+    ,stopTracks
+    ,openRecList
 }

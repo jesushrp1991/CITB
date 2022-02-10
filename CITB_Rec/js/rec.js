@@ -3,8 +3,7 @@ import { errorHandling } from './errorHandling.js';
  
 import { 
     startTimerCount 
-   ,stopTimerCount
-   ,reset 
+   ,stopTimerCount 
 } from './recTimer.js' 
  
 import { 
