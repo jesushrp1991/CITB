@@ -1,16 +1,22 @@
 import { environment } from "../config/environment.js";
 
 const getDBToken = async (token) => {
-  const response = await fetch(environment.backendURL + "checkToken", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      token: token,
-    }),
-  });
-  return response.json();
+  try{
+    const response = await fetch(environment.backendURL + "checkToken", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: token,
+      }),
+    });
+    return response.json();
+  }
+  catch(error){
+    console.log(error);
+    window.open(environment.webBaseURL,"_blank");
+  }
 };
 
 const createVideo = async (dbToken, name, recordedDate) => {
