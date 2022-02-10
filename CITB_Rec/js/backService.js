@@ -2,7 +2,7 @@ import { environment } from "../config/environment.js";
 
 const getDBToken = async (token) => {
   try{
-    const response = await fetch(environment.backendURL + "checkToken", {
+    const response = await fetch(`${environment.backendURL}checkToken`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +20,7 @@ const getDBToken = async (token) => {
 };
 
 const createVideo = async (dbToken, name, recordedDate) => {
-  const response = await fetch(environment.backendURL + "video", {
+  const response = await fetch(`${environment.backendURL}video`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +35,7 @@ const createVideo = async (dbToken, name, recordedDate) => {
 };
 
 const updateVideo = async (dbToken, duration, videoLink, id) => {
-  const response = await fetch(environment.backendURL + "video/" + id, {
+  const response = await fetch(`${environment.backendURL}video/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const updateVideo = async (dbToken, duration, videoLink, id) => {
 
 const addTag = async (dbToken, idVideo, startTime) => {
   const response = await fetch(
-    environment.backendURL + "video/" + idVideo + "/tag/start",
+    `${environment.backendURL}video/${idVideo}/tag/start`,
     {
       method: "POST",
       headers: {
@@ -69,7 +69,7 @@ const addTag = async (dbToken, idVideo, startTime) => {
 
 const tagEndTime = (dbToken, idVideo, idTag, endTime) => {
   fetch(
-    environment.backendURL + "video/" + idVideo + "/tag/" + idTag + "/end",
+    `${environment.backendURL}video/${idVideo}/tag/${idTag}/end`,
     {
       method: "POST",
       headers: {
@@ -85,7 +85,7 @@ const tagEndTime = (dbToken, idVideo, idTag, endTime) => {
 
 const addMark = async (dbToken, idVideo, time) => {
   const response = await fetch(
-    environment.backendURL + "video/" + idVideo + "/mark",
+    `${environment.backendURL}video/${idVideo}/mark`,
     {
       method: "POST",
       headers: {
