@@ -1,4 +1,5 @@
 import { checkUploadStatus,updateProgressBar } from './js/progressBar.js'
+import { environment } from './config/environment.js'
 
 var id;
 let isFirstRender = true;
@@ -65,7 +66,8 @@ port.onMessage.addListener(async (msg) => {
 
 const reply_click = (event) =>{   
     id = event.srcElement.id;
-    let driveID = "https://drive.google.com/file/d/" + id.slice(5) +  "/view?usp=sharing";
+    // let driveID = "https://drive.google.com/file/d/" + id.slice(5) +  "/view?usp=sharing";
+    let driveID = `${environment.webBaseURL}/video/${id.slice(5)}`;
     getKindShare(driveID);
 }
 
@@ -368,7 +370,8 @@ const shareModal = (event) =>{
     let id = event.srcElement.id;
     id = id.substring(5,id.length)
     let divQR = document.getElementById('idQRCode'+id);
-    let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    // let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    let driveID = `${environment.webBaseURL}/video/${id}`;
     while (divQR.firstChild) {
         divQR.removeChild(divQR.firstChild);
     }
@@ -386,7 +389,8 @@ const shareModal = (event) =>{
 const shareLinkModal = (event) =>{
     let id = event.srcElement.id;
     id = id.substring(14,id.length)
-    let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    // let driveID = "https://drive.google.com/file/d/" + id +  "/view?usp=sharing";
+    let driveID = `${environment.webBaseURL}/video/${id}`;
     navigator.clipboard.writeText(driveID).then(function() {
         alert("Vínculo copiado correctamente.")
       }, function(err) {

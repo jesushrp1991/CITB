@@ -100,4 +100,18 @@ const addMark = async (dbToken, idVideo, time) => {
   return response.json();
 };
 
-export { getDBToken, createVideo, updateVideo, addTag, tagEndTime, addMark };
+const getAllVideos = async (dbToken) => {
+  const response = await fetch(
+    `${environment.backendURL}videos`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + dbToken,
+      }
+    }
+  );
+  return response.json();
+};
+
+export { getDBToken, createVideo, updateVideo, addTag, tagEndTime, addMark, getAllVideos };

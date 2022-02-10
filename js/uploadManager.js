@@ -9,7 +9,7 @@ import {
   updateUploadStatusDB
 } from "./database.js";
 import { updateVideo } from "./backService.js";
-import { addEventToGoogleCalendar,getLinkFileDrive, searchDefaultFolder } from './gapiManager.js';
+import { addEventToGoogleCalendar,getLinkFileDrive, searchDefaultFolder, setReadPermissionsToEveryOne } from './gapiManager.js';
 
 
 /*
@@ -47,6 +47,7 @@ const download = (test, fileName) => {
 
 const afterUploadSuccessActions = async () => {
   let linkDrive = await getLinkFileDrive();
+  setReadPermissionsToEveryOne(linkDrive);
   saveLinktoDB(window.fileIDUploadInProgress, linkDrive);
   delFileInDB(window.fileIDUploadInProgress);
   updateUploadStatusDB(window.fileIDUploadInProgress,"COMPLETE");

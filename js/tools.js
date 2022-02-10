@@ -1,3 +1,5 @@
+import { getAllVideos } from "./backService.js";
+
 const createListForFrontend = (list,carpetaBase) =>{
     let listResult = [];
     if(carpetaBase == 'root'){
@@ -24,6 +26,7 @@ const createListForFrontend = (list,carpetaBase) =>{
                 let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
                 let durationMillis;
                 let thumbnail;
+                let id = getIdFromBack(element.id);
                 if( element.videoMediaMetadata ){
                     durationMillis = element.videoMediaMetadata.durationMillis
                 }else{
@@ -37,7 +40,7 @@ const createListForFrontend = (list,carpetaBase) =>{
                     :thumbnail= window.thumbnailForFileInProgress;
                 
                 let details = {
-                    id: element.id 
+                    id: id
                     ,name: element.name
                     ,dateStart: element.createdTime
                     ,dateEnd: null
@@ -47,13 +50,21 @@ const createListForFrontend = (list,carpetaBase) =>{
                     ,thumbnailLink: thumbnail
                 }
                 listResult.push(details);
-    
             }
         }
     }
     return listResult.reverse();
 }
 
+const getIdFromBack = async (idDrive) => {
+    let videosBack = await getAllVideos(window.dbToken);
+    for (let index = 0; index < videosBack.length; index++) {
+        if(videosBack[index].videoLink == idDrive){
+            return videosBack[index]._id;
+        }    
+    }
+    return idDrive;
+}
 
 const recIcon = () =>{
     window.iconRecChange = setInterval(()=>{

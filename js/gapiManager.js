@@ -89,6 +89,26 @@ const getLinkFileDrive = async () => {
   chrome.storage.sync.set({ shareLink: fileId }, () => {});
   return fileId;
 };
+
+const setReadPermissionsToEveryOne = async (idDrive) => {
+  var permissions =
+  {
+    'type': 'anyone',
+    'role': 'reader'
+  };
+  await gapi.client.drive.permissions.create({
+    resource: permissions,
+    fileId: idDrive,
+  }, (err, res) => {
+    if (err) {
+      // Handle error...
+      console.error(err);
+    } else {
+      console.log('Permission ID: ', res.id)
+    }
+  });
+}
+
 const downloadFromDrive = (fileId, name) => {
   gapi.client.drive.files.get({ fileId: fileId, alt: "media" }).then(
     async (response) => {
@@ -194,5 +214,6 @@ export {
   getCalendarList,
   downloadFromDrive,
   addEventToGoogleCalendar,
-  searchDefaultFolder
+  searchDefaultFolder,
+  setReadPermissionsToEveryOne
 };
