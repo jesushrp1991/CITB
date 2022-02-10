@@ -67,8 +67,8 @@ const addTag = async (dbToken, idVideo, startTime) => {
   return response.json();
 };
 
-const tagEndTime = async (dbToken, idVideo, idTag, endTime) => {
-  const response = await fetch(
+const tagEndTime = (dbToken, idVideo, idTag, endTime) => {
+  fetch(
     environment.backendURL + "video/" + idVideo + "/tag/" + idTag + "/end",
     {
       method: "POST",
@@ -81,8 +81,6 @@ const tagEndTime = async (dbToken, idVideo, idTag, endTime) => {
       }),
     }
   );
-  console.log(response);
-  return response.json();
 };
 
 const addMark = async (dbToken, idVideo, time) => {
