@@ -3,8 +3,8 @@ import { prepareDB } from "./database.js";
 import { recIcon } from "./tools.js";
 import { addRecQueueDB } from "./database.js";
 import { reset } from "./recTimer.js";
-import { saveVideo, uploadQueueDaemon } from './fileManager.js';
-import { createVideo } from "./services.js";
+import { uploadQueueDaemon,saveVideo } from './uploadManager.js';
+import { createVideo } from "./backService.js";
 
 const recUC = async () => {
   await prepareDB();

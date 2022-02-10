@@ -13,8 +13,6 @@ import {
 import {
   getLinkFileDrive
   ,verificateAuth
-  ,saveVideo
-  ,listUploadQueue
   ,getDriveFileList
   ,createDriveFolder
   ,moveDriveFileToFolder
@@ -22,12 +20,17 @@ import {
   ,searchDrive
   ,getCalendarList
   ,downloadFromDrive
-} from './js/fileManager.js'
+} from './js/gapiManager.js'
+
+import {
+  saveVideo
+  ,listUploadQueue
+} from './js/uploadManager.js'
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
 import { recUC,stopRecordScreen } from './js/useCase.js';
-import { addMark,addTag,tagEndTime } from './js/services.js'
+import { addMark,addTag,tagEndTime } from './js/backService.js'
 
 initialCleanUp();
 
@@ -92,7 +95,6 @@ const recCommandStart = async(message) => {
     window.idTab = message.idTab;
     window.recMode = message.recMode;
     chrome.tabs.create({ url: chrome.extension.getURL('./html/initialOptions.html') });
-    // getRecName();
   }else{
       clearInterval(window.iconRecChange);
       if(message.isVoiceCommandStop){
@@ -105,6 +107,7 @@ const recCommandStart = async(message) => {
   } 
 }
 let isFirstTag = undefined;
+let idTag;
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log("message received ", message)
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -167,22 +170,24 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         break;
       case popupMessages.pin :
         if(window.isRecording){
-          const comment = prompt("Nombre del pin");
+          const comment = prompt("Nombre del pin.");
           let time = (window.timer.minute * 60) + window.timer.seconds 
           addMark(window.dbToken,window.idVideoInBack,time,comment);
         }
         break;
       case popupMessages.tag :
         if(window.isRecording){
-          let idTag;
           if(isFirstTag == undefined || isFirstTag == true){
             isFirstTag = false;
-            let time = (window.timer.minute * 60) + window.timer.seconds 
-            idTag = await addTag(window.dbToken,window.idVideoInBack,time);
+            let time = (window.timer.minute * 60) + window.timer.seconds;
+            const comment = prompt("Información del tag.");
+            idTag = await addTag(window.dbToken,window.idVideoInBack,time,comment);
+            console.log(idTag);
           }
           else{
             isFirstTag = true;
-            let endTime = (window.timer.minute * 60) + window.timer.seconds 
+            let endTime = (window.timer.minute * 60) + window.timer.seconds;
+            console.log("EndTime", endTime);
             tagEndTime(window.dbToken,window.idVideoInBack, idTag._id, endTime);
           }
         }

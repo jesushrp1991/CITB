@@ -49,7 +49,7 @@ const updateVideo = async (dbToken, duration, videoLink, id) => {
   return response.json();
 };
 
-const addTag = async (dbToken, idVideo, startTime) => {
+const addTag = async (dbToken, idVideo, startTime,description) => {
   const response = await fetch(
     environment.backendURL + "video/" + idVideo + "/tag/start",
     {
@@ -60,6 +60,7 @@ const addTag = async (dbToken, idVideo, startTime) => {
       },
       body: JSON.stringify({
         startTime: startTime,
+        name: description
       }),
     }
   );
@@ -81,6 +82,7 @@ const tagEndTime = async (dbToken, idVideo, idTag, endTime) => {
       }),
     }
   );
+  console.log(response);
   return response.json();
 };
 
