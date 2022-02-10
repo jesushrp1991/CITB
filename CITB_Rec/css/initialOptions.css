@@ -23,19 +23,20 @@
 
 #checkboxCalendar {
   position: absolute;
-  top: 414px;
-  left: 40px;
+  top: 413px;
+  left: 42px;
   width: 45px;
-  height: 44px;
+  height: 45px;
   border-radius: 50%;
   background-color: transparent;
   border: none !important;
+  padding: 0px !important;
 }
 .calendar-unselected {
-  background-image: url('../assets/offMic.png');
+  background-image: url('../assets/off_azul.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
+  background-size: 130%;
   background-color: grey !important;
 }
 #chekcBoxShowRecords {
