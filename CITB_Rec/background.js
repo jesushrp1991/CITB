@@ -2,13 +2,10 @@ import {
    showEstimatedQuota
   ,delLastItem
   ,getDriverLinkInQueueDB
-  ,prepareDB
 } from "./js/database.js";
 
 import {
-   startRecordScreen
-  ,stopRecordScreen
-  ,pauseOrResume
+  pauseOrResume
   ,playRec
   ,pauseRec
 } from './js/rec.js'
@@ -29,6 +26,8 @@ import {
 
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
+import { recUC,stopRecordScreen } from './js/useCase.js';
+import { addMark,addTag,tagEndTime } from './js/services.js'
 
 initialCleanUp();
 
@@ -54,6 +53,10 @@ const popupMessages = {
   ,showRecList: 'showRecList'
   ,changeVoiceVolume: 'changeVoiceVolume'
   ,changeSystemVolume: 'changeSystemVolume'
+  ,token: 'token'
+  ,idToken: 'idToken'
+  ,pin: 'pin'
+  ,tag: 'tag'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -99,13 +102,9 @@ const recCommandStart = async(message) => {
         openRecList();
       }
       await stopRecordScreen();
-      chrome.storage.sync.set({isPaused: false}, () => {});
-      setTimeout(()=>{
-        chrome.browserAction.setIcon({path: "./assets/icon.png"});
-      },3000);
   } 
 }
-
+let isFirstTag = undefined;
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log("message received ", message)
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -166,6 +165,28 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           window.InitialDesktopGain = message.volume;
         }
         break;
+      case popupMessages.pin :
+        if(window.isRecording){
+          const comment = prompt("Nombre del pin");
+          let time = (window.timer.minute * 60) + window.timer.seconds 
+          addMark(window.dbToken,window.idVideoInBack,time,comment);
+        }
+        break;
+      case popupMessages.tag :
+        if(window.isRecording){
+          let idTag;
+          if(isFirstTag == undefined || isFirstTag == true){
+            isFirstTag = false;
+            let time = (window.timer.minute * 60) + window.timer.seconds 
+            idTag = await addTag(window.dbToken,window.idVideoInBack,time);
+          }
+          else{
+            isFirstTag = true;
+            let endTime = (window.timer.minute * 60) + window.timer.seconds 
+            tagEndTime(window.dbToken,window.idVideoInBack, idTag._id, endTime);
+          }
+        }
+        break;
     }
     return true;
   });
@@ -192,10 +213,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }
         else if(msg.addFolder){
           let result = await createDriveFolder(msg.name);
-          // let shareLink = "https://drive.google.com/file/d/" + result.id +  "/view?usp=sharing";
           let listFoldersResult = createListForFrontend([result],'root')
           port.postMessage({currentList: listFoldersResult});
-          // await addRecQueueDB("folder",msg.name,null,null,shareLink,null,null);
         }
         else if (msg.moveFile){
           if(msg.id.idFolder.includes("https")){
@@ -231,14 +250,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           window.fileName = msg.fileName;
           window.calendarId = msg.calendarId;
           window.showRecords = msg.showRecords;
-          await prepareDB();
-          // createDB();
-          window.meetStartTime = dayjs().format();
-          startRecordScreen(window.idMic,window.idTab,window.recMode);
+          recUC();
         }
         else if (msg.downloadFromDrive){
-          // window.fileName = msg.fileName;
-          console.log("fownload file from drie",msg.fileID)
           downloadFromDrive(msg.fileID,msg.name);
         }
       });
@@ -260,6 +274,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       message.idTab = sender.tab.id;
 
       switch(message.recordingStatus){
+        case popupMessages.token :
+          chrome.storage.local.set({ "authToken": message.token.token },()=>{});
+        break;
+        case popupMessages.idToken :
+          chrome.storage.local.set({ "idToken": message.idToken.idToken },()=>{});
+        break;
         case popupMessages.rec :
           recCommandStart(message);   
         break;

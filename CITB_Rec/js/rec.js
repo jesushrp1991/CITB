@@ -1,8 +1,5 @@
 import { environment } from "../config/environment.js";   
 import { errorHandling } from './errorHandling.js'; 
-import { saveVideo, uploadQueueDaemon } from './fileManager.js'; 
-import { recIcon } from './tools.js' 
- 
  
 import { 
     startTimerCount 
@@ -13,16 +10,13 @@ import {
 import { 
     addDB
     ,showEstimatedQuota
-    ,addRecQueueDB
 } from "./database.js"; 
  
   const verifyAvailableSpaceOnDisk = async () =>{   
     let thereAreLowDiskSpace = await showEstimatedQuota(); 
-    // console.log("thereAreLowDiskSpace",thereAreLowDiskSpace); 
     if(thereAreLowDiskSpace){ 
-      // console.log("hay que parar"); 
       pauseOrResume(); 
-      //sendMessage to popup to alert the user about insufficient disk space. 
+      alert("Disk space too low.");
     } 
 } 
  
@@ -72,7 +66,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             let sourceDesktop = null;  
             if(window.desktopStream.getAudioTracks().length > 0){  
               //SOURCE 1 => TAB AUDIO 
-              // let audioStreamFromTab = new MediaStream([window.desktopStream.getAudioTracks()]) 
               sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
             }  
             let sourceMic = null;
@@ -116,14 +109,8 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     window.videoChunksArray = [];  
                 }  
             }  
-            window.recorder.onstop = async() => {  
-              saveVideo(false);  
-            }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
-            // window.isRecording = true;  
-            window.currentRecordingId = await addRecQueueDB("recording",window.fileName,window.meetStartTime,null,null,window.calendarId);
-
           }//End if recMode == RecordTabs
           //recMode == destokp
           else{
@@ -164,7 +151,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             let sourceDesktop = null;  
             if(window.desktopStream.getAudioTracks().length > 0){  
               //SOURCE 1 => TAB AUDIO 
-              // let audioStreamFromTab = new MediaStream([window.desktopStream.getAudioTracks()]) 
               sourceDesktop = context.createMediaStreamSource(window.desktopStream);  
             }  
             let sourceMic = null;
@@ -200,13 +186,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             }  
 
             constraints = {  
-              // audio:{  
-              //     mandatory: {  
-              //         chromeMediaSource: 'desktop',  
-              //         chromeMediaSourceId: streamId,  
-              //         echoCancellation: true  
-              //     }  
-              // }, 
               audio:false, 
               video: {  
                   optional: [],  
@@ -231,13 +210,8 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     window.videoChunksArray = [];  
                 }  
             }  
-            window.recorder.onstop = async() => {  
-              saveVideo(false);  
-            }  
             window.recorder.start(environment.timeIntervalSaveDB);  
             startTimerCount();  
-            // window.isRecording = true;  
-            window.currentRecordingId = await addRecQueueDB("recording",window.fileName,window.meetStartTime,null,null,window.calendarId);
           }
         });
       }
@@ -307,8 +281,6 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
           window.resultStream = new MediaStream([...window.desktopStream.getVideoTracks() ,...destination.stream.getAudioTracks()])  
         }
         else {  
-          // window.resultStream = window.desktopStream;  
-
           const context = new AudioContext();  
           let sourceDesktop = null;  
           if(window.desktopStream.getAudioTracks().length > 0){  
@@ -331,13 +303,8 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                 window.videoChunksArray = [];  
             }  
         }  
-        window.recorder.onstop = async() => {  
-           saveVideo(false);  
-        }  
         window.recorder.start(environment.timeIntervalSaveDB);  
         startTimerCount();  
-        // window.isRecording = true;  
-        window.currentRecordingId = await addRecQueueDB('recording',window.fileName,window.meetStartTime,null,null,window.calendarId);
       } 
   }catch(e){  
     console.log(e);  
@@ -348,11 +315,7 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
   try{  
     if(isTabForMac){
       if(recMode == 'recordTabs'){
-        // cb(); 
-        window.isRecording = true;  
-        chrome.storage.sync.set({isRecording: true}, ()=> {});
         await recordScreen(null,idMic,isTabForMac,recMode);
-        recIcon();
       }
       else{
         chrome.desktopCapture.chooseDesktopMedia(['screen','audio'], async (streamId) => {  
@@ -361,11 +324,7 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
               chrome.storage.sync.set({isRecording: false}, ()=> {  
               });  
           } else {  
-              window.isRecording = true;  
-              chrome.storage.sync.set({isRecording: true}, ()=> {});  
-              // cb();  
               await recordScreen(streamId,idMic,isTabForMac,recMode);  
-              recIcon();  
           }  
         });
       }
@@ -380,11 +339,7 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
               chrome.storage.sync.set({isRecording: false}, ()=> {  
               });  
           } else {  
-              window.isRecording = true;  
-              chrome.storage.sync.set({isRecording: true}, ()=> {});  
-              // cb();  
               await recordScreen(streamId,idMic);  
-              recIcon();  
           }  
         });  
     }  
@@ -393,34 +348,6 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
     errorHandling(e);  
   }  
 }  
-const stopTracks = () =>{  
-  window.desktopStream.getTracks().forEach(track => track.stop()); 
-  if (window.micStream != undefined) {  
-    window.micStream.getTracks().forEach(track => track.stop()); 
-  }  
-  if(window.videoDesktopStream != undefined){ 
-    window.videoDesktopStream.getTracks().forEach(track => track.stop()); 
-  } 
-  window.resultStream.getTracks().forEach(track => track.stop()); 
-}   
-const stopRecordScreen = () =>{ 
-    if(window.isRecording){ 
-        window.meetEndTime = dayjs().format(); 
-        if(window.recorder){
-          window.recorder.stop(); 
-          stopTracks(); 
-        }
-        reset(); 
-        window.isRecording = false;
-        chrome.storage.sync.set({isRecording: false}, () => {});
-        chrome.storage.sync.set({isPaused: false}, () => {}); 
-        setTimeout(()=>{
-            chrome.browserAction.setIcon({path: "./assets/icon.png"});
-        },3000);
-      uploadQueueDaemon();
-    } 
-    
-} 
  
 const pauseRec = () => { 
   window.recorder.pause() 
@@ -447,7 +374,6 @@ const pauseOrResume = async () => {
 export { 
      recordScreen 
     ,startRecordScreen 
-    ,stopRecordScreen 
     ,pauseOrResume 
     ,playRec 
     ,pauseRec 

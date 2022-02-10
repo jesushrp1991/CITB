@@ -8,6 +8,7 @@ import {
   updateFileDB,
   updateUploadStatusDB
 } from "./database.js";
+import { getDBToken,updateVideo } from "./services.js";
 
 const moveDriveFileToFolder = async (destFolderId, originalDocID) => {
   await gapi.client.drive.files.update({
@@ -150,29 +151,44 @@ const getCalendarList = async () => {
   return result.result.items;
 };
 
-const verificateAuth = () => {
-  gapi.client
-    .init({
-      // Don't pass client nor scope as these will init auth2, which we don't want
-      apiKey: environment.API_KEY,
-      discoveryDocs: environment.DISCOVERY_DOCS,
-    })
-    .then(
-      (data) => {
-        chrome.identity.getAuthToken({ interactive: true }, (tokenResult) => {
-          window.accessToken = tokenResult;
-          uploadQueueDaemon();
+const verificateAuth = () =>{
+  try{
+    chrome.storage.local.get("idToken", async(result)=>{
+      if(result.idToken == undefined){
+        window.open(environment.webBaseURL,"_blank");
+      }
+      else{
+        const dbToken = await getDBToken(result.idToken);
+        chrome.storage.local.set({ "dbToken": dbToken.token },()=>{});
+        window.dbToken = dbToken;
+      }
+    });
+    chrome.storage.local.get("authToken", async(result)=>{
+      if(result.authToken == undefined){
+        window.open(environment.webBaseURL,"_blank");
+      }
+      else{
+        window.accessToken = result.authToken;
+        gapi.load("client", async () =>
           gapi.auth.setToken({
-            access_token: tokenResult,
-          });
+            access_token: result.authToken
+          })
+        );
+        gapi.client.init({
+          discoveryDocs: environment.DISCOVERY_DOCS,
+          apiKey: environment.API_KEY,
+        }).then(()=>{
+          uploadQueueDaemon();
           searchDefaultFolder();
         });
-      },
-      (error) => {
-        console.log("ERROR ERROR", error);
+        return;
       }
-    );
-};
+    });
+  }
+  catch(error){
+    console.log(error);
+  }
+}
 
 /*
  *   Upload to Drive
@@ -208,14 +224,17 @@ const download = (test, fileName) => {
 };
 
 const afterUploadSuccessActions = async () => {
-  console.log("after upload actions");
   let linkDrive = await getLinkFileDrive();
   saveLinktoDB(window.fileIDUploadInProgress, linkDrive);
   delFileInDB(window.fileIDUploadInProgress);
-  updateUploadStatusDB(window.fileIDUploadInProgress,'COMPLETE');
+  updateUploadStatusDB(window.fileIDUploadInProgress,"COMPLETE");
   if (window.calendarId) {
     addEventToGoogleCalendar(linkDrive);
   }
+  const starTime = dayjs(window.meetStartTime);
+  const endTime = dayjs(window.meetEndTime);
+  const videoDuration = endTime.diff(starTime);
+  updateVideo(window.dbToken,videoDuration,linkDrive,window.idVideoInBack);
   window.uploadValue = -1;
   saveUploadProgress(-1);
   uploadQueueDaemon();
@@ -223,7 +242,6 @@ const afterUploadSuccessActions = async () => {
 
 const startResumableUpload = async (file) => {
   console.log("Start resumable Upload");
-  // let accessToken = gapi.auth.getToken().access_token;
   if (
     window.accessToken == null ||
     window.accessToken == undefined ||
@@ -264,15 +282,11 @@ const saveVideo = async (localDownload) => {
     const element = videoArrayChunks[index];
     finalArray.push(element.record[0]);    
   }
-  // videoArrayChunks.forEach((element) => {
-  //   finalArray.push(element.record[0]);
-  // });
   console.timeEnd("createArray");
   if (environment.upLoadToDrive && !localDownload) {
     console.time;
     let file = prepareRecordFile(finalArray);
     console.timeEnd;
-    //cambiar a update file y meet.endTime
     window.meetEndTime = dayjs().format();
     updateFileDB(window.currentRecordingId, file, window.meetEndTime);
     uploadQueueDaemon();
@@ -313,11 +327,9 @@ const uploadQueueDaemon = async () => {
     window.fileName = lastElement.name;
     window.starTimeUpload = lastElement.dateStart;
     window.calendarId = lastElement.calendarId;
-    // prepareUploadToDrive(lastElement.file);
     startResumableUpload(lastElement.file);
   }
 };
-// setInterval(uploadQueueDaemon, environment.timerUploadQueueDaemon);
 
 const listUploadQueue = async () => {
   let list = await listQueueDB();
