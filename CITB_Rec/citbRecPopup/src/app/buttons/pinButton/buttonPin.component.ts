@@ -12,7 +12,8 @@ export class buttonPinComponent extends BaseButton implements OnInit {
   }
   
   public newPin = () =>{
-    alert("Pin CLick");
+    const request = { recordingStatus: "pin" };
+    this.sendMessage(request);
   }
 
 }

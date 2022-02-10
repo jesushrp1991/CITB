@@ -83,7 +83,7 @@ const tagEndTime = async (dbToken, idVideo, idTag, endTime) => {
   return response.json();
 };
 
-const addMark = async (dbToken, idVideo, time) => {
+const addMark = async (dbToken, idVideo, time,comment) => {
   const response = await fetch(
     environment.backendURL + "video/" + idVideo + "/mark",
     {
@@ -94,6 +94,7 @@ const addMark = async (dbToken, idVideo, time) => {
       },
       body: JSON.stringify({
         time: time,
+        name: comment
       }),
     }
   );

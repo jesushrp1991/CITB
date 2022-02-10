@@ -27,6 +27,7 @@ import {
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
 import { recUC,stopRecordScreen } from './js/useCase.js';
+import { addMark } from './js/services.js'
 
 initialCleanUp();
 
@@ -54,6 +55,8 @@ const popupMessages = {
   ,changeSystemVolume: 'changeSystemVolume'
   ,token: 'token'
   ,idToken: 'idToken'
+  ,pin: 'pin'
+  ,tag: 'tag'
 }
 
 const onGAPIFirstLoad = () =>{
@@ -161,6 +164,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }else{
           window.InitialDesktopGain = message.volume;
         }
+        break;
+      case popupMessages.pin :
+        if(window.isRecording){
+          const comment = prompt("Nombre del pin");
+          console.log(comment);
+          let time = (window.timer.minute * 60) + window.timer.seconds 
+          addMark(window.dbToken,window.idVideoInBack,time,comment);
+        }
+        break;
+      case popupMessages.tag :
+        //hacer tag
         break;
     }
     return true;
