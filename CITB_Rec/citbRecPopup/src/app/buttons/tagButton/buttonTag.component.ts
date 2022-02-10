@@ -14,6 +14,8 @@ export class buttonTagComponent extends BaseButton implements OnInit {
   
   public newTag = ():void =>{
     this.active = !this.active;
+    const request = { recordingStatus: "tag" };
+    this.sendMessage(request);
   }
 
 }

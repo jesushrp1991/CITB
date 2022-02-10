@@ -63,6 +63,7 @@ const addTag = async (dbToken, idVideo, startTime) => {
       }),
     }
   );
+  console.log(response)
   return response.json();
 };
 

@@ -27,7 +27,7 @@ import {
 import { filterModifiableCalendars, createListForFrontend } from './js/tools.js';
 import { initialCleanUp } from './js/errorHandling.js'
 import { recUC,stopRecordScreen } from './js/useCase.js';
-import { addMark } from './js/services.js'
+import { addMark,addTag,tagEndTime } from './js/services.js'
 
 initialCleanUp();
 
@@ -104,7 +104,7 @@ const recCommandStart = async(message) => {
       await stopRecordScreen();
   } 
 }
-
+let isFirstTag = undefined;
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log("message received ", message)
     let thereAreLowDiskSpace = await showEstimatedQuota();
@@ -168,13 +168,24 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       case popupMessages.pin :
         if(window.isRecording){
           const comment = prompt("Nombre del pin");
-          console.log(comment);
           let time = (window.timer.minute * 60) + window.timer.seconds 
           addMark(window.dbToken,window.idVideoInBack,time,comment);
         }
         break;
       case popupMessages.tag :
-        //hacer tag
+        if(window.isRecording){
+          let idTag;
+          if(isFirstTag == undefined || isFirstTag == true){
+            isFirstTag = false;
+            let time = (window.timer.minute * 60) + window.timer.seconds 
+            idTag = await addTag(window.dbToken,window.idVideoInBack,time);
+          }
+          else{
+            isFirstTag = true;
+            let endTime = (window.timer.minute * 60) + window.timer.seconds 
+            tagEndTime(window.dbToken,window.idVideoInBack, idTag._id, endTime);
+          }
+        }
         break;
     }
     return true;
