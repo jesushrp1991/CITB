@@ -1,29 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="ng-cloak">
   <head>
-    <link rel="stylesheet" href="options.css">
+    <meta charset="utf-8"/>
+    <link href="./css/material.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/popupOptions.css" rel="stylesheet" type="text/css">
+    <link href="options.css" rel="stylesheet" type="text/css">
+
+    <title>
+      CITB REC
+    </title>
   </head>
-  <body>
-    <form>
-      <label for="modeSelect">Select Mode: </label><br>
-      <select id="modeSelect">
-        <option value="none">None</option>
-        <option value="class">Class Mode</option>
-        <option value="rec">Rec Mode</option>
-        <option value="show">Show Mode</option>
-      </select><br><br>
-
-      <label for="microphoneSelect">Select Microphone: </label><br>
-      <select id="microphoneSelect">
-        
-      </select><br><br>
-
-      <label for="videoSelect">Select Video:</label><br>
-      <select id="videoSelect">
-
-      </select><br>
-
-    </form>
-    <script src="options.js"></script>
+  <body>  
+    <div id="imgBack" class="imgOptions">    
+      <div class="flag-container">
+        <div class="flag-content">
+          <button class="flag spain btn-outline-light" id="spainButton"></button>
+        </div>
+        <div class="flag-content">
+          <button class="flag uk btn-outline-light" id="ukButton"></button>
+        </div>
+      </div>  
+    </div>
+    <!-- popup -->
+    <div id="fabClass" class="fab">
+      <form class="cntt-wrapper">
+        <div id="fab-hdr">
+          <span id="xClose" class="close-button topright">x</span>
+          <h3>Classroom mode Mic</h3>
+        </div>
+        <div class="cntt">
+          <button id="classModalIcon" class="CITBClassButton active"></button>
+          <div
+            class="
+              mdl-textfield mdl-js-textfield
+              mdl-textfield--floating-label
+              textFields
+            "
+          >
+            <p id="infoText"></p>
+            <label for="text1" class="mdl-selectfield__label"></label>
+            <br />
+          </div>
+          <div class="btn-wrapper">
+            <button
+              id="submit"
+              class="mdl-button mdl-js-button mdl-button--primary"
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script src="./js/external/annyang.min.js" defer></script>
+    <script src="./js/voice.js" defer type="module"></script>
+    <script src="./js/external/alertify.min.js" defer type="module"></script>
   </body>
 </html>

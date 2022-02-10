@@ -2,20 +2,20 @@
 
 js/enviroment.js
 
-CITB_Rec/citbRecPopup/.vscode/
+citbRecPopup/.vscode/
 
-CITB_Rec/citbRecPopup/package-lock.json
+citbRecPopup/package-lock.json
 
-CITB_Rec/citbRecPopup/node-modules
+citbRecPopup/node-modules
 
-CITB_Rec/citbRecPopup/node_modules/
+citbRecPopup/node_modules/
 
-CITB_Rec/citbRecPopup/.angular/
+citbRecPopup/.angular/
 
-CITB_Rec/js/CITB/managers/.DS_Store
+js/CITB/managers/.DS_Store
 
-CITB_Rec/.DS_Store
+.DS_Store
 
-CITB_Rec/assets/.DS_Store
+assets/.DS_Store
 
-CITB_Rec/citbRecPopup/dist/
+citbRecPopup/dist/
