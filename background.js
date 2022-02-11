@@ -146,13 +146,13 @@ chrome.runtime.onConnect.addListener(async (port) => {
           ? (folderId = window.defautCITBFolderID)
           : (folderId = msg.folderId);
         let list = await getDriveFileList(folderId);
-        let listResult = createListForFrontend(list, null);
+        let listResult = await createListForFrontend(list, null);
         let listFolder = await getDriveFileList("root");
-        let listFoldersResult = createListForFrontend(listFolder, "root");
+        let listFoldersResult = await createListForFrontend(listFolder, "root");
         port.postMessage({ currentList: listResult.concat(listFoldersResult) });
       } else if (msg.addFolder) {
         let result = await createDriveFolder(msg.name);
-        let listFoldersResult = createListForFrontend([result], "root");
+        let listFoldersResult = await createListForFrontend([result], "root");
         port.postMessage({ currentList: listFoldersResult });
       } else if (msg.moveFile) {
         if (msg.id.idFolder.includes("https")) {
@@ -171,8 +171,8 @@ chrome.runtime.onConnect.addListener(async (port) => {
         }
       } else if (msg.searchDriveFiles) {
         let list = await searchDrive();
-        let listFolders = createListForFrontend(list, "root");
-        let listFiles = createListForFrontend(list, null);
+        let listFolders = await createListForFrontend(list, "root");
+        let listFiles = await createListForFrontend(list, null);
         let allFiles = [...listFolders, ...listFiles];
         let result = allFiles.filter((x) => x.name.includes(msg.searchTerm));
         port.postMessage({ searchList: result });

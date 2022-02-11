@@ -24,7 +24,7 @@ const createVideo = async (dbToken, name, recordedDate) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + dbToken,
+      Authorization: `Bearer ${dbToken}`,
     },
     body: JSON.stringify({
       name: name,
@@ -39,7 +39,7 @@ const updateVideo = async (dbToken, duration, videoLink, id) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + dbToken,
+      Authorization: `Bearer ${dbToken}`,
     },
     body: JSON.stringify({
       duration: duration,
@@ -56,7 +56,7 @@ const addTag = async (dbToken, idVideo, startTime) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + dbToken,
+        Authorization: `Bearer ${dbToken}`,
       },
       body: JSON.stringify({
         startTime: startTime,
@@ -74,7 +74,7 @@ const tagEndTime = (dbToken, idVideo, idTag, endTime) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + dbToken,
+        Authorization: `Bearer ${dbToken}`,
       },
       body: JSON.stringify({
         endTime: endTime,
@@ -90,7 +90,7 @@ const addMark = async (dbToken, idVideo, time) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + dbToken,
+        Authorization: `Bearer ${dbToken}`,
       },
       body: JSON.stringify({
         time: time,
@@ -104,10 +104,10 @@ const getAllVideos = async (dbToken) => {
   const response = await fetch(
     `${environment.backendURL}videos`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + dbToken,
+        Authorization: `Bearer ${dbToken}`,
       }
     }
   );

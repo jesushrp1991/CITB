@@ -1,6 +1,6 @@
 import { getAllVideos } from "./backService.js";
 
-const createListForFrontend = (list,carpetaBase) =>{
+const createListForFrontend = async(list,carpetaBase) =>{
     let listResult = [];
     if(carpetaBase == 'root'){
         for (const element of list) {            
@@ -26,7 +26,8 @@ const createListForFrontend = (list,carpetaBase) =>{
                 let shareLink = "https://drive.google.com/file/d/" + element.id +  "/view?usp=sharing";
                 let durationMillis;
                 let thumbnail;
-                let id = getIdFromBack(element.id);
+                let id = await getIdFromBack(element.id);
+                console.log(element.id,id);
                 if( element.videoMediaMetadata ){
                     durationMillis = element.videoMediaMetadata.durationMillis
                 }else{
