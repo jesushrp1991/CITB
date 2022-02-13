@@ -57,7 +57,7 @@ var ResumableUpload2 = /** @class */ (function () {
                     String((_this.endBuffer - 1)) +
                     "/" +
                     _this.fileTotalSize;
-                // console.log("contentRange",contentRange);
+                console.log("contentRange", contentRange);
                 fetch(_this.location, {
                     method: "PUT",
                     body: element,
@@ -95,6 +95,9 @@ var ResumableUpload2 = /** @class */ (function () {
         this.file = file;
         this.options = options;
         this.fileTotalSize = fileTotalSize;
+        if (fileTotalSize < this.chunkSize) {
+            this.endBuffer = fileTotalSize;
+        }
     }
     ResumableUpload2.prototype.initializeRequest = function () {
         var _this = this;
@@ -140,27 +143,35 @@ var ResumableUpload2 = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _a.trys.push([0, 7, , 8]);
+                        console.log("RERUMABLE", this.fileTotalSize, this.chunkSize);
                         len = Math.ceil(this.fileTotalSize / this.chunkSize);
-                        index = 0;
-                        _a.label = 1;
+                        if (!(len == 1)) return [3 /*break*/, 2];
+                        len = this.fileTotalSize;
+                        return [4 /*yield*/, this.doUpload(this.file, callback)];
                     case 1:
-                        if (!(index < len)) return [3 /*break*/, 4];
-                        nextChunk = this.nextChunk();
-                        return [4 /*yield*/, this.doUpload(nextChunk, callback)];
-                    case 2:
                         _a.sent();
-                        nextChunk = null; //Asegurandonos de limpiar la memoria.
+                        _a.label = 2;
+                    case 2:
+                        index = 0;
                         _a.label = 3;
                     case 3:
-                        index++;
-                        return [3 /*break*/, 1];
-                    case 4: return [3 /*break*/, 6];
+                        if (!(index < len)) return [3 /*break*/, 6];
+                        nextChunk = this.nextChunk();
+                        return [4 /*yield*/, this.doUpload(nextChunk, callback)];
+                    case 4:
+                        _a.sent();
+                        nextChunk = null; //Asegurandonos de limpiar la memoria.
+                        _a.label = 5;
                     case 5:
+                        index++;
+                        return [3 /*break*/, 3];
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_1 = _a.sent();
                         console.log(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         });

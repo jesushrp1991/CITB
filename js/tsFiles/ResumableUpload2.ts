@@ -29,6 +29,9 @@ class ResumableUpload2 {
     this.file = file;
     this.options = options;
     this.fileTotalSize = fileTotalSize;
+    if(fileTotalSize < this.chunkSize){
+      this.endBuffer = fileTotalSize;
+    }
   }
 
   public initializeRequest(): Promise<Headers> {
@@ -78,7 +81,12 @@ class ResumableUpload2 {
 
   public async start(callback: CallbackOneParam<object>) {
     try {
-      const len = Math.ceil(this.fileTotalSize / this.chunkSize);
+      // console.log("RERUMABLE",this.fileTotalSize,this.chunkSize);
+      let len = Math.ceil(this.fileTotalSize / this.chunkSize);
+      if(len == 1){
+        len = this.fileTotalSize;
+        await this.doUpload(this.file,callback);
+      }
       for (let index = 0; index < len; index++) {
         let nextChunk = this.nextChunk();
         await this.doUpload(nextChunk,callback);
