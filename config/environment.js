@@ -25,7 +25,7 @@ const environment = {
                     "5- Class in the box close: Closes the voice commands."
     ,timerUploadQueueDaemon: 5000
     ,backendURL: 'https://api.classinthebox.tk/'
-    ,webBaseURL: 'http://localhost:4200'
+    ,webBaseURL: 'https://classinthebox.tk/'
 
 }
 
