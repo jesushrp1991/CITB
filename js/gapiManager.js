@@ -179,7 +179,7 @@ const verificateAuth = () =>{
       if(result.idToken == undefined){
         console.log("token is undefined");
 
-        // window.open(environment.webBaseURL,"_blank");
+        window.open(environment.webBaseURL,"_blank");
       }
       else{
         console.log("result.idToken",result.idToken)
@@ -187,7 +187,7 @@ const verificateAuth = () =>{
         console.log("dbToken",dbToken)
         if(dbToken == 500){
           console.log("result from api error");
-          // window.open(environment.webBaseURL,"_blank");
+          window.open(environment.webBaseURL,"_blank");
           return;
         }
         chrome.storage.local.set({ "dbToken": dbToken.token },()=>{});
@@ -196,7 +196,7 @@ const verificateAuth = () =>{
     });
     chrome.storage.local.get("authToken", async(result)=>{
       if(result.authToken == undefined){
-        // window.open(environment.webBaseURL,"_blank");
+        window.open(environment.webBaseURL,"_blank");
       }
       else{
         window.accessToken = result.authToken;

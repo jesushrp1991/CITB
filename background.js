@@ -43,7 +43,7 @@ const popupMessages = {
   showRecList: "showRecList",
   changeVoiceVolume: "changeVoiceVolume",
   changeSystemVolume: "changeSystemVolume",
-  token: "token",
+  token: "accessToken",
   idToken: "idToken",
   pin: "pin",
   tag: "tag",
@@ -201,17 +201,14 @@ chrome.runtime.onConnect.addListener(async (port) => {
 
 chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
-    console.log(message);
+    console.log("Mensaje",message);
     message.idTab = sender.tab.id;
     switch (message.recordingStatus) {
       case popupMessages.token:
-        chrome.storage.local.set({ authToken: message.token.token }, () => {});
+        chrome.storage.local.set({ authToken: message.value }, () => {});
         break;
       case popupMessages.idToken:
-        chrome.storage.local.set(
-          { idToken: message.idToken.idToken },
-          () => {}
-        );
+        chrome.storage.local.set({ idToken: message.value }, () => {});
         break;
       case popupMessages.rec:
         recCommandStart(message);
