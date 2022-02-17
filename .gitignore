@@ -19,3 +19,13 @@ js/CITB/managers/.DS_Store
 assets/.DS_Store
 
 citbRecPopup/dist/
+
+CITB_Rec/citbRecPopup/node_modules/
+
+CITB_Rec/citbRecPopup/dist/
+
+CITB_Rec/citbRecPopup/.vscode/
+
+CITB_Rec/citbRecPopup/.angular/
+
+CITB_Rec/citbRecPopup/package-lock.json
