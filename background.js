@@ -203,7 +203,6 @@ chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
     console.log(message);
     message.idTab = sender.tab.id;
-
     switch (message.recordingStatus) {
       case popupMessages.token:
         chrome.storage.local.set({ authToken: message.token.token }, () => {});

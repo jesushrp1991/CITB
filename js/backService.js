@@ -11,10 +11,16 @@ const getDBToken = async (token) => {
         token: token,
       }),
     });
-    return response.json();
+    console.log("result getDBToken",response);
+    if(response.status >= 500){
+      return 500;
+    }
+    else{
+      return response.json();
+    }
   }
   catch(error){
-    console.log(error);
+    console.log("error getDBToken",error);
     window.open(environment.webBaseURL,"_blank");
   }
 };
