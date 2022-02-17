@@ -70,7 +70,7 @@
       "https://meet.jit.si/*",
       "https://teams.live.com/*",
       "https://teams.microsoft.com/*",
-      "https://classinthebox.tk/"
+      "https://classinthebox.tk/*"
     ],
     "accepts_tls_channel_id": true
   }

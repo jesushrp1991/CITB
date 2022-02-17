@@ -173,7 +173,7 @@ const verificateAuth = () =>{
       else{
         const dbToken = await getDBToken(result.idToken);
         chrome.storage.local.set({ "dbToken": dbToken.token },()=>{});
-        window.dbToken = dbToken;
+        window.dbToken = dbToken.token;
       }
     });
     chrome.storage.local.get("authToken", async(result)=>{
