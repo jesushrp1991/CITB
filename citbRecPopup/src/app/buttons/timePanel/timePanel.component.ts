@@ -12,16 +12,16 @@ export class timePanelComponent extends BaseButton implements OnInit {
     this.timerController();
     this.checkTimer();
   }
-  public recTime = '--:--';
+  public recTime = '--:--:--';
   public portTimer = chrome.runtime.connect({name: "portTimer"});
 
     //************ TIMER CONTROLLER **********/////
     public timerController = () => {
       this.portTimer.onMessage.addListener(async (msg) => {
-        if (msg.answer && msg.answer.seconds > 0){
-            this.recTime = `${msg.answer.minute}:${msg.answer.seconds}`;
+        if (msg.answer && msg.answer.seconds >= 0){
+            this.recTime = `${msg.answer.hours}:${msg.answer.minute}:${msg.answer.seconds}`;
         }else{
-          this.recTime = '00:00';           
+          this.recTime = '00:00:00';           
         }    
       });
     }
