@@ -27,7 +27,6 @@ const createListForFrontend = async(list,carpetaBase) =>{
                 let durationMillis;
                 let thumbnail;
                 let id = await getIdFromBack(element.id);
-                console.log(element.id,id);
                 if( element.videoMediaMetadata ){
                     durationMillis = element.videoMediaMetadata.durationMillis
                 }else{

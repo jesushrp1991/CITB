@@ -110,15 +110,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                 }  
             }
             window.recorder.onstart = event => {
-              console.log("AHORA ES QUE SE SETEA EL STARTTIME")
-              startTimerCount();
-              // window.meetStartTime = dayjs().format();
               afterInitActions();
             }
-            window.recorder.onStop = event => {
-              window.meetEndTime = dayjs().format();
-              reset();
-            }
+            // startTimerCount();
             window.recorder.start(environment.timeIntervalSaveDB);
           }//End if recMode == RecordTabs
           //recMode == destokp
@@ -220,16 +214,11 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                 }  
             } 
             window.recorder.onstart = event => {
-              console.log("AHORA ES QUE SE SETEA EL STARTTIME")
               startTimerCount();
-              // window.meetStartTime = dayjs().format();
               afterInitActions();
             }
-            window.recorder.onStop = event => {
-              window.meetEndTime = dayjs().format();
-              reset();
-            }
             window.recorder.start(environment.timeIntervalSaveDB);  
+            console.log("START `COLLADO!!!!")
           }
         });
       }
@@ -323,15 +312,11 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
         }  
         window.recorder.onstart = event => {
           console.log("AHORA ES QUE SE SETEA EL STARTTIME")
-          startTimerCount();
-          // window.meetStartTime = dayjs().format();
           afterInitActions();
         }
-        window.recorder.onStop = event => {
-          window.meetEndTime = dayjs().format();
-          reset();
-        } 
+        // startTimerCount();
         window.recorder.start(environment.timeIntervalSaveDB);  
+        console.log("START!!!!")
       } 
   }catch(e){  
     console.log(e);  

@@ -8,6 +8,10 @@ import { createVideo } from "./backService.js";
 import { stopTracks, openRecList } from "./tools.js";
 import { delLastItem } from "./database.js";
 import { addMark, addTag, tagEndTime } from "./backService.js";
+import { 
+  startTimerCount 
+ ,stopTimerCount 
+} from './recTimer.js'
 
 const recCommandStart = async (message) => {
   if (!window.isRecording && !message.isVoiceCommandStop) {
@@ -65,8 +69,10 @@ const stopRecordScreen = () => {
   if (window.isRecording) {
     if (window.recorder) {
       // window.meetEndTime = dayjs().format();
+      window.meetEndTime = dayjs().format();
       window.recorder.stop();
       stopTracks();
+      reset();
     }
     // reset();
     window.isRecording = false;
@@ -99,6 +105,8 @@ const addTagUC = async () => {
 const addMarkUC = () => {
   if (window.isRecording) {
     let time = window.timer.minute * 60 + window.timer.seconds;
+
+    console.log("TIMERRR",time)
     addMark(window.dbToken, window.idVideoInBack, time);
   }
 };

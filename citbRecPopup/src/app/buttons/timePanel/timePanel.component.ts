@@ -10,9 +10,10 @@ export class timePanelComponent extends BaseButton implements OnInit {
   
   ngOnInit(): void {
     this.timerController();
+    this.portTimer.postMessage({getTimer: true});
     this.checkTimer();
   }
-  public recTime = '--:--:--';
+  public recTime = '00:00:00';
   public portTimer = chrome.runtime.connect({name: "portTimer"});
 
     //************ TIMER CONTROLLER **********/////
@@ -29,7 +30,7 @@ export class timePanelComponent extends BaseButton implements OnInit {
     public checkTimer = () => {
         setInterval(()=>{
             this.portTimer.postMessage({getTimer: true});
-        },1000)
+        },500)
     }
     //************ TIMER CONTROLLER **********//////
 

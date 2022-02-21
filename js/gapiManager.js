@@ -50,7 +50,7 @@ const createDriveFolder = async (name) => {
 
 const getDriveFileList = async (folder) => {
   try {
-    console.log("obteniendolista");
+    // console.log("obteniendolista");
     let result = await gapi.client.drive.files.list({
       // q: "trashed=false",
       q: `trashed=false and parents='${folder}'`, //para buscar por padres
@@ -61,7 +61,7 @@ const getDriveFileList = async (folder) => {
     });
     return result.result.files;
   } catch (error) {
-    console.log("ERROR COLLADO", error);
+    // console.log("ERROR COLLADO", error);
     if (error.result == 401) {
       verificateAuth();
     }
@@ -184,15 +184,15 @@ const verificateAuth = () => {
   try {
     chrome.storage.local.get("idToken", async (result) => {
       if (result.idToken == undefined) {
-        console.log("token is undefined");
+        // console.log("token is undefined");
 
         window.open(environment.webBaseURL, "_blank");
       } else {
-        console.log("result.idToken", result.idToken);
+        // console.log("result.idToken", result.idToken);
         const dbToken = await getDBToken(result.idToken);
-        console.log("dbToken", dbToken);
+        // console.log("dbToken", dbToken);
         if (dbToken == 500) {
-          console.log("result from api error");
+          // console.log("result from api error");
           window.open(environment.webBaseURL, "_blank");
           return;
         }

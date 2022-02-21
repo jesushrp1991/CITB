@@ -27,29 +27,38 @@ const timer = () => {
          seconds = sec < 10 ? `0`+ sec : sec;
          minute = min < 10 ? `0` + min : min;
          hours = hour < 10 ? `0` + hour : hour;
-        localStorage.setItem('timeMinSaved', min);
-        localStorage.setItem('timeSecSaved', sec);
-        localStorage.setItem('timeHourSaved', hour);
+        // localStorage.setItem('timeMinSaved', min);
+        // localStorage.setItem('timeSecSaved', sec);
+        // localStorage.setItem('timeHourSaved', hour);
 
 };
 //Start timer
 
 const startTimerCount = () => {
+    window.meetStartTime = dayjs().format();
+    console.time("LecturaStorage")
     var minSaved = localStorage.getItem('timeMinSaved');
     var secSaved = localStorage.getItem('timeSecSaved');
+    var hourSaved = localStorage.getItem('timeHourSaved');
+    console.timeEnd("LecturaStorage")
     if (minSaved) {
         min = minSaved;
     }
     if(secSaved){
         sec = secSaved;
     }
-    window.meetStartTime = dayjs().format();
+    if(hourSaved){
+        hour = hourSaved;
+    }
     time = setInterval(timer,10);
 }
 
 //stop timer
 const stopTimerCount = () => {
     clearInterval(time);
+    localStorage.setItem('timeMinSaved', minute);
+    localStorage.setItem('timeSecSaved', seconds);
+    localStorage.setItem('timeHourSaved', hours);
 }
 
 //reset timer
@@ -59,7 +68,7 @@ const reset = () =>{
     min = 0;
     hour = 0;
     clearInterval(time);
-    let timer= {minute:0,seconds:0};
+    let timer= {minute:0,seconds:0,hours:0};
     window.timer = timer;
     localStorage.removeItem('timeMinSaved');
     localStorage.removeItem('timeSecSaved');

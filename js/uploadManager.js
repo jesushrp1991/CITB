@@ -107,9 +107,7 @@ const saveVideo = async (localDownload) => {
   }
   console.timeEnd("createArray");
   if (environment.upLoadToDrive && !localDownload) {
-    console.time;
     let file = prepareRecordFile(finalArray);
-    console.timeEnd;
     if(window.endTime == '' || window.endTime == undefined || window.endTime == null){
       window.meetEndTime = dayjs().format();
     }
