@@ -1,6 +1,6 @@
 import { environment } from "../config/environment.js";   
 import { errorHandling } from './errorHandling.js'; 
- 
+import { reset } from "./recTimer.js";
 import { 
     startTimerCount 
    ,stopTimerCount 
@@ -10,6 +10,7 @@ import {
     addDB
     ,showEstimatedQuota
 } from "./database.js"; 
+import { afterInitActions } from "./useCase.js"
  
   const verifyAvailableSpaceOnDisk = async () =>{   
     let thereAreLowDiskSpace = await showEstimatedQuota(); 
@@ -107,9 +108,18 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     addDB(window.videoChunksArray);  
                     window.videoChunksArray = [];  
                 }  
-            }  
-            window.recorder.start(environment.timeIntervalSaveDB);  
-            startTimerCount();  
+            }
+            window.recorder.onstart = event => {
+              console.log("AHORA ES QUE SE SETEA EL STARTTIME")
+              startTimerCount();
+              // window.meetStartTime = dayjs().format();
+              afterInitActions();
+            }
+            window.recorder.onStop = event => {
+              window.meetEndTime = dayjs().format();
+              reset();
+            }
+            window.recorder.start(environment.timeIntervalSaveDB);
           }//End if recMode == RecordTabs
           //recMode == destokp
           else{
@@ -208,9 +218,18 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                     addDB(window.videoChunksArray);  
                     window.videoChunksArray = [];  
                 }  
-            }  
+            } 
+            window.recorder.onstart = event => {
+              console.log("AHORA ES QUE SE SETEA EL STARTTIME")
+              startTimerCount();
+              // window.meetStartTime = dayjs().format();
+              afterInitActions();
+            }
+            window.recorder.onStop = event => {
+              window.meetEndTime = dayjs().format();
+              reset();
+            }
             window.recorder.start(environment.timeIntervalSaveDB);  
-            startTimerCount();  
           }
         });
       }
@@ -302,8 +321,17 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
                 window.videoChunksArray = [];  
             }  
         }  
+        window.recorder.onstart = event => {
+          console.log("AHORA ES QUE SE SETEA EL STARTTIME")
+          startTimerCount();
+          // window.meetStartTime = dayjs().format();
+          afterInitActions();
+        }
+        window.recorder.onStop = event => {
+          window.meetEndTime = dayjs().format();
+          reset();
+        } 
         window.recorder.start(environment.timeIntervalSaveDB);  
-        startTimerCount();  
       } 
   }catch(e){  
     console.log(e);  
@@ -349,8 +377,8 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
 }  
  
 const pauseRec = () => { 
-  window.recorder.pause() 
   stopTimerCount(); 
+  window.recorder.pause() 
   chrome.storage.sync.set({isPaused: true}, () => { 
   }); 
   window.isPaused = !window.isPaused; 

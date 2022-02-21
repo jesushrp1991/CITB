@@ -43,6 +43,7 @@ const startTimerCount = () => {
     if(secSaved){
         sec = secSaved;
     }
+    window.meetStartTime = dayjs().format();
     time = setInterval(timer,10);
 }
 

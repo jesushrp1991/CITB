@@ -110,7 +110,9 @@ const saveVideo = async (localDownload) => {
     console.time;
     let file = prepareRecordFile(finalArray);
     console.timeEnd;
-    window.meetEndTime = dayjs().format();
+    if(window.endTime == '' || window.endTime == undefined || window.endTime == null){
+      window.meetEndTime = dayjs().format();
+    }
     updateFileDB(window.currentRecordingId, file, window.meetEndTime);
     uploadQueueDaemon();
   } else {

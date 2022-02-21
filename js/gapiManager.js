@@ -1,7 +1,5 @@
 import { environment } from "../config/environment.js";
-import {
-  uploadQueueDaemon
-} from "./uploadManager.js";
+import { uploadQueueDaemon } from "./uploadManager.js";
 import { getDBToken } from "./backService.js";
 
 const moveDriveFileToFolder = async (destFolderId, originalDocID) => {
@@ -51,8 +49,8 @@ const createDriveFolder = async (name) => {
 };
 
 const getDriveFileList = async (folder) => {
-  try{
-    console.log("obteniendolista")
+  try {
+    console.log("obteniendolista");
     let result = await gapi.client.drive.files.list({
       // q: "trashed=false",
       q: `trashed=false and parents='${folder}'`, //para buscar por padres
@@ -62,10 +60,9 @@ const getDriveFileList = async (folder) => {
       spaces: "drive",
     });
     return result.result.files;
-  }
-  catch(error){
-    console.log("ERROR COLLADO",error)
-    if(error.result == 401){
+  } catch (error) {
+    console.log("ERROR COLLADO", error);
+    if (error.result == 401) {
       verificateAuth();
     }
   }
@@ -100,23 +97,25 @@ const getLinkFileDrive = async () => {
 };
 
 const setReadPermissionsToEveryOne = async (idDrive) => {
-  var permissions =
-  {
-    'type': 'anyone',
-    'role': 'reader'
+  var permissions = {
+    type: "anyone",
+    role: "reader",
   };
-  await gapi.client.drive.permissions.create({
-    resource: permissions,
-    fileId: idDrive,
-  }, (err, res) => {
-    if (err) {
-      // Handle error...
-      console.error(err);
-    } else {
-      console.log('Permission ID: ', res.id)
+  await gapi.client.drive.permissions.create(
+    {
+      resource: permissions,
+      fileId: idDrive,
+    },
+    (err, res) => {
+      if (err) {
+        // Handle error...
+        console.error(err);
+      } else {
+        console.log("Permission ID: ", res.id);
+      }
     }
-  });
-}
+  );
+};
 
 const downloadFromDrive = (fileId, name) => {
   gapi.client.drive.files.get({ fileId: fileId, alt: "media" }).then(
@@ -142,7 +141,15 @@ const downloadFromDrive = (fileId, name) => {
 };
 
 const addEventToGoogleCalendar = (linkDrive) => {
-  console.log("CALENDAR",window.calendarId,linkDrive,window.fileName,window.meetStartTime,window.starTimeUpload,window.dateEnd)
+  console.log(
+    "CALENDAR",
+    window.calendarId,
+    linkDrive,
+    window.fileName,
+    window.meetStartTime,
+    window.starTimeUpload,
+    window.dateEnd
+  );
   let description =
     "See video here: " +
     "https://drive.google.com/file/d/" +
@@ -173,53 +180,52 @@ const getCalendarList = async () => {
   return result.result.items;
 };
 
-const verificateAuth = () =>{
-  try{
-    chrome.storage.local.get("idToken", async(result)=>{
-      if(result.idToken == undefined){
+const verificateAuth = () => {
+  try {
+    chrome.storage.local.get("idToken", async (result) => {
+      if (result.idToken == undefined) {
         console.log("token is undefined");
 
-        window.open(environment.webBaseURL,"_blank");
-      }
-      else{
-        console.log("result.idToken",result.idToken)
+        window.open(environment.webBaseURL, "_blank");
+      } else {
+        console.log("result.idToken", result.idToken);
         const dbToken = await getDBToken(result.idToken);
-        console.log("dbToken",dbToken)
-        if(dbToken == 500){
+        console.log("dbToken", dbToken);
+        if (dbToken == 500) {
           console.log("result from api error");
-          window.open(environment.webBaseURL,"_blank");
+          window.open(environment.webBaseURL, "_blank");
           return;
         }
-        chrome.storage.local.set({ "dbToken": dbToken.token },()=>{});
+        chrome.storage.local.set({ dbToken: dbToken.token }, () => {});
         window.dbToken = dbToken.token;
       }
     });
-    chrome.storage.local.get("authToken", async(result)=>{
-      if(result.authToken == undefined){
-        window.open(environment.webBaseURL,"_blank");
-      }
-      else{
+    chrome.storage.local.get("authToken", async (result) => {
+      if (result.authToken == undefined) {
+        window.open(environment.webBaseURL, "_blank");
+      } else {
         window.accessToken = result.authToken;
         gapi.load("client", async () =>
           gapi.auth.setToken({
-            access_token: result.authToken
+            access_token: result.authToken,
           })
         );
-        gapi.client.init({
-          discoveryDocs: environment.DISCOVERY_DOCS,
-          apiKey: environment.API_KEY,
-        }).then(()=>{
-          uploadQueueDaemon();
-          searchDefaultFolder();
-        });
+        gapi.client
+          .init({
+            discoveryDocs: environment.DISCOVERY_DOCS,
+            apiKey: environment.API_KEY,
+          })
+          .then(() => {
+            uploadQueueDaemon();
+            searchDefaultFolder();
+          });
         return;
       }
     });
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
   }
-}
+};
 
 export {
   getLinkFileDrive,
@@ -233,5 +239,5 @@ export {
   downloadFromDrive,
   addEventToGoogleCalendar,
   searchDefaultFolder,
-  setReadPermissionsToEveryOne
+  setReadPermissionsToEveryOne,
 };
