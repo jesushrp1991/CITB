@@ -37,6 +37,7 @@ export class AppComponent extends BaseButton implements OnInit {
   public selectedMic = "";
   public isRecording = false;
   public exitsCITBDevice = true;
+  public isPaused = false;
 
   public restoreState = () => {
     this.window.chrome.storage.local.get('recMode', (result: any) => {
@@ -55,7 +56,6 @@ export class AppComponent extends BaseButton implements OnInit {
       this.voiceCommandComponent.toggleState();
     }
     micList = await this.window.navigator.mediaDevices.enumerateDevices();
-    console.log(micList);
     let usableMic = (micList as any[]).filter(
       (x) => x.kind === 'audioinput' && !x.label.includes('CITB')
     );
@@ -110,7 +110,6 @@ export class AppComponent extends BaseButton implements OnInit {
   }
 
   public getCurrentState = () =>{
-    console.log("checking state")
     this.window.chrome.storage.sync.get('isRecording', (result : any) => {
         if (result.isRecording ){
             this.isRecording = true;
@@ -129,4 +128,7 @@ export class AppComponent extends BaseButton implements OnInit {
     this.window.setInterval( this.getCurrentState, 1000);
   }
 
+  public tooglePlayPause= (event: any) =>{
+    this.isPaused = event;
+  }
 }

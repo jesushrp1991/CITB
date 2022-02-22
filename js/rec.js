@@ -4,6 +4,7 @@ import { reset } from "./recTimer.js";
 import { 
     startTimerCount 
    ,stopTimerCount 
+   ,calculatePauseTime
 } from './recTimer.js' 
  
 import { 
@@ -112,6 +113,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
             window.recorder.onstart = event => {
               afterInitActions();
             }
+            window.recorder.onstop = () => {
+              console.log("FIIIINN", new Date().getTime());
+            }
             // startTimerCount();
             window.recorder.start(environment.timeIntervalSaveDB);
           }//End if recMode == RecordTabs
@@ -217,6 +221,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
               startTimerCount();
               afterInitActions();
             }
+            window.recorder.onstop = () => {
+              console.log("FIIIINN", new Date().getTime());
+            }
             window.recorder.start(environment.timeIntervalSaveDB);  
             console.log("START `COLLADO!!!!")
           }
@@ -305,7 +312,7 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
         window.recorder.ondataavailable = event => { 
             verifyAvailableSpaceOnDisk();  
             if (event.data.size > 0) {  
-                window.videoChunksArray.push(event.data);  
+                window.videoChunksArray.push(event.data);
                 addDB(window.videoChunksArray);  
                 window.videoChunksArray = [];  
             }  
@@ -313,6 +320,9 @@ const recordScreen = async (streamId,idMic,isTabForMac,recMode) => {
         window.recorder.onstart = event => {
           console.log("AHORA ES QUE SE SETEA EL STARTTIME")
           afterInitActions();
+        }
+        window.recorder.onstop = () => {
+          console.log("FIIIINN", new Date().getTime());
         }
         // startTimerCount();
         window.recorder.start(environment.timeIntervalSaveDB);  
@@ -364,15 +374,15 @@ const startRecordScreen = async(idMic,isTabForMac,recMode) =>{
 const pauseRec = () => { 
   stopTimerCount(); 
   window.recorder.pause() 
-  chrome.storage.sync.set({isPaused: true}, () => { 
-  }); 
+  chrome.storage.sync.set({isPaused: true}, () => {});
+  
   window.isPaused = !window.isPaused; 
 } 
 const playRec = () =>{ 
   window.recorder.resume(); 
-  startTimerCount(); 
-  chrome.storage.sync.set({isPaused: false}, () => { 
-  }); 
+  calculatePauseTime(); 
+  chrome.storage.sync.set({isPaused: false}, () => { });
+  chrome.storage.sync.set({totalPauseTime: window.totalPauseTime}, () => {});
   window.isPaused = !window.isPaused; 
 } 
  

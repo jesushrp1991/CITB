@@ -1,82 +1,30 @@
-let ms = 0;
-let sec = 0;
-let min = 0;
-let hour = 0;
-let time;
-let milli ,seconds, minute,hours;
-window.timer;
-const timer = () => {
-        ms++;
-        if(ms >= 100){
-            let timer= {minute:minute,seconds:seconds,hours:hours};
-            window.timer = timer;
-            sec++
-            ms = 0
-        }
-        if(sec == 60){
-            min++
-            sec = 0
-        }
-        if(min == 60){
-            hour++
-            ms, sec, min = 0;
-        }
-
-        //Doing some string interpolation
-         milli = ms < 10 ? `0`+ ms : ms;
-         seconds = sec < 10 ? `0`+ sec : sec;
-         minute = min < 10 ? `0` + min : min;
-         hours = hour < 10 ? `0` + hour : hour;
-        // localStorage.setItem('timeMinSaved', min);
-        // localStorage.setItem('timeSecSaved', sec);
-        // localStorage.setItem('timeHourSaved', hour);
-
-};
+window.currentRecordingTime;
+window.totalPauseTime = 0;
+window.initialRecordTimeInMS = 0;
 //Start timer
-
 const startTimerCount = () => {
-    window.meetStartTime = dayjs().format();
-    console.time("LecturaStorage")
-    var minSaved = localStorage.getItem('timeMinSaved');
-    var secSaved = localStorage.getItem('timeSecSaved');
-    var hourSaved = localStorage.getItem('timeHourSaved');
-    console.timeEnd("LecturaStorage")
-    if (minSaved) {
-        min = minSaved;
-    }
-    if(secSaved){
-        sec = secSaved;
-    }
-    if(hourSaved){
-        hour = hourSaved;
-    }
-    time = setInterval(timer,10);
-}
+  window.meetStartTime = dayjs().format();
+  window.initialRecordTimeInMS = new Date().getTime();
+  window.currentRecordingTime = new Date().getTime();
+};
+
+const calculatePauseTime = () => {
+  if (window.endPauseTime == undefined) {
+    window.endPauseTime = new Date().getTime();
+  }
+  window.totalPauseTime +=  window.endPauseTime - window.currentRecordingTime;
+  window.endPauseTime = undefined;
+};
 
 //stop timer
 const stopTimerCount = () => {
-    clearInterval(time);
-    localStorage.setItem('timeMinSaved', minute);
-    localStorage.setItem('timeSecSaved', seconds);
-    localStorage.setItem('timeHourSaved', hours);
-}
+  window.currentRecordingTime = new Date().getTime();
+};
 
 //reset timer
-const reset = () =>{
-    ms = 0;
-    sec = 0;
-    min = 0;
-    hour = 0;
-    clearInterval(time);
-    let timer= {minute:0,seconds:0,hours:0};
-    window.timer = timer;
-    localStorage.removeItem('timeMinSaved');
-    localStorage.removeItem('timeSecSaved');
-    localStorage.removeItem('timeHourSaved');
-}
+const reset = () => {
+  window.currentRecordingTime = 0;
+  window.totalPauseTime = 0;
+};
 
-export {
-     startTimerCount 
-    ,stopTimerCount 
-    ,reset
-}
+export { startTimerCount, stopTimerCount, reset, calculatePauseTime};

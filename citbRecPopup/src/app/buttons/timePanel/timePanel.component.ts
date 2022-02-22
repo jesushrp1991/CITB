@@ -7,31 +7,65 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   styleUrls: ['./timePanel.scss'],
 })
 export class timePanelComponent extends BaseButton implements OnInit {
-  
   ngOnInit(): void {
-    this.timerController();
-    this.portTimer.postMessage({getTimer: true});
-    this.checkTimer();
+    this.checkPause();
   }
-  public recTime = '00:00:00';
-  public portTimer = chrome.runtime.connect({name: "portTimer"});
+  @Input()
+  get tooglePlayPause() {
+    return this.isPaused;
+  }
+  set tooglePlayPause(value) {
+    console.log("Play/Pause",value)
+    this.firstTimeOpenPopup = !value;
+    this.getInitialRecTime();
+  }
+  public recTime: number = 0;
+  private isPaused = false;
+  private totalPauseTime = 0;
+  private portTimer = chrome.runtime.connect({ name: 'portTimer' });
+  private startRecordTime = 0;
+  private firstTimeOpenPopup = true;
 
-    //************ TIMER CONTROLLER **********/////
-    public timerController = () => {
-      this.portTimer.onMessage.addListener(async (msg) => {
-        if (msg.answer && msg.answer.seconds >= 0){
-            this.recTime = `${msg.answer.hours}:${msg.answer.minute}:${msg.answer.seconds}`;
-        }else{
-          this.recTime = '00:00:00';           
-        }    
+  public checkPause = () => {
+    setInterval(() => {
+      this.window.chrome.storage.sync.get('isPaused', (result: any) => {
+        this.isPaused = result.isPaused as boolean;
+        if (this.firstTimeOpenPopup) {
+          this.timerController();
+          this.getInitialRecTime();
+          this.calculateVideoRecordTime();
+          this.firstTimeOpenPopup = false;
+        }
       });
-    }
-  
-    public checkTimer = () => {
-        setInterval(()=>{
-            this.portTimer.postMessage({getTimer: true});
-        },500)
-    }
-    //************ TIMER CONTROLLER **********//////
+    }, 1000);
+  };
 
+  public timerController = () => {
+    this.portTimer.onMessage.addListener(async (msg) => {
+        this.startRecordTime = msg.answer as number;
+    });
+  };
+  public getInitialRecTime = () => {
+    this.portTimer.postMessage({ getTimer: true });
+  };
+
+  public calculateVideoRecordTime = () => {
+    setInterval(() => {
+      if (!this.isPaused) {
+        this.window.chrome.storage.sync.get('totalPauseTime', (result: any) => {
+          this.totalPauseTime = result.totalPauseTime;
+          const currentDate = new Date().getTime();
+          this.recTime =
+            currentDate - this.startRecordTime - this.totalPauseTime;
+            console.log(
+              'ENTRO A PONER REC TIME',
+              currentDate,
+              this.startRecordTime,
+              this.totalPauseTime
+            );
+          console.log("Resultado",this.recTime)
+        });
+      }
+    }, 500);
+  };
 }

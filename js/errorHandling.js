@@ -11,6 +11,7 @@ const errorHandling = (error) => {
     window.isRecording = false;
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: false}, () => {}); 
+    chrome.storage.sync.set({totalPauseTime: window.totalPauseTime}, () => {}); 
     // delQueueDB();
     if(window.recorder){
         window.recorder.stop();
@@ -45,10 +46,12 @@ const errorHandling = (error) => {
 
 const initialCleanUp = () =>{
     window.isRecording = false;
+    chrome.storage.local.set({isTagActive: false}, () => {});
     chrome.browserAction.setIcon({path: "./assets/icon.png"});
     reset();
     chrome.storage.sync.set({isRecording: false}, () => {});
     chrome.storage.sync.set({isPaused: false}, () => {}); 
+    chrome.storage.sync.set({totalPauseTime: 0}, () => {}); 
     uploadQueueDaemon();
   }
 

@@ -9,7 +9,7 @@ import {
   updateUploadStatusDB
 } from "./database.js";
 import { updateVideo } from "./backService.js";
-import { addEventToGoogleCalendar,getLinkFileDrive, searchDefaultFolder, setReadPermissionsToEveryOne } from './gapiManager.js';
+import { addEventToGoogleCalendar,getLinkFileDrive, searchDefaultFolder, setReadPermissionsToEveryOne, verificateAuth } from './gapiManager.js';
 
 
 /*
@@ -86,13 +86,18 @@ const startResumableUpload = async (file) => {
   };
   let resumableUpload = new ResumableUpload2(file, options, file.size);
   await resumableUpload.initializeRequest();
-  await resumableUpload.start((result) => {
-    window.uploadValue = result.status;
-    saveUploadProgress(window.uploadValue);
-    if (result.status >= 100) {
-      afterUploadSuccessActions();
-    }
-  });
+  try{
+    await resumableUpload.start((result) => {
+      window.uploadValue = result.status;
+      saveUploadProgress(window.uploadValue);
+      if (result.status >= 100) {
+        afterUploadSuccessActions();
+      }
+    });
+  }
+  catch(error){
+    verificateAuth();
+  }
   window.processingVideo = false;
 };
 
@@ -109,7 +114,7 @@ const saveVideo = async (localDownload) => {
   if (environment.upLoadToDrive && !localDownload) {
     let file = prepareRecordFile(finalArray);
     if(window.endTime == '' || window.endTime == undefined || window.endTime == null){
-      window.meetEndTime = dayjs().format();
+      window.meetEndTime = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
     }
     updateFileDB(window.currentRecordingId, file, window.meetEndTime);
     uploadQueueDaemon();

@@ -7,11 +7,15 @@ import { BaseButton } from 'src/app/base/ButtonBase';
   styleUrls: ['./buttonTag.scss'],
 })
 export class buttonTagComponent extends BaseButton implements OnInit {
-    
-  ngOnInit(): void {
-  }
   public active: boolean = false;
   
+  ngOnInit(): void {
+    chrome.storage.local.get('isTagActive', (result: any)=> {
+    result.isTagActive ? this.active = true : this.active = false;
+  }); 
+
+  }
+
   public newTag = ():void =>{
     this.active = !this.active;
     const request = { recordingStatus: "tag" };

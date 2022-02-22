@@ -22,6 +22,7 @@ import { buttonStopComponent } from './buttons/buttonStop/buttonStop.component';
 import { volumenPanelComponent } from './buttons/volumenPanel/volumenPanel.component';
 import { buttonPinComponent } from './buttons/pinButton/buttonPin.component';
 import { buttonTagComponent } from './buttons/tagButton/buttonTag.component';
+import { TimeFilterPipe } from './Pipes/time-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { buttonTagComponent } from './buttons/tagButton/buttonTag.component';
     , buttonStopComponent
     , volumenPanelComponent
     , buttonPinComponent
-    , buttonTagComponent
+    , buttonTagComponent, TimeFilterPipe
   ],
   imports: [
     BrowserModule,

@@ -27,6 +27,7 @@ import {
 } from "./js/tools.js";
 import { initialCleanUp } from "./js/errorHandling.js";
 import { recUC, recCommandStart, addTagUC, addMarkUC } from "./js/useCase.js";
+import { calculatePauseTime } from './js/recTimer.js'
 
 initialCleanUp();
 
@@ -62,6 +63,7 @@ window.videoChunksArray = [];
 window.resultStream;
 window.desktopStream;
 window.micStream;
+window.totalPauseTime = 0;
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log("message received ", message);
@@ -192,7 +194,8 @@ chrome.runtime.onConnect.addListener(async (port) => {
   } else if (port.name == "portTimer") {
     port.onMessage.addListener(async (msg) => {
       if (msg.getTimer) {
-        let getTimer = window.timer;
+        let getTimer = window.initialRecordTimeInMS;
+        console.log("GET TIMER",getTimer)
         port.postMessage({ answer: getTimer });
       }
     });

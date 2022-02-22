@@ -16,10 +16,9 @@ export class RecordButtonComponent extends BaseButton {
         return this._activeRecordMode;
     } 
     public set activeRecordMode (value: string) {
-        console.log("ACTIVE RECORD MODE", value)
         this._activeRecordMode = value; 
         this.active = ( this.activeRecordMode == this.recordKind );
-        console.log(this.active, this.activeRecordMode, this.recordKind)
+        // console.log(this.active, this.activeRecordMode, this.recordKind)
         if (this.active) {
             this.changeRecMode();
         }

@@ -39,6 +39,7 @@ const recUC = async () => {
 };
 
 const afterInitActions = async() => {
+  console.log("INICIOO!!!!",new Date().getTime());
   window.isRecording = true;
   chrome.storage.sync.set({ isRecording: true }, () => {});
   recIcon();
@@ -68,7 +69,7 @@ const afterInitActions = async() => {
 const stopRecordScreen = () => {
   if (window.isRecording) {
     if (window.recorder) {
-      // window.meetEndTime = dayjs().format();
+
       window.meetEndTime = dayjs().format();
       window.recorder.stop();
       stopTracks();
@@ -78,6 +79,7 @@ const stopRecordScreen = () => {
     window.isRecording = false;
     chrome.storage.sync.set({ isRecording: false }, () => {});
     chrome.storage.sync.set({ isPaused: false }, () => {});
+    chrome.storage.sync.set({totalPauseTime: 0}, () => {});
     setTimeout(() => {
       chrome.browserAction.setIcon({ path: "./assets/icon.png" });
     }, 3000);
@@ -92,20 +94,22 @@ const addTagUC = async () => {
   if (window.isRecording) {
     if (isFirstTag == undefined || isFirstTag == true) {
       isFirstTag = false;
-      let time = window.timer.minute * 60 + window.timer.seconds;
-      idTag = await addTag(window.dbToken, window.idVideoInBack, time);
+      const timeOpenFirstTag = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
+      idTag = await addTag(window.dbToken, window.idVideoInBack, timeOpenFirstTag);
+      chrome.storage.local.set({isTagActive: true}, () => {});
+
     } else {
       isFirstTag = true;
-      let endTime = window.timer.minute * 60 + window.timer.seconds;
+      const endTime = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
       tagEndTime(window.dbToken, window.idVideoInBack, idTag._id, endTime);
+      chrome.storage.local.set({isTagActive: false}, () => {});
     }
   }
 };
 
 const addMarkUC = () => {
   if (window.isRecording) {
-    let time = window.timer.minute * 60 + window.timer.seconds;
-
+    let time = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
     console.log("TIMERRR",time)
     addMark(window.dbToken, window.idVideoInBack, time);
   }

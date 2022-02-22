@@ -79,12 +79,16 @@ const searchDrive = async () => {
 };
 
 const searchDefaultFolder = async () => {
-  let fileList = await getDriveFileList("root");
-  let file = fileList.filter((x) => x.name === "CITB_Records");
-  if (file.length > 0) {
-    window.defautCITBFolderID = file[0].id;
-  } else {
-    window.defautCITBFolderID = await createDriveFolder("CITB_Records");
+  try {
+    let fileList = await getDriveFileList("root");
+    let file = fileList.filter((x) => x.name === "CITB_Records");
+    if (file.length > 0) {
+      window.defautCITBFolderID = file[0].id;
+    } else {
+      window.defautCITBFolderID = await createDriveFolder("CITB_Records");
+    }
+  } catch (error) {
+    console.log("ERROR list drive files", error);
   }
 };
 
