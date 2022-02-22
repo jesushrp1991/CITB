@@ -90,17 +90,22 @@ const stopRecordScreen = () => {
 
 let isFirstTag = undefined;
 let idTag;
+const getPinTagTime = () => {
+  let currentTime = new Date().getTime();
+  let timeInMS = currentTime - window.initialRecordTimeInMS - window.totalPauseTime
+  return timeInMS/1000 ;
+}
 const addTagUC = async () => {
   if (window.isRecording) {
     if (isFirstTag == undefined || isFirstTag == true) {
       isFirstTag = false;
-      const timeOpenFirstTag = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
+      const timeOpenFirstTag = getPinTagTime();
       idTag = await addTag(window.dbToken, window.idVideoInBack, timeOpenFirstTag);
       chrome.storage.local.set({isTagActive: true}, () => {});
 
     } else {
       isFirstTag = true;
-      const endTime = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
+      const endTime = getPinTagTime();
       tagEndTime(window.dbToken, window.idVideoInBack, idTag._id, endTime);
       chrome.storage.local.set({isTagActive: false}, () => {});
     }
@@ -109,7 +114,7 @@ const addTagUC = async () => {
 
 const addMarkUC = () => {
   if (window.isRecording) {
-    let time = dayjs().format() - dayjs().subtract(window.totalPauseTime,'ms');
+    let time = getPinTagTime();
     console.log("TIMERRR",time)
     addMark(window.dbToken, window.idVideoInBack, time);
   }
