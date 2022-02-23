@@ -74,6 +74,9 @@ const stopRecordScreen = () => {
       window.recorder.stop();
       stopTracks();
       reset();
+      window.currentRecordingTime=0;
+      window.totalPauseTime = 0;
+      window.initialRecordTimeInMS = 0;
     }
     // reset();
     window.isRecording = false;
@@ -93,7 +96,7 @@ let idTag;
 const getPinTagTime = () => {
   let currentTime = new Date().getTime();
   let timeInMS = currentTime - window.initialRecordTimeInMS - window.totalPauseTime
-  return timeInMS/1000 ;
+  return Math.trunc(timeInMS/1000) ;
 }
 const addTagUC = async () => {
   if (window.isRecording) {
