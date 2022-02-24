@@ -81,7 +81,7 @@ import {
 import {speachCommands} from "./managers/voiceManager/voice.js"
 import {strings} from "./strings.js"
 function monkeyPatchMediaDevices() {
-
+  console.log("INYECTADO MONKEY PATCH MEDIA COLLADO")
   const isCITBCamera = (label) => {
     const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
     let returnValue = false;
@@ -461,6 +461,7 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
+      console.log("DOCUMENT COMPLETE COLLADO")
       document.body.appendChild(buttonOnOffExtension);
 
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
