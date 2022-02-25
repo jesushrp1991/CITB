@@ -359,11 +359,6 @@ function monkeyPatchMediaDevices() {
         const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
         micElement.childNodes[1].children[0].click();
       },300)
-        const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-        cameraElement.childNodes[1].children[0].click();
-        const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
-        micElement.childNodes[1].children[0].click();
-      },300)
       alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
     }
     executeOpenClose();    
