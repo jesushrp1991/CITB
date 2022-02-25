@@ -96,13 +96,6 @@ function monkeyPatchMediaDevices() {
     return returnValue
    
   }
-
-  // var floatingButtonsHTML = "";
-  // const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
-  //   createHTML: (to_escape) => to_escape
-  // })
-  // initPopup();
-
   function KeyPress(e) {
     var evtobj = window.event? event : e
     if (evtobj.keyCode == 67 && evtobj.altKey) {
@@ -416,9 +409,7 @@ function monkeyPatchMediaDevices() {
       document.body.appendChild(floatingButtonsHTML);
       setCITBButtonsAndListeners();
       document.body.appendChild(buttonOnOffExtension);
-
-      // console.log("LocalStorage coll",localStorage.getItem("asd123"));
-      // setEventButtonNext(helptButton, buttonHelpNextCallBack);
+      
       buttonPopup.addEventListener('click',showPopupMic);
       buttonVideoPopup.addEventListener('click',showPopupVideo);
 
@@ -440,7 +431,7 @@ function monkeyPatchMediaDevices() {
           setButtonBackground(window.buttonCam, window.citbActivated);
         }
       },5000)
-            
+          
     }
   }; //END ONREADY STATE CHANGE
 
