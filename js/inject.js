@@ -36,24 +36,24 @@ if (
     document.documentElement;
   head.insertBefore(annyangScript, annyangScriptHead.firstChild);
 
-//   document.onreadystatechange = (event) => {
-//     if (document.readyState == "complete") {
-//       fetch(chrome.runtime.getURL("html/actionButtons.html"))
-//         .then((r) => r.text())
-//         .then((html) => {
-//             console.log("INYECTAR FLOATINGBYTTONS")
-//           document.dispatchEvent(
-//             new CustomEvent("floatingButtons", { detail: html })
-//           );
-//         });
+  // document.onreadystatechange = (event) => {
+  //   if (document.readyState == "complete") {
+  //     fetch(chrome.runtime.getURL("html/actionButtons.html"))
+  //       .then((r) => r.text())
+  //       .then((html) => {
+  //           console.log("INYECTAR FLOATINGBYTTONS")
+  //         document.dispatchEvent(
+  //           new CustomEvent("floatingButtons", { detail: html })
+  //         );
+  //       });
 
-//       fetch(chrome.runtime.getURL("html/simplePopup.html"))
-//         .then((r) => r.text())
-//         .then((html) => {
-//           document.dispatchEvent(
-//             new CustomEvent("simplePopup", { detail: html })
-//           );
-//         });
-//     }
-//   };
+  //     // fetch(chrome.runtime.getURL("html/simplePopup.html"))
+  //     //   .then((r) => r.text())
+  //     //   .then((html) => {
+  //     //     document.dispatchEvent(
+  //     //       new CustomEvent("simplePopup", { detail: html })
+  //     //     );
+  //     //   });
+  //   }
+  // };
 }

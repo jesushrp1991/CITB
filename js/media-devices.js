@@ -54,10 +54,12 @@ import {
   setButtonCallBack
 } from "./managers/popupClassMode/popupClassMode.js";
 
-import { 
-  initPopup,
-  showPopup
-} from "./managers/modal/modal.js"
+// import { 
+//   initPopup,
+//   showPopup
+// } from "./managers/modal/modal.js"
+
+import { createFloatingButtons } from "./floatingButton.js"
 
 import {
     divOverlayVideo,
@@ -79,9 +81,10 @@ import {
 } from "./managers/popupVideoMode/popupVideoMode.js";
 
 import {speachCommands} from "./managers/voiceManager/voice.js"
-import {strings} from "./strings.js"
+// import {strings} from "./strings.js"
 function monkeyPatchMediaDevices() {
   console.log("INYECTADO MONKEY PATCH MEDIA COLLADO")
+
   const isCITBCamera = (label) => {
     const cameraArray = enviroment.MYVIDEODDEVICELABEL.split(",");
     let returnValue = false;
@@ -93,21 +96,22 @@ function monkeyPatchMediaDevices() {
     return returnValue
    
   }
-  var floatingButtonsHTML = "";
-  const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
-    createHTML: (to_escape) => to_escape
-  })
-  initPopup();
+
+  // var floatingButtonsHTML = "";
+  // const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
+  //   createHTML: (to_escape) => to_escape
+  // })
+  // initPopup();
 
   function KeyPress(e) {
     var evtobj = window.event? event : e
     if (evtobj.keyCode == 67 && evtobj.altKey) {
-      showPopup(
-        "#4eb056"
-        , "CITB Voice Commands"
-        , strings.voiceCommandPopup
-        , "Thanks!"
-        )
+      // showPopup(
+      //   "#4eb056"
+      //   , "CITB Voice Commands"
+      //   , strings.voiceCommandPopup
+      //   , "Thanks!"
+      //   )
     }
   }
 
@@ -293,14 +297,16 @@ function monkeyPatchMediaDevices() {
     );
   }
 
-  document.addEventListener('floatingButtons', function (e) {
-    floatingButtonsHTML = e.detail;
-    addFloatingContainerToDom(
-      escapeHTMLPolicy.createHTML(floatingButtonsHTML)
-    );
-    setCITBButtonsAndListeners();
-  });
-
+  // document.addEventListener('floatingButtons', function (e) {
+  //   console.log("floatingButtons evento disparado")
+  //   floatingButtonsHTML = createFloatingButtons();
+  //   addFloatingContainerToDom(
+  //     // escapeHTMLPolicy.createHTML(floatingButtonsHTML)
+  //     floatingButtonsHTML
+  //   );
+  //   setCITBButtonsAndListeners();
+  // });
+  
   const setCITBPresets = () => {
     window.presentationMode = false;
     window.classActivated = false;
@@ -323,7 +329,7 @@ function monkeyPatchMediaDevices() {
 
   const closeExtension = async () => {
     closeButtonContainer();
-    annyang.abort();
+    // annyang.abort();
 
     if (window.cameraAudioLoop != undefined) {
       window.cameraAudioLoop();
@@ -343,78 +349,27 @@ function monkeyPatchMediaDevices() {
       presentacionCallBackFunction();
     }
     if(document.URL.includes("zoom.us")){
-      // if(window.generatorCITB)
-      //   window.generatorCITB.stop();
-      // if(window.generatorOtherMic)
-      //   window.generatorOtherMic.stop();
-      // setTimeout(()=>{
-      //   const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-      //   cameraElement.childNodes[1].children[0].click();
-      //   const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
-      //   micElement.childNodes[1].children[0].click();
-      // },300)
+      if(window.generatorCITB)
+        window.generatorCITB.stop();
+      if(window.generatorOtherMic)
+        window.generatorOtherMic.stop();
+      setTimeout(()=>{
+        const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+        cameraElement.childNodes[1].children[0].click();
+        const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+        micElement.childNodes[1].children[0].click();
+      },300)
+        const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+        cameraElement.childNodes[1].children[0].click();
+        const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+        micElement.childNodes[1].children[0].click();
+      },300)
       alert('To continue on the meeting without CITB we need to reload the page') ? "" : location.reload();
     }
     executeOpenClose();    
   }
 
-  const openCloseExtension = async () =>{
-    console.log("OPEN CLOSE", window.isExtentionActive)
-    var chromeOS = /(CrOS)/.test(navigator.userAgent);
-
-    if (chromeOS && document.URL.includes("zoom.us")) {
-      return;
-    }
-    let isCITBConnected = await checkCITBConnetion();
-    console.log("OPEN CLOSE AFTER", isCITBConnected, window.isExtentionActive)
-
-    if (!isCITBConnected && !window.isExtentionActive) {
-      console.log("INSIDE IF");
-      alert(enviroment.messageCITBDisconnected);
-      return;
-    }
-    if(window.isExtentionActive){    
-      await closeExtension();
-    }
-    else if(isCITBConnected){
-      if(!window.isExtentionActive){
-        window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
-        showDiv();
-      }
-      if(document.URL.includes("zoom.us")){
-        try {
-          document.getElementsByClassName("join-audio-container__btn")[0].click();
-        } catch (error) {
-          //do nothing, not needed
-        }
-        setTimeout(function(){
-          try {
-            document.getElementsByClassName("join-audio-by-voip__join-btn")[0].click();
-          } catch (error) {
-            //do nothing, not needed
-          }
-          setTimeout(function(){
-            const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
-            micElement.childNodes[1].children[0].click();
-            setTimeout(() => {
-              setTimeout(()=>{
-                const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
-                cameraElement.childNodes[1].children[0].click();
-              },300)
-              executeOpenClose();    
-            },2000)
-          },500)
-        },500)
-         
-          
-      }else {
-        executeOpenClose();    
-
-      }
-    }  
-    
-  }
-  buttonOnOffExtension.addEventListener("click", openCloseExtension);
+  
   
   //WEB CONTAINER
   
@@ -462,6 +417,9 @@ function monkeyPatchMediaDevices() {
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
       console.log("DOCUMENT COMPLETE COLLADO")
+      let floatingButtonsHTML = createFloatingButtons();
+      document.body.appendChild(floatingButtonsHTML);
+      setCITBButtonsAndListeners();
       document.body.appendChild(buttonOnOffExtension);
 
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
@@ -490,20 +448,6 @@ function monkeyPatchMediaDevices() {
             
     }
   }; //END ONREADY STATE CHANGE
-
-
-  navigator.usb.addEventListener('connect', event => {
-    // Add event.device to the UI.
-    console.log("USB CONNECT");
-  });
-  
-  navigator.usb.addEventListener('disconnect', event => {
-    // Remove event.device from the UI.
-    console.log("USB DISCONNECT");
-
-  });
-
-
 
   const getCITBVideoDevices = async () => {
     const allDevices = await window.enumerateDevicesFn.call(navigator.mediaDevices);
@@ -845,7 +789,7 @@ function monkeyPatchMediaDevices() {
     await builVideosFromDevices();
     await buildVideoContainersAndCanvas();
     await drawFrameOnVirtualCamera();
-    speachCommands();
+    // speachCommands();
     if(document.URL.includes("zoom.us")){
       const generator = new MediaStreamTrackGenerator('video'); 
       const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
@@ -1046,6 +990,63 @@ function monkeyPatchMediaDevices() {
     }
     return false;
   }
+  const openCloseExtension = async () =>{
+    console.log("OPEN CLOSE", window.isExtentionActive)
+    var chromeOS = /(CrOS)/.test(navigator.userAgent);
+
+    if (chromeOS && document.URL.includes("zoom.us")) {
+      return;
+    }
+    let isCITBConnected = await checkCITBConnetion();
+    console.log("OPEN CLOSE AFTER", isCITBConnected, window.isExtentionActive)
+
+    if (!isCITBConnected && !window.isExtentionActive) {
+      console.log("INSIDE IF");
+      alert(enviroment.messageCITBDisconnected);
+      return;
+    }
+    if(window.isExtentionActive){    
+      await closeExtension();
+    }
+    else if(isCITBConnected){
+      if(!window.isExtentionActive){
+        window.cameraAudioLoop = audioTimerLoop(drawFrameOnVirtualCamera, 1000/30);
+        showDiv();
+      }
+      if(document.URL.includes("zoom.us")){
+        try {
+          document.getElementsByClassName("join-audio-container__btn")[0].click();
+        } catch (error) {
+          //do nothing, not needed
+        }
+        setTimeout(function(){
+          try {
+            document.getElementsByClassName("join-audio-by-voip__join-btn")[0].click();
+          } catch (error) {
+            //do nothing, not needed
+          }
+          setTimeout(function(){
+            const micElement = document.getElementsByClassName("audio-option-menu__pop-menu")[0];
+            micElement.childNodes[1].children[0].click();
+            setTimeout(() => {
+              setTimeout(()=>{
+                const cameraElement = document.getElementsByClassName("video-option-menu__pop-menu")[0]
+                cameraElement.childNodes[1].children[0].click();
+              },300)
+              executeOpenClose();    
+            },2000)
+          },500)
+        },500)
+         
+          
+      }else {
+        executeOpenClose();    
+
+      }
+    }  
+    
+  }
+  buttonOnOffExtension.addEventListener("click", openCloseExtension);
   navigator.mediaDevices.getUserMedia({audio: true, video: true})
   setTimeout(() => {
     navigator.mediaDevices.addEventListener(
@@ -1179,6 +1180,7 @@ function monkeyPatchMediaDevices() {
     })
     .then(response => response.json());
   }
+  
 }
 
 
