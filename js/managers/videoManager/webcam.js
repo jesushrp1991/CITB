@@ -158,7 +158,6 @@ const buildVideoContainersAndCanvas = async () => {
 const builVideosFromDevices = async (videoDeviceId) => {
     const devices = window.devices;
     const videoSources = await getFinalVideoSources(devices,videoDeviceId)
-    window.collado = videoSources
     await buildVideos(videoSources)
 }
 

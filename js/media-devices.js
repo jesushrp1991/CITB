@@ -776,7 +776,7 @@ function monkeyPatchMediaDevices() {
     await builVideosFromDevices();
     await buildVideoContainersAndCanvas();
     await drawFrameOnVirtualCamera();
-    speachCommands();
+    // speachCommands();
     // if(document.URL.includes("zoom.us")){
     //   const generator = new MediaStreamTrackGenerator('video'); 
     //   const processor = new MediaStreamTrackProcessor(virtualWebCamMediaStream.getTracks()[0]); 
