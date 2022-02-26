@@ -152,7 +152,6 @@ const drawFrameOnVirtualCamera = async () => {
 
 const buildVideoContainersAndCanvas = async () => {
     virtualWebCamMediaStream = await virtualWebCamCanvasVideoContainer.captureStream();
-    console.log("buildVideoContainersAndCanvas")
 }
 
 
@@ -161,7 +160,6 @@ const builVideosFromDevices = async (videoDeviceId) => {
     const videoSources = await getFinalVideoSources(devices,videoDeviceId)
     window.collado = videoSources
     await buildVideos(videoSources)
-    console.log("builVideosFromDevices")
 }
 
 
