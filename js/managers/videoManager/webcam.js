@@ -59,6 +59,7 @@ const fadeInFadeOut = () => {
 }
 
 function audioTimerLoop(callback, frequency) {
+    console.log("AUDIO TIMER LOOP",videoCITB.srcObject)
     var freq = frequency / 1000;      // AudioContext time parameters are in seconds
     var aCtx = new AudioContext();
     // Chrome needs our oscillator node to be attached to the destination
@@ -150,14 +151,17 @@ const drawFrameOnVirtualCamera = async () => {
 
 
 const buildVideoContainersAndCanvas = async () => {
-    virtualWebCamMediaStream = virtualWebCamCanvasVideoContainer.captureStream();
+    virtualWebCamMediaStream = await virtualWebCamCanvasVideoContainer.captureStream();
+    console.log("buildVideoContainersAndCanvas")
 }
 
 
 const builVideosFromDevices = async (videoDeviceId) => {
     const devices = window.devices;
     const videoSources = await getFinalVideoSources(devices,videoDeviceId)
+    window.collado = videoSources
     await buildVideos(videoSources)
+    console.log("builVideosFromDevices")
 }
 
 
@@ -166,7 +170,7 @@ const setStreamToVideoTag = async (constraints ,video) => {
         .then((stream) => {
             video.srcObject = stream;
         }).catch(err => {
-            // console.log(err)
+            console.log(err)
         });
 }
 
