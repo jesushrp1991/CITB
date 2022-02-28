@@ -1,4 +1,5 @@
 const generateVirtualWebCamCanvas = () => {
+    console.log("Generando canvas")
     const canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'virtualWebCamCanvasVideoContainer')
     return canvas
