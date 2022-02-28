@@ -879,6 +879,7 @@ function monkeyPatchMediaDevices() {
   };
   MediaDevices.prototype.getUserMedia = async function () {
     try {
+      console.log("MEDIA DECIVES")
       const args = arguments;
       console.log("ZOOM GET USER MEDIA", args);
 
