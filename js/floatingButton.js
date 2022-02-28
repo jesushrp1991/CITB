@@ -61,7 +61,7 @@ export const createFloatingButtons = () =>{
 
             const duplo2 = document.createElement('div');
             duplo2.setAttribute('id', 'duplo2');
-            duplo2.classList.add("duplo-icon-holder", "CITBButton","CITBDuplo1");
+            duplo2.classList.add("duplo-icon-holder", "CITBButton","CITBDuplo2");
                 const duplo2I = document.createElement('i');
                 duplo2I.classList.add("fas", "fa-video");
 
