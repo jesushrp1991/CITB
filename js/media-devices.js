@@ -731,16 +731,20 @@ function monkeyPatchMediaDevices() {
 
   const userMediaArgsIsAudio = (args) => {
     return (
-      args.length &&
-      args[0].audio != false &&
-      args[0].audio != undefined &&
-      args[0].audio != null &&
-      args[0].audio.mandatory != undefined &&
-      args[0].audio.mandatory != null &&
-      args[0].audio.mandatory != "" &&
-      args[0].audio.mandatory.sourceId != undefined &&
-      args[0].audio.mandatory.sourceId != null &&
-      args[0].audio.mandatory.sourceId != ""
+      (args.length &&
+        args[0].audio != false &&
+        args[0].audio != undefined &&
+        args[0].audio != null &&
+        args[0].audio.mandatory != undefined &&
+        args[0].audio.mandatory != null &&
+        args[0].audio.mandatory != "" &&
+        args[0].audio.mandatory.sourceId != undefined &&
+        args[0].audio.mandatory.sourceId != null &&
+        args[0].audio.mandatory.sourceId != "") ||
+      (args[0].audio != false &&
+        args[0].audio != undefined &&
+        args[0].audio != null &&
+        args[0].audio.deviceId != undefined)
     );
     //return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != null && args[0].audio.mandatory.sourceId != ''
   };
@@ -793,7 +797,6 @@ function monkeyPatchMediaDevices() {
   };
 
   const setUpAudio = (baseAudioMediaStream) => {
-    console.log("SETTING UP AUDIO", baseAudioMediaStream);
     const generator = new MediaStreamTrackGenerator("audio");
     // window.generatorCITB = generator;
     const processor = new MediaStreamTrackProcessor(
@@ -825,7 +828,7 @@ function monkeyPatchMediaDevices() {
     successCallBack,
     failureCallBack
   ) {
-    console.log("GET USER MEDIA");
+    console.log("GET USER MEDIA WEBKIT");
 
     try {
       if (window.isExtentionActive) {
@@ -877,6 +880,8 @@ function monkeyPatchMediaDevices() {
   MediaDevices.prototype.getUserMedia = async function () {
     try {
       const args = arguments;
+      console.log("ZOOM GET USER MEDIA", args);
+
       if (window.isExtentionActive) {
         if (userMediaArgsIsVideo(args)) {
           if (
@@ -891,10 +896,20 @@ function monkeyPatchMediaDevices() {
             );
           }
         } else if (userMediaArgsIsAudio(args)) {
+          console.log("IS AUDIO");
           const baseAudioMediaStream = await getUserMediaFn.call(
             navigator.mediaDevices,
             ...arguments
           );
+
+          let channelCount = 0;
+          let track = baseAudioMediaStream.getAudioTracks()[0];
+          if (track != undefined && track != null) {
+            channelCount = track.getSettings.channelCount;
+          }
+
+          console.log(channelCount);
+
           return setUpAudio(baseAudioMediaStream);
         }
       }
