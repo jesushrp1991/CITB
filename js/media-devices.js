@@ -483,6 +483,7 @@ function monkeyPatchMediaDevices() {
           navigator.mediaDevices,
           constraints
         );
+
         return result;
       } else {
         return null;
