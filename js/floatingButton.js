@@ -30,11 +30,11 @@ export const createFloatingButtons = () => {
   classTooltip.classList.add("mdl-tooltip");
   classTooltip.innerText = "Classroom mode";
 
-            const duplo2 = document.createElement('div');
-            duplo2.setAttribute('id', 'duplo2');
-            duplo2.classList.add("duplo-icon-holder", "CITBButton","CITBDuplo2");
-                const duplo2I = document.createElement('i');
-                duplo2I.classList.add("fas", "fa-video");
+  const presentationTooltip = document.createElement("div");
+  presentationTooltip.setAttribute("id", "presentationTooltip");
+  presentationTooltip.setAttribute("data-mdl-for", "buttonPresentation");
+  presentationTooltip.classList.add("mdl-tooltip");
+  presentationTooltip.innerText = "Duplo mode";
 
   const buttonPresentation = document.createElement("div");
   buttonPresentation.setAttribute("id", "buttonPresentation");
