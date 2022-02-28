@@ -235,15 +235,11 @@ function monkeyPatchMediaDevices() {
         }
       } else {
         showAudioContext = new AudioContext();
-        const CITBMicMedia = await getCITBMicMedia();
-        if (CITBMicMedia == null) {
-          setButtonBackground(buttonShow, false);
-          return;
-        }
-        const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
-        source.connect(showAudioContext.destination);
-        showModeEnabled = true;
-        setButtonBackground(buttonShow, showModeEnabled);
+        // showAudioContext = new AudioContext({sampleRate: 48000}); 
+        const source = showAudioContext.createMediaStreamSource(window.currentAudioMediaStream); 
+        source.connect(showAudioContext.destination); 
+        showModeEnabled = true; 
+        setButtonBackground(buttonShow, showModeEnabled); 
       }
       return;
     } catch (error) {
@@ -493,95 +489,82 @@ function monkeyPatchMediaDevices() {
     }
   };
 
-  var otherMicStream;
-  const setOtherMicTransformStream = async (deviceId) => {
-    console.log("SET OTHER MIC TRANSFOR STREAM");
-    otherMicStream = await getUserMediaFn.call(navigator.mediaDevices, {
-      audio: { deviceId: deviceId },
-      video: false,
-    });
-    const generator = new MediaStreamTrackGenerator("audio");
-    // window.generatorOtherMic = generator;
-    const processor = new MediaStreamTrackProcessor(
-      otherMicStream.getTracks()[0]
-    );
-    const source = processor.readable;
-    const sink = generator.writable;
+  let audioContext = new AudioContext(); 
+  let mediaStreamSource; 
+  let mediaStreamDestination; 
+ 
+  const changeMicrophone = async function () {   
+    // try {   
+      let currentMic; 
+      if(window.currentAudioMediaStream){ 
+        window.currentAudioMediaStream.getAudioTracks().forEach(t => {t.stop()}); 
+      } 
+      const micDomElement = document.getElementById("pModeCurrentMic") 
+      if(micDomElement){ 
+        currentMic = micDomElement.innerText.toString(); 
+        if(currentMic == ""){ 
+          const allDevices = await navigator.mediaDevices.enumerateDevices(); 
+          console.log("allDevices",allDevices)   
+           currentMic = allDevices.filter( 
+             (x) => 
+               x.kind === "audioinput" && 
+               x.label.includes(enviroment.MYAUDIODEVICELABEL) 
+           )[0].deviceId; 
+           setMicrophone(currentMic); 
+        } 
+      }  
+ 
+      window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, {   
+        audio: { deviceId: {exact: currentMic} },   
+        video: false,   
+      }); 
+      mediaStreamSource.disconnect(mediaStreamDestination); 
+      mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream); 
+      mediaStreamSource.connect(mediaStreamDestination); 
+           
+    // } catch (error) {   
+    //   console.log(error); 
+    //   // logErrors(error,"checkingMichrophoneId ln 452")   
+    // }   
+  };   
 
-    const transformer = new TransformStream({
-      async transform(audioFrame, controller) {
-        //_audioController = controller;
-        if (window.classActivated) {
-          audioTrackProcessor(audioFrame);
-        } else {
-          audioFrame.close();
-        }
-        // controller.enqueue(audioFrame);
-      },
-    });
-    source.pipeThrough(transformer).pipeTo(sink);
-  };
-
-  const activateClassMode = async () => {
-    try {
-      var delayActivateClassMode = false;
-      if (showModeEnabled) {
-        console.log("SHOE DISABLE BEFORE ");
-        await showCallBackFunction();
-        console.log("SHOE DISABLE AFTER ");
-        delayActivateClassMode = true;
-      }
-      if (delayActivateClassMode) {
-        const otherMicrophones = document
-          .getElementById("pModeCurrentMic")
-          .innerText.toString();
-        if (otherMicrophones) {
-          setOtherMicTransformStream(otherMicrophones).then((data) => {
-            // console.log(data);
-          });
-          window.classActivated = true;
-
-          setButtonBackground(buttonClass, window.classActivated);
-          return true;
-        }
-        return false;
-      } else {
-        const otherMicrophones = document
-          .getElementById("pModeCurrentMic")
-          .innerText.toString();
-        if (otherMicrophones) {
-          setOtherMicTransformStream(otherMicrophones).then((data) => {
-            // console.log(data);
-          });
-          window.classActivated = true;
-          setButtonBackground(buttonClass, window.classActivated);
-          return true;
-        }
-        return false;
-      }
-    } catch (error) {
-      logErrors(error, "activateClassMode ln 280");
-    }
-  };
-
-  const deactivateClassMode = async () => {
-    try {
-      const citbMicrophone = await getCITBMicDevices();
-      if (citbMicrophone.length > 0) {
-        window.classActivated = false;
-        setMicrophone(citbMicrophone[0].deviceId);
-        otherMicStream.getAudioTracks().forEach((track) => {
-          track.stop();
-        });
-        otherMicStream = undefined;
-        setButtonBackground(buttonClass, window.classActivated);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      logErrors(error, "deactivateClassMode ln 298");
-    }
-  };
+  const activateClassMode = () => { 
+    try { 
+      if (showModeEnabled) { 
+        showCallBackFunction(); 
+      } 
+      const otherMicrophones = document.getElementById("pModeCurrentMic").innerText.toString(); 
+      if (otherMicrophones) { 
+        window.classActivated = true; 
+        changeMicrophone(); 
+        setButtonBackground(buttonClass, window.classActivated); 
+        return true; 
+      } 
+      return false; 
+    } catch (error) { 
+      logErrors(error,"activateClassMode ln 280") 
+    } 
+  }; 
+ 
+  const deactivateClassMode = () => { 
+   try { 
+    const citbMicrophone = devices.filter( 
+      (x) => 
+        x.kind === "audioinput" && 
+        x.label.includes(enviroment.MYAUDIODEVICELABEL) 
+    ); 
+    if (citbMicrophone.length > 0) { 
+      setMicrophone(citbMicrophone[0].deviceId); 
+      window.classActivated = false; 
+      changeMicrophone(); 
+      setButtonBackground(buttonClass, window.classActivated); 
+      return true; 
+    } 
+    return false; 
+   } catch (error) { 
+     logErrors(error,"deactivateClassMode ln 298") 
+   } 
+  }; 
 
   const changeToClassMode = async () => {
     try {
@@ -740,11 +723,11 @@ function monkeyPatchMediaDevices() {
         args[0].audio.mandatory != "" &&
         args[0].audio.mandatory.sourceId != undefined &&
         args[0].audio.mandatory.sourceId != null &&
-        args[0].audio.mandatory.sourceId != "") ||
-      (args[0].audio != false &&
-        args[0].audio != undefined &&
-        args[0].audio != null &&
-        args[0].audio.deviceId != undefined)
+        args[0].audio.mandatory.sourceId != "") 
+        // || (args[0].audio != false &&
+        // args[0].audio != undefined &&
+        // args[0].audio != null &&
+        // args[0].audio.deviceId != undefined)
     );
     //return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != null && args[0].audio.mandatory.sourceId != ''
   };
@@ -845,7 +828,7 @@ function monkeyPatchMediaDevices() {
             navigator.mediaDevices,
             ...constrains
           );
-          return setUpAudio(baseAudioMediaStream);
+          return baseAudioMediaStream;
         }
       }
       const res = await webKitGUM.call(
@@ -877,12 +860,11 @@ function monkeyPatchMediaDevices() {
     }
     //frame.close();
   };
+
   MediaDevices.prototype.getUserMedia = async function () {
     try {
-      console.log("MEDIA DECIVES")
+      console.log("GET USER MEDIA PROTOTYPE")
       const args = arguments;
-      console.log("ZOOM GET USER MEDIA", args);
-
       if (window.isExtentionActive) {
         if (userMediaArgsIsVideo(args)) {
           if (
@@ -896,34 +878,47 @@ function monkeyPatchMediaDevices() {
               ...arguments
             );
           }
-        } else if (userMediaArgsIsAudio(args)) {
+        } 
+        else if (userMediaArgsIsAudio(args)) {
           console.log("IS AUDIO");
-          const baseAudioMediaStream = await getUserMediaFn.call(
-            navigator.mediaDevices,
-            ...arguments
-          );
-
-          let channelCount = 0;
-          let track = baseAudioMediaStream.getAudioTracks()[0];
-          if (track != undefined && track != null) {
-            channelCount = track.getSettings.channelCount;
-          }
-
-          console.log(channelCount);
-
-          return setUpAudio(baseAudioMediaStream);
+          if (window.currentAudioMediaStream != undefined && window.currentAudioMediaStream != null) { 
+            const tracks = window.currentAudioMediaStream.getTracks(); 
+            tracks.forEach( t => { 
+              t.stop(); 
+            }) 
+          } 
+          var gainNode = audioContext.createGain(); 
+          const splitter = audioContext.createChannelSplitter(2); 
+          const merger = audioContext.createChannelMerger(2); 
+   
+          gainNode.gain.setValueAtTime(1, audioContext.currentTime); 
+          splitter.connect(gainNode, 0); 
+   
+          window.currentAudioMediaStream = await getUserMediaFn.call(navigator.mediaDevices, ...arguments); 
+          mediaStreamSource = audioContext.createMediaStreamSource(window.currentAudioMediaStream); 
+          mediaStreamDestination = audioContext.createMediaStreamDestination(); 
+          mediaStreamSource.connect(splitter); 
+          gainNode.connect(merger, 0, 1); 
+          splitter.connect(merger, 1, 0); 
+          merger.connect(mediaStreamDestination);     
+          // gainNode.connect(mediaStreamDestination) 
+          isCreatedAudioContext = true;   
+          window.webAudioStream = mediaStreamDestination;
+          console.log("mediaStreamDestination.stream",mediaStreamDestination.stream) 
+          return mediaStreamDestination.stream; 
         }
       }
       const res = await getUserMediaFn.call(
         navigator.mediaDevices,
         ...arguments
       );
+      window.webAudioStream = res;
+      console.log("ANTES DE RETORNOAR CON LA EXTENSION INACTIVA", res, arguments, args);
       return res;
     } catch (error) {
       logErrors(error, "prototype getUserMedia ln 531");
     }
   };
-
   var citbConnectionCount = 0;
   const checkCITBConnetion = async () => {
     const citbMicrophone = await getCITBMicDevices();
