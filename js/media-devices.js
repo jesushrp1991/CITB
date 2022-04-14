@@ -54,8 +54,6 @@ import {
   setButtonCallBack,
 } from "./managers/popupClassMode/popupClassMode.js";
 
-import { initPopup, showPopup } from "./managers/modal/modal.js";
-
 import {
   divOverlayVideo,
   divFabVideo,
@@ -88,21 +86,16 @@ function monkeyPatchMediaDevices() {
     });
     return returnValue;
   };
-  var floatingButtonsHTML = "";
-  const escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
-    createHTML: (to_escape) => to_escape,
-  });
-  initPopup();
 
   function KeyPress(e) {
     var evtobj = window.event ? event : e;
     if (evtobj.keyCode == 67 && evtobj.altKey) {
-      showPopup(
-        "#4eb056",
-        "CITB Voice Commands",
-        strings.voiceCommandPopup,
-        "Thanks!"
-      );
+      // showPopup(
+      //   "#4eb056",
+      //   "CITB Voice Commands",
+      //   strings.voiceCommandPopup,
+      //   "Thanks!"
+      // );
     }
   }
 
@@ -161,21 +154,32 @@ function monkeyPatchMediaDevices() {
       const duploContainerButton =
         document.getElementById("buttonPresentation");
       const duplo2Button = document.getElementById("duplo2");
+      setButtonBackground("citbDuploActive", window.presentationMode && !duplo);
+      // setButtonBackground(
+      //   "citbDuploContainerActive",
+      //   window.presentationMode && !duplo
+      // );
+
       setButtonBackground(
-        buttonPresentation,
-        window.presentationMode && !duplo
+        "citbDuploMiniActive",
+        duplo && window.presentationMode
       );
-      setButtonBackground(duploContainerButton, window.presentationMode);
-      setButtonBackground(duplo2Button, duplo && window.presentationMode);
+      setButtonBackground(
+        "citbDuploContainerActive",
+        window.presentationMode && duplo
+      );
     });
   };
 
   const presentacionCallBackFunction = async () => {
     duploMode(false);
   };
+  window.presentacionCallBackFunction = presentacionCallBackFunction;
+
   const presentacion2CallBackFunction = async () => {
     duploMode(true);
   };
+  window.presentacion2CallBackFunction = presentacion2CallBackFunction;
 
   const camCallBackFunction = async () => {
     if (betweenTransition) {
@@ -193,9 +197,9 @@ function monkeyPatchMediaDevices() {
           const duploContainerButton =
             document.getElementById("buttonPresentation");
           const duplo2Button = document.getElementById("duplo2");
-          setButtonBackground(buttonPresentation, false);
-          setButtonBackground(duploContainerButton, false);
-          setButtonBackground(duplo2Button, false);
+          setButtonBackground("citbDuploActive", false);
+          setButtonBackground("citbDuploContainerActive", false);
+          setButtonBackground("citbDuploMiniActive", false);
         });
         return;
       }
@@ -210,14 +214,16 @@ function monkeyPatchMediaDevices() {
           window.citbActivated = false;
         });
       }
-      setButtonBackground(window.buttonCam, window.citbActivated);
+      setButtonBackground("citbCamActive", window.citbActivated);
     } catch (e) {
       betweenTransition = false;
       logErrors(e, "camCallBackFunction,ln 205");
     }
   };
+  window.camCallBackFunction = camCallBackFunction;
 
   const showCallBackFunction = async () => {
+    console.log("MODO SHOW", showModeEnabled);
     try {
       if (window.classActivated) {
         await deactivateClassMode();
@@ -227,7 +233,7 @@ function monkeyPatchMediaDevices() {
           showAudioContext.close();
           showAudioContext = null;
           showModeEnabled = false;
-          setButtonBackground(buttonShow, showModeEnabled);
+          setButtonBackground("citbShowActive", showModeEnabled);
           setTimeout(() => {
             return;
           }, 1000);
@@ -236,19 +242,21 @@ function monkeyPatchMediaDevices() {
         showAudioContext = new AudioContext();
         const CITBMicMedia = await getCITBMicMedia();
         if (CITBMicMedia == null) {
-          setButtonBackground(buttonShow, false);
+          setButtonBackground("citbShowActive", false);
           return;
         }
         const source = showAudioContext.createMediaStreamSource(CITBMicMedia);
         source.connect(showAudioContext.destination);
         showModeEnabled = true;
-        setButtonBackground(buttonShow, showModeEnabled);
+        setButtonBackground("citbShowActive", showModeEnabled);
+        console.log("ACTIVAR MODO SHOW", showModeEnabled);
       }
       return;
     } catch (error) {
       logErrors(error, "await showCallBackFunction ln. 251");
     }
   };
+  window.showCallBackFunction = showCallBackFunction;
 
   const classCallBackFunction = async (isFromPopup) => {
     try {
@@ -261,45 +269,54 @@ function monkeyPatchMediaDevices() {
       logErrors(error, "classCallBackFunction ln 352");
     }
   };
+  window.classCallBackFunction = classCallBackFunction;
 
   const setCITBButtonsAndListeners = () => {
-    buttonShow = getButtonShow();
-    buttonClass = getButtonClass();
-    buttonPresentation = getButtonPresentation();
-    buttonClose = getButtonClose();
-    buttonDrag = getButtonDrag();
+    console.log("CITBBUTTONS AND LISTENERS", citbFloatingButtons);
+
     window.buttonCam = getButtonCam();
-    buttonsContainerDiv = getContainerButton();
+    buttonsContainerDiv = citbFloatingButtons;
 
-    buttonPresentation.addEventListener("click", presentacionCallBackFunction);
-    // document.getElementById("buttonPresentation").addEventListener('click',presentacionCallBackFunction);
-    document
-      .getElementById("duplo2")
-      .addEventListener("click", presentacion2CallBackFunction);
-
-    setEvents(
-      buttonShow,
-      buttonClass,
-      window.buttonCam,
-      buttonClose,
-      buttonsContainerDiv,
-      camCallBackFunction,
-      showCallBackFunction,
-      classCallBackFunction
+    citbFloatingButtons.addEventListener(
+      "citbDuploClickedEvent",
+      presentacionCallBackFunction
     );
+    citbFloatingButtons.addEventListener(
+      "citbDuploMiniClickedEvent",
+      presentacion2CallBackFunction
+    );
+
+    console.log("BEFORE SET EVENTS");
+    try {
+      setEvents(
+        buttonsContainerDiv,
+        camCallBackFunction,
+        showCallBackFunction,
+        classCallBackFunction
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.log("AFTER SET EVENTS");
   };
 
-  document.addEventListener("floatingButtons", function (e) {
-    floatingButtonsHTML = e.detail;
-    addFloatingContainerToDom(escapeHTMLPolicy.createHTML(floatingButtonsHTML));
-    setCITBButtonsAndListeners();
-  });
+  const buttonOnOffExtension = getButtonOnOffExtension();
+  console.log(buttonOnOffExtension);
+
+  const citbFloatingButtons = document.createElement("citb-floating-buttons");
+  citbFloatingButtons.style.position = "absolute";
+  citbFloatingButtons.style.top = "75px";
+  citbFloatingButtons.style.right = "16px";
+  citbFloatingButtons.style.visibility = "hidden";
+  console.log("LLEGA HASTA AQUI", citbFloatingButtons);
 
   const setCITBPresets = () => {
     window.presentationMode = false;
     window.classActivated = false;
   };
   setCITBPresets();
+  console.log("LLEGA HASTA AQUI");
 
   //Activate Extension
   window.isExtentionActive = false;
@@ -308,8 +325,6 @@ function monkeyPatchMediaDevices() {
     buttonOnOffExtension.innerText = window.isExtentionActive;
     onOffExtension();
   };
-
-  const buttonOnOffExtension = getButtonOnOffExtension();
 
   const closeExtension = async () => {
     closeButtonContainer();
@@ -417,7 +432,7 @@ function monkeyPatchMediaDevices() {
   buttonOnOffExtension.addEventListener("click", openCloseExtension);
 
   //WEB CONTAINER
-
+  console.log("LLEGA HASTA AQUI");
   var buttonShow,
     buttonClass,
     buttonPresentation,
@@ -465,6 +480,9 @@ function monkeyPatchMediaDevices() {
 
   document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
+      document.body.appendChild(citbFloatingButtons);
+      setCITBButtonsAndListeners();
+
       document.body.appendChild(buttonOnOffExtension);
 
       // console.log("LocalStorage coll",localStorage.getItem("asd123"));
@@ -481,13 +499,12 @@ function monkeyPatchMediaDevices() {
       //WEB CONTAINER
 
       setTimeout(() => {
-        setButtonBackground(window.buttonCam, window.citbActivated);
-        setButtonBackground(buttonShow, showModeEnabled);
-        setButtonBackground(buttonClass, window.classActivated);
-        setButtonBackground(buttonDrag);
+        setButtonBackground("citbCamActive", window.citbActivated);
+        setButtonBackground("citbShowActive", showModeEnabled);
+        setButtonBackground("citbClassActive", window.classActivated);
         if (window.actualVideoTag == videoCITB) {
           window.citbActivated = true;
-          setButtonBackground(window.buttonCam, window.citbActivated);
+          setButtonBackground("citbCamActive", window.citbActivated);
         }
       }, 5000);
     }
@@ -605,7 +622,7 @@ function monkeyPatchMediaDevices() {
           });
           window.classActivated = true;
 
-          setButtonBackground(buttonClass, window.classActivated);
+          setButtonBackground("citbClassActive", window.classActivated);
           return true;
         }
         return false;
@@ -618,7 +635,7 @@ function monkeyPatchMediaDevices() {
             // console.log(data);
           });
           window.classActivated = true;
-          setButtonBackground(buttonClass, window.classActivated);
+          setButtonBackground("citbClassActive", window.classActivated);
           return true;
         }
         return false;
@@ -638,7 +655,7 @@ function monkeyPatchMediaDevices() {
           track.stop();
         });
         otherMicStream = undefined;
-        setButtonBackground(buttonClass, window.classActivated);
+        setButtonBackground("citbClassActive", window.classActivated);
         return true;
       }
       return false;
@@ -754,13 +771,14 @@ function monkeyPatchMediaDevices() {
       let usableVideo = devices.filter(
         (x) =>
           x.kind === "videoinput" &&
-          !x.label.includes(enviroment.MYVIDEODDEVICELABEL) &&
-          !x.label.includes("Virtual Class In The Box")
+          !x.label.includes("Virtual Class In The Box") &&
+          x.deviceId != window.citbVideo
       );
       // enviroment.MYVIDEODDEVICELABEL.forEach(element => {
       //   usableVideo = usableVideo.filter((device)=> device.label != element);
       // });
-      usableVideo = usableVideo.filter((x) => !isCITBCamera(x.label));
+      console.log(devices, usableVideo, window.citbVideo);
+      // usableVideo = usableVideo.filter((x) => !isCITBCamera(x.label));
       createPopupVideo(
         div_OverlayVideo,
         div_FabVideo,
@@ -800,6 +818,12 @@ function monkeyPatchMediaDevices() {
       args[0].audio != undefined &&
       args[0].audio != null;
 
+    const hasVideoAttributes =
+      args.length &&
+      args[0].video != false &&
+      args[0].video != undefined &&
+      args[0].video != null;
+
     const hasAudioMandatoryFields =
       args[0].audio.mandatory != undefined &&
       args[0].audio.mandatory != null &&
@@ -813,7 +837,11 @@ function monkeyPatchMediaDevices() {
       args[0].audio.deviceId != null &&
       args[0].audio.deviceId != "";
 
-    return hasAudioAtribute;
+    console.log(
+      "userMediaArgsIsAudio",
+      hasAudioAtribute && !hasVideoAttributes
+    );
+    return hasAudioAtribute && !hasVideoAttributes;
     //return args[0].audio != false && args[0].audio != undefined && args[0].audio != null && args[0].audio.mandatory.sourceId != undefined && args[0].audio.mandatory.sourceId != null && args[0].audio.mandatory.sourceId != ''
   };
 
@@ -891,9 +919,9 @@ function monkeyPatchMediaDevices() {
       //3840×2160
       const config = {
         codec: "vp8",
-        width: 1280,
-        height: 720,
-        framerate: 30,
+        width: 640,
+        height: 360,
+        framerate: 15,
       };
 
       let encoder = new VideoEncoder(init);
@@ -907,8 +935,8 @@ function monkeyPatchMediaDevices() {
       decoder_.configure({
         codec: "vp8",
         width: 640,
-        height: 480,
-        framerate: 30,
+        height: 360,
+        framerate: 15,
       });
 
       let frame_counter = 0;
@@ -1082,6 +1110,7 @@ function monkeyPatchMediaDevices() {
     return false;
   };
   navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+
   setTimeout(() => {
     navigator.mediaDevices.addEventListener(
       "devicechange",
