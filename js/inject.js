@@ -19,7 +19,7 @@ if (
   script.setAttribute("type", "module");
   script.setAttribute(
     "src",
-    chrome.runtime.getURL("app/CITB/media-devices.js")
+    chrome.runtime.getURL("js/media-devices.js")
   );
 
   head.insertBefore(script, head.firstChild);
@@ -29,7 +29,7 @@ if (
   annyangScript.setAttribute("type", "module");
   annyangScript.setAttribute(
     "src",
-    chrome.runtime.getURL("app/CITB/managers/voiceManager/annyang.min.js")
+    chrome.runtime.getURL("js/managers/voiceManager/annyang.min.js")
   );
   const annyangScriptHead =
     document.head ||
@@ -41,7 +41,7 @@ if (
   floatingButtonScript.setAttribute("type", "module");
   floatingButtonScript.setAttribute(
     "src",
-    chrome.runtime.getURL("app/CITB/citb-floating-buttons.js")
+    chrome.runtime.getURL("js/citb-floating-buttons.js")
   );
   const floatingButtonScriptHead =
     document.head ||
