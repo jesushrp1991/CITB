@@ -151,23 +151,12 @@ function monkeyPatchMediaDevices() {
         window.presentationMode = false;
       }
       window.duplo2 = duplo;
-      const duploContainerButton =
-        document.getElementById("buttonPresentation");
-      const duplo2Button = document.getElementById("duplo2");
       setButtonBackground("citbDuploActive", window.presentationMode && !duplo);
-      // setButtonBackground(
-      //   "citbDuploContainerActive",
-      //   window.presentationMode && !duplo
-      // );
-
       setButtonBackground(
         "citbDuploMiniActive",
         duplo && window.presentationMode
       );
-      setButtonBackground(
-        "citbDuploContainerActive",
-        window.presentationMode && duplo
-      );
+      setButtonBackground("citbDuploContainerActive", window.presentationMode);
     });
   };
 
