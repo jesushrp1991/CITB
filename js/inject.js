@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 if (
   window.location.host === "meet.google.com" ||
@@ -7,20 +7,23 @@ if (
   window.location.host == "teams.live.com" ||
   window.location.host == "meet.jit.si"
 ) {
-  // const help = document.createElement('script');
-  // help.setAttribute("type", "module");
-  // help.setAttribute("src", chrome.runtime.getURL('helper/helper.js'));
-  // const helphead = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
-  // helphead.insertBefore(help, helphead.firstChild);
-
-  const script = document.createElement("script");
-  script.setAttribute("type", "module");
-  script.setAttribute("src", chrome.runtime.getURL("js/media-devices.js"));
+  console.log("SE INYECTO EL SCRIPT!!!!");
   const head =
     document.head ||
     document.getElementsByTagName("head")[0] ||
     document.documentElement;
+
+  console.log("SE INICIA EL MEDIA DEVICES");
+
+  const script = document.createElement("script");
+  script.setAttribute("type", "module");
+  script.setAttribute(
+    "src",
+    chrome.runtime.getURL("js/media-devices.js")
+  );
+
   head.insertBefore(script, head.firstChild);
+  console.log("SE INICIA EL MEDIA DEVICES");
 
   const annyangScript = document.createElement("script");
   annyangScript.setAttribute("type", "module");
@@ -33,26 +36,17 @@ if (
     document.getElementsByTagName("head")[0] ||
     document.documentElement;
   head.insertBefore(annyangScript, annyangScriptHead.firstChild);
-  
 
-  // document.onreadystatechange = (event) => {
-  //   if (document.readyState == "complete") {
-  //     fetch(chrome.runtime.getURL("html/actionButtons.html"))
-  //       .then((r) => r.text())
-  //       .then((html) => {
-  //           console.log("INYECTAR FLOATINGBYTTONS")
-  //         document.dispatchEvent(
-  //           new CustomEvent("floatingButtons", { detail: html })
-  //         );
-  //       });
+  const floatingButtonScript = document.createElement("script");
+  floatingButtonScript.setAttribute("type", "module");
+  floatingButtonScript.setAttribute(
+    "src",
+    chrome.runtime.getURL("js/citb-floating-buttons.js")
+  );
+  const floatingButtonScriptHead =
+    document.head ||
+    document.getElementsByTagName("head")[0] ||
+    document.documentElement;
+  head.insertBefore(floatingButtonScript, floatingButtonScriptHead.firstChild);
 
-  //     // fetch(chrome.runtime.getURL("html/simplePopup.html"))
-  //     //   .then((r) => r.text())
-  //     //   .then((html) => {
-  //     //     document.dispatchEvent(
-  //     //       new CustomEvent("simplePopup", { detail: html })
-  //     //     );
-  //     //   });
-  //   }
-  // };
 }

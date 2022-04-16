@@ -1,26 +1,25 @@
 const generateVirtualWebCamCanvas = () => {
-    console.log("Generando canvas")
-    const canvas = document.createElement('canvas');
-    canvas.setAttribute('id', 'virtualWebCamCanvasVideoContainer')
-    return canvas
-}
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute("id", "virtualWebCamCanvasVideoContainer");
+  return canvas;
+};
 
 const generateVideoContainerWithId = (videoId) => {
-  const video = document.createElement('video');
-  video.setAttribute('id', videoId);
-  video.setAttribute('playsinline', "")
-  video.setAttribute('autoplay', "")
-  video.style.display = 'none';
-  return video
-}
+  const video = document.createElement("video");
+  video.setAttribute("id", videoId);
+  video.setAttribute("playsinline", "");
+  video.setAttribute("autoplay", "");
+  video.style.display = "none";
+  return video;
+};
 
 const generateCITBVideoContainer = () => {
-  return generateVideoContainerWithId('CITBVideo')
-}
+  return generateVideoContainerWithId("CITBVideo");
+};
 
 const generateOtherVideoContainer = () => {
-  return generateVideoContainerWithId('OTHERVideo')
-}
+  return generateVideoContainerWithId("OTHERVideo");
+};
 
 const getButtonShow = () => {
   const buttonShow = document.getElementById("buttonShow");
@@ -56,10 +55,41 @@ const getButtonDrag = () => {
   return buttonDrag;
 };
 
-const setButtonBackground = (button, activated) => {
-  activated
-    ? button.classList.add("active")
-    : button.classList.remove("active");
+const setButtonBackground = (citbInputName, activated) => {
+  const citbFloatingButtonElement = document.getElementsByTagName(
+    "citb-floating-buttons"
+  )[0];
+
+  if(citbInputName == "citbCamActive"){
+    activated
+      ? citbFloatingButtonElement.citbCamActive = 'active'
+      : citbFloatingButtonElement.citbCamActive = ''
+  }
+  if(citbInputName == "citbShowActive"){
+    activated
+    ? citbFloatingButtonElement.citbShowActive = 'active'
+    : citbFloatingButtonElement.citbShowActive = ''
+  }
+  if(citbInputName == "citbClassActive"){
+    activated
+    ? citbFloatingButtonElement.citbClassActive = 'active'
+    : citbFloatingButtonElement.citbClassActive = ''
+  }
+  if(citbInputName == "citbDuploActive"){
+    activated
+    ? citbFloatingButtonElement.citbDuploActive = 'active'
+    : citbFloatingButtonElement.citbDuploActive = ''
+  }
+  if(citbInputName == "citbDuploMiniActive"){
+    activated
+    ? citbFloatingButtonElement.citbDuploMiniActive = 'active'
+    : citbFloatingButtonElement.citbDuploMiniActive = ''
+  }
+  if(citbInputName == "citbDuploContainerActive"){
+    activated
+    ? citbFloatingButtonElement.citbDuploContainerActive = 'active'
+    : citbFloatingButtonElement.citbDuploContainerActive = ''
+  }
 };
 
 const addFloatingContainerToDom = (html) => {
@@ -79,55 +109,54 @@ const getVirtualCam = () => {
 };
 
 const closeButtonContainer = () => {
-  document.getElementById("buttonsContainer").style.visibility = "hidden";
+  document.getElementsByTagName("citb-floating-buttons")[0].style.visibility = "hidden";
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
-const setMicrophone = (microphone) => { 
+const setMicrophone = (microphone) => {
   document.getElementById("pModeCurrentMic").innerText = microphone;
-}; 
+};
 
 const showDiv = () => {
-  if (document.getElementById('buttonsContainer')){
-    document.getElementById('buttonsContainer').style.visibility = 'visible';
+  if (document.getElementsByTagName("citb-floating-buttons")[0]) {
+    document.getElementsByTagName("citb-floating-buttons")[0].style.visibility = "visible";
     document.getElementById("pWebContainerState").innerText = "OPEN";
   }
-}
+};
 
-const createWebContainerState = () =>{
-  const pWebContainerState = document.createElement('p');
-  pWebContainerState.setAttribute('id','pWebContainerState');
-  pWebContainerState.style.display = 'none';
+const createWebContainerState = () => {
+  const pWebContainerState = document.createElement("p");
+  pWebContainerState.setAttribute("id", "pWebContainerState");
+  pWebContainerState.style.display = "none";
   return pWebContainerState;
-}
+};
 
-const createModeCurrentMic = () =>{
-  const pModeCurrentMic = document.createElement('p');
-  pModeCurrentMic.setAttribute('id','pModeCurrentMic');
-  pModeCurrentMic.style.display = 'none';
+const createModeCurrentMic = () => {
+  const pModeCurrentMic = document.createElement("p");
+  pModeCurrentMic.setAttribute("id", "pModeCurrentMic");
+  pModeCurrentMic.style.display = "none";
   return pModeCurrentMic;
-}
+};
 
 const getButtonShowPopupMicClassMode = () => {
   const buttonPopup = document.createElement("button");
-  buttonPopup.setAttribute('id','buttonPopup');
-  buttonPopup.style.display = 'none';
+  buttonPopup.setAttribute("id", "buttonPopup");
+  buttonPopup.style.display = "none";
   return buttonPopup;
 };
 
 const getButtonShowPopupVideo = () => {
   const buttonPopup = document.createElement("button");
-  buttonPopup.setAttribute('id','buttonPopupVideo');
-  buttonPopup.style.display = 'none';
+  buttonPopup.setAttribute("id", "buttonPopupVideo");
+  buttonPopup.style.display = "none";
   return buttonPopup;
 };
 
 const getButtonOnOffExtension = () => {
   const buttonOnOff = document.createElement("button");
-  buttonOnOff.setAttribute('id','buttonOnOff');
-  buttonOnOff.style.display = 'none';
+  buttonOnOff.setAttribute("id", "buttonOnOff");
+  buttonOnOff.style.display = "none";
   return buttonOnOff;
 };
-
 
 export {
   generateVirtualWebCamCanvas,
@@ -150,5 +179,5 @@ export {
   getButtonShowPopupMicClassMode,
   getButtonPresentation,
   getButtonShowPopupVideo,
-  getButtonOnOffExtension
+  getButtonOnOffExtension,
 };

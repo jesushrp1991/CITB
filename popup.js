@@ -100,11 +100,11 @@ button4WEB.addEventListener("click", async () => {
     console.log("click!!!",webContainerActivated); 
     if (webContainerActivated) { 
       chrome.tabs.executeScript(tab[0].id,{ 
-        code: 'document.getElementById("buttonsContainer").style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";' 
+        code: 'document.getElementsByTagName("citb-floating-buttons")[0].style.visibility = "hidden";document.getElementById("pWebContainerState").innerText = "CLOSE";'
       }); 
     } else { 
       chrome.tabs.executeScript(tab[0].id,{ 
-        code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementById('buttonsContainer').style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }" 
+        code:"if(document.getElementById('buttonOnOff').innerText.toString() == 'true') { document.getElementsByTagName('citb-floating-buttons')[0].style.visibility = 'visible'; document.getElementById('pWebContainerState').innerText = 'OPEN' }"
       }); 
     } 
     webContainerActivated = !webContainerActivated; 

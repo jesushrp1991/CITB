@@ -8,16 +8,16 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "CITB COLOR SIN CIRCULO.png",
-      "48": "CITB COLOR SIN CIRCULO.png",
-      "64": "CITB COLOR SIN CIRCULO.png",
-      "128": "CITB COLOR SIN CIRCULO.png"
+      "16": "favicon.svg",
+      "48": "favicon.svg",
+      "64": "favicon.svg",
+      "128": "favicon.svg"
     }
   },
   "icons": {
-    "16": "CITB COLOR SIN CIRCULO.png",
-    "48": "CITB COLOR SIN CIRCULO.png",
-    "128": "CITB COLOR SIN CIRCULO.png"
+    "16": "favicon.svg",
+    "48": "favicon.svg",
+    "128": "favicon.svg"
   },
   "content_scripts": [
     {
