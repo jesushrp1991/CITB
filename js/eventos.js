@@ -6,7 +6,6 @@ const setEvents = (
   showCallBackFunction,
   classCallBackFunction
 ) => {
-  console.log("INSIDE SET EVENTS", buttonsContainerDiv);
   buttonsContainerDiv.addEventListener(
     "citbCamClickedEvent",
     camCallBackFunction
@@ -24,9 +23,7 @@ const setEvents = (
     closeButtonContainer(buttonsContainerDiv);
   });
 
-  console.log("before mouse down", buttonsContainerDiv);
   buttonsContainerDiv.addEventListener("mousedown", (e) => {
-    console.log("MOUSEDOWN");
     dragMouseDown(e);
   });
 
