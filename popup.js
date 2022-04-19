@@ -76,13 +76,13 @@ const showContainer = () => {
   let isOpen = document.getElementById('buttonOnOff').innerText.toString();
   if(isOpen == "true")
   {
-    document.getElementById('buttonsContainer').style.visibility = 'visible';
+    document.getElementsByTagName("citb-floating-buttons")[0].style.visibility = 'visible';
     document.getElementById("pWebContainerState").innerText = "OPEN";
   }
 };
 
 const closeContainer = () => {  
-  document.getElementById('buttonsContainer').style.visibility = 'hidden';
+  document.getElementsByTagName("citb-floating-buttons")[0].style.visibility = 'hidden';
   document.getElementById("pWebContainerState").innerText = "CLOSE";
 };
 const setButtonWebContainerBackground = (isOpen) => {
